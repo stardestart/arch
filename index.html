@@ -1,0 +1,3365 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>Arch Linux</title>
+    <style>
+      body, html { background: #657b83;
+                   color: #002b36;
+                   font-family: monospace;
+                   font-size: 20px; }
+      summary { font-weight: bold;
+                outline: none;
+                padding: 1%; 
+                margin: 1%; }
+      details { border: 5px solid #002b36;
+                padding: 1%;
+                margin: 1%; }
+      h1, h2 { text-align: center; }
+      table { width: 98%;
+              padding: 1%;
+              margin: 1%; }
+      td { padding: 1%;
+           margin: 1%;
+           width: 98%; 
+           border: 5px solid #657b83; }
+      .term { background: #002b36;
+              color: #657b83;
+              padding: 1%;
+              border: 5px solid #657b83;
+              overflow:auto; }
+      .text { color: #002b36;
+              padding: 1%;
+              border-left: 5px dotted #002b36;
+              overflow:auto; }
+      .button { background: #c0c0c0;
+                border: 5px outset #939393;
+                padding: 1%; }
+      .comm { color: white;
+              padding: 1%; }
+    </style>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td>
+          <h1>Установка Arch Linux (От новичка, таким же новичкам)</h1>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>
+            За условие принимаем
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <h2>Подготовка_к_установке</h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <details>
+            <summary>
+              Если ПК подключён к сети через Wi-Fi
+            </summary>
+            <table>
+              <tr>
+                <td>
+                  <p class=term>
+                    root@archiso~# iwctl station wlan0 connect<em class=comm> Имя_сети</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    <em class=comm>Пароль_cети</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+            </table>
+          </details>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            ping -c 3 ya.ru<em class=comm> #</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            loadkeys ru<em class=comm> #</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            setfont cyr-sun16<em class=comm> #</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            timedatectl set-ntp true<em class=comm> #</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <hr>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <h2>Разметка и форматирование носителей</h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            fdisk -l<em class=comm> #Просмотр носителей</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            fdisk /dev/ВашСистемныйДиск<em class=comm> #</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <details>
+            <summary>
+              Для legacy boot
+            </summary>
+            <table>
+              <tr>
+                <td>
+                  <details>
+                    <summary>
+                      MBR
+                    </summary>
+                    <table>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            o <em class=comm> #MBR_структура</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            n<em class=comm> #GRUB_раздел</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            p<em class=comm> #PrimaryPartition</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            1<em class=comm> #PartitionNumber</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            2048<em class=comm> #FirstSector</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            +500m<em class=comm> #Размер_GRUB_раздела</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            y<em class=comm> #ДаЕслиСпросил</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            a<em class=comm> #BootФлаг</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            n<em class=comm> #SWAP_раздел</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            p<em class=comm> #PrimaryPartition</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            2<em class=comm> #PartitionNumber</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            +1g<em class=comm> #РазмерSWAPРаздела(Обычно_X2_ОЗУ)</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            y<em class=comm> #ДаЕслиСпросил</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            n<em class=comm> #RootРаздел</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            p<em class=comm> #PrimaryPartition</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            3<em class=comm> #PartitionNumber</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            y<em class=comm> #ДаЕслиСпросил</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            w<em class=comm> #Записать</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            mkfs.ext2 /dev/<em class=comm>GRUBРаздел(sda1,nvme0n1p1)</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                    </table>
+                  </details>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <details>
+                    <summary>
+                      GPT
+                    </summary>
+                    <table>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            g<em class=comm> #GPTСтруктура</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            n<em class=comm> #GRUBРаздел</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            1<em class=comm> #PartitionNumber</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            2048<em class=comm> #FirstSector</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            +500m<em class=comm> #РазмерGRUBРаздела</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            y<em class=comm> #ДаЕслиСпросил</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            n<em class=comm> #РазделОбразаGRUB</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            2<em class=comm> #PartitionNumber</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            +1m<em class=comm> #РазмерРазделОбразаGRUB</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            y<em class=comm> #ДаЕслиСпросил</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            t<em class=comm> #СменитьТипРаздела</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            2<em class=comm> #НомерРаздела</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            4<em class=comm> #ТипBiosBoot</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            n<em class=comm> #SWAPРаздел</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            3<em class=comm> #PartitionNumber</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            +1g<em class=comm> #РазмерSWAPРаздела(ОбычноX2ОЗУ)</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            y<em class=comm> #ДаЕслиСпросил</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            n<em class=comm> #RootРаздел</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            4<em class=comm> #PartitionNumber</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                          <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            y<em class=comm> #ДаЕслиСпросил</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            w<em class=comm> #Записать</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                    </table>
+                  </details>
+                </td>
+              </tr>
+            </table>
+          </details>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <details>
+            <summary>
+              Для uefi
+            </summary>
+            <table>
+              <tr>
+                <td>
+                  <p class=term>
+                    n<em class=comm> #</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    +500m<em class=comm> #</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    t<em class=comm> #</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    1<em class=comm> #</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    1<em class=comm> #</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    n<em class=comm> #</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    +1g<em class=comm> #</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    n<em class=comm> #</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    mkfs.fat -F32 /dev/nvme0n1p1<em class=comm> #</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    mkfs.ext4 /dev/nvme0n1p3<em class=comm> #</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+            </table>
+          </details>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            mkfs.ext4 /dev/nvme1n1 -L games<em class=comm> #</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            mkfs.ext4 /dev/sdb -L data<em class=comm> #</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            mkswap /dev/nvme0n1p2<em class=comm> #</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            mount /dev/nvme0n1p3 /mnt<em class=comm> #</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            mkdir /mnt/{boot,data,games}<em class=comm> #</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            mount /dev/nvme0n1p1 /mnt/boot<em class=comm> #</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            mount /dev/nvme1n1 /mnt/games<em class=comm> #</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            mount /dev/sdb /mnt/data<em class=comm> #</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            swapon /dev/nvme0n1p2<em class=comm> #</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            lsblk -f<em class=comm> #Просмотр_результата</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <hr>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <h2>Установка ОС</h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano /etc/pacman.d/mirrorlist
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            <em class=comm> #Europe на первое место</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>
+            Установка системы и начального пакета программ
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            pacstrap /mnt base<em class=comm>#база</em>base-devel<em class=comm>#</em>linux-zen<em class=comm>#</em>linux-firmware<em class=comm>#</em>nano<em class=comm>#консольный_блокнот</em>dhcpcd<em class=comm>#DHCP-клиент</em>iwd<em class=comm>#Wi-Fi-клиент</em>linux-zen-headers<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            genfstab -p -U /mnt >> /mnt/etc/fstab<em class=comm>#Копирование/перенос_файла_монтирования_дисков</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            arch-chroot /mnt<em class=comm>#Переход_в_командную_строку_установленной_системы</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Настройка локали на установленной системе</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            timedatectl set-ntp true<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            hwclock --systohc<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano /etc/locale.gen<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            #LANG=ru_RU.UTF-8<em class=comm>#Раскомментируем(Удаляем_знак_"#")</em><br>
+            #LANG=en_EN.UTF-8<em class=comm>#Раскомментируем(Удаляем_знак_"#")</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano /etc/locale.conf<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            LANG="ru_RU.UTF-8"<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano /etc/vconsole.conf<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            KEYMAP=ru<br>
+            FONT=cyr-sun16<br>
+            USECOLOR=yes<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            locale-gen<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Сетевые настройки</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano /etc/hostname<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            ИмяПК<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano /etc/hosts<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            127.0.0.1	localhost<br>
+            ::1 localhost<br>
+            127.0.1.1 ИмяПК.localdomain ИмяПК<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            passwd<em class=comm>#Задаем_пароль_root</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            Пароль<em class=comm>#Задаем_пароль</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            Пароль<em class=comm>#Повторяем_пароль</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            useradd -m -g users -G wheel -s /bin/bash ИмяПользователя<em class=comm>#Создаем_пользователя</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            passwd ИмяПользователя<em class=comm>#Задаем_пароль_пользователю</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            ПарольПользователя<em class=comm>#Задаем_пароль</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            ПарольПользователя<em class=comm>#Повторяем_пароль</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano /etc/sudoers<em class=comm>#Даем_sudo_пользователю</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            %wheel ALL=(ALL) ALL<em class=comm>#Раскомментируем(Удаляем_знак_"%")</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            chown ИмяПользователя /games<em class=comm>#Даем_права_пользователю_на_директорию</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            chown ИмяПользователя /data<em class=comm>#Даем_права_пользователю_на_директорию</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            pacman -S intel-ucode iucode-tool --noconfirm<em class=comm>#Установка_микрокода</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            mkinitcpio -p linux-zen<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Установка загрузчика</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <details>
+            <summary>
+              Если legacy boot
+            </summary>
+            <table>
+              <tr>
+                <td>
+                  <p class=term>
+                    pacman -S grub --noconfirm<em class=comm>#</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    grub-install /dev/sda<em class=comm>#</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    nano /etc/default/grub<em class=comm>#</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    GRUB_TIMEOUT=0<em class=comm>#</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>CTRL</em>
+                  <em class=comm>+</em>
+                  <em class=button>O</em>
+                  <em class=comm>#сохранение_в_nano</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>CTRL</em>
+                  <em class=comm>+</em>
+                  <em class=button>X</em>
+                  <em class=comm>#выход_из_nano</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    grub-mkconfig -o /boot/grub/grub.cfg<em class=comm>#</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+            </table>
+          </details>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <details>
+            <summary>
+              Если uefi
+            </summary>
+            <table>
+              <tr>
+                <td>
+                  <p class=term>
+                    pacman -S efibootmgr --noconfirm<em class=comm>#</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    bootctl install<em class=comm>#</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    nano /boot/loader/loader.conf<em class=comm>#</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    default<br>
+                    arch<br>
+                    timeout 0<br>
+                    editor 0<em class=comm>#</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>CTRL</em>
+                  <em class=comm>+</em>
+                  <em class=button>O</em>
+                  <em class=comm>#сохранение_в_nano</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>CTRL</em>
+                  <em class=comm>+</em>
+                  <em class=button>X</em>
+                  <em class=comm>#выход_из_nano</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    nano /boot/loader/entries/arch.conf<em class=comm>#</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    title  Arch Linux<br>
+                    linux  /vmlinuz-linux-zen<br>
+                    initrd /intel-ucode.img<br>
+                    initrd  /initramfs-linux-zen.img<br>
+                    options  root=/dev/nvme0n1p3 rw<em class=comm>#</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>CTRL</em>
+                  <em class=comm>+</em>
+                  <em class=button>O</em>
+                  <em class=comm>#сохранение_в_nano</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>CTRL</em>
+                  <em class=comm>+</em>
+                  <em class=button>X</em>
+                  <em class=comm>#выход_из_nano</em>
+                </td>
+              </tr>
+            </table>
+          </details>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Подключение поддержки x32 приложений</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano /etc/pacman.conf<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            Color<br>
+            [multilib]<br>
+            Include…<em class=comm>#Раскомментируем_строки</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Подключение поддержки sysrq</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano /etc/sysctl.d/99-sysctl.conf<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            kernel.sysrq=1<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>D</em>
+          <em class=comm>#Выход</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            umount -R /mnt<em class=comm> #размонтировать_диски</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            reboot<em class=comm> перезагрузка</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <hr>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <h2>Установка основных программ ОС</h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            ip l<em class=comm>#Просмотр списка сетевых интерфейсов</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <details>
+            <summary>
+              Подключение проводной сети
+            </summary>
+            <table>
+              <tr>
+                <td>
+                  <p class=term>
+                    sudo ip link set enp0s31f6 up<em class=comm>#</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    sudo dhcpcd enp0s31f6<em class=comm>#</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+            </table>
+          </details>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <details>
+            <summary>
+              Подключение Wi-Fi
+            </summary>
+            <table>
+              <tr>
+                <td>
+                  <p class=term>
+                    sudo iwctl station wlan0 connect ИмяСети<em class=comm>#</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    sudo systemctl enable iwd.service<em class=comm>#</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    sudo systemctl start iwd.service<em class=comm>#</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+            </table>
+          </details>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo systemctl enable dhcpcd.service<em class=comm> #автозагрузка dhcpcd</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo systemctl start dhcpcd.service<em class=comm> #автозагрузка dhcpcd</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Установка </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo pacman -Sy xorg xorg-xinit xorg-apps  xterm  --noconfirm<em class=comm>#Установка_Xorg_и_сопутствующего_софта</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo pacman -S  xdm-archlinux --noconfirm<em class=comm> #Установка_DM_(стартовый_экран_входа_в_систему)</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo pacman -S nvidia nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings vulkan-icd-loader lib32-vulkan-icd-loader opencl-nvidia lib32-opencl-nvidia libxnvctrl libvdpau lib32-libvdpau vulkan-devel vulkan mesa-utils lib32-mesa-utils mesa lib32-mesa meson --noconfirm<em class=comm>#Установка_видео_драйверов</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo pacman -S i3-gaps i3status dmenu --noconfirm<em class=comm> #Установка_тайлового_оконного_менеджера</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo localectl --no-convert set-x11-keymap us,ru  "" "" grp:alt_shift_toggle,terminate:ctrl_alt_bksp<em class=comm>#Настройка_переключения_раскладки</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Установка помощника Yay</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo pacman -S git --noconfirm<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            git clone https://aur.archlinux.org/yay.git<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            curl -L -O https://aur.archlinux.org/cgit/aur.git/snapshot/yay.tar.gz<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            cd yay<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            makepkg -si<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            cd<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Установка звуковых драйверов и сопутствующего софта</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            pacman -S alsa-utils alsa-plugins pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol faudio --noconfirm<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            yay -S volctl<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Установка шрифтов и сопутствующего софта</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            pacman -S freetype2 numlockx ttf-liberation ttf-dejavu ttf-font-awesome --noconfirm<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Установка </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo pacman -S doublecmd-qt5 caja mc --noconfirm
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo pacman -S ntfs-3g<em class=comm>#драйвер файловой системы NTFS</em>dosfstools<em class=comm>#драйвер файловой системы FAT</em>gparted<em class=comm>#</em> --noconfirm
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo pacman -S htop conky --noconfirm<em class=comm>#Установка_системного_монитора</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            conky --print-config<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            mkdir -p ~/.config/conky && conky --print-config > ~/.config/conky/conky.conf<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Установка утилит внешнего вида</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo pacman -S feh picom redshift devmon tint2 grc flameshot --noconfirm<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            pacman -S qt6ct lxappearance --noconfirm<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Программы мультимедиа</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            pacman -S audacity<em class=comm>#простой_аудиоредактор</em>openshot<em class=comm>#простой_видеоредактор</em>cheese<em class=comm>#вебкамера</em>kate<em class=comm> #редактор_кода</em>featherpad<em class=comm>#блокнот</em>bleachbit<em class=comm>#очистка</em>pinta<em class=comm>#paint</em>gimp<em class=comm>#photoshop</em>transmission-qt<em class=comm> #торрент</em>vlc<em class=comm>#видеоплеер</em>libreoffice-still-ru<em class=comm>#офис</em>obs-studio<em class=comm>#запись_видео_с_экрана</em>tipp10<em class=comm>#клавиатурный_тренажер</em>qalculate-qt<em class=comm>#калькулятор</em>avidemux-qt<em class=comm>#видеоконвертер</em>copyq<em class=comm>#менеджер_буфера_обмена</em>blender<em class=comm>#3D_модели</em>firefox<em class=comm>#браузер</em>--noconfirm
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            yay -S openrgb<em class=comm>#настройка_rgb-подсветок</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo pacman -S rng-tools<em class=comm>#</em>dbus-broker<em class=comm>#</em>acpid<em class=comm>#обеспечивает интеллектуальное управление питанием в системе и позволяет запрашивать состояние батареи и конфигурации</em>--noconfirm
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            yay -S auto-cpufreq<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo pacman -S bluez bluez-utils bluez-cups blueman<em class=comm>#блютус</em>--noconfirm
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo pacman -S zstd cpio cabextract<em class=comm>#архиваторы</em>--noconfirm
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            pacman -Ss geoclue2<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Установка сканеров и принтеров</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            pacman -S sane sane-airscan gscan2pdf cups cups-pdf avahi --noconfirm<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            yay -S cups-xerox-b2xx<em class=comm>#Возможно понадобиться установка драйвера, как пример принтер xserox, драйвер из ауры</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo nano /etc/sane.d/net.conf<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            прописываем ip сканера
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=comm>#Откройте в браузере адрес http://127.0.0.1:631</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Установка игрового софта</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo pacman -S steam wine winetricks appmenu-gtk-module libdbusmenu-glib lib32-libdbusmenu-glib wxgtk2 giflib lib32-giflib gnutls lib32-gnutls mpg123 lib32-mpg123 openal lib32-openal v4l-utils lib32-v4l-utils libpulse lib32-libpulse libxcomposite lib32-libxcomposite libxinerama lib32-libxinerama opencl-icd-loader lib32-opencl-icd-loader libxslt lib32-libxslt libva lib32-libva gtk3 lib32-gtk3 gtk2 lib32-gtk2 lib32-gst-plugins-base-libs lutris gamemode lib32-gamemode --noconfirm
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <hr>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <h2>Редактирование конфигурационных файлов</h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano ~/.config/conky/conky.conf<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            conky.config = {<br>
+            alignment = 'top_right',<br>
+            background = false,<br>
+            border_width = 1,<br>
+            cpu_avg_samples = 2,<br>
+            default_color = 'white',<br>
+            default_outline_color = 'white',<br>
+            default_shade_color = 'white',<br>
+            double_buffer = true,<br>
+            draw_borders = true,<br>
+            draw_graph_borders = true,<br>
+            draw_outline = false,<br>
+            draw_shades = false,<br>
+            extra_newline = false,<br>
+            font = 'DejaVu Sans Mono:size=10',<br>
+            gap_x = 60,<br>
+            gap_y = 60,<br>
+            minimum_height = 5,<br>
+            minimum_width = 5,<br>
+            net_avg_samples = 2,<br>
+            no_buffers = true,<br>
+            out_to_console = false,<br>
+            out_to_ncurses = false,<br>
+            out_to_stderr = false,<br>
+            out_to_x = true,<br>
+            own_window = true,<br>
+            own_window_class = 'Conky',<br>
+            own_window_type = 'override',<br>
+            own_window_transparent = false,<br>
+            own_window_argb_visual = true,<br>
+            own_window_argb_value = 90,<br>
+            show_graph_range = false,<br>
+            show_graph_scale = false,<br>
+            stippled_borders = 0,<br>
+            update_interval = 2,<br>
+            uppercase = false,<br>
+            use_spacer = 'none',<br>
+            use_xft = true, }<br>
+            conky.text = [[<br>
+            ${font DejaVu Sans Mono:size=44}${color green}$alignc${time %H:%M}${font DejaVu Sans Mono:size=15}<br>
+            $alignc${time %a}, ${time %d %b %Y}$font$color<br>
+            # sys<br>
+            ${color gold}SYS ${hr 3}$color<br>
+            ${color green}Ядро:$color $alignr $kernel<br>
+            ${color green}Время _в_сети:$color $alignr $uptime<br>
+            # cpu<br>
+            ${color gold}CPU ${hr 3}$color<br>
+            ${color green}Задействовано:$color $alignr $cpu %<br>
+            ${color green}Частота:$color $alignr $freq MHz<br>
+            ${color green}Температура:$color $alignr ${execi 10 sensors | grep "id 0:" | cut -b15-22}<br>
+            $alignr ${execi 10 sensors | grep "Core 0:" | cut -b1-22 }<br>
+            $alignr ${execi 10 sensors | grep "Core 1:" | cut -b1-22 }<br>
+            $alignr ${execi 10 sensors | grep "Core 2:" | cut -b1-22 }<br>
+            $alignr ${execi 10 sensors | grep "Core 3:" | cut -b1-22 }<br>
+            # gpu<br>
+            ${color gold}GPU ${hr 3}$color<br>
+            ${color green}Частота:$color $alignr ${nvidia gpufreq} Mhz<br>
+            ${color green}Задействовано:$color $alignr ${nvidia mem} / ${nvidia memmax} MiB<br>
+            ${color green}Температура:$color $alignr ${nvidia temp} °C<br>
+            # ram<br>
+            ${color gold}RAM ${hr 3}$color$<br>
+            ${color green}Задействовано:$color $alignr $mem / $memmax<br>
+            ${color green}Свободно:$color $alignr $memeasyfree / $memmax<br>
+            $memperc% ${membar 4}<br>
+            #swap<br>
+            ${color gold}SWAP ${hr 3}$color<br>
+            ${color green}Задействовано:$color $alignr $swap / $swapmax<br>
+            $swapperc% ${swapbar 4}<br>
+            # processes<br>
+            ${color gold}Процессы ${hr 3}$color<br>
+            ${color green}Название $alignr PID | CPU% | MEM% $color<br>
+            ${top name 1} $alignr ${top pid 1}|${top cpu 1}|${top mem 1}<br>
+            ${top name 2} $alignr ${top pid 2}|${top cpu 2}|${top mem 2}<br>
+            ${top name 3} $alignr ${top pid 3}|${top cpu 3}|${top mem 3}<br>
+            ${top name 4} $alignr ${top pid 4}|${top cpu 4}|${top mem 4}<br>
+            ${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}<br>
+            ${top name 6} $alignr ${top pid 6}|${top cpu 6}|${top mem 6}<br>
+            ${top name 7} $alignr ${top pid 7}|${top cpu 7}|${top mem 7}<br>
+            ${top name 8} $alignr ${top pid 8}|${top cpu 8}|${top mem 8}<br>
+            ${top name 9} $alignr ${top pid 9}|${top cpu 9}|${top mem 9}<br>
+            # home<br>
+            ${color gold}/home ${hr 3}$color
+            ${color green}Температура:$color $alignr ${execi 10 sensors nvme-pci-0200 | grep "Composite:" | cut -b14-22}<br>
+            ${color green}Задействовано:$color $alignr ${fs_used /home/} / ${fs_size /home/}<br>
+            ${color green}Свободно:$color $alignr ${fs_free /home/} / ${fs_size /home/}<br>
+            (${fs_type /home}) $color${fs_bar 4 /home/}<br>
+            # games<br>
+            ${color gold}/games ${hr 3}$color<br>
+            ${color green}Температура:$color $alignr ${execi 10 sensors nvme-pci-0700 | grep "Composite:" | cut -b14-22}<br>
+            ${color green}Задействовано:$color $alignr ${fs_used /games/} / ${fs_size /games/}<br>
+            ${color green}Свободно:$color $alignr ${fs_free /games/} / ${fs_size /games/}<br>
+            (${fs_type /games}) $color${fs_bar 4 /games/}<br>
+            # data<br>
+            ${color gold}/data ${hr 3}$color<br>
+            ${color green}Задействовано:$color $alignr ${fs_used /data/} / ${fs_size /data/}<br>
+            ${color green}Свободно:$color $alignr ${fs_free /data/} / ${fs_size /data/}<br>
+            (${fs_type /data}) $color${fs_bar 4 /data/}<br>
+            ]]<br>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano ~/.bashrc<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            #<br>
+            # ~/.bashrc<br>
+            #<br>
+            # If not running interactively, don't do anything  <br>
+            [[ $- != *i* ]] && return                          <br>
+            alias grep="grep --color=auto"                     <br>
+            alias ip="ip --color=auto"                         <br>
+            if [ -f /usr/bin/grc ]; then                       <br>
+            alias irclog="grc --colour=auto irclog"            <br>
+            alias log="grc --colour=auto log"                  <br>
+            alias configure="grc --colour=auto configure"      <br>
+            alias ping="grc --colour=auto ping"                <br>
+            alias traceroute="grc --colour=auto traceroute"    <br>
+            alias gcc="grc --colour=auto gcc"                  <br>
+            alias netstat="grc --colour=auto netstat"          <br>
+            alias diff="grc --colour=auto diff"                <br>
+            alias wdiff="grc --colour=auto wdiff"              <br>
+            alias log="grc --colour=auto log"                  <br>
+            alias ldap="grc --colour=auto ldap"                <br>
+            alias cvs="grc --colour=auto cvs"                  <br>
+            alias mount="grc --colour=auto mount"              <br>
+            alias mtr="grc --colour=auto mtr"                  <br>
+            alias ps="grc --colour=auto ps"                    <br>
+            alias dig="grc --colour=auto dig"                  <br>
+            alias ifconfig="grc --colour=auto ifconfig"        <br>
+            alias ls="grc --colour=auto ls"                    <br>
+            alias mount="grc --colour=auto mount"              <br>
+            alias df="grc --colour=auto df"                    <br>
+            fi                                                 <br>
+            PS1="\[\e[3;31m\][\A] [\u@\h \W]\$: \[\e[0m\]"     <br>
+            export HISTCONTROL="ignoredups"                    <br>
+            export TERM="xterm-256color"                       <br>
+            export LESS="-R --use-color-Dd+r$Du+b"             <br>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            cp /etc/skel/.bash_profile ~/.bash_profile<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano ~/.bash_profile<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            # <br>
+            # ~/.bash_profile <br>
+            # <br>
+            setleds -D +num <br>
+            [[ -f ~/.bashrc ]] && . ~/.bashrc <br>
+            [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx  <br>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Указание DM на запуск i3</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            cp /etc/X11/xinit/xinitrc ~/.xinitrc<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano ~/.xinitrc<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            #!/bin/sh<br>
+            userresources=$HOME/.Xresources<br>
+            usermodmap=$HOME/.Xmodmap<br>
+            sysresources=/etc/X11/xinit/.Xresources<br>
+            sysmodmap=/etc/X11/xinit/.Xmodmap<br>
+            # merge in defaults and keymaps<br>
+            if [ -f $sysresources ]; then<br>
+            xrdb -merge $sysresources<br>
+            fi<br>
+            if [ -f $sysmodmap ]; then<br>
+            xmodmap $sysmodmap<br>
+            fi<br>
+            if [ -f "$userresources" ]; then<br>
+            xrdb -merge "$userresources"<br>
+            fi<br>
+            if [ -f "$usermodmap" ]; then<br>
+            xmodmap "$usermodmap"<br>
+            fi<br>
+            # start some nice programs<br>
+            if [ -d /etc/X11/xinit/xinitrc.d ] ; then<br>
+            for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do<br>
+            [ -x "$f" ] && . "$f"<br>
+            done<br>
+            unset f<br>
+            fi<br>
+            xhost +si:localuser:root<br>
+            volctl &<br>
+            flameshot &<br>
+            copyq &<br>
+            obs &<br>
+            tint2 &<br>
+            devmon &<br>
+            picom -b &<br>
+            sh ~/.fehbg &<br>
+            conky &<br>
+            numlockx &<br>
+            exec i3<br>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            chmod +x ~/.xinitrc<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano ~/.profile<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            export QT_QPA_PLATFORMTHEME="qt6ct"<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            feh --bg-scale ПутьКОбоине.jpg<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            cp /etc/xdg/picom.conf ~/.config/picom.conf<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano ~/.config/picom.conf<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            inactive-opacity = 0.6;<em class=comm>исправляем параметры</em><br>
+            frame-opacity = 0.5;<em class=comm>исправляем параметры</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Настройка внешнего вида xterm</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano ~/.Xresources<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Прописываем</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            !<br>
+            xterm*highlightSelection: true<br>
+            xterm*trimSelection: true<br>
+            xterm*background: #002b36<br>
+            xterm*foreground: #657b83<br>
+            !<br>
+            xterm*scrollBar: true<br>
+            xterm*scrollbar.width: 8<br>
+            xterm*scrollKey: true<br>
+            xterm*metaSendsEscape: true<br>
+            xterm*rightScrollBar: true<br>
+            !<br>
+            xterm*colorBDMode: true<br>
+            xterm*colorBD: red<br>
+            xterm*colorULMode: true<br>
+            xterm*colorUL: green<br>
+            xterm*veryBoldColors: 6
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            xrdb -merge ~/.Xresources<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Настройка i3wm</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano ~/.config/i3/config<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            gaps inner 20 <br>
+            gaps outer 4 <br>
+            default_border pixel<br>
+            for_window [tiling] border pixel 5<br>
+            client.focused #657b83 #657b83 #657b83 #657b83<br>
+            exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            cp /etc/i3status.conf ~/.i3status.conf<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nano ~/.i3status.conf<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            order += "run_watch VPNC" <br>
+            order += "path_exists" <br>
+            order += "wireless _first_" <br>
+            order += "ethernet _first_" <br>
+            order += "battery all" <br>
+            order += "cpu_temperature 0" <br>
+            order += "load" <br>
+            order += "memory" <br>
+            order += "tztime local" <br>
+            order += "volume master" <br>
+            wireless _first_ { format_up = "Wi-Fi: (%quality at %essid) %ip" format_down = "Wi-Fi: down" } <br>
+            ethernet _first_ { format_up = "Rj45: %ip (%speed)" format_down = "Rj45: down" } <br>
+            run_watch DHCP { pidfile = "/var/run/dhclient*.pid" } <br>
+            run_watch VPNC { pidfile = "/var/run/vpnc/pid" } <br>
+            path_exists VPN { path = "/proc/sys/net/ipv4/conf/tun0" } <br>
+            cpu_temperature 0 { format  = "CPU: %degrees°C" path = "/sys/class/thermal/thermal_zone3/temp" } <br>
+            battery all { format = "%status %percentage %remaining" } <br>
+            disk "/" { format = "FreeSpace: %avail" } <br>
+            load { format = "LoadCPU: %1min" } <br>
+            memory { format = "%used | %available" threshold_degraded = "1G" format_degraded = "MEM < %available"} <br>
+            tztime local { format = "%a %d-%m-%Y(%W) %H:%M:%S" } <br>
+            volume master { format ="Звук: %volume" device="default" mixer="Master" mixer_idx = 0 }
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo nano /etc/geoclue/geoclue.conf<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            [redshift] <br>
+            allowed=true <br>
+            system=false <br>
+            users=
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>O</em>
+          <em class=comm>#сохранение_в_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>CTRL</em>
+          <em class=comm>+</em>
+          <em class=button>X</em>
+          <em class=comm>#выход_из_nano</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            reboot
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <hr>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <h2>Подключение служб и финальная настройка</h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo nvidia-xconfig<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo nvidia-settings<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>
+            X screen 0 >> X Server XVideo Settings >> ВашМонитор <br> 
+            PowerMizer >> Prefer Maximum Performance <br>
+            X Server Display Configuration >> (Resolution)РазрешениеМонитора >> (Resolution)ЧастотаМонитора >> Save to X Configuration File
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            nvidia-settings<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>
+            X screen 0 >> X Server XVideo Settings >> ВашМонитор <br> 
+            PowerMizer >> Prefer Maximum Performance <br>
+            X Server Display Configuration >> РазрешениеМонитора >> ЧастотаМонитора
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Автоподбор шрифта для терминала</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            fc-match mono<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo fstrim -v -a<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>Подключение служб</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo systemctl enable xdm-archlinux<em class=comm>#Автозапуск_DM</em>avahi-daemon.service<em class=comm>#</em>cups.socket<em class=comm>#</em>bluetooth.service<em class=comm>#</em>acpid.service<em class=comm>#</em>auto-cpufreq.service<em class=comm>#</em>dbus-broker.service<em class=comm>#</em>rngd.service<em class=comm>#</em>fstrim.timer<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            systemctl --user enable redshift-gtk.service<em class=comm>#</em>redshift.service<em class=comm>#</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            reboot
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <hr>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <h2>Post Scriptum</h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            sudo pacman -Suy<em class=comm>#обновление</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>
+            #Sheel “map” “bcfg boot dump” “bcfg boot rm”   <br>    
+            sudo mkfs -t vfat -n FLASH /dev/sdb1 <br>
+            sudo mkfs -t ext4 -L FLASH /dev/sdb <br>
+            звук в fallout<br>
+            WINEPREFIX="/games/SteamLibrary/steamapps/compatdata/1151340/pfx/" winetricks xact <br>
+            WINEPREFIX="/games/SteamLibrary/steamapps/compatdata/1151340/pfx/" winetricks xact_64 <br>
+            <br>
+            иногда отваливается инет <br>
+            rfkill list all <br>
+            rfkill unblock all<br>
+            Alt+SysRq(PrintScreen)+REISUB <br>
+            Alt+SysRq(PrintScreen)+B  - перезагрузка системы <br>
+            Alt+SysRq(PrintScreen)+f - вызов oom_kill (убъет жрущий процесс, потребуется несколько минут) <br>
+            Alt+SysRq(PrintScreen)+m - вся инфа о памяти <br>
+            Alt+SysRq(PrintScreen)+t - вся инфа о запущенных процессах <br>
+            Alt+SysRq(PrintScreen)+w -  список всех заблокированных, ждущих окончания ввода-вывода задач <br>
+            Alt+SysRq(PrintScreen)+t - выведет всю информацию о запущенных процессах <br>
+            journalctl -f журнал работы системы в терминале <br>
+            systemctl list-units --type service -all список служб linux, в который входят все службы, даже не запущенные, те, которые не запускались, но известны systemd <br>
+            systemctl list-units --type service --state running список только выполняющихся служб linux <br>
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
