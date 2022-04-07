@@ -1,0 +1,2654 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>Arch Linux</title>
+    <style>
+      html
+      {
+        background: #2b2b2b;
+      }
+      body
+      {
+        background: #b2b2b2;
+        color: #2b2b2b;
+        font-family: monospace;
+        font-size:calc(0.75em + 1vmin);
+        max-width:2048px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      summary
+      {
+        font-weight: bold;
+        outline: none;
+        padding: 1%;
+        margin: 1%;
+      }
+      details
+      {
+        border: 5px solid #2b2b2b;
+        padding: 1%;
+        margin: 1%;
+      }
+      h1, h2
+      {
+        text-align: center;
+      }
+
+      strong
+      {
+      }
+      .term
+      {
+        background: #2b2b2b;
+        color: #b2b2b2;
+        padding: 1%;
+        margin: 1%;
+        border: 5px solid #662b2b;
+        overflow-x: scroll;
+        white-space: nowrap;
+      }
+      .nano
+      {
+        background: #2b2b2b;
+        color: #b2b2b2;
+        padding: 1%;
+        margin: 1%;
+        border: 5px solid #2b2b66;
+        overflow-x: scroll;
+        white-space: nowrap;
+      }
+      .text
+      {
+        color: #2b2b2b;
+        padding: 1%;
+        margin: 1%;
+        text-indent: 5%;
+      }
+      .button
+      {
+        background: #a0a0a0;
+        border: 5px outset #a0a0a0;
+        color: #0a0a0a;
+        margin: 0.5%;
+        padding: 0.5%;
+        display: inline-block;
+      }
+      .comm
+      {
+        color: #2b662b;
+      }
+      .ps1
+      {
+        color: #662b2b;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Установка Arch Linux (От новичка, таким же новичкам).</h1>
+    <p class=text>
+      У меня нет опыта работы с linux системами, но появилось желание поменять windows на что-нибудь другое, в связи с постоянным ростом количества мне не нужных "стандартных" программ. Попробовав в очередной раз массу различных дистрибутивов linux, я остановился на Arch, он понравился мне максимальным минимализмом. Методом проб и ошибок я определил необходимый мне минимум пакетов для повседневной работы и развлечений на ПК.
+    </p>
+    <p class=text>
+      Хочу поделиться своим опытом с такими же новичками в linux как и я сам, на понятном для новичков языке.
+    </p>
+    <p class=text>
+      <strong>
+        Важно знать, что после этой установки все данные с дисков будут удалены.
+      </strong>
+    </p>
+    <h2>Подготовка к установке.</h2>
+    <p class=text>
+      Заходим на
+      <a href=https://wiki.archlinux.org/title/Installation_guide_(Русский)>
+      wiki.archlinux
+      </a>
+      если там изложено понятно, то лучше использовать официальную wiki.
+    </p>
+    <p class=text>
+      Определяем какой режим загрузки использует ваш ПК, UEFI или Legacy Boot.
+    </p>
+    <p class=text>
+      <a href=https://archlinux.org/download/>Скачиваем образ.</a>
+    </p>
+    <p class=text>
+      <a href=https://rufus.ie/ru/>Скачиваем rufus.</a>
+    </p>
+    <p class=text>
+      Записываем образ на флешку, при перезагрузке загружаемся с флешки и выбираем первый пункт меню<strong>(Если есть uefi, то выбираем загрузку через uefi).</strong>
+    </p>
+    <p class=text>
+      Для установки необходимо постоянное интернет соединение, это одна из особенностей Arch, он устанавливает обновленные пакеты.
+    </p>
+    <details>
+      <summary>
+        Если ПК подключён к сети через Wi-Fi.
+      </summary>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>iwctl station wlan0 connect ИмяСети</strong>
+        <em class=comm>#Подключаем устройство wlan0 к wifi сети ИмяСети.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>ПарольСети</strong>
+        <em class=comm>#Вводим пароль wifi сети.</em>
+      </p>
+      <p class=button>Enter</p>
+    </details>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>ping -c 3 ya.ru</strong>
+      <em class=comm>#Проверка соединения, 3 раза прозвон ya.ru.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>loadkeys ru</strong>
+      <em class=comm>#Выбираем русскую раскладку.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>setfont cyr-sun16</strong>
+      <em class=comm>#Установка шрифта с кириллицей.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>timedatectl set-ntp true</strong>
+      <em class=comm>#Синхронизация системных часов.</em>
+    </p>
+    <p class=button>Enter</p>
+    <hr>
+    <h2>Разметка и форматирование носителей.</h2>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>fdisk -l</strong>
+      <em class=comm>#Просмотр носителей.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>fdisk /dev/sda</strong>
+      <em class=comm>#Переход в будущий системный диск.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=text>
+      Далее выбираем пункт, подходящий для вашего ПК.
+      Современные ПК имеют поддержку UEFI,
+      лучше выбирать именно этот пункт,
+      он подразумевает отказ от дополнительной установки GRAB-а.
+      В случае отсутствия UEFI,
+      выбирайте LEGACY BOOT -> GPT (GPT разметка более современная).
+    </p>
+    <details>
+      <summary>
+        Для legacy boot
+      </summary>
+      <details>
+        <summary>
+          MBR
+        </summary>
+        <p class=term>
+        <em class=ps1>#:</em>
+        <strong>o</strong>
+        <em class=comm>#Установить на диске MBR структуру.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>n</strong>
+        <em class=comm>#Новый раздел (GRUB-раздел).</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>p</strong>
+        <em class=comm>#PrimaryPartition.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>1</strong>
+        <em class=comm>#Номер раздела (1 по умолчанию, можно сразу нажать ENTER).</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>2048</strong>
+        <em class=comm>#Первый сектор (2048 по умолчанию, можно сразу нажать ENTER).</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>+512m</strong>
+        <em class=comm>#Размер GRUB-раздела.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>y</strong>
+        <em class=comm>#Да.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>a</strong>
+        <em class=comm>#Установить Boot-флаг загрузки.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>n</strong>
+        <em class=comm>#Новый раздел (SWAP-раздел).</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>p</strong>
+        <em class=comm>#PrimaryPartition.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>2</strong>
+        <em class=comm>#Номер раздела (2 по умолчанию, можно сразу нажать ENTER).</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>+3g</strong>
+        <em class=comm>
+              #Размер SWAP-раздела устанавливаем по формуле:<br>
+              1Gb-2Gb(RAM)=1Gb(Swap),<br>
+              3Gb-6Gb(RAM)=2Gb(Swap),<br>
+              8Gb-12Gb(RAM)=3Gb(Swap),<br>
+              16Gb(RAM)=4Gb(Swap),<br>
+              24Gb(RAM)=5Gb(Swap),<br>
+              32Gb(RAM)=6Gb(Swap),<br>
+              64Gb(RAM)=8Gb(Swap),<br>
+              128Gb(RAM)=11Gb(Swap).
+        </em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>y</strong>
+        <em class=comm>#Да.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>n</strong>
+        <em class=comm>#Новый раздел (ROOT-раздел).</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>p</strong>
+        <em class=comm>#PrimaryPartition.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>3</strong>
+        <em class=comm>#Номер раздела (3 по умолчанию, можно сразу нажать ENTER).</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>+50g</strong>
+        <em class=comm>#Размер ROOT-раздела.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>y</strong>
+        <em class=comm>#Да.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>n</strong>
+        <em class=comm>#Новый раздел(HOME-раздел).</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>p</strong>
+        <em class=comm>#PrimaryPartition.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>4</strong>
+        <em class=comm>#Номер раздела (4 по умолчанию, можно сразу нажать ENTER).</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>y</strong>
+        <em class=comm>#Да.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>w</strong>
+        <em class=comm>#Записать изменения на диск.</em>
+      </p>
+      <p class=button>Enter</p>
+      </details>
+      <details>
+      <summary>
+        GPT
+      </summary>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>g</strong>
+        <em class=comm>#Установить на диске GPT структуру.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>n</strong>
+        <em class=comm>#Новый раздел (GRUB-раздел).</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <em class=comm>#Номер раздела (1 по умолчанию, можно сразу нажать ENTER).</em><br>
+      <p class=button>Enter</p>
+      <em class=comm>#Первый сектор (2048 по умолчанию, можно сразу нажать ENTER).</em>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>+512m</strong>
+        <em class=comm>#Размер GRUB-раздела.</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>n</strong>
+        <em class=comm>#Новый раздел (Образ-GRUB).</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <em class=comm>#Номер раздела (2 по умолчанию, можно сразу нажать ENTER).</em>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>+1m</strong>
+        <em class=comm>#Размер Образа-GRUB.</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>t</strong>
+        <em class=comm>#Сменить тип раздела.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>2</strong>
+        <em class=comm>#Номер раздела, который надо изменить.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>4</strong>
+        <em class=comm>#Установить тип раздела: BiosBoot.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>n</strong>
+        <em class=comm>#Новый раздел (SWAP-раздел).</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <em class=comm>#Номер раздела (3 по умолчанию, можно сразу нажать ENTER).</em><br>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>+3g</strong>
+        <em class=comm>
+          #Размер SWAP-раздела устанавливаем по формуле:<br>
+          1Gb-2Gb(RAM)=1Gb(Swap),<br>
+          3Gb-6Gb(RAM)=2Gb(Swap),<br>
+          8Gb-12Gb(RAM)=3Gb(Swap),<br>
+          16Gb(RAM)=4Gb(Swap),<br>
+          24Gb(RAM)=5Gb(Swap),<br>
+          32Gb(RAM)=6Gb(Swap),<br>
+          64Gb(RAM)=8Gb(Swap),<br>
+          128Gb(RAM)=11Gb(Swap).
+        </em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>n</strong>
+        <em class=comm>#Новый раздел (ROOT-раздел).</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <em class=comm>#Номер раздела (4 по умолчанию, можно сразу нажать ENTER).</em><br>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>+50g</strong>
+        <em class=comm>#Размер ROOT-разделa.</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>n</strong>
+        <em class=comm>#Новый раздел(HOME-раздел).</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <em class=comm>#Номер раздела (5 по умолчанию, можно сразу нажать ENTER).</em><br>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>y</strong>
+        <em class=comm>#Да.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>w</strong>
+        <em class=comm>#Записать изменения на диск.</em>
+      </p>
+      <p class=button>Enter</p>
+      </details>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>mkfs.ext2 /dev/sda1 -L boot</strong>
+        <em class=comm>#Форматируем GRUB-раздел с меткой "boot".</em>
+      </p>
+      <p class=button>Enter</p>
+    </details>
+    <details>
+      <summary>
+        Для uefi
+      </summary>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>g</strong>
+        <em class=comm>#Установить на диске GPT структуру.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>n</strong>
+        <em class=comm>#Новый раздел (BOOT-раздел).</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <em class=comm>#№ раздела, по умолчанию должен быть "1".</em><br>
+      <p class=button>Enter</p>
+      <em class=comm>#Первый сектор, по умолчанию должен быть "2048".</em>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>+512m</strong>
+        <em class=comm>#Размер BOOT-раздела.</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <em class=comm>#Форматировать в vfat.</em>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>t</strong>
+        <em class=comm>#Сменить тип раздела.</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <em class=comm>#Номер раздела, который надо изменить, по умолчанию должен быть 1.</em>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>1</strong>
+        <em class=comm>#Установить тип раздела: EFI System.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>n</strong>
+        <em class=comm>#Новый раздел (SWAP-раздел).</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <em class=comm>#№ раздела, по умолчанию должен быть "2".</em><br>
+      <p class=button>Enter</p>
+      <em class=comm>#Первый сектор, по умолчанию должен быть "".</em>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>+3g</strong>
+        <em class=comm>
+          #Размер SWAP-раздела устанавливаем по формуле:<br>
+          1Gb-2Gb(RAM)=1Gb(Swap),<br>
+          3Gb-6Gb(RAM)=2Gb(Swap),<br>
+          8Gb-12Gb(RAM)=3Gb(Swap),<br>
+          16Gb(RAM)=4Gb(Swap),<br>
+          24Gb(RAM)=5Gb(Swap),<br>
+          32Gb(RAM)=6Gb(Swap),<br>
+          64Gb(RAM)=8Gb(Swap),<br>
+          128Gb(RAM)=11Gb(Swap).
+        </em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <em class=comm>#Форматировать в ext4.</em>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>n</strong>
+        <em class=comm>#Новый раздел(ROOT-раздел).</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <em class=comm>#№ раздела, по умолчанию должен быть "3".</em><br>
+      <p class=button>Enter</p>
+      <em class=comm>#Первый сектор, по умолчанию должен быть "".</em>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>+50g</strong>
+        <em class=comm>#Размер ROOT-раздела.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>n</strong>
+        <em class=comm>#Новый раздел(HOME-раздел).</em>
+      </p>
+      <p class=button>Enter</p><br>
+      <p class=button>Enter</p>
+      <em class=comm>#№ раздела, по умолчанию должен быть "3".</em><br>
+      <p class=button>Enter</p>
+      <em class=comm>#Первый сектор, по умолчанию должен быть "".</em><br>
+      <p class=button>Enter</p>
+      <em class=comm>#Последний сектор, по умолчанию.</em>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>w</strong>
+        <em class=comm>#Записать изменения на диск.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>mkfs.fat -F32 /dev/sda1 -n boot</strong>
+        <em class=comm>#Форматируем BOOT-раздел с меткой "boot".</em>
+      </p>
+      <p class=button>Enter</p>
+    </details>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>mkswap /dev/sda2(3) -L swap</strong>
+      <em class=comm>#Форматируем SWAP-раздел с меткой "swap", sda3 - для legacy boot с gpt.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>mkfs.ext4 /dev/sda3(4) -L root</strong>
+      <em class=comm>#Форматируем ROOT-раздел с меткой "root", sda4 - для legacy boot с gpt.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>mkfs.ext4 /dev/sda4(5) -L home</strong>
+      <em class=comm>#Форматируем HOME-раздел с меткой "home", sda5 - для legacy boot с gpt.</em>
+    </p>
+    <p class=button>Enter</p><br>
+    <p class=button>Enter</p>
+    <em class=comm>#Большой размер, подтвердить.</em>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>fdisk /dev/sdb</strong>
+      <em class=comm>#Переход во второй физический диск.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>g(o)</strong>
+      <em class=comm>#Установить на диске GPT(MBR) структуру, лучше GPT.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>w</strong>
+      <em class=comm>#Записать изменения на диск.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>mkfs.ext4 /dev/sdb -L data</strong>
+      <em class=comm>#Форматируем диск с меткой "data".</em>
+    </p>
+    <p class=button>Enter</p><br>
+    <p class=button>Enter</p>
+    <em class=comm>#Большой размер, подтвердить.</em>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>mount /dev/sda3(4) /mnt</strong>
+      <em class=comm>#Монтируем 3(4) раздел системного диска (ROOT-раздел) к директории /mnt, sda4 - для legacy boot с gpt.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>mkdir /mnt/{boot,home,data}</strong>
+      <em class=comm>#Создаём папки "boot, home, data" в директории /mnt.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>mount /dev/sda1 /mnt/boot</strong>
+      <em class=comm>#Монтируем 1 раздел системного диска (BOOT-раздел) к директории /mnt/boot.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>swapon /dev/sda2(3)</strong>
+      <em class=comm>#Монтируем 2(3) раздел системного диска (SWAP-раздел), sda3 - для legacy boot с gpt.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>mount /dev/sda4(5) /mnt/home</strong>
+      <em class=comm>#Монтируем 4(5) раздел системного диска (HOME-раздел) к директории /mnt/home, sda5 - для legacy boot с gpt.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>mount /dev/sdb /mnt/data</strong>
+      <em class=comm>#Монтируем второй физический диск к директории /mnt/data.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>lsblk -f</strong>
+      <em class=comm>#Просмотр результата.</em>
+    </p>
+    <p class=button>Enter</p>
+    <hr>
+    <h2>Установка ОС.</h2>
+    <p class=text>
+      Установка системы и начального пакета программ.
+    </p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>pacstrap /mnt</strong>
+      <strong>base</strong>
+      <em class=comm>#Базовая группа пакетов.</em>
+      <strong>base-devel</strong>
+      <em class=comm>#Группа пакетов для работы с AUR.</em>
+      <strong>linux-zen</strong>
+      <em class=comm>#Ядро Zen, мне показалось оно более производительное чем "ванильное (linux)".</em>
+      <strong>linux-zen-headers</strong>
+      <em class=comm>#Cкрипты для ядра Linux Zen.</em>
+      <strong>linux-firmware</strong>
+      <em class=comm>#Прошивки к устройствам.</em>
+      <strong>nano</strong>
+      <em class=comm>#Консольный блокнот.</em>
+      <strong>dhcpcd</strong>
+      <em class=comm>#DHCP-клиент.</em>
+      <strong>iwd</strong>
+      <em class=comm>#Wi-Fi клиент.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>genfstab -p -U /mnt >> /mnt/etc/fstab</strong>
+      <em class=comm>#Копирование/перенос файла монтирования дисков.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>arch-chroot /mnt</strong>
+      <em class=comm>#Переход в командную строку установленной системы.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=text>Настройка локали на установленной системе.</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>timedatectl set-ntp true</strong>
+      <em class=comm>#Синхронизация системных часов.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime</strong>
+      <em class=comm>#Задаём часовой пояс.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>hwclock --systohc</strong>
+      <em class=comm>#Синхронизация аппаратного времени.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>nano /etc/locale.gen</strong>
+      <em class=comm>#Выбираем локали.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <strong>#en_US.UTF-8</strong>
+      <em class=comm>#Находим эту строчку и раскомментируем (Удаляем знак "#").</em><br>
+      <strong>#ru_RU.UTF-8</strong>
+      <em class=comm>#Находим эту строчку и раскомментируем (Удаляем знак "#").</em>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>nano /etc/locale.conf</strong>
+      <em class=comm>#Включаем русский язык.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <strong>LANG="ru_RU.UTF-8"</strong>
+      <em class=comm>#Прописываем одну строчку.</em>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>nano /etc/vconsole.conf</strong>
+      <em class=comm>#Настраиваем консоль.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <strong>KEYMAP=ru</strong>
+      <em class=comm>#Включаем русский язык.</em><br>
+      <strong>FONT=cyr-sun16</strong>
+      <em class=comm>#Установка шрифта с кириллицей.</em><br>
+      <strong>USECOLOR=yes</strong>
+      <em class=comm>#Раскрашиваем консоль.</em>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>locale-gen</strong>
+      <em class=comm>#Генерация локалей.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=text>Сетевые настройки</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>nano /etc/hostname</strong>
+      <em class=comm>#Задаем имя хоста.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <strong>ИмяПК</strong>
+      <em class=comm>#Имя хоста.</em>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>nano /etc/hosts</strong>
+      <em class=comm>#Локальное разрешение имён.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <strong>127.0.0.1	localhost</strong><br>
+      <strong>::1 localhost</strong><br>
+      <strong>127.0.1.1 ИмяПК.localdomain ИмяПК</strong>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=text>Создание и настройка пользователей.</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>passwd</strong>
+      <em class=comm>#Задаем пароль root.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>Пароль</strong>
+      <em class=comm>#Задаем пароль.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>Пароль</strong>
+      <em class=comm>#Повторяем пароль.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>useradd -m -g users -G wheel -s /bin/bash ИмяПользователя</strong>
+      <em class=comm>#Создаем пользователя.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>passwd ИмяПользователя</strong>
+      <em class=comm>#Задаем пароль пользователю.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>ПарольПользователя</strong>
+      <em class=comm>#Задаем пароль.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>ПарольПользователя</strong>
+      <em class=comm>#Повторяем пароль.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>nano /etc/sudoers</strong>
+      <em class=comm>#Даем sudo пользователю.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <strong>#%wheel ALL=(ALL) ALL</strong>
+      <em class=comm>#Находим эту строчку и раскомментируем (Удаляем знак "#").</em>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>chown ИмяПользователя /data</strong>
+      <em class=comm>#Даем права пользователю на директорию.</em>
+    </p>
+    <p class=button>Enter</p>
+    <details>
+      <summary>
+        Установка микрокода для процессоров Intel.
+      </summary>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>pacman -S intel-ucode iucode-tool --noconfirm</strong>
+      </p>
+      <p class=button>Enter</p>
+    </details>
+    <details>
+      <summary>
+        Установка микрокода для процессоров AMD.
+      </summary>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>pacman -S amd-ucode --noconfirm</strong>
+      </p>
+      <p class=button>Enter</p>
+    </details>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>mkinitcpio -p linux-zen</strong>
+      <em class=comm>#Создание нового образа initramfs.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=text>Установка загрузчика.</p>
+    <details>
+      <summary>
+        Если legacy boot
+      </summary>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>pacman -S grub</strong>
+        <em class=comm>#Кроссплатформенный загрузчик.</em>
+        <strong>--noconfirm</strong>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>grub-install /dev/sda</strong>
+        <em class=comm>#Установка GRUB.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>nano /etc/default/grub</strong>
+        <em class=comm>#Настройка GRUB.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=nano>
+        <strong>GRUB_TIMEOUT=0</strong>
+        <em class=comm>#Время задержки меню GRUB, я выключаю т.к. других ОС нет.</em>
+      </p>
+      <p class=button>Ctrl</p>
+      <em class=comm>+</em>
+      <p class=button>O</p>
+      <em class=comm>#Сохранение в nano.</em><br>
+      <p class=button>Enter</p><br>
+      <p class=button>Ctrl</p>
+      <em class=comm>+</em>
+      <p class=button>X</p>
+      <em class=comm>#Выход из nano.</em>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>grub-mkconfig -o /boot/grub/grub.cfg</strong>
+        <em class=comm>#Генерация конфига.</em>
+      </p>
+      <p class=button>Enter</p>
+    </details>
+    <details>
+      <summary>
+        Если uefi
+      </summary>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>pacman -S efibootmgr</strong>
+        <em class=comm>#Приложение для изменения настроек EFI.</em>
+        <strong>--noconfirm</strong>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>bootctl install</strong>
+        <em class=comm>#Устанавливаем UEFI менеджер загрузки.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>nano /boot/loader/loader.conf</strong>
+        <em class=comm>#Создадим загрузочную запись для UEFI менеджера загрузки.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=nano>
+        <strong>default arch</strong>
+        <em class=comm>#Указывает загрузить систему основываясь на записи в файле arch.conf.</em><br>
+        <strong>timeout 0</strong>
+        <em class=comm>#Время задержки меню UEFI, я выключаю т.к. других ОС нет.</em><br>
+        <strong>editor 0</strong>
+        <em class=comm>#Отключить редактор.</em>
+      </p>
+      <p class=button>Ctrl</p>
+      <em class=comm>+</em>
+      <p class=button>O</p>
+      <em class=comm>#Сохранение в nano.</em><br>
+      <p class=button>Enter</p><br>
+      <p class=button>Ctrl</p>
+      <em class=comm>+</em>
+      <p class=button>X</p>
+      <em class=comm>#Выход из nano.</em>
+      <p class=term>
+        <em class=ps1>#:</em>
+        <strong>nano /boot/loader/entries/arch.conf</strong>
+        <em class=comm>#Создаем загрузочный конфиг.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=nano>
+        <strong>title  Arch Linux</strong>
+        <em class=comm>#Название, которое будет видно в меню UEFI (задержка отключена, меню не появится)</em><br>
+        <strong>linux  /vmlinuz-linux-zen</strong>
+        <em class=comm>#Ядро системы.</em><br>
+        <strong>initrd /intel-ucode.img</strong>
+        <em class=comm>#Микрокод.</em><br>
+        <strong>initrd  /initramfs-linux-zen.img</strong>
+        <em class=comm>#Начальный загрузочный диск.</em><br>
+        <strong>options root=/dev/sda3 rw</strong>
+        <em class=comm>#Указание где находится ROOT-раздел.</em>
+      </p>
+      <p class=button>Ctrl</p>
+      <em class=comm>+</em>
+      <p class=button>O</p>
+      <em class=comm>#Сохранение в nano.</em><br>
+      <p class=button>Enter</p><br>
+      <p class=button>Ctrl</p>
+      <em class=comm>+</em>
+      <p class=button>X</p>
+      <em class=comm>#Выход из nano.</em>
+    </details>
+    <p class=text>Подключение поддержки x32 приложений</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>nano /etc/pacman.conf</strong>
+      <em class=comm>#Откроем конфиг pacman.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <strong>#Color</strong>
+      <em class=comm>#Находим эту строчку и раскомментируем (Удаляем знак "#"),
+      раскрашиваем pacman.</em><br>
+      <strong>#[multilib]</strong>
+      <em class=comm>#Находим эту строчку и раскомментируем (Удаляем знак "#"),
+      поддержка x32 приложений.</em><br>
+      <strong>#Include = /etc/pacman.d/mirrorlist</strong>
+      <em class=comm>#Находим эту строчку и раскомментируем (Удаляем знак "#"),
+      поддержка x32 приложений.</em>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=text>Подключение поддержки SysRq (прямая связь с ядром).</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>nano /etc/sysctl.d/99-sysctl.conf</strong>
+      <em class=comm>#Открываем конфиг sysctl.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <strong>kernel.sysrq=1</strong>
+      <em class=comm>#Прописываем одну строчку.</em>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=text>Установка ОС завершена.</p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>D</p>
+    <em class=comm>#Выход</em>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>umount -R /mnt</strong>
+      <em class=comm>#Размонтировать диски.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>#:</em>
+      <strong>reboot</strong>
+      <em class=comm>#Перезагрузка.</em>
+    </p>
+    <p class=button>Enter</p>
+    <hr>
+    <h2>Настройка ОС и установка основных программ.</h2>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>ip l</strong>
+      <em class=comm>#Просмотр списка сетевых интерфейсов.</em>
+    </p>
+    <p class=button>Enter</p>
+    <details>
+      <summary>
+        Подключение проводной сети.
+      </summary>
+      <p class=term>
+        <em class=ps1>$:</em>
+        <strong>sudo ip link set ВашСетевойИнтерфейс up</strong>
+        <em class=comm>#Включение вашего сетевого интерфейса.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>$:</em>
+        <strong>sudo dhcpcd ВашСетевойИнтерфейс</strong>
+        <em class=comm>#Настройка dhcpcd.</em>
+      </p>
+      <p class=button>Enter</p>
+    </details>
+    <details>
+      <summary>
+        Подключение Wi-Fi
+      </summary>
+      <p class=term>
+        <em class=ps1>$:</em>
+        <strong>sudo iwctl station wlan0 connect ИмяСети</strong>
+        <em class=comm>#Подключаем устройство wlan0 к wifi сети ИмяСети.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>$:</em>
+        <strong>sudo systemctl enable iwd.service</strong>
+        <em class=comm>#Автозагрузка Wi-Fi клиента.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>$:</em>
+        <strong>sudo systemctl start iwd.service</strong>
+        <em class=comm>#Запуск Wi-Fi клиента.</em>
+      </p>
+      <p class=button>Enter</p>
+    </details>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo systemctl enable dhcpcd.service</strong>
+      <em class=comm>#Автозагрузка dhcpcd.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo systemctl start dhcpcd.service</strong>
+      <em class=comm>#Запуск dhcpcd.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo pacman -S archlinux-keyring</strong>
+      <em class=comm>#PGP ключи Arch Linux.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo pacman -Sy reflector</strong>
+      <em class=comm>#Скрипт, который автоматизирует процесс настройки зеркал.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo systemctl start reflector</strong>
+      <em class=comm>#Запуск скрипта, который автоматизирует процесс настройки зеркал.</em>
+         </p>
+    <p class=button>Enter</p>
+    <p class=text>Установка оконных менеджеров.</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo pacman -S xorg</strong>
+      <em class=comm>#Оконная система X.</em>
+      <strong>i3-gaps</strong>
+      <em class=comm>#Тайловый оконный менеджер.</em>
+      <strong>--noconfirm</strong>
+    </p>
+    <p class=button>Enter</p>
+    <details>
+      <summary>
+        Установка драйверов для видеокарт NVIDIA.
+      </summary>
+      <p class=term>
+        <em class=ps1>$:</em>
+        <strong>sudo pacman -S nvidia nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia nvtop --noconfirm</strong>
+      </p>
+      <p class=button>Enter</p>
+    </details>
+    <details>
+      <summary>
+        Установка драйверов для видеокарт AMD.
+      </summary>
+      <p class=term>
+        <em class=ps1>$:</em>
+        <strong>sudo pacman -S amdvlk lib32-amdvlk --noconfirm</strong>
+      </p>
+      <p class=button>Enter</p>
+    </details>
+    <details>
+      <summary>
+        Установка драйверов для видеокарт старше 7 лет.
+      </summary>
+      <p class=term>
+        <em class=ps1>$:</em>
+        <strong>sudo pacman -S mesa lib32-mesa --noconfirm</strong>
+      </p>
+      <p class=button>Enter</p>
+    </details>
+    <p class=text>Установка системных утилит.</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo pacman -S xorg-xinit</strong>
+      <em class=comm>#Скрипт запуска из DM.</em>
+      <strong>xorg-apps</strong>
+      <em class=comm>#Приложения xorg.</em>
+      <strong>kdesu</strong>
+      <em class=comm>#Нужен для запуска приложений с ROOT правами из GUI (Например GParted).</em>
+      <strong>kde-cli-tools</strong>
+      <em class=comm>#Нужен для работы kdesu.</em>
+      <strong>xterm</strong>
+      <em class=comm>#Стандартный эмулятор терминала для среды X,
+      многие его ругают,
+      но меня полностью устроил.</em>
+      <strong>xdm-archlinux</strong>
+      <em class=comm>#DM (Стартовый экран входа в систему).</em>
+      <strong>dmenu</strong>
+      <em class=comm>#Программа запуска приложений.</em>
+      <strong>numlockx</strong>
+      <em class=comm>#Автозапуск NumLock.</em>
+      <strong>pcmanfm-qt</strong>
+      <em class=comm>#Графический файловый менеджер (FM).</em>
+      <strong>gvfs</strong>
+      <em class=comm>#Предоставляет функции монтирования и корзины для FM.</em>
+      <strong>gvfs-smb</strong>
+      <em class=comm>#Совместное использование принтеров и файлов Windows для FM.</em>
+      <strong>gvfs-afc</strong>
+      <em class=comm>#Мобильные устройства Apple для FM.</em>
+      <strong>gvfs-gphoto2</strong>
+      <em class=comm>#Цифровые фотоаппараты и мобильные устройства, которые используют PTP для FM.</em>
+      <strong>gvfs-mtp</strong>
+      <em class=comm>#Медиа-плееры и мобильные устройства, которые используют MTP для FM.</em>
+      <strong>mc</strong>
+      <em class=comm>#Консольный файловый менеджер.</em>
+      <strong>htop</strong>
+      <em class=comm>#Консольный системный монитор.</em>
+      <strong>conky</strong>
+      <em class=comm>#Виджет/системный монитор.</em>
+      <strong>ntfs-3g</strong>
+      <em class=comm>#Драйвер файловой системы NTFS.</em>
+      <strong>dosfstools</strong>
+      <em class=comm>#Драйвер файловой системы FAT.</em>
+      <strong>gparted</strong>
+      <em class=comm>#Редактор дисковых разделов.</em>
+      <strong>gpart</strong>
+      <em class=comm>#Инструмент восстановления таблицы разделов в gparted.</em>
+      <strong>feh</strong>
+      <em class=comm>#Консольный просмотрщик изображений.</em>
+      <strong>rng-tools</strong>
+      <em class=comm>#Для увеличения энтропии в ядре.</em>
+      <strong>dbus-broker</strong>
+      <em class=comm>#Полная замена эталонной реализации dbus, целью которой является «обеспечить высокую производительность и надежность, сохраняя при этом совместимость с эталонной реализацией D-Bus».</em>
+      <strong>acpid</strong>
+      <em class=comm>#Обеспечивает интеллектуальное управление питанием в системе
+      и позволяет запрашивать состояние батареи и конфигурации.</em>
+      <strong>bluez</strong>
+      <em class=comm>#Bluetooth Linux.</em>
+      <strong>bluez-utils</strong>
+      <em class=comm>#Bluetooth Linux для работы с AUR.</em>
+      <strong>bluez-cups</strong>
+      <em class=comm>#Bluetooth Linux для работы с принтером.</em>
+      <strong>blueman</strong>
+      <em class=comm>#Менеджер bluetooth.</em>
+      <strong>giflib</strong>
+      <em class=comm>#Библиотеки для чтения и записи GIF.</em>
+      <strong>lib32-giflib</strong>
+      <em class=comm>#Библиотеки для чтения и записи GIF x32.</em>
+      <strong>mpg123</strong>
+      <em class=comm>#Консольный аудиоплеер,
+        иногда требуется для запуска windows программ и игр.</em>
+      <strong>lib32-mpg123</strong>
+      <em class=comm>#Консольный аудиоплеер,
+        иногда требуется для запуска windows программ и игр x32.</em>
+      <strong>openal</strong>
+      <em class=comm>#Работа со звуком в 3D-пространстве,
+        иногда требуется для запуска windows программ и игр.</em>
+      <strong>lib32-openal</strong>
+      <em class=comm>#Работа со звуком в 3D-пространстве,
+        иногда требуется для запуска windows программ и игр x32.</em>
+      <strong>ocl-icdr</strong>
+      <em class=comm>#Фреймворк OpenCL ICD.</em>
+      <strong>lib32-ocl-icd</strong>
+      <em class=comm>#Фреймворк OpenCL  ICD x32.</em>
+      <strong>gtk4</strong>
+      <em class=comm>#Фреймворк GTK+.</em>
+      <strong>gtk3</strong>
+      <em class=comm>#Фреймворк GTK+.</em>
+      <strong>lib32-gtk3</strong>
+      <em class=comm>#Фреймворк GTK+ x32.</em>
+      <strong>gtk2</strong>
+      <em class=comm>#Фреймворк GTK.</em>
+      <strong>lib32-gtk2</strong>
+      <em class=comm>#Фреймворк GTK x32.</em>
+      <strong>gstreamer</strong>
+      <em class=comm>#Фреймворк gstreamer.</em>
+      <strong>lib32-gstreamer</strong>
+      <em class=comm>#Фреймворк gstreamer x32.</em>
+      <strong>vkd3d</strong>
+      <em class=comm>#Библиотека перевода Direct3D 12 в Vulkan.</em>
+      <strong>lib32-vkd3d</strong>
+      <em class=comm>#Библиотека перевода Direct3D 12 в Vulkan x32.</em>
+      <strong>vulkan-icd-loader</strong>
+      <em class=comm>#Загрузчик Vulkan ICD.</em>
+      <strong>lib32-vulkan-icd-loader</strong>
+      <em class=comm>#Загрузчик Vulkan ICD x32.</em>
+      <strong>python-glfw</strong>
+      <em class=comm>#Модуль для OpenGL, OpenGL ES, Vulkan.</em>
+      <strong>lib32-vulkan-validation-layers</strong>
+      <em class=comm>#Vulkan Validation Layers x32.</em>
+      <strong>vulkan-devel</strong>
+      <em class=comm>#Vulkan разработчика. </em>
+      <strong>git</strong>
+      <em class=comm>#Система контроля версий. </em>
+      <strong>--noconfirm</strong>
+    </p>
+    <p class=button>Enter</p>
+    <p class=text>Установка утилит внешнего вида.</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo pacman -S qt6ct</strong>
+      <em class=comm>#Настройка оформления QT приложений.</em>
+      <strong>lxappearance-gtk3</strong>
+      <em class=comm>#Настройка оформления GTK приложений.</em>
+      <strong>gnome-themes-extra</strong>
+      <em class=comm>#Дополнительные темы для приложений GNOME.</em>
+      <strong>kvantum</strong>
+      <em class=comm>#Движок тем на основе SVG для Qt5/6.</em>
+      <strong>picom</strong>
+      <em class=comm>#Автономный композитор для Xorg.</em>
+      <strong>redshift</strong>
+      <em class=comm>#Программа для изменения цветовой температуры экрана.</em>
+      <strong>tint2</strong>
+      <em class=comm>#Панель задач, использую только панель быстрого запуска.</em>
+      <strong>i3status</strong>
+      <em class=comm>#Статус бар.</em>
+      <strong>grc</strong>
+      <em class=comm>#Утилита которая раскрашивает команды (утилиты).</em>
+      <strong>flameshot</strong>
+      <em class=comm>#Программа для создания скриншотов.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>yay -S transset-df</strong>
+      <em class=comm>#Прозрачность для приложений Xorg.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo localectl --no-convert set-x11-keymap us,ru  "" "" grp:alt_shift_toggle,terminate:ctrl_alt_bksp</strong>
+      <em class=comm>#Настройка переключения раскладки (alt+shift), перезагрузки оконного менеджера (ctrl+alt+bksp)</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=text>Установка помощника Yay,
+    программы из основных репозиториев ставятся командой pacman,
+    для установки из репозиториев AUR удобнее установить помощник.</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>git clone https://aur.archlinux.org/yay.git</strong>
+      <em class=comm>#Скачиваем пакет.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>curl -L -O https://aur.archlinux.org/cgit/aur.git/snapshot/yay.tar.gz</strong>
+      <em class=comm>#Скачиваем пакет.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>cd yay</strong>
+      <em class=comm>#Переходим в скачанную папку.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>makepkg -si</strong>
+      <em class=comm>#Сборка и установка пакета.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>cd</strong>
+      <em class=comm>#Выход из папки.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=text>Установка звуковых драйверов и сопутствующего софта.</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo pacman -S alsa-utils</strong>
+      <em class=comm>#Утилиты звуковой архитектуры.</em>
+      <strong>alsa-plugins</strong>
+      <em class=comm>#Плагины звуковой архитектуры.</em>
+      <strong>lib32-alsa-plugins</strong>
+      <em class=comm>#Плагины звуковой архитектуры x32.</em>
+      <strong>asoundconf</strong>
+      <em class=comm>#Утилита для чтения и изменения конфигурации пользовательской библиотеки ALSA .</em>
+      <strong>alsa-firmware</strong>
+      <em class=comm>#Драйверы для некоторый звуковых карт. </em>
+      <strong>alsa-card-profiles</strong>
+      <em class=comm>#Маршрутизатор и процессор аудио/видео с малой задержкой. </em>
+      <strong>pulseaudio</strong>
+      <em class=comm>#Многофункциональный звуковой сервер общего назначения. </em>
+      <strong>pulseaudio-alsa</strong>
+      <em class=comm>#Конфигурация ALSA для PulseAudio.</em>
+      <strong>pulseaudio-bluetooth</strong>
+      <em class=comm>#Поддержка Bluetooth для PulseAudio.</em>
+      <strong>pavucontrol</strong>
+      <em class=comm>#Регулятор громкости PulseAudio.</em>
+      <strong>faudio</strong>
+      <em class=comm>#Звуковые библиотеки для игр.</em>
+      <strong>lib32-faudio</strong>
+      <em class=comm>#Звуковые библиотеки для игр x32.</em>
+      <strong>--noconfirm</strong>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>yay -S volctl</strong>
+      <em class=comm>#Регулятор громкости для каждого приложения и экранное меню для настольных компьютеров Linux.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=text>Установка шрифтов</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo pacman -S freetype2</strong>
+      <em class=comm>#Библиотека растеризации шрифтов.</em>
+      <strong>noto-fonts-extra</strong>
+      <em class=comm>#Noto — это семейство шрифтов, включающее более 100 отдельных шрифтов, которые в совокупности предназначены для охвата всех шрифтов, закодированных в стандарте Unicode.</em>
+      <strong>noto-fonts-cjk</strong>
+      <em class=comm>#Шрифты Noto CJK представляют собой переименованные версии шрифтов Adobe Source Han, разработанные Adobe и Google, которые содержат китайские иероглифы, хангыль и кана; латинские буквы и цифры взяты из шрифтов Source Pro.</em>
+      <strong>ttf-font-awesome</strong>
+      <em class=comm>#Масштабируемые векторные иконки.</em>
+      <strong>--noconfirm</strong>
+    </p>
+    <p class=button>Enter</p>
+    <p class=text>Программы мультимедиа</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo pacman -S audacity</strong>
+      <em class=comm>#Аудиоредактор.</em>
+      <strong>openshot</strong>
+      <em class=comm>#Видеоредактор.</em>
+      <strong>cheese</strong>
+      <em class=comm>#Вебкамера.</em>
+      <strong>kate</strong>
+      <em class=comm>#Редактор кода.</em>
+      <strong>featherpad</strong>
+      <em class=comm>#Блокнот.</em>
+      <strong>bleachbit</strong>
+      <em class=comm>#Удаляет ненужные файлы, чтобы освободить место на диске и сохранить конфиденциальность.</em>
+      <strong>pinta</strong>
+      <em class=comm>#Аналог paint.</em>
+      <strong>gimp</strong>
+      <em class=comm>#Аналог photoshop.</em>
+      <strong>transmission-qt</strong>
+      <em class=comm>#Быстрый, простой и бесплатный клиент BitTorrent.</em>
+      <strong>vlc</strong>
+      <em class=comm>#Видеоплеер.</em>
+      <strong>libreoffice-still-ru</strong>
+      <em class=comm>#Офисный пакет.</em>
+      <strong>obs-studio</strong>
+      <em class=comm>#Захват экрана.</em>
+      <strong>tipp10</strong>
+      <em class=comm>#Клавиатурный тренажер.</em>
+      <strong>qalculate-q</strong>t
+      <em class=comm>#Калькулятор.</em>
+      <strong>avidemux-qt</strong>
+      <em class=comm>#Видеоконвертер.</em>
+      <strong>copyq</strong>
+      <em class=comm>#Менеджер буфера обмена.</em>
+      <strong>blender</strong>
+      <em class=comm>#Пакет для создания 3D-графики.</em>
+      <strong>firefox</strong>
+      <em class=comm>#Браузер.</em>
+      <strong>telegram-desktop</strong>
+      <em class=comm>#Мессенджер.</em>
+      <strong>--noconfirm</strong>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>yay -S openrgb</strong>
+      <em class=comm>#Настройка rgb-подсветок.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>yay -S debtap</strong>
+      <em class=comm>#Скрипт для преобразования пакетов .deb в пакеты Arch Linux. Не используйте его для преобразования пакетов, которые уже существуют в официальных репозиториях или могут быть собраны из AUR! </em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>yay -S auto-cpufreq</strong>
+      <em class=comm>#Автоматический оптимизатор скорости и мощности процессора.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>pacman -Ss geoclue2</strong>
+      <em class=comm>#Модульный геоинформационный сервис, построенный на системе обмена сообщениями D-Bus.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=text>Установка сканеров и принтеров</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>pacman -S sane</strong>
+      <em class=comm>#Доступ к сканеру.</em>
+      <strong>sane-airscan</strong>
+      <em class=comm>#Серверная часть SANE для сканеров документов AirScan (eSCL) и WSD. </em>
+      <strong>gscan2pdf</strong>
+      <em class=comm>#Графический интерфейс пользователя с возможностью распознавания текста для создания файлов PDF или DjVus из отсканированных документов.</em>
+      <strong>cups</strong>
+      <em class=comm>#Система печати.</em>
+      <strong>cups-pdf</strong>
+      <em class=comm>#Система печати для pdf.</em>
+      <strong>avahi</strong>
+      <em class=comm>#Система, производящая анализ локальной сети на предмет выявления различных сервисов. </em>
+      <strong>--noconfirm</strong>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>yay -S cups-xerox-b2xx</strong>
+      <em class=comm>#Возможно понадобиться установка драйвера, как пример принтер xserox, драйвер из ауры.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo nano /etc/sane.d/net.conf</strong>
+      <em class=comm>#Настройка sane.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <strong>192.168.1.XX</strong>
+      <em class=comm>#Прописываем ip сканера.</em>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=text>Установка игрового софта</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo pacman -S steam</strong>
+      <em class=comm>#Онлайн-сервис цифрового распространения компьютерных игр и программ.</em>
+      <strong>wine</strong>
+      <em class=comm>#Для запуска программ Windows.</em>
+      <strong>winetricks</strong>
+      <em class=comm>#Скрипт для установки различных свободно распространяемых библиотек в Wine.</em>
+      <strong>gamemode</strong>
+      <em class=comm>#Набор оптимизаций для игр.</em>
+      <strong>lib32-gamemode</strong>
+      <em class=comm>#Набор оптимизаций для игр x32.</em>
+      <strong>--noconfirm</strong>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>reboot</strong>
+      <em class=comm>#Перезагрузка.</em>
+    </p>
+    <p class=button>Enter</p>
+    <hr>
+    <h2>Редактирование конфигурационных файлов.</h2>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>conky --print-config</strong>
+      <em class=comm>#Вывод конфига conky (виджет/системный монитор) на экран.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>mkdir -p ~/.config/conky && conky --print-config > ~/.config/conky/conky.conf</strong>
+      <em class=comm>#Копирование конфига conky (виджет/системный монитор) в личную директорию.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>nano ~/.config/conky/conky.conf</strong>
+      <em class=comm>#Открываем конфиг conky (виджет/системный монитор).</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <strong>conky.config = {</strong>
+      <em class=comm>--Внешний вид.</em><br>
+      <strong>alignment = 'top_right',</strong>
+      <em class=comm>--Располжение <strong>виджета.</em><br>
+      <strong>border_inner_margin = 30,</strong>
+      <em class=comm>--Отступ от внутренних границ.</em><br>
+      <strong>border_width = 1,</strong>
+      <em class=comm>--Толщина рамки.</em><br>
+      <strong>cpu_avg_samples = 2,</strong>
+      <em class=comm>--Усреднение значений нагрузки.</em><br>
+      <strong>default_color = '#b3b3b3',</strong>
+      <em class=comm>--Цвет по умолчанию.</em><br>
+      <strong>default_outline_color = '#b3b3b3',</strong>
+      <em class=comm>--Цвет рамки по умолчанию.</em><br>
+      <strong>double_buffer = true,</strong>
+      <em class=comm>--Включение двойной буферизации.</em><br>
+      <strong>draw_shades = false,</strong>
+      <em class=comm>--Оттенки.</em><br>
+      <strong>draw_borders = true,</strong>
+      <em class=comm>--Включение границ.</em><br>
+      <strong>font = 'Noto Sans Mono:size=12',</strong>
+      <em class=comm>--Шрифт и размер шрифта.</em><br>
+      <strong>gap_x = 60,</strong>
+      <em class=comm>--Отступ от края.</em><br>
+      <strong>gap_y = 90,</strong>
+      <em class=comm>--Отступ от верхнего края.</em><br>
+      <strong>own_window = true,</strong>
+      <em class=comm>--Собственное окно.</em><br>
+      <strong>own_window_class = 'Conky',</strong>
+      <em class=comm>--Класс окна.</em><br>
+      <strong>own_window_type = 'override',</strong>
+      <em class=comm>--Тип окна.</em><br>
+      <strong>own_window_argb_visual = true,</strong>
+      <em class=comm>--Прозрачность окна.</em><br>
+      <strong>own_window_argb_value = 100,</strong>
+      <em class=comm>--Уровень прозрачности.</em><br>
+      <strong>use_xft = true, }</strong>
+      <em class=comm>--Использование шрифтов X сервера.</em><br>
+      conky.text = [[</strong>
+      <em class=comm>#Наполнение виджета.</em><br>
+      <em class=comm>#Блок "Время".</em><br>
+      <em class=comm>#Часы.</em><br>
+      <strong>${font :size=44}$alignc${color #d64c2f}$alignc${time %H:%M}$font$color</strong><br>
+      <em class=comm>#Дата.</em><br>
+      <strong>${font :size=15}$alignc${color #17b326}${time %d %b %Y} (${time %a})$font$color</strong><br>
+      <em class=comm>#Блок "Система".</em><br>
+      <em class=comm>#Разделитель.</em><br>
+      <strong>${color #d64c2f}SYS${hr 3}$color</strong><br>
+      <em class=comm>#Ядро.</em><br>
+      <strong>${color #17b326}Ядро:$color$alignr$kernel</strong><br>
+      <em class=comm>#Время в сети.</em><br>
+      <strong>${color #17b326}Время в сети:$color$alignr$uptime</strong><br>
+      <em class=comm>#Блок "ЦП".</em><br>
+      <em class=comm>#Разделитель.</em><br>
+      <strong>${color #d64c2f}CPU${hr 3}$color</strong><br>
+      <em class=comm>#Нагрузка ЦП.</em><br>
+      <strong>${color #17b326}Нагрузка ЦП:$color$alignr$cpu %</strong><br>
+      <em class=comm>#Частота ЦП.</em><br>
+      <strong>${color #17b326}Частота ЦП:$color$alignr$freq MHz</strong><br>
+      <em class=comm>#Температура ЦП.</em><br>
+      <strong>${color #17b326}Температура ЦП:$color$alignr${execi 10 sensors | grep "id 0:" | cut -b15-22}</strong><br>
+      <em class=comm>#Температура Ядра 1.</em><br>
+      <strong>$alignr${execi 10 sensors | grep "Core 0:" | cut -b1-22 }</strong><br>
+      <em class=comm>#Температура Ядра 2.</em><br>
+      <strong>$alignr${execi 10 sensors | grep "Core 1:" | cut -b1-22 }</strong><br>
+      <em class=comm>#Температура Ядра 3.</em><br>
+      <strong>$alignr${execi 10 sensors | grep "Core 2:" | cut -b1-22 }</strong><br>
+      <em class=comm>#Температура Ядра 4.</em><br>
+      <strong>$alignr${execi 10 sensors | grep "Core 3:" | cut -b1-22 }</strong><br>
+      <em class=comm>#Блок "Видеокарта".</em><br>
+      <em class=comm>#Разделитель.</em><br>
+      <strong>${color #d64c2f}GPU${hr 3}$color</strong><br>
+      <em class=comm>#Частота ГП.</em><br>
+      <strong>${color #17b326}Частота ГП:$color$alignr${nvidia gpufreq} Mhz</strong><br>
+      <em class=comm>#Видео ОЗУ.</em><br>
+      <strong>${color #17b326}Видео ОЗУ:$color$alignr${nvidia mem} / ${nvidia memmax} MiB</strong><br>
+      <em class=comm>#Температура ГП.</em><br>
+      <strong>${color #17b326}Температура ГП:$color$alignr${nvidia temp} °C</strong><br>
+      <em class=comm>#Блок "ОЗУ".</em><br>
+      <em class=comm>#Разделитель.</em><br>
+      <strong>${color #d64c2f}RAM${hr 3}$color</strong><br>
+      <em class=comm>#Задействовано ОЗУ.</em><br>
+      <strong>${color #17b326}Задействовано:$color$alignr$mem / $memmax</strong><br>
+      <em class=comm>#Свободно ОЗУ.</em><br>
+      <strong>${color #17b326}Свободно:$color$alignr$memeasyfree / $memmax</strong><br>
+      <em class=comm>#Полоса загрузки ОЗУ.</em><br>
+      <strong>$memperc%${membar 4}</strong><br>
+      <em class=comm>#Блок "Подкачка".</em><br>
+      <em class=comm>#Разделитель.</em><br>
+      <strong>${color #d64c2f}SWAP${hr 3}$color</strong><br>
+      <em class=comm>#Задействовано Подкачки.</em><br>
+      <strong>${color #17b326}Задействовано:$color$alignr$swap / $swapmax</strong><br>
+      <em class=comm>#Полоса загрузки Подкачки.</em><br>
+      <strong>$swapperc%${swapbar 4}</strong><br>
+      <em class=comm>#Блок "Процессы".</em><br>
+      <em class=comm>#Разделитель.</em><br>
+      <strong>${color #d64c2f}Процессы${hr 3}$color</strong><br>
+      <em class=comm>#Таблица процессов.</em><br>
+      <strong>${color #17b326}Название$alignr PID | CPU% | MEM% $color</strong><br>
+      <em class=comm>#Информация о процессе 1.</em><br>
+      <strong>${top name 1} $alignr ${top pid 1}|${top cpu 1}|${top mem 1}</strong><br>
+      <em class=comm>#Информация о процессе 2.</em><br>
+      <strong>${top name 2} $alignr ${top pid 2}|${top cpu 2}|${top mem 2}</strong><br>
+      <em class=comm>#Информация о процессе 3.</em><br>
+      <strong>${top name 3} $alignr ${top pid 3}|${top cpu 3}|${top mem 3}</strong><br>
+      <em class=comm>#Информация о процессе 4.</em><br>
+      <strong>${top name 4} $alignr ${top pid 4}|${top cpu 4}|${top mem 4}</strong><br>
+      <em class=comm>#Информация о процессе 5.</em><br>
+      <strong>${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}</strong><br>
+      <em class=comm>#Информация о процессе 6.</em><br>
+      <strong>${top name 6} $alignr ${top pid 6}|${top cpu 6}|${top mem 6}</strong><br>
+      <em class=comm>#Информация о процессе 7.</em><br>
+      <strong>${top name 7} $alignr ${top pid 7}|${top cpu 7}|${top mem 7}</strong><br>
+      <em class=comm>#Информация о процессе 8.</em><br>
+      <strong>${top name 8} $alignr ${top pid 8}|${top cpu 8}|${top mem 8}</strong><br>
+      <em class=comm>#Информация о процессе 9.</em><br>
+      <strong>${top name 9} $alignr ${top pid 9}|${top cpu 9}|${top mem 9}</strong><br>
+      <em class=comm>#Блок "Диск1".</em><br>
+      <em class=comm>#Разделитель.</em><br>
+      <strong>${color #d64c2f}/home${hr 3}$color</strong><br>
+      <em class=comm>#Температура SSD1.</em><br>
+      <strong>${color #17b326}Температура диска:$color$alignr${execi 10 sensors nvme-pci-0200 | grep "Composite:" | cut -b14-22}</strong><br>
+      <em class=comm>#Занято.</em><br>
+      <strong>${color #17b326}Задействовано:$color$alignr${fs_used /home/} / ${fs_size /home/}</strong><br>
+      <em class=comm>#Свободно.</em><br>
+      <strong>${color #17b326}Свободно:$color$alignr${fs_free /home/} / ${fs_size /home/}</strong><br>
+      <em class=comm>#Полоса загрузки SSD1.</em><br>
+      <strong>(${fs_type /home})$color${fs_bar 4 /home/}</strong><br>
+      <em class=comm>#Блок "Диск2".</em><br>
+      <em class=comm>#Разделитель.</em><br>
+      <strong>${color #d64c2f}/games${hr 3}$color</strong><br>
+      <em class=comm>#Температура SSD2.</em><br>
+      <strong>${color #17b326}Температура:$color$alignr${execi 10 sensors nvme-pci-0700 | grep "Composite:" | cut -b14-22}</strong><br>
+      <em class=comm>#Занято.</em><br>
+      <strong>${color #17b326}Задействовано:$color$alignr${fs_used /games/} / ${fs_size /games/}</strong><br>
+      <em class=comm>#Свободно.</em><br>
+      <strong>${color #17b326}Свободно:$color$alignr${fs_free /games/} / ${fs_size /games/}</strong><br>
+      <em class=comm>#Полоса загрузки SSD2.</em><br>
+      <strong>(${fs_type /games})$color${fs_bar 4 /games/}</strong><br>
+      <em class=comm>#Блок "Диск3".</em><br>
+      <em class=comm>#Разделитель.</em><br>
+      <strong>${color #d64c2f}/data${hr 3}$color</strong><br>
+      <em class=comm>#Занято.</em><br>
+      <strong>${color #17b326}Задействовано:$color$alignr${fs_used /data/} / ${fs_size /data/}</strong><br>
+      <em class=comm>#Свободно.</em><br>
+      <strong>${color #17b326}Свободно:$color$alignr${fs_free /data/} / ${fs_size /data/}</strong><br>
+      <em class=comm>#Полоса загрузки HDD.</em><br>
+      <strong>(${fs_type /data})$color${fs_bar 4 /data/}  ]]</strong>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>nano ~/.bashrc</strong>
+      <em class=comm>#Открываем конфиг командной оболочки,
+      выполняющийся каждый раз при запуске эмулятора терминала.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <strong>[[ $- != *i* ]] && return</strong>
+      <em class=comm>#Определяем интерактивность шелла.</em><br>
+      <strong>[ -n "$XTERM_VERSION" ] && transset-df --id "$WINDOWID" >/dev/null</strong>
+      <em class=comm>#Автоматическая прозрачность xterm.</em><br>
+      <strong>alias grep="grep --color=auto"</strong>
+      <em class=comm>#Раскрашиваем grep.</em><br>
+      <strong>alias ip="ip --color=auto"</strong>
+      <em class=comm>#Раскрашиваем ip.</em><br>
+      <strong>alias ping="grc --colour=auto ping"</strong>
+      <em class=comm>#Раскрашиваем ping.</em><br>
+      <strong>alias gcc="grc --colour=auto gcc"</strong>
+      <em class=comm>#Раскрашиваем gcc.</em><br>
+      <strong>alias diff="grc --colour=auto diff"</strong>
+      <em class=comm>#Раскрашиваем diff.</em><br>
+      <strong>alias log="grc --colour=auto log"</strong>
+      <em class=comm>#Раскрашиваем log.</em><br>
+      <strong>alias cvs="grc --colour=auto cvs"</strong>
+      <em class=comm>#Раскрашиваем cvs.</em><br>
+      <strong>alias mount="grc --colour=auto mount"</strong>
+      <em class=comm>#Раскрашиваем mount.</em><br>
+      <strong>alias ps="grc --colour=auto ps"</strong>
+      <em class=comm>#Раскрашиваем ps.</em><br>
+      <strong>alias ls="grc --colour=auto ls"</strong>
+      <em class=comm>#Раскрашиваем ls.</em><br>
+      <strong>alias df="grc --colour=auto df"</strong>
+      <em class=comm>#Раскрашиваем df.</em><br>
+      <strong>PS1="\[\e[2;32m\][\A]\[\e[0m\]\[\e[3;31m\][\u@\h \W]\[\e[0m\]\[\e[5;36m\]\$: \[\e[0m\]"</strong>
+      <em class=comm>#Изменяем вид приглашения командной строки.<br>
+      #\[\e[2;32m\] 2 - более темный цвет, 32 - зеленый цвет.<br>
+      #[\A] Текущее время в 24-часовом формате.<br>
+      #\[\e[0m\] Конец изменениям.<br>
+      #\[\e[3;31m\] 3 - курсив, 31 - красный цвет.<br>
+      #[\u@\h \W] ИмяПользователя@имя хоста Текущий относительный путь.<br>
+      #\[\e[0m\] Конец изменениям.<br>
+      #\[\e[5;35m\] 5 - моргание, 36 - голубой цвет.<br>
+      #\$: Символ приглашения (# для root, $ для обычных пользователей).<br>
+      #\[\e[0m\] Конец изменениям.</em><br>
+      <strong>export HISTCONTROL="ignoredups"</strong>
+      <em class=comm>#Удаляем повторяющиеся записи в .bash_history.</em><br>
+      <strong>export COLORTERM=truecolor</strong>
+      <em class=comm>#Включаем все 16 миллионов цветов в эмуляторе терминала.</em>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>nano ~/.profile</strong>
+      <em class=comm>#Открываем конфиг командной оболочки,
+      выполняющийся при загрузке ОС.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <strong>setleds -D +num</strong>
+      <em class=comm>#Включенный по умолчанию NumLock.</em><br>
+      <strong>[[ -f ~/.bashrc ]] && . ~/.bashrc</strong>
+      <em class=comm>#Указание на bashrc.</em><br>
+      <strong>export QT_QPA_PLATFORMTHEME="qt6ct"</strong>
+      <em class=comm>#Изменение внешнего вида приложений использующих qt.</em>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=text>Указание DM на запуск i3</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>cp /etc/X11/xinit/xinitrc ~/.xinitrc</strong>
+      <em class=comm>#Копирование конфига для запуска WM и автозапуска прложений.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>nano ~/.xinitrc</strong>
+      <em class=comm>#Редактирование конфига для запуска WM и автозапуска прложений.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <em class=comm>#Указание на конфигурационные файлы.</em><br>
+      <strong>userresources=$HOME/.Xresources<br>
+      usermodmap=$HOME/.Xmodmap<br>
+      sysresources=/etc/X11/xinit/.Xresources<br>
+      sysmodmap=/etc/X11/xinit/.Xmodmap</strong><br>
+      <br>
+      <em class=comm>#Объединить значения по умолчанию и раскладки клавиш.</em><br>
+      <strong>if [ -f $sysresources ]; then<br>
+      xrdb -merge $sysresources<br>
+      fi<br>
+      if [ -f $sysmodmap ]; then<br>
+      xmodmap $sysmodmap<br>
+      fi<br>
+      if [ -f "$userresources" ]; then<br>
+      xrdb -merge "$userresources"<br>
+      fi<br>
+      if [ -f "$usermodmap" ]; then<br>
+      xmodmap "$usermodmap"<br>
+      fi</strong><br>
+      <br>
+      <em class=comm>#Запуск программ.</em><br>
+      <strong>if [ -d /etc/X11/xinit/xinitrc.d ] ; then<br>
+      for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do<br>
+      [ -x "$f" ] && . "$f"<br>
+      done<br>
+      unset f<br>
+      fi</strong><br>
+      <br>
+      <strong>xhost +si:localuser:root</strong>
+      <em class=comm>#Позволяет пользователю root получить доступ к работающему X-серверу.</em><br>
+      <strong>sh ~/.fehbg &</strong>
+      <em class=comm>#Установка обоев рабочего стола.</em><br>
+      <strong>volctl &</strong>
+      <em class=comm>#Автозапуск volctl.</em><br>
+      <strong>flameshot &</strong>
+      <em class=comm>#Автозапуск flameshot.</em><br>
+      <strong>copyq &</strong>
+      <em class=comm>#Автозапуск copyq.</em><br>
+      <strong>obs &</strong>
+      <em class=comm>#Автозапуск obs.</em><br>
+      <strong>tint2 &</strong>
+      <em class=comm>#Автозапуск tint2.</em><br>
+      <strong>picom -b &</strong>
+      <em class=comm>#Автозапуск picom.</em><br>
+      <strong>conky &</strong>
+      <em class=comm>#Автозапуск conky.</em><br>
+      <strong>numlockx &</strong>
+      <em class=comm>#Автозапуск numlockx.</em><br>
+      <strong>pcmanfm-qt -d &</strong>
+      <em class=comm>#Автозапуск pcmanfm-qt.</em><br>
+      <strong>transmission-qt -m &</strong>
+      <em class=comm>#Автозапуск transmission.</em><br>
+      <strong>exec i3</strong>
+      <em class=comm>#Автозапуск i3.</em>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>chmod +x ~/.xinitrc</strong>
+      <em class=comm>#Делаем xinitrc исполняемым.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>cp /etc/xdg/picom.conf ~/.config/picom.conf</strong>
+      <em class=comm>#Копирование конфига для композитора picom.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>nano ~/.config/picom.conf</strong>
+      <em class=comm>#Редактирование конфига picom.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <strong>inactive-opacity = 0.8;</strong>
+      <em class=comm>#Находим и исправляем строчку прозрачности неактивного окна.</em>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>nano ~/.Xresources</strong>
+      <em class=comm>#Настройка внешнего вида клиентских приложений X.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <em class=comm>!Настройка внешнего вида xterm.</em><br>
+      <br>
+      <em class=comm>!Задает имя типа терминала, которое будет установлено в переменной среды TERM.</em><br>
+      <strong>xterm*termName: xterm-256color</strong><br>
+      <br><br>
+      <em class=comm>!Xterm будет использовать кодировку, указанную в локали пользователя.</em><br>
+      <strong>xterm*locale: true</strong><br>
+      <br>
+      <em class=comm>!Определяет количество строк, сохраняемых за пределами верхней части экрана, когда включена полоса прокрутки.</em><br>
+      <strong>xterm*saveLines: 4096</strong><br>
+      <br>
+      <em class=comm>!Укажите шаблон для масштабируемых шрифтов.</em><br>
+      <strong>xterm*faceName: Monospace</strong><br>
+      <br>
+      <em class=comm>!Размер шрифтов.</em><br>
+      <strong>xterm*faceSize: 12</strong><br>
+      <br>
+      <em class=comm>!Указывает цвет фона.</em><br>
+      <strong>xterm*background: #2d2d2d</strong><br>
+      <br>
+      <em class=comm>!Определяет цвет, который будет использоваться для переднего плана.</em><br>
+      <strong>xterm*foreground: #d2d2d2</strong><br>
+      <br>
+      <em class=comm>!Указывает, должна ли отображаться полоса прокрутки.</em><br>
+      <strong>xterm*scrollBar: true</strong><br>
+      <br>
+      <em class=comm>!Определяет ширину полосы прокрутки.</em><br>
+      <strong>xterm*scrollbar.width: 20</strong><br>
+      <br>
+      <em class=comm>!Указывает, должно ли нажатие клавиши автоматически перемещать полосу прокрутки в нижнюю часть области прокрутки.</em><br>
+      <strong>xterm*scrollKey: true</strong><br>
+      <br>
+      <em class=comm>!Указывает, должна ли полоса прокрутки отображаться справа.</em><br>
+      <strong>xterm*rightScrollBar: true</strong>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>xrdb -merge ~/.Xresources</strong>
+      <em class=comm>#Применить настройки внешнего вида клиентских приложений X.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>nano ~/.config/i3/config</strong>
+      <em class=comm>#Редактирование конфига WM i3wm.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <em class=comm>########### Основные настройки ###########</em><br>
+      <br>
+      <em class=comm># Назначаем клавишу MOD, Mod4 - это клавиша WIN.</em><br>
+      <strong>set $mod Mod4</strong><br>
+      <br>
+      <em class=comm># Закрыть окно в фокусе.</em><br>
+      <strong>bindsym $mod+Shift+q kill</strong><br>
+      <em class=comm># Средняя кнопка мыши над заголовком закрывает окно.</em><br>
+      <strong>bindsym --release button2 kill</strong><br>
+      <br>
+      <em class=comm># Изменить фокус на другое окно (semicolon - это клавиша ;:жЖ).</em><br>
+      <strong>bindsym $mod+j focus left</strong><br>
+      <strong>bindsym $mod+k focus down</strong><br>
+      <strong>bindsym $mod+l focus up</strong><br>
+      <strong>bindsym $mod+semicolon focus right</strong><br>
+      <em class=comm># Альтернативные настройки смены фокуса на другое окно.</em><br>
+      <strong>bindsym $mod+Left focus left</strong><br>
+      <strong>bindsym $mod+Down focus down</strong><br>
+      <strong>bindsym $mod+Up focus up</strong><br>
+      <strong>bindsym $mod+Right focus right</strong><br>
+      <br>
+      <em class=comm># Переместить окно.</em><br>
+      <strong>bindsym $mod+Shift+j move left</strong><br>
+      <strong>bindsym $mod+Shift+k move down</strong><br>
+      <strong>bindsym $mod+Shift+l move up</strong><br>
+      <strong>bindsym $mod+Shift+semicolon move right</strong><br>
+      <em class=comm># Альтернативные настройки перемешения окна.</em><br>
+      <strong>bindsym $mod+Shift+Left move left</strong><br>
+      <strong>bindsym $mod+Shift+Down move down</strong><br>
+      <strong>bindsym $mod+Shift+Up move up</strong><br>
+      <strong>bindsym $mod+Shift+Right move right</strong><br>
+      <em class=comm># Боковые кнопки мыши перемещают окно.</em><br>
+      <strong>bindsym button9 move left</strong><br>
+      <strong>bindsym button8 move right</strong><br>
+      <br>
+      <em class=comm># Следующее открытое окно разделит экран по горизонтали (такое деление установленно по умолчанию). Легко запомнить по первой букве Horizontal.</em><br>
+      <strong>bindsym $mod+h split h</strong><br>
+      <br>
+      <em class=comm># Следующее открытое окно разделит экран по вертикали. Легко запомнить по первой букве Vertical.</em><br>
+      <strong>bindsym $mod+v split v</strong><br>
+      <br>
+      <em class=comm># Развернуть окно во весь экран. Легко запомнить по первой букве Fullscreen.</em><br>
+      <strong>bindsym $mod+f fullscreen toggle</strong><br>
+      <br>
+      <em class=comm># Делаем из окон вкладки.</em><br>
+      <strong>bindsym $mod+s layout stacking</strong><br>
+      <strong>bindsym $mod+w layout tabbed</strong><br>
+      <strong>bindsym $mod+e layout toggle split</strong><br>
+      <br>
+      <em class=comm># Делаем окно плавающим.</em><br>
+      <strong>bindsym $mod+Shift+space floating toggle</strong><br>
+      <em class=comm># Правая кнопка мыши делает окно плавающим.</em><br>
+      <strong>bindsym button3 floating toggle</strong><br>
+      <strong>bindsym $mod+button3 floating toggle</strong><br>
+      <br>
+      <em class=comm># Изменить фокус между мозаичными / плавающими окнами.</em><br>
+      <strong>bindsym $mod+space focus mode_toggle</strong><br>
+      <br>
+      <em class=comm># Определяем имена для рабочих областей по умолчанию.</em><br>
+      <strong>set $ws1 "1"</strong><br>
+      <strong>set $ws2 "2: "</strong><br>
+      <strong>set $ws3 "3: "</strong><br>
+      <strong>set $ws4 "4"</strong><br>
+      <strong>set $ws5 "5"</strong><br>
+      <strong>set $ws6 "6"</strong><br>
+      <strong>set $ws7 "7"</strong><br>
+      <strong>set $ws8 "8"</strong><br>
+      <strong>set $ws9 "9"</strong><br>
+      <strong>set $ws10 "10"</strong><br>
+      <br>
+      <em class=comm># Переключение между рабочими столами.</em><br>
+      <strong>bindsym $mod+1 workspace number $ws1</strong><br>
+      <strong>bindsym $mod+2 workspace number $ws2</strong><br>
+      <strong>bindsym $mod+3 workspace number $ws3</strong><br>
+      <strong>bindsym $mod+4 workspace number $ws4</strong><br>
+      <strong>bindsym $mod+5 workspace number $ws5</strong><br>
+      <strong>bindsym $mod+6 workspace number $ws6</strong><br>
+      <strong>bindsym $mod+7 workspace number $ws7</strong><br>
+      <strong>bindsym $mod+8 workspace number $ws8</strong><br>
+      <strong>bindsym $mod+9 workspace number $ws9</strong><br>
+      <strong>bindsym $mod+0 workspace number $ws10</strong><br>
+      <br>
+      <em class=comm># Переместить сфокусированное окно на заданный рабочий стол.</em><br>
+      <strong>bindsym $mod+Shift+1 move container to workspace number $ws1</strong><br>
+      <strong>bindsym $mod+Shift+2 move container to workspace number $ws2</strong><br>
+      <strong>bindsym $mod+Shift+3 move container to workspace number $ws3</strong><br>
+      <strong>bindsym $mod+Shift+4 move container to workspace number $ws4</strong><br>
+      <strong>bindsym $mod+Shift+5 move container to workspace number $ws5</strong><br>
+      <strong>bindsym $mod+Shift+6 move container to workspace number $ws6</strong><br>
+      <strong>bindsym $mod+Shift+7 move container to workspace number $ws7</strong><br>
+      <strong>bindsym $mod+Shift+8 move container to workspace number $ws8</strong><br>
+      <strong>bindsym $mod+Shift+9 move container to workspace number $ws9</strong><br>
+      <strong>bindsym $mod+Shift+0 move container to workspace number $ws10</strong><br>
+      <br>
+      <em class=comm># Перечитать файл конфигурации.</em><br>
+      <strong>bindsym $mod+Shift+c reload</strong><br>
+      <br>
+      <em class=comm># Перезапустить i3 (сохраняет макет/сессию, может использоваться для обновления i3).</em><br>
+      <strong>bindsym $mod+Shift+r restart</strong><br>
+      <br>
+      <em class=comm># Выход из i3 (выходит из сеанса X).</em><br>
+      <strong>bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Вы действительно хотите выйти из i3? Это завершит вашу сессию X.' -B 'Да, выйти из i3' 'i3-msg exit'"</strong><br>
+      <br>
+      <em class=comm># Войти в режим изменения размеров окон.</em><br>
+      <strong>bindsym $mod+r mode "resize"</strong><br>
+      <em class=comm># Изменить размер окна (можно использовать мышь).</em><br>
+      <strong>mode "resize" {</strong><br>
+        <br>
+        <em class=comm># Настройки смены размеров окон.</em><br>
+        <strong>bindsym j resize shrink width 10 px or 10 ppt</strong><br>
+        <strong>bindsym k resize grow height 10 px or 10 ppt</strong><br>
+        <strong>bindsym l resize shrink height 10 px or 10 ppt</strong><br>
+        <strong>bindsym semicolon resize grow width 10 px or 10 ppt</strong><br>
+        <br>
+        <em class=comm># Альтернативные настройки смены размеров окон (мне показались более удобными).</em><br>
+        <strong>bindsym Left resize shrink width 10 px or 10 ppt</strong><br>
+        <strong>bindsym Down resize grow height 10 px or 10 ppt</strong><br>
+        <strong>bindsym Up resize shrink height 10 px or 10 ppt</strong><br>
+        <strong>bindsym Right resize grow width 10 px or 10 ppt</strong><br>
+        <br>
+        <em class=comm># Выйти из режима изменения размеров окон.</em><br>
+        <strong>bindsym Return mode "default"</strong><br>
+        <strong>bindsym Escape mode "default"</strong><br>
+        <strong>bindsym $mod+r mode "default"</strong><br>
+      <strong>}</strong><br>
+      <br>
+      <em class=comm># Некоторые видеодрайверы X11 обеспечивают поддержку только Xinerama вместо RandR.</em><br>
+      <em class=comm># В такой ситуации нужно сказать i3, чтобы он явно использовал подчиненный Xinerama API.</em><br>
+      <strong>force_xinerama yes</strong><br>
+      <br>
+      <em class=comm>########### Внешний вид ###########</em><br>
+      <br>
+      <em class=comm># Шрифт для заголовков окон. Также будет использоваться ibar, если не выбран другой шрифт.</em><br>
+      <strong>font pango:Noto Sans Mono 12</strong><br>
+      <br>
+      <em class=comm># Просветы между окнами.</em><br>
+      <strong>gaps inner 20</strong><br>
+      <br>
+      <em class=comm># Толщина границы окна.</em><br>
+      <strong>default_border normal 5</strong><br>
+      <br>
+      <em class=comm># Толщина границы плавающего окна.</em><br>
+      <strong>default_floating_border normal 5</strong><br>
+      <br>
+      <em class=comm># Устанавливаем цвет рамки активного окна #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.</em><br>
+      <strong>client.focused #4c7899 #285577 #ffffff #2e9ef4 #285577</strong><br>
+      <br>
+      <em class=comm># Устанавливаем цвет рамки неактивного окна #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.</em><br>
+      <strong>client.unfocused #333333 #222222 #888888 #292d2e #222222</strong><br>
+      <br>
+      <em class=comm># Печатать все заголовки окон жирным, красным шрифтом.</em><br>
+      <strong>for_window [all] title_format "&ltspan foreground='#d64c2f'&gt&ltb&gtЗагаловок | %title&lt/b&gt&lt/span&gt"</strong><br>
+      <br>
+      <em class=comm># Включить значки окон для всех окон с дополнительным горизонтальным отступом.</em><br>
+      <strong>for_window [all] title_window_icon padding 3px</strong><br>
+      <br>
+      <em class=comm># Внешний вид XTerm</em><br>
+      <em class=comm># Включить плавающий режим для всех окон XTerm.</em><br>
+      <strong>for_window [class="XTerm"] floating enable</strong><br>
+      <em class=comm># Сделать границу в 1 пиксель для всех окон XTerm.</em><br>
+      <strong>for_window [class="XTerm"] border normal 1</strong><br>
+      <em class=comm># Липкие плавающие окна, окно XTerm прилипло к стеклу.</em><br>
+      <strong>for_window [class="XTerm"] sticky enable</strong><br>
+      <em class=comm># Задаем размеры окна XTerm.</em><br>
+      <strong>for_window [class="XTerm"] resize set 2000 1000</strong><br>
+      <br>
+      <em class=comm>########### Автозапуск программ ###########</em><br>
+      <br>
+      <em class=comm># Запуск i3lock для блокировки.</em><br>
+      <strong>#exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork</strong><br>
+      <br>
+      <em class=comm># Запуск графического интерфейса системного трея NetworkManager.</em><br>
+      <strong>exec --no-startup-id nm-applet</strong><br>
+      <br>
+      <em class=comm># Запуск геолокации.</em><br>
+      <strong>exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent</strong><br>
+      <br>
+      <em class=comm>########### Горячие клавиши запуска программ ###########</em><br>
+      <br>
+      <em class=comm># Используйте mod+enter, чтобы запустить терминал.</em><br>
+      <strong>bindsym $mod+Return exec i3-sensible-terminal</strong><br>
+      <br>
+      <em class=comm># Запуск dmenu (программа запуска) с параметрами шрифта, приглашения, цвета фона.</em><br>
+      <strong>bindsym $mod+d exec --no-startup-id dmenu_run -fn 'Noto Sans Mono-15' -p 'Поиск программы:' -nb '#2b2b2b'</strong><br>
+      <br>
+      <em class=comm># Используйте mod+f1, чтобы запустить firefox.</em><br>
+      <strong>bindsym $mod+F1 exec firefox</strong><br>
+      <br>
+      <em class=comm># Сделать текущее окно черновиком/блокнотом.</em><br>
+      <strong>bindsym $mod+Shift+minus move scratchpad</strong><br>
+      <br>
+      <em class=comm># Показать первое окно черновика/блокнота.</em><br>
+      <strong>bindsym $mod+minus scratchpad show</strong><br>
+      <br>
+      <em class=comm>########### Распределение окон по рабочим столам ###########</em><br>
+      <br>
+      <em class=comm># Firefox будет запускаться на 2 рабочем столе.</em><br>
+      <strong>assign [class="firefox"] "2: "</strong><br>
+      <br>
+      <em class=comm># Steam будет запускаться на 3 рабочем столе.</em><br>
+      <strong>assign [class="steam"] "3: "</strong><br>
+      <br>
+      <em class=comm>########### Настройка панели задач ###########</em><br>
+      <br>
+      <strong>bar {</strong><br>
+        <em class=comm># Назначить панели задач.</em><br>
+        <strong>status_command i3status</strong><br>
+        <br>
+        <em class=comm># Разделитель.</em><br>
+        <strong>separator_symbol ""</strong><br>
+        <br>
+        <em class=comm># Назначить шрифт.</em><br>
+        <strong>font pango:Noto Sans Mono 12</strong><br>
+        <br>
+        <em class=comm># Назначить цвета.</em><br>
+        <strong>colors {</strong><br>
+      <br>
+      <em class=comm># Цвет фона i3status.</em><br>
+      <strong>background #2b2b2b</strong><br>
+      <br>
+      <em class=comm># Цвет текста в i3status.</em><br>
+      <strong>statusline #b2b2b2</strong><br>
+      <br>
+      <em class=comm># Цвет разделителя в i3status.</em><br>
+      <strong>separator #d64c2f</strong><br>
+      <strong>}</strong><br>
+         <em class=comm># Сделайте снимок экрана, щелкнув правой кнопкой мыши на панели</em><br>
+         <strong>bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png</strong><br>
+      <strong>}</strong>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>cp /etc/i3status.conf ~/.i3status.conf</strong>
+      <em class=comm>#Копирование конфига для i3status.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>nano ~/.i3status.conf</strong>
+      <em class=comm>#Редактирование конфига i3status.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <strong>general {</strong>
+      <em class=comm>#Основные настройки.</em><br>
+      <strong>colors = true</strong>
+      <em class=comm>#Включение/выключение поддержки цветов.</em><br>
+      <strong>color_good = "#17b326"</strong>
+      <em class=comm>#Цвет OK.</em><br>
+      <strong>color_bad = "#d64c2f"</strong>
+      <em class=comm>#Цвет ошибки.</em><br>
+      <strong>interval = 2</strong>
+      <em class=comm>#Интервал обновления строки статуса.</em><br>
+      <strong>output_format = "i3bar" }</strong>
+      <em class=comm>#Формат вывода.</em><br>
+      <strong>order += "ethernet _first_"</strong>
+      <em class=comm>#1 модуль - rj45.</em><br>
+      <strong>order += "run_watch openvpn"</strong>
+      <em class=comm>#2 модуль - openvpn.</em><br>
+      <strong>order += "run_watch openconnect"</strong>
+      <em class=comm>#3 модуль - openconnect.</em><br>
+      <strong>order += "wireless _first_"</strong>
+      <em class=comm>#4 модуль - Wi-Fi.</em><br>
+      <strong>order += "battery all"</strong>
+      <em class=comm>#5 модуль - батарея.</em><br>
+      <strong>order += "disk /"</strong>
+      <em class=comm>#6 модуль - root директория.</em><br>
+      <strong>order += "memory"</strong>
+      <em class=comm>#7 модуль - ram.</em><br>
+      <strong>order += "cpu_usage"</strong>
+      <em class=comm>#8 модуль - использование ЦП.</em><br>
+      <strong>order += "cpu_temperature 0"</strong>
+      <em class=comm>#9 модуль - температура ЦП.</em><br>
+      <strong>order += "tztime local"</strong>
+      <em class=comm>#10 модуль - время.</em><br>
+      <strong>order += "volume master"</strong>
+      <em class=comm>#11 модуль - звук.</em><br>
+      <strong>ethernet _first_ {</strong>
+      <em class=comm>#Индикатор rj45.</em><br>
+      <strong>format_up = ": %ip (%speed)"</strong>
+      <em class=comm>#Формат вывода.</em><br>
+      <strong>format_down = "" }</strong>
+      <em class=comm>#При неактивном процессе блок будет отсутствовать.</em><br>
+      <strong>run_watch openvpn {</strong>
+      <em class=comm>#Индикатор openvpn.</em><br>
+      <strong>pidfile = "/var/run/openvpn.pid"</strong>
+      <em class=comm>#Путь данных.</em><br>
+      <strong>format = " openvpn"</strong>
+      <em class=comm>#Формат вывода.</em><br>
+      <strong>format_down="" }</strong>
+      <em class=comm>#При неактивном процессе блок будет отсутствовать.</em><br>
+      <strong>run_watch openconnect {</strong>
+      <em class=comm>#Индикатор openconnect.</em><br>
+      <strong>pidfile = "/var/run/openconnect.pid"</strong>
+      <em class=comm>#Путь данных.</em><br>
+      <strong>format = " vpn"</strong>
+      <em class=comm>#Формат вывода.</em><br>
+      <strong>format_down="" }</strong>
+      <em class=comm>#При неактивном процессе блок будет отсутствовать.</em><br>
+      <strong>wireless _first_ {</strong>
+      <em class=comm>#Индикатор WI-FI.</em><br>
+      <strong>format_up = "%quality %frequency %essid %ip"</strong>
+      <em class=comm>#Формат вывода.</em><br>
+      <strong>format_down = "" }</strong>
+      <em class=comm>#При неактивном процессе блок будет отсутствовать.</em><br>
+      <strong>battery all {</strong>
+      <em class=comm>#Индикатор батареи.</em><br>
+      <strong>ormat = "%status %percentage"</strong>
+      <em class=comm>#Формат вывода.</em><br>
+      <strong>last_full_capacity = true</strong>
+      <em class=comm>#Процент заряда.</em><br>
+      <strong>format_down = ""</strong>
+      <em class=comm>#При неактивном процессе блок будет отсутствовать.</em><br>
+      <strong>status_chr = ""</strong>
+      <em class=comm>#Подзарядка.</em><br>
+      <strong>status_bat = ""</strong>
+      <em class=comm>#Режим работы от батареи.</em><br>
+      <strong>status_unk = "? UNK"</strong>
+      <em class=comm>#Неизвестный статус.</em><br>
+      <strong>status_full = ""</strong>
+      <em class=comm>#Полный заряд.</em><br>
+      <strong>path = "/sys/class/power_supply/BAT%d/uevent"</strong>
+      <em class=comm>#Путь данных.</em><br>
+      <strong>low_threshold = 10 }</strong>
+      <em class=comm>#Нижний порог заряда.</em><br>
+      <strong>disk "/" {</strong>
+      <em class=comm>#Root директория.</em><br>
+      <strong>format = "🗁 %avail / %total" }</strong>
+      <em class=comm>#Формат вывода.</em><br>
+      <strong>memory {</strong>
+      <em class=comm>#Индикатор ram.</em><br>
+      <strong>format = " %used"</strong>
+      <em class=comm>#Формат вывода.</em><br>
+      <strong>threshold_degraded = "1G"</strong>
+      <em class=comm>#Желтый порог.</em><br>
+      <strong>threshold_critical = "200M"</strong>
+      <em class=comm>#Красный порог.</em><br>
+      <strong>format_degraded = "MEMORY  %available" }</strong>
+      <em class=comm>#Формат вывода желтого/красного порога.</em><br>
+      <strong>cpu_usage {</strong>
+      <em class=comm>#Использование ЦП.</em><br>
+      <strong>format = " %usage" }</strong>
+      <em class=comm>#Формат вывода.</em><br>
+      <strong>cpu_temperature 0 {</strong>
+      <em class=comm>#Температура ЦП.</em><br>
+      <strong>format = " %degrees°C"</strong>
+      <em class=comm>#Формат вывода.</em><br>
+      <strong>max_threshold = "80"</strong>
+      <em class=comm>#Красный порог.</em><br>
+      <strong>format_above_threshold = " %degrees°C"</strong>
+      <em class=comm>#Формат вывода красного порога.</em><br>
+      <strong>path = "/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp1_input" }</strong>
+      <em class=comm>#Путь данных.</em><br>
+      <strong>tztime local {</strong>
+      <em class=comm>#Вывод даты и времени.</em><br>
+      <strong>format = " %a %d-%m-%Y(%W)  %H:%M:%S" }</strong>
+      <em class=comm>#Формат вывода.</em><br>
+      <strong>volume master {</strong>
+      <em class=comm>#Вывод звука.</em><br>
+      <strong>format = " %volume"</strong>
+      <em class=comm>#Формат вывода.</em><br>
+      <strong>format_muted = " %volume" }</strong>
+      <em class=comm>#Формат вывода без звука.</em>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo nano /etc/geoclue/geoclue.conf</strong>
+      <em class=comm>#Редактирование конфига geoclue, для доступа redshift к геолокации в конце конфига нужно дописать.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=nano>
+      <strong>[redshift]</strong><br>
+      <strong>allowed=true</strong><br>
+      <strong>system=false</strong><br>
+      <strong>users=</strong>
+    </p>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>O</p>
+    <em class=comm>#Сохранение в nano.</em><br>
+    <p class=button>Enter</p><br>
+    <p class=button>Ctrl</p>
+    <em class=comm>+</em>
+    <p class=button>X</p>
+    <em class=comm>#Выход из nano.</em>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>reboot</strong>
+      <em class=comm>#Перезагрузка.</em>
+    </p>
+    <p class=button>Enter</p>
+    <hr>
+    <h2>Подключение служб и финальная настройка</h2>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>feh --bg-scale ПутьКОбоине.jpg</strong>
+      <em class=comm>#Установка обоев рабочего стола.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=text>
+    <strong>Откройте в браузере адрес http://127.0.0.1:631, введите ИмяПользователя и ПарольПользователя для настройки локального принтера.</strong>
+    </p>
+    <p class=text>
+    <strong>Настройка tint2 производиться в GUI,
+      если необходимо запускать программы требующие ROOT права (например GParted),
+      нужно открыть ярлык GParted,
+      блокнотом с ROOT правами (sudo nano /usr/share/applications/gparted.desktop),
+      найти строчку отвечающую за запуск (Exec=/usr/bin/gparted %f),
+      исправить ее на запуск через kdesu (Exec=kdesu -c /usr/bin/gparted %f).</strong>
+    </p>
+    <p class=text>
+    <strong>Настройка steam,
+      для увеличения производительности игр,
+      нужно открыть ярлык Steam (Runtime),
+      блокнотом с ROOT правами (sudo nano /usr/share/applications/steam.desktop),
+      найти строчку отвечающую за запуск (Exec=/usr/bin/steam-runtime %U),
+      исправить ее на запуск через gamemode (Exec=gamemoderun /usr/bin/steam-runtime %U).</strong>
+    </p>
+    <details>
+      <summary>
+        Настройка nvidia.
+      </summary>
+      <p class=term>
+        <em class=ps1>$:</em>
+        <strong>sudo nvidia-xconfig</strong>
+        <em class=comm>#Создание конфигов nvidia для xorg.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=term>
+        <em class=ps1>$:</em>
+        <strong>sudo nvidia-settings</strong>
+        <em class=comm>#ROOT настройка.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=text>
+        <strong>X screen 0 >> X Server XVideo Settings >> ВашМонитор</strong><br>
+        <strong>PowerMizer >> Prefer Maximum Performance</strong><br>
+        <strong>X Server Display Configuration >> (Resolution)РазрешениеМонитора >> (Resolution)ЧастотаМонитора >> Save to X Configuration File >> Apply >> Exit</strong>
+      </p>
+      <p class=term>
+        <em class=ps1>$:</em>
+        <strong>nvidia-settings</strong>
+        <em class=comm>#Настройка nvidia.</em>
+      </p>
+      <p class=button>Enter</p>
+      <p class=text>
+        <strong>X screen 0 >> X Server XVideo Settings >> ВашМонитор</strong><br>
+        <strong>PowerMizer >> Prefer Maximum Performance</strong><br>
+        <strong>X Server Display Configuration >> РазрешениеМонитора >> ЧастотаМонитора >> Apply >> Exit</strong>
+      </p>
+    </details>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>xrandr --listmonitors</strong>
+      <em class=comm>#Получить список мониторов.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>xrandr --output ВашПортМонитора --primary</strong>
+      <em class=comm>#Установка основного монитора.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>fc-match mono</strong>
+      <em class=comm>#Автоподбор шрифта для терминала.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo fstrim -v -a</strong>
+      <em class=comm>#Запускаем trim (для ssd).</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=text>Подключение служб.</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo systemctl disable dbus</strong>
+      <em class=comm>#Отключить dbus.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo systemctl enable xdm-archlinux</strong>
+      <em class=comm>#Автозапуск DM.</em>
+      <strong>avahi-daemon.service</strong>
+      <em class=comm>#Автозапуск avahi.</em>
+      <strong>cups.socket</strong>
+      <em class=comm>#Автозапуск cups.</em>
+      <strong>bluetooth.service</strong>
+      <em class=comm>#Автозапуск bluetooth.</em>
+      <strong>acpid.service</strong>
+      <em class=comm>#Автозапуск acpid.</em>
+      <strong>auto-cpufreq.service</strong>
+      <em class=comm>#Автозапуск auto-cpufreq.</em>
+      <strong>dbus-broker.service</strong>
+      <em class=comm>#Автозапуск dbus-broker.</em>
+      <strong>rngd.service</strong>
+      <em class=comm>#Автозапуск увеличения энтропии в ядре.</em>
+      <strong>fstrim.timer</strong>
+      <em class=comm>#Автозапуск trim раз в неделю (для ssd).</em>
+      <strong>reflector.timer</strong>
+      <em class=comm>#Автозапуск reflector раз в неделю.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>systemctl --user enable redshift-gtk.service redshift.service</strong>
+      <em class=comm>#Автозапуск программы для изменения цветовой температуры экрана.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>reboot</strong>
+      <em class=comm>#Перезагрузка.</em>
+    </p>
+    <p class=button>Enter</p>
+    <hr>
+    <h2>Post Scriptum</h2>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo pacman -Suy</strong>
+      <em class=comm>#Обновление.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo mkfs -t ext4 -L ИМЯ /dev/sdb</strong>
+      <em class=comm>#Форматирование.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo mkfs -t vfat -n ИМЯ /dev/sdb</strong>
+      <em class=comm>#Форматирование в fat.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>
+        rfkill list all
+      </strong>
+      <em class=comm>#Если отвалился интернет.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>
+        rfkill unblock all
+      </strong>
+      <em class=comm>#Если отвалился интернет.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>journalctl -f</strong>
+      <em class=comm>#Журнал работы системы в терминале.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>systemctl list-units --type service -all</strong>
+      <em class=comm>#Список всех служб linux.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>systemctl list-units --type service --state running</strong>
+      <em class=comm>#Список только выполняющихся служб linux.</em>dmesg
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo dmesg</strong>
+      <em class=comm>#Команда, используемая в UNIX‐подобных операционных системах для вывода буфера сообщений ядра в стандартный поток вывода.</em>
+    </p>
+    <p class=button>Enter</p>
+    <p class=term>
+      <em class=ps1>$:</em>
+      <strong>sudo setcap CAP_SYS_NICE+ep ~/.local/share/Steam/steamapps/common/SteamVR/bin/linux64/vrcompositor-launcher</strong>
+      <em class=comm>#Установка SteamVR.</em>
+    </p>
+    <p class=button>Enter</p>
+    <hr>
+    <h2>Черновик.</h2>
+    <p class=text>
+      #Sheel “map” “bcfg boot dump” “bcfg boot rm”   <br>
+      Alt+SysRq(PrintScreen)+REISUB <br>
+      Alt+SysRq(PrintScreen)+B  - перезагрузка системы <br>
+      Alt+SysRq(PrintScreen)+f - вызов oom_kill (убъет жрущий процесс, потребуется несколько минут) <br>
+      Alt+SysRq(PrintScreen)+m - вся инфа о памяти <br>
+      Alt+SysRq(PrintScreen)+t - вся инфа о запущенных процессах <br>
+      Alt+SysRq(PrintScreen)+w -  список всех заблокированных, ждущих окончания ввода-вывода задач <br>
+      Alt+SysRq(PrintScreen)+t - выведет всю информацию о запущенных процессах<br>
+    </p>
+  </body>
+</html>
