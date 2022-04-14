@@ -90,11 +90,17 @@
       .ps1
       {
         color: #662b2b;
+        animation: blink 1s infinite;
       }
       .p
       {
         padding: 1%;
         margin: 1%;
+      }
+      @keyframes blink
+      {
+        from { opacity: 1; }
+        to { opacity: 0; }
       }
     </style>
   </head>
