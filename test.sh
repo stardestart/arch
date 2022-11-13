@@ -757,7 +757,7 @@ geometry=@ByteArray(\x1\xd9\xd0\xcb\0\x3\0\0\0\0\0\"\0\0\0\x88\0\0\xe\xdd\0\0\b\
 
 [Troubleshooting]
 force_raster_widgets=1
-ignored_applications=@Invalid()' >> /mnt/home/$username/.config/qt5ct/qt5ct.conf
+ignored_applications=@Invalid()' > /mnt/home/$username/.config/qt5ct/qt5ct.conf
 mkdir -p /mnt/usr/include/lxappearance/
 echo '/*
  *      lxappearance.h
@@ -877,9 +877,9 @@ void lxappearance_changed();
 
 void on_check_button_toggled(GtkToggleButton* btn, gpointer user_data);
 
-#endif' >> /mnt/usr/include/lxappearance
+#endif' > /mnt/usr/include/lxappearance/lxappearance.d
 #mkdir -p /mnt
-#echo '' >> /mnt
+#echo '' > /mnt
 if [ -z "$wifi" ];
 then
 arch-chroot /mnt ip link set $net up
