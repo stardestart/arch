@@ -19,7 +19,6 @@ iwctl --passphrase $passwifi station $net connect $wifi;
 fi
 time="$(curl https://ipapi.co/timezone)"
 timedatectl set-timezone $time
-timedatectl status
 lsblk -d
 echo "
 "
