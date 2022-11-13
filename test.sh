@@ -725,6 +725,39 @@ echo 'polkit.addRule(function(action, subject) {
         return polkit.Result.YES;
     }
 });' > /mnt/etc/polkit-1/rules.d/49-nopasswd_global.rules
+mkdir -p /mnt/home/$username/.config/qt5ct
+echo '[Appearance]
+color_scheme_path=/usr/share/qt5ct/colors/airy.conf
+custom_palette=false
+icon_theme=ePapirus-Dark
+standard_dialogs=default
+style=Adwaita-Dark
+
+[Fonts]
+fixed=@Variant(\0\0\0@\0\0\0\x14\0S\0\x61\0n\0s\0 \0S\0\x65\0r\0i\0\x66@\"\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)
+general=@Variant(\0\0\0@\0\0\0\x14\0S\0\x61\0n\0s\0 \0S\0\x65\0r\0i\0\x66@\"\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)
+
+[Interface]
+activate_item_on_single_click=1
+buttonbox_layout=0
+cursor_flash_time=1000
+dialog_buttons_have_icons=1
+double_click_interval=400
+gui_effects=@Invalid()
+keyboard_scheme=2
+menus_have_icons=true
+show_shortcuts_in_context_menus=true
+stylesheets=@Invalid()
+toolbutton_style=4
+underline_shortcut=1
+wheel_scroll_lines=3
+
+[SettingsWindow]
+geometry=@ByteArray(\x1\xd9\xd0\xcb\0\x3\0\0\0\0\0\"\0\0\0\x88\0\0\xe\xdd\0\0\b\x1e\0\0\0+\0\0\0\x88\0\0\xe\xd4\0\0\b\x15\0\0\0\0\0\0\0\0\xf\0\0\0\0+\0\0\0\x88\0\0\xe\xd4\0\0\b\x15)
+
+[Troubleshooting]
+force_raster_widgets=1
+ignored_applications=@Invalid()' >> /mnt/home/$username/.config/qt5ct/qt5ct.conf
 if [ -z "$wifi" ];
 then
 arch-chroot /mnt ip link set $net up
