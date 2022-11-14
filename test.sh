@@ -732,11 +732,9 @@ custom_palette=false
 icon_theme=ePapirus-Dark
 standard_dialogs=default
 style=Adwaita-Dark
-
 [Fonts]
 fixed=@Variant(\0\0\0@\0\0\0\x14\0S\0\x61\0n\0s\0 \0S\0\x65\0r\0i\0\x66@\"\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)
 general=@Variant(\0\0\0@\0\0\0\x14\0S\0\x61\0n\0s\0 \0S\0\x65\0r\0i\0\x66@\"\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)
-
 [Interface]
 activate_item_on_single_click=1
 buttonbox_layout=0
@@ -751,10 +749,8 @@ stylesheets=@Invalid()
 toolbutton_style=4
 underline_shortcut=1
 wheel_scroll_lines=3
-
 [SettingsWindow]
 geometry=@ByteArray(\x1\xd9\xd0\xcb\0\x3\0\0\0\0\0\"\0\0\0\x88\0\0\xe\xdd\0\0\b\x1e\0\0\0+\0\0\0\x88\0\0\xe\xd4\0\0\b\x15\0\0\0\0\0\0\0\0\xf\0\0\0\0+\0\0\0\x88\0\0\xe\xd4\0\0\b\x15)
-
 [Troubleshooting]
 force_raster_widgets=1
 ignored_applications=@Invalid()' > /mnt/home/$username/.config/qt5ct/qt5ct.conf
@@ -779,26 +775,20 @@ echo '/*
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  *      MA 02110-1301, USA.
  */
-
 #ifndef _LXAPPEARANCE_H_
 #define _LXAPPEARANCE_H_
-
 #include <gtk/gtk.h>
-
 #define LXAPPEARANCE_ABI_VERSION    1
-
 typedef struct _LXAppearance    LXAppearance;
 struct _LXAppearance
 {
     guint32 abi_version;
     GtkWidget* dlg;
     GtkWidget* notebook;
-
     /* gtk theme */
     GtkWidget* widget_theme_view;
     GtkListStore* widget_theme_store;
     GtkWidget* default_font_btn;
-
     /* color scheme */
     GtkWidget* color_table;
     GtkWidget* custom_colors;
@@ -808,38 +798,29 @@ struct _LXAppearance
     gboolean color_scheme_supported; /* if color scheme is supported by current gtk theme */
     /* color buttons in color scheme page. */
     GtkWidget* color_btns[8]; /* FIXME: this value might be changed in the future */
-
     /* icon theme */
     GtkWidget* icon_theme_view;
     GtkListStore* icon_theme_store;
     GtkWidget* icon_theme_remove_btn;
-
     /* cursor theme */
     GtkWidget* cursor_theme_view;
     GtkWidget* cursor_demo_view;
     GtkListStore* cursor_theme_store;
     GtkWidget* cursor_size_range;
     GtkWidget* cursor_theme_remove_btn;
-
     GSList* icon_themes; /* a list of IconTheme struct representing all icon and cursor themes */
-
     /* toolbar style and icon size */
     GtkWidget* tb_style_combo;
     GtkWidget* tb_icon_size_combo;
-
     GtkWidget* button_images_check;
     GtkWidget* menu_images_check;
-
     /* font rendering */
     GtkWidget* font_rgba_combo;
     GtkWidget* hinting_style_combo;
-
     GtkWidget* enable_antialising_check;
     GtkWidget* enable_hinting_check;
-
     /* the page for window manager plugins */
     GtkWidget* wm_page;
-
     char* widget_theme;
     char* default_font;
     char* icon_theme;
@@ -850,49 +831,35 @@ struct _LXAppearance
     int toolbar_icon_size;
     const char* hinting_style;
     const char* font_rgba;
-
     gboolean button_images;
     gboolean menu_images;
-
 #if GTK_CHECK_VERSION(2, 14, 0)
     GtkWidget* event_sound_check;
     GtkWidget* input_feedback_check;
     gboolean enable_event_sound;
     gboolean enable_input_feedback;
 #endif
-
     gboolean enable_antialising;
     gboolean enable_hinting;
-
     gboolean changed;
     gboolean use_lxsession;
-
     char *modules;
     GtkWidget *enable_accessibility_button;
 };
-
 extern LXAppearance app;
-
 void lxappearance_changed();
-
 void on_check_button_toggled(GtkToggleButton* btn, gpointer user_data);
-
 #endif' > /mnt/usr/include/lxappearance/lxappearance.d
 echo '# change_on_start = <True or False>
 change_on_start = True
-
 # change_enabled = <True or False>
 change_enabled = False
-
 # change_interval = <interval in seconds - not less than 5>
 change_interval = 300
-
 # internet_enabled = <True or False>
 internet_enabled = True
-
 # safe_mode = <True or False>
 safe_mode = False
-
 # What scripts to use to set the wallpaper, or to obtain the path to the current wallpaper
 # Variety automatically manages and upgrades these two files:
 # ~/.config/variety/scripts/set_wallpaper
@@ -903,11 +870,9 @@ safe_mode = False
 # Having a functional set_wallpaper script is essential, get_wallpaper is not so important.
 set_wallpaper_script = ~/.config/variety/scripts/set_wallpaper
 get_wallpaper_script = ~/.config/variety/scripts/get_wallpaper
-
 # download_folder = <some folder> - when not specified, the default is ~/.config/variety/Downloaded
 download_folder = ~/.config/variety/Downloaded
-
-# download_preference_ratio - if we have "unconsumed" download sources, we'll prefer to show a newly
+# download_preference_ratio - if we have "unconsumed" download sources, we\047ll prefer to show a newly
 # downloaded image instead of an existing one in this percentage of the cases
 download_preference_ratio = 0.9
 
@@ -917,7 +882,7 @@ download_preference_ratio = 0.9
 quota_enabled = True
 quota_size = 1000
 
-# Wallhaven API key, by default it's an empty string
+# Wallhaven API key, by default it\047s an empty string
 wallhaven_api_key = ""
 
 # favorites_folder = <some folder> - when not specified, the default is ~/.config/variety/Favorites
@@ -946,7 +911,7 @@ fetched_folder = ~/.config/variety/Fetched
 
 # Clipboard monitoring settings
 # clipboard_enabled = <True or False>
-# clipboard_use_whitelist = <will we use a hosts whitelist, or we'll fetch from everywhere - True or False>
+# clipboard_use_whitelist = <will we use a hosts whitelist, or we\047ll fetch from everywhere - True or False>
 # clipboard_hosts = <comma-separated whitelist of hosts for which clipboard fetching is enabled>
 clipboard_enabled = False
 clipboard_use_whitelist = True
@@ -1015,8 +980,8 @@ clock_date_font = Serif 30
 #
 # The filter defines the ImageMagick command that Variety uses to render the clock on the wallpaper.
 # First some scaling is applied to get the image down to the screen size - this ensures
-# the final drawn clock won't be rescaled by the desktop wallpaper system.
-# Easiest way to see what's happening is to run variety with -v, enable clock and see what ImageMagick
+# the final drawn clock won\047t be rescaled by the desktop wallpaper system.
+# Easiest way to see what\047s happening is to run variety with -v, enable clock and see what ImageMagick
 # commands Variety dumps in the log.
 #
 # The user may want to customize the following aspects:
@@ -1041,7 +1006,7 @@ clock_date_font = Serif 30
 # A tutorial on "annotating" with ImageMagick that you may use as a reference: http://www.imagemagick.org/Usage/annotating/
 # You can get a very uniquely looking clock with some of the more advanced techniques (e.g. circle-shaped text, interesting colors and shading, etc....).
 
-clock_filter = "-density 100 -font `fc-match -f '%{file[0]}' '%CLOCK_FONT_NAME'` -pointsize %CLOCK_FONT_SIZE -gravity SouthEast -fill '#00000044' -annotate 0x0+[%HOFFSET+58]+[%VOFFSET+108] '%H:%M' -fill white -annotate 0x0+[%HOFFSET+60]+[%VOFFSET+110] '%H:%M' -font `fc-match -f '%{file[0]}' '%DATE_FONT_NAME'` -pointsize %DATE_FONT_SIZE -fill '#00000044' -annotate 0x0+[%HOFFSET+58]+[%VOFFSET+58] '%A, %B %d' -fill white -annotate 0x0+[%HOFFSET+60]+[%VOFFSET+60] '%A, %B %d'"
+clock_filter = "-density 100 -font `fc-match -f \047%{file[0]}\047 \047%CLOCK_FONT_NAME\047` -pointsize %CLOCK_FONT_SIZE -gravity SouthEast -fill \047#00000044\047 -annotate 0x0+[%HOFFSET+58]+[%VOFFSET+108] \047%H:%M\047 -fill white -annotate 0x0+[%HOFFSET+60]+[%VOFFSET+110] \047%H:%M\047 -font `fc-match -f \047%{file[0]}\047 \047%DATE_FONT_NAME\047` -pointsize %DATE_FONT_SIZE -fill \047#00000044\047 -annotate 0x0+[%HOFFSET+58]+[%VOFFSET+58] \047%A, %B %d\047 -fill white -annotate 0x0+[%HOFFSET+60]+[%VOFFSET+60] \047%A, %B %d\047"
 
 # Quotes settings
 # quotes_enabled = <True or False>
@@ -1053,7 +1018,7 @@ clock_filter = "-density 100 -font `fc-match -f '%{file[0]}' '%CLOCK_FONT_NAME'`
 # quotes_hpos = <0-100>, default is 100
 # quotes_vpos = <0-100>, default is 40
 # quotes_max_length = a positive integer, quotes above this length will not be displayed
-# (as they often won't fit well on screen)
+# (as they often won\047t fit well on screen)
 # quotes_text_shadow = <True or False>, default is False
 # quotes_disabled_sources = <|-separated list of disabled quote plugin names>, default is "Urban Dictionary"
 # quotes_tags = <comma-separated list of tags>, default is empty
@@ -1102,10 +1067,10 @@ src1 = False|favorites|The Favorites folder
 src2 = False|fetched|The Fetched folder
 src3 = False|folder|/usr/share/backgrounds
 src4 = False|flickr|user:www.flickr.com/photos/peter-levi/;user_id:93647178@N00;
-src5 = True|apod|NASA's Astronomy Picture of the Day
+src5 = True|apod|NASA\047s Astronomy Picture of the Day
 src6 = False|bing|Bing Photo of the Day
 src7 = True|earthview|Google Earth View Wallpapers
-src8 = False|natgeo|National Geographic's photo of the day
+src8 = False|natgeo|National Geographic\047s photo of the day
 src9 = True|unsplash|High-resolution photos from Unsplash.com
 
 # Image filters to apply randomly to every wallpaper (ImageMagick is used for this)
