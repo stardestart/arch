@@ -1,6 +1,13 @@
 #!/bin/bash
 loadkeys ru
 setfont ter-v18n
+cpu="$(lscpu | grep -i intel)"
+if [ -z "$cpu" ];
+then
+microcode=amd-ucode;
+else
+microcode=intel-ucode;
+fi
 net="$(iwctl device list | awk '{print $2}' | tail -n 2 | xargs)"
 if [ -z "$net" ];
 then
@@ -144,6 +151,7 @@ timeout 2
 editor 0' > /mnt/boot/loader/loader.conf
 echo "title  Arch Linux Virtual
 linux  /vmlinuz-linux-zen
+initrd /$microcode.img
 initrd  /initramfs-linux-zen.img
 options root=/dev/${disk}3 rw" > /mnt/boot/loader/entries/arch.conf;
 fi
@@ -152,6 +160,12 @@ echo '[multilib]
 Include = /etc/pacman.d/mirrorlist' >> /mnt/etc/pacman.conf
 echo 'kernel.sysrq=1' > /mnt/etc/sysctl.d/99-sysctl.conf
 arch-chroot /mnt pacman -Sy reflector --noconfirm
+if [ -z "$cpu" ];
+then
+arch-chroot /mnt pacman -Sy amd-ucode --noconfirm;
+else
+arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm;
+fi
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
 arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xorg-apps xterm dmenu xdm-archlinux i3status git firefox kwalletmanager ark mc htop conky polkit network-manager-applet acpid dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra variety alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk sane cups avahi go wireless_tools thunar --noconfirm
 arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/; git clone https://aur.archlinux.org/yay.git; cd /home/$username/yay; BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
@@ -1014,6 +1028,10 @@ tooltip_background_id = 5
 tooltip_font_color = #dddddd 100' > /mnt/home/$username/.config/tint2/tint2rc
 #mkdir -p /mnt
 #echo '' > /mnt
+if [ -z "$boot" ];
+then
+arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg;
+fi
 if [ -z "$wifi" ];
 then
 arch-chroot /mnt ip link set $net up
