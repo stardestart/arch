@@ -14,6 +14,22 @@ microcode=amd-ucode;
 else
 microcode=intel-ucode;
 fi
+net="$(iwctl device list | awk '{print $2}' | tail -n 2 | xargs)"
+if [ -z "$net" ];
+then
+wifi="";
+else
+read -p "Обнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:
+" wifi;
+fi
+if [ -z "$wifi" ];
+then
+net="$(ip -br link show | grep -v UNKNOWN | grep -v DOWN | awk '{print $1}' | xargs)";
+else
+read -p "Пароль wifi:
+" passwifi;
+iwctl --passphrase $passwifi station $net connect $wifi;
+fi
 time="$(curl https://ipapi.co/timezone)"
 timedatectl set-timezone $time
 lsblk -d
