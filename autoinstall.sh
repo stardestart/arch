@@ -1,6 +1,19 @@
 #!/bin/bash
 loadkeys ru
 setfont ter-v18n
+gpu="$(lspci | grep -i VGA | grep -i amd)"
+if [ -n "$gpu" ]; then gpu=amd;
+elif
+gpu="$(lspci | grep -i VGA | grep -i nvidia)";
+[ -n "$gpu" ]; then gpu=nvidia;
+fi
+cpu="$(lscpu | grep -i intel)"
+if [ -z "$cpu" ];
+then
+microcode=amd-ucode;
+else
+microcode=intel-ucode;
+fi
 net="$(iwctl device list | awk '{print $2}' | tail -n 2 | xargs)"
 if [ -z "$net" ];
 then
