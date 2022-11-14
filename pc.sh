@@ -48,6 +48,41 @@ read -p "Введите пароль для $username: " passuser
 echo "
 "
 read -p "Введите пароль для root: " passroot
+boot="$(efibootmgr | grep Boot)"
+if [ -z "$boot" ];
+then
+fdisk /dev/$disk <<EOF
+g
+n
+1
+2048
++512m
+y
+n
+2
++1m
+y
+t
+2
+4
+n
+3
++1g
+n
+4
+w
+EOF
+mkfs.ext2 /dev/${disk}1 -L boot<<EOF
+y
+EOF
+mkswap /dev/${disk}3 -L swap
+mkfs.ext4 /dev/${disk}4 -L root<<EOF
+y
+EOF
+mount /dev/${disk}4 /mnt
+mount --mkdir /dev/${disk}1 /mnt/boot
+swapon /dev/${disk}3;
+else
 fdisk /dev/$disk <<EOF
 g
 n
@@ -58,7 +93,7 @@ t
 1
 n
 2
-+8g
++1g
 n
 3
 w
@@ -71,9 +106,7 @@ EOF
 mount /dev/${disk}3 /mnt
 mount --mkdir /dev/${disk}1 /mnt/boot
 swapon /dev/${disk}2;
-mkdir /mnt/{data,games}
-mount /dev/sda /mnt/data
-mount /dev/nvme1n1 /mnt/games
+fi
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
 genfstab -p -U /mnt >> /mnt/etc/fstab
 net="$(ip -br link show | grep -v UNKNOWN | grep -v DOWN | cut -b1-10)"
@@ -100,6 +133,13 @@ $passuser
 $passuser
 EOF
 echo "$username ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
+boot="$(efibootmgr | grep Boot)"
+if [ -z "$boot" ];
+then
+arch-chroot /mnt pacman -S grub --noconfirm
+arch-chroot /mnt grub-install /dev/$disk
+arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg;
+else
 arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
 arch-chroot /mnt bootctl install
 echo 'default arch
@@ -107,6 +147,7 @@ timeout 2
 editor 0' > /mnt/boot/loader/loader.conf
 echo "title  Arch Linux Virtual
 linux  /vmlinuz-linux-zen
+initrd /$microcode.img
 initrd  /initramfs-linux-zen.img
 options root=/dev/${disk}3 rw" > /mnt/boot/loader/entries/arch.conf;
 fi
@@ -126,7 +167,7 @@ elif
 [ "$gpu" == "nvidia" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda;
 fi
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
-pacman -Sy xorg i3-gaps xorg-xinit xorg-apps xterm dmenu xdm-archlinux i3status git nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img network-manager-applet rng-tools dbus-broker acpid giflib lib32-giflib gtk4 gtk3 lib32-gtk3 gtk2 lib32-gtk2 dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra variety alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol faudio lib32-faudio freetype2 noto-fonts-extra noto-fonts-cjk ttf-joypixels audacity kdenlive cheese kwrite sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf avahi bluez bluez-utils bluez-cups bluez-hid2hci bluez-libs bluez-plugins bluez-qt bluez-tools python-bluepy python-pybluez blueman steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel intel-ucode iucode-tool mesa lib32-mesa go wireless_tools packagekit-qt5 --noconfirm
+pacman -Sy xorg i3-gaps xorg-xinit xorg-apps xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img network-manager-applet rng-tools dbus-broker acpid giflib lib32-giflib gtk4 gtk3 lib32-gtk3 gtk2 lib32-gtk2 dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra variety alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol faudio lib32-faudio freetype2 noto-fonts-extra noto-fonts-cjk ttf-joypixels audacity kdenlive cheese kwrite sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf avahi bluez bluez-utils bluez-cups bluez-hid2hci bluez-libs bluez-plugins bluez-qt bluez-tools python-bluepy python-pybluez blueman steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa go wireless_tools packagekit-qt5 --noconfirm
 arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/; git clone https://aur.archlinux.org/yay.git; cd /home/$username/yay; BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
 rm -Rf /mnt/home/$username/yay
 arch-chroot /mnt/ sudo -u $username yay -S transset-df hardinfo r-linux debtap auto-cpufreq volctl libreoffice-extension-languagetool cups-xerox-b2xx --noconfirm
@@ -136,7 +177,6 @@ userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
 sysresources=/etc/X11/xinit/.Xresources
 sysmodmap=/etc/X11/xinit/.Xmodmap
-
 #Объединить значения по умолчанию и раскладки клавиш.
 if [ -f $sysresources ]; then
     xrdb -merge $sysresources
@@ -150,7 +190,6 @@ fi
 if [ -f "$usermodmap" ]; then
     xmodmap "$usermodmap"
 fi
-
 #Запуск программ.
 if [ -d /etc/X11/xinit/xinitrc.d ] ; then
  for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
@@ -158,7 +197,6 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
  done
  unset f
 fi
-
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
 exec i3 #Автозапуск i3.' > /mnt/home/$username/.xinitrc
 echo 'Section "InputClass"
@@ -763,7 +801,7 @@ gtk-xft-hintstyle=hintmedium
 gtk-xft-rgba=rgb' > /mnt/home/$username/.config/gtk-3.0/settings.ini
 mkdir -p /mnt/home/$username/.config/tint2
 echo '#---- Generated by tint2conf df32 ----
-# See https://gitlab.com/o9000/tint2/wikis/Configure for 
+# See https://gitlab.com/o9000/tint2/wikis/Configure for
 # full documentation of the configuration options.
 #-------------------------------------
 # Gradients
@@ -905,7 +943,7 @@ systray_sort = ascending
 systray_icon_size = 24
 systray_icon_asb = 100 0 0
 systray_monitor = 1
-systray_name_filter = 
+systray_name_filter =
 #-------------------------------------
 # Launcher
 launcher_padding = 2 4 2
@@ -947,37 +985,37 @@ launcher_item_app = /usr/share/applications/org.kde.skanlite.desktop
 # Clock
 time1_format = %H:%M
 time2_format = %A %d %B
-time1_timezone = 
-time2_timezone = 
+time1_timezone =
+time2_timezone =
 clock_font_color = #ffffff 100
 clock_padding = 2 0
 clock_background_id = 0
-clock_tooltip = 
-clock_tooltip_timezone = 
-clock_lclick_command = 
+clock_tooltip =
+clock_tooltip_timezone =
+clock_lclick_command =
 clock_rclick_command = orage
-clock_mclick_command = 
-clock_uwheel_command = 
-clock_dwheel_command = 
+clock_mclick_command =
+clock_uwheel_command =
+clock_dwheel_command =
 #-------------------------------------
 # Battery
 battery_tooltip = 1
 battery_low_status = 10
 battery_low_cmd = xmessage \047tint2: Battery low!\047
-battery_full_cmd = 
+battery_full_cmd =
 battery_font_color = #ffffff 100
-bat1_format = 
-bat2_format = 
+bat1_format =
+bat2_format =
 battery_padding = 1 0
 battery_background_id = 0
 battery_hide = 101
-battery_lclick_command = 
-battery_rclick_command = 
-battery_mclick_command = 
-battery_uwheel_command = 
-battery_dwheel_command = 
-ac_connected_cmd = 
-ac_disconnected_cmd = 
+battery_lclick_command =
+battery_rclick_command =
+battery_mclick_command =
+battery_uwheel_command =
+battery_dwheel_command =
+ac_connected_cmd =
+ac_disconnected_cmd =
 #-------------------------------------
 # Tooltip
 tooltip_show_timeout = 0.5
@@ -985,10 +1023,8 @@ tooltip_hide_timeout = 0.1
 tooltip_padding = 4 4
 tooltip_background_id = 5
 tooltip_font_color = #dddddd 100' > /mnt/home/$username/.config/tint2/tint2rc
-echo '
-[$Version]
+echo '[$Version]
 update_info=filepicker.upd:filepicker-remove-old-previews-entry,fonts_global.upd:Fonts_Global,fonts_global_toolbar.upd:Fonts_Global_Toolbar,icons_remove_effects.upd:IconsRemoveEffects,kwin.upd:animation-speed,style_widgetstyle_default_breeze.upd:StyleWidgetStyleDefaultBreeze
-
 [ColorEffects:Disabled]
 ChangeSelectionColor=
 Color=56,56,56
@@ -999,7 +1035,6 @@ ContrastEffect=1
 Enable=
 IntensityAmount=0.1
 IntensityEffect=2
-
 [ColorEffects:Inactive]
 ChangeSelectionColor=true
 Color=112,111,110
@@ -1010,7 +1045,6 @@ ContrastEffect=2
 Enable=false
 IntensityAmount=0
 IntensityEffect=0
-
 [Colors:Button]
 BackgroundAlternate=30,87,116
 BackgroundNormal=49,54,59
@@ -1024,7 +1058,6 @@ ForegroundNeutral=246,116,0
 ForegroundNormal=252,252,252
 ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
-
 [Colors:Complementary]
 BackgroundAlternate=30,87,116
 BackgroundNormal=42,46,50
@@ -1038,7 +1071,6 @@ ForegroundNeutral=246,116,0
 ForegroundNormal=252,252,252
 ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
-
 [Colors:Header]
 BackgroundAlternate=42,46,50
 BackgroundNormal=49,54,59
@@ -1052,7 +1084,6 @@ ForegroundNeutral=246,116,0
 ForegroundNormal=252,252,252
 ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
-
 [Colors:Header][Inactive]
 BackgroundAlternate=49,54,59
 BackgroundNormal=42,46,50
@@ -1066,7 +1097,6 @@ ForegroundNeutral=246,116,0
 ForegroundNormal=252,252,252
 ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
-
 [Colors:Selection]
 BackgroundAlternate=30,87,116
 BackgroundNormal=61,174,233
@@ -1080,7 +1110,6 @@ ForegroundNeutral=198,92,0
 ForegroundNormal=252,252,252
 ForegroundPositive=23,104,57
 ForegroundVisited=155,89,182
-
 [Colors:Tooltip]
 BackgroundAlternate=42,46,50
 BackgroundNormal=49,54,59
@@ -1094,7 +1123,6 @@ ForegroundNeutral=246,116,0
 ForegroundNormal=252,252,252
 ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
-
 [Colors:View]
 BackgroundAlternate=35,38,41
 BackgroundNormal=43,43,43
@@ -1108,7 +1136,6 @@ ForegroundNeutral=246,116,0
 ForegroundNormal=252,252,252
 ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
-
 [Colors:Window]
 BackgroundAlternate=49,54,59
 BackgroundNormal=42,46,50
@@ -1122,11 +1149,9 @@ ForegroundNeutral=246,116,0
 ForegroundNormal=252,252,252
 ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
-
 [DirSelect Dialog]
 DirSelectDialog Size=920,588
 History Items[$e]=file:///data/torrent,file:///data,file:$HOME/Загрузки
-
 [General]
 BrowserApplication=firefox.desktop
 ColorSchemeHash=bcce7c1c6181c5e14e633cd8301e7a9036b67ac6
@@ -1139,16 +1164,13 @@ font=Noto Sans Mono,10,-1,5,50,0,0,0,0,0
 menuFont=Noto Sans Mono,10,-1,5,50,0,0,0,0,0
 smallestReadableFont=Noto Sans Mono,8,-1,5,50,0,0,0,0,0
 toolBarFont=Noto Sans Mono,10,-1,5,50,0,0,0,0,0
-
 [Icons]
 Theme=Papirus-Dark
-
 [KDE]
 AnimationDurationFactor=0
 LookAndFeelPackage=org.kde.breezedark.desktop
 ShowDeleteCommand=false
 widgetStyle=Windows
-
 [KFileDialog Settings]
 Allow Expansion=false
 Automatically select filename extension=true
@@ -1168,14 +1190,11 @@ Sort hidden files last=false
 Sort reversed=false
 Speedbar Width=193
 View Style=DetailTree
-
 [KScreen]
 ScaleFactor=1.25
 ScreenScaleFactors=DP-0=1.25;DP-1=1.25;HDMI-0=1.25;DP-2=1.25;DP-3=1.25;DP-4=1.25;DP-5=1.25;USB-C-0=1.25;
-
 [PreviewSettings]
 MaximumRemoteSize=5242880
-
 [WM]
 activeBackground=49,54,59
 activeBlend=252,252,252
@@ -1210,4 +1229,3 @@ arch-chroot /mnt chmod u+x /home/$username/.xinitrc
 arch-chroot /mnt chown -R $username:users /home/$username/
 #umount -R /mnt
 #reboot
-
