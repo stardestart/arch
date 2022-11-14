@@ -115,6 +115,16 @@ echo '[multilib]
 Include = /etc/pacman.d/mirrorlist' >> /mnt/etc/pacman.conf
 echo 'kernel.sysrq=1' > /mnt/etc/sysctl.d/99-sysctl.conf
 arch-chroot /mnt pacman -Sy reflector --noconfirm
+if [ -z "$cpu" ];
+then
+arch-chroot /mnt pacman -Sy amd-ucode --noconfirm;
+else
+arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm;
+fi
+if [ "$gpu" == "amd" ]; then arch-chroot /mnt pacman -Sy amdvlk;
+elif
+[ "$gpu" == "nvidia" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda;
+fi
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
 pacman -Sy xorg i3-gaps xorg-xinit xorg-apps xterm dmenu xdm-archlinux i3status git nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img network-manager-applet rng-tools dbus-broker acpid giflib lib32-giflib gtk4 gtk3 lib32-gtk3 gtk2 lib32-gtk2 dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra variety alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol faudio lib32-faudio freetype2 noto-fonts-extra noto-fonts-cjk ttf-joypixels audacity kdenlive cheese kwrite sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf avahi bluez bluez-utils bluez-cups bluez-hid2hci bluez-libs bluez-plugins bluez-qt bluez-tools python-bluepy python-pybluez blueman steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel intel-ucode iucode-tool  go wireless_tools --noconfirm
 arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/; git clone https://aur.archlinux.org/yay.git; cd /home/$username/yay; BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
