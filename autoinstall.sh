@@ -147,7 +147,7 @@ timeout 2
 editor 0' > /mnt/boot/loader/loader.conf
 echo "title  Arch Linux Virtual
 linux  /vmlinuz-linux-zen
-initrd /${microcode}.img
+initrd /$microcode.img
 initrd  /initramfs-linux-zen.img
 options root=/dev/${disk}3 rw" > /mnt/boot/loader/entries/arch.conf;
 fi
