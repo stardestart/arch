@@ -120,6 +120,7 @@ fi
 pacstrap /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
 genfstab -p -U /mnt >> /mnt/etc/fstab
 net="$(ip -br link show | grep -v UNKNOWN | grep -v DOWN | cut -b1-10)"
+arch-chroot /mnt ln -sf /usr/share/zoneinfo/$time /etc/localtime
 arch-chroot /mnt hwclock --systohc
 arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
 arch-chroot /mnt sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
