@@ -58,6 +58,7 @@ n
 2048
 +512m
 y
+
 n
 2
 +1m
@@ -68,8 +69,11 @@ t
 n
 3
 +1g
+
 n
 4
+
+
 w
 EOF
 mkfs.ext2 /dev/${disk}1 -L boot<<EOF
