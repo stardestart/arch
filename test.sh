@@ -84,8 +84,7 @@ mkfs.ext4 /dev/${disk}4 -L root<<EOF
 y
 EOF
 mount /dev/${disk}4 /mnt;
-mkdir /mnt/boot;
-mount /dev/${disk}1 /mnt/boot;
+mount --mkdir /dev/${disk}1 /mnt/boot;
 swapon /dev/${disk}3;
 else
 fdisk /dev/$disk <<EOF
