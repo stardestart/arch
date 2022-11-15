@@ -176,10 +176,10 @@ elif
 [ "$gpu" == "nvidia" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda;
 fi
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
-arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xorg-apps xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img network-manager-applet rng-tools dbus-broker acpid giflib lib32-giflib gtk4 gtk3 lib32-gtk3 gtk2 lib32-gtk2 dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra variety alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol faudio lib32-faudio freetype2 noto-fonts-extra noto-fonts-cjk ttf-joypixels audacity kdenlive cheese kwrite sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf avahi bluez bluez-utils bluez-cups bluez-hid2hci bluez-libs bluez-plugins bluez-qt bluez-tools python-bluepy python-pybluez blueman steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa go wireless_tools packagekit-qt5 --noconfirm
+arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xorg-apps xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit network-manager-applet dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk cheese kwrite mesa lib32-mesa go wireless_tools packagekit-qt5 --noconfirm
 arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/; git clone https://aur.archlinux.org/yay.git; cd /home/$username/yay; BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
 rm -Rf /mnt/home/$username/yay
-arch-chroot /mnt/ sudo -u $username yay -S transset-df hardinfo r-linux debtap auto-cpufreq volctl libreoffice-extension-languagetool cups-xerox-b2xx --noconfirm
+arch-chroot /mnt/ sudo -u $username yay -S transset-df volctl --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 echo '#Указание на конфигурационные файлы.
 userresources=$HOME/.Xresources
@@ -603,9 +603,6 @@ exec --no-startup-id volctl
 # Автозапуск flameshot.
 exec --no-startup-id flameshot
 #
-# Автозапуск copyq.
-exec --no-startup-id copyq
-#
 # Автозапуск tint2.
 exec --no-startup-id tint2
 #
@@ -618,12 +615,6 @@ exec --no-startup-id conky
 # Автозапуск numlockx.
 exec --no-startup-id numlockx
 #
-# Автозапуск transmission.
-exec --no-startup-id transmission-qt -m
-#
-# Автозапуск blueman-applet.
-exec --no-startup-id blueman-applet
-#
 # Приветствие в течении 10 сек.
 exec --no-startup-id notify-send -t 10000 "✊Доброго времени суток✊"
 #
@@ -632,16 +623,6 @@ exec --no-startup-id xscreensaver --no-splash
 #
 # Автозапуск dolphin.
 exec --no-startup-id dolphin --daemon
-#
-# Автозапуск telegram.
-exec --no-startup-id telegram-desktop -startintray -- %u
-#
-# Автозапуск variety.
-exec --no-startup-id variety
-#
-# Автоматическая разблокировка KWallet.
-exec --no-startup-id /usr/lib/pam_kwallet_init
-#
 ########### Горячие клавиши запуска программ ###########
 #
 # Используйте mod+enter, чтобы запустить терминал ("i3-sensible-terminal" можно заменить "xterm", "terminator" или любым другим на выбор).
@@ -966,15 +947,7 @@ startup_notifications = 1
 launcher_tooltip = 1
 launcher_item_app = tint2conf.desktop
 launcher_item_app = firefox.desktop
-launcher_item_app = /usr/share/applications/Zoom.desktop
 launcher_item_app = /usr/share/applications/org.kde.dolphin.desktop
-launcher_item_app = /usr/share/applications/gparted.desktop
-launcher_item_app = /usr/share/applications/transmission-qt.desktop
-launcher_item_app = /usr/share/applications/telegramdesktop.desktop
-launcher_item_app = /usr/share/applications/org.kde.plasma.emojier.desktop
-launcher_item_app = /usr/share/applications/org.kde.kalgebra.desktop
-launcher_item_app = /usr/share/applications/org.kde.ktouch.desktop
-launcher_item_app = /usr/share/applications/blender.desktop
 launcher_item_app = /usr/share/applications/org.gnome.Cheese.desktop
 launcher_item_app = /usr/share/applications/org.kde.kate.desktop
 launcher_item_app = /usr/share/applications/com.obsproject.Studio.desktop
@@ -982,13 +955,6 @@ launcher_item_app = /usr/share/applications/vlc.desktop
 launcher_item_app = /usr/share/applications/org.kde.step.desktop
 launcher_item_app = /usr/share/applications/hardinfo.desktop
 launcher_item_app = /usr/share/applications/audacity.desktop
-launcher_item_app = /usr/share/applications/org.avidemux.Avidemux.desktop
-launcher_item_app = /usr/share/applications/discord.desktop
-launcher_item_app = /usr/share/applications/gimp.desktop
-launcher_item_app = /usr/share/applications/org.kde.kdenlive.desktop
-launcher_item_app = /usr/share/applications/libreoffice-startcenter.desktop
-launcher_item_app = /usr/share/applications/rtt-rlinux.desktop
-launcher_item_app = /usr/share/applications/org.kde.sweeper.desktop
 launcher_item_app = /usr/share/applications/org.kde.skanlite.desktop
 #-------------------------------------
 # Clock
@@ -1212,7 +1178,6 @@ activeForeground=252,252,252
 inactiveBackground=42,46,50
 inactiveBlend=161,169,177
 inactiveForeground=161,169,177' > /mnt/home/$username/.config/kdeglobals
-fstrim -v -a
 if [ -z "$boot" ];
 then
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg;
@@ -1231,10 +1196,7 @@ arch-chroot /mnt su $username <<EOF
 WINEARCH=win32 winecfg
 winetricks directx9 d3dx9 d3dx9_26 d3dx9_28 d3dx9_31 d3dx9_35 d3dx9_36 d3dx9_42 d3dx9_43 d3dx10 d3dx10_43 d3dx11_42 d3dx11_43 d3dxof
 EOF
-arch-chroot /mnt systemctl disable dbus
-arch-chroot /mnt systemctl enable avahi-daemon saned.socket cups.socket bluetooth acpid auto-cpufreq dbus-broker rngd cups-browsed fstrim.timer reflector.timer xdm-archlinux dhcpcd
+arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 arch-chroot /mnt chmod u+x /home/$username/.xinitrc
 arch-chroot /mnt chown -R $username:users /home/$username/
-#umount -R /mnt
-#reboot
