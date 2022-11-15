@@ -113,8 +113,7 @@ mkfs.ext4 /dev/${disk}3 -L root<<EOF
 y
 EOF
 mount /dev/${disk}3 /mnt;
-mkdir /mnt/boot;
-mount /dev/${disk}1 /mnt/boot;
+mount --mkdir /dev/${disk}1 /mnt/boot;
 swapon /dev/${disk}2;
 fi
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
