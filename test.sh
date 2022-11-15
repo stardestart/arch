@@ -79,8 +79,9 @@ mkswap /dev/${disk}3 -L swap
 mkfs.ext4 /dev/${disk}4 -L root<<EOF
 y
 EOF
-mount /dev/${disk}4 /mnt
-mount --mkdir /dev/${disk}1 /mnt/boot
+mount /dev/${disk}4 /mnt;
+mkdir /mnt/boot;
+mount /dev/${disk}1 /mnt/boot;
 swapon /dev/${disk}3;
 else
 fdisk /dev/$disk <<EOF
@@ -103,9 +104,9 @@ mkswap /dev/${disk}2 -L swap
 mkfs.ext4 /dev/${disk}3 -L root<<EOF
 y
 EOF
-mount /dev/${disk}3 /mnt
-mkdir /mnt/boot
-mount /dev/${disk}1 /mnt/boot
+mount /dev/${disk}3 /mnt;
+mkdir /mnt/boot;
+mount /dev/${disk}1 /mnt/boot;
 swapon /dev/${disk}2;
 fi
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
