@@ -58,10 +58,10 @@ n
 2048
 +512m
 y
-
+\n
 n
 2
-
+\n
 +1m
 y
 t
@@ -69,12 +69,12 @@ t
 4
 n
 3
-
+\n
 +1g
 n
 4
-
-
+\n
+\n
 w
 EOF
 mkfs.ext2 /dev/${disk}1 -L boot<<EOF
@@ -95,16 +95,16 @@ n
 2048
 +512m
 t
-
+\n
 1
 n
 2
-
+\n
 +1g
 n
 3
-
-
+\n
+\n
 w
 EOF
 mkfs.fat -F32 /dev/${disk}1 -n boot
