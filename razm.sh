@@ -36,16 +36,6 @@ n
 
 w
 EOF
-mkfs.ext2 /dev/${disk}1 -L boot<<EOF
-y
-EOF
-mkswap /dev/${disk}3 -L swap
-mkfs.ext4 /dev/${disk}4 -L root<<EOF
-y
-EOF
-mount /dev/${disk}4 /mnt;
-mount --mkdir /dev/${disk}1 /mnt/boot;
-swapon /dev/${disk}3;
 else
 fdisk /dev/$disk <<EOF
 g
@@ -66,12 +56,4 @@ n
 
 w
 EOF
-mkfs.fat -F32 /dev/${disk}1 -n boot
-mkswap /dev/${disk}2 -L swap
-mkfs.ext4 /dev/${disk}3 -L root<<EOF
-y
-EOF
-mount /dev/${disk}3 /mnt;
-mount --mkdir /dev/${disk}1 /mnt/boot;
-swapon /dev/${disk}2;
 fi
