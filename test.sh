@@ -7,13 +7,13 @@ elif
 gpu="$(lspci | grep -i VGA | grep -i nvidia)";
 [ -n "$gpu" ]; then gpu=nvidia;
 fi
-cpu="$(lscpu | grep -i intel)"
-if [ -z "$cpu" ];
-then
-microcode=amd-ucode;
-else
-microcode=intel-ucode;
-fi
+#cpu="$(lscpu | grep -i intel)"
+#if [ -z "$cpu" ];
+#then
+#microcode=amd-ucode;
+#else
+#microcode=intel-ucode;
+#fi
 net="$(iwctl device list | awk '{print $2}' | tail -n 2 | xargs)"
 if [ -z "$net" ];
 then
