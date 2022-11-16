@@ -158,17 +158,21 @@ initrd /$microcode.img
 initrd  /initramfs-linux-zen.img
 options root=/dev/${disk}3 rw" > /mnt/boot/loader/entries/arch.conf;
 fi
-arch-chroot /mnt sed -i 's/#Color/Color/' /etc/pacman.conf
-echo '[multilib]
-Include = /etc/pacman.d/mirrorlist' >> /mnt/etc/pacman.conf
-echo 'kernel.sysrq=1' > /mnt/etc/sysctl.d/99-sysctl.conf
-arch-chroot /mnt pacman -Sy reflector --noconfirm
 #if [ -z "$cpu" ];
 #then
 #arch-chroot /mnt pacman -Sy amd-ucode --noconfirm;
 #else
 #arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm;
 #fi
+if [ -z "$boot" ];
+then
+arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg;
+fi
+arch-chroot /mnt sed -i 's/#Color/Color/' /etc/pacman.conf
+echo '[multilib]
+Include = /etc/pacman.d/mirrorlist' >> /mnt/etc/pacman.conf
+echo 'kernel.sysrq=1' > /mnt/etc/sysctl.d/99-sysctl.conf
+arch-chroot /mnt pacman -Sy reflector --noconfirm
 if [ "$gpu" == "amd" ]; then arch-chroot /mnt pacman -Sy amdvlk;
 elif
 [ "$gpu" == "nvidia" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda;
@@ -1176,10 +1180,6 @@ activeForeground=252,252,252
 inactiveBackground=42,46,50
 inactiveBlend=161,169,177
 inactiveForeground=161,169,177' > /mnt/home/$username/.config/kdeglobals
-#if [ -z "$boot" ];
-#then
-#arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg;
-#fi
 if [ -z "$wifi" ];
 then
 arch-chroot /mnt ip link set $net up
