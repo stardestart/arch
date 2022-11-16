@@ -59,19 +59,19 @@ n
 +512m
 n
 2
-
+\n
 +1m
 t
 2
 4
 n
 3
-
+\n
 +1g
 n
 4
-
-
+\n
+\n
 w
 EOF
 mkfs.ext2 /dev/${disk}1 -L boot<<EOF
@@ -82,8 +82,7 @@ mkfs.ext4 /dev/${disk}4 -L root<<EOF
 y
 EOF
 mount /dev/${disk}4 /mnt;
-mkdir /mnt/boot
-mount /dev/${disk}1 /mnt/boot;
+mount --mkdir /dev/${disk}1 /mnt/boot;
 swapon /dev/${disk}3;
 else
 fdisk /dev/$disk <<EOF
@@ -164,10 +163,6 @@ arch-chroot /mnt pacman -Sy amd-ucode --noconfirm;
 else
 arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm;
 fi
-if [ -z "$boot" ];
-then
-arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg;
-fi
 arch-chroot /mnt sed -i 's/#Color/Color/' /etc/pacman.conf
 echo '[multilib]
 Include = /etc/pacman.d/mirrorlist' >> /mnt/etc/pacman.conf
@@ -179,9 +174,6 @@ elif
 fi
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
 arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xorg-apps xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit network-manager-applet dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk cheese kwrite mesa lib32-mesa go wireless_tools packagekit-qt5 winetricks wine --noconfirm
-arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/; git clone https://aur.archlinux.org/yay.git; cd /home/$username/yay; BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
-rm -Rf /mnt/home/$username/yay
-arch-chroot /mnt/ sudo -u $username yay -S transset-df volctl --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 echo '#Указание на конфигурационные файлы.
 userresources=$HOME/.Xresources
@@ -1194,6 +1186,9 @@ arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 arch-chroot /mnt chmod u+x /home/$username/.xinitrc
 arch-chroot /mnt chown -R $username:users /home/$username/
+arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/; git clone https://aur.archlinux.org/yay.git; cd /home/$username/yay; BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
+rm -Rf /mnt/home/$username/yay
+arch-chroot /mnt/ sudo -u $username yay -S transset-df volctl --noconfirm
 arch-chroot /mnt su $username <<EOF
 WINEARCH=win32 winecfg
 winetricks directx9 vcrun2008
