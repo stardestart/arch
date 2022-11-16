@@ -42,8 +42,8 @@ mkswap /dev/${disk}3 -L swap
 mkfs.ext4 /dev/${disk}4 -L root<<EOF
 y
 EOF
-mount /dev/${disk}4 /mnt;
-mount --mkdir /dev/${disk}1 /mnt/boot;
+mount /dev/${disk}4 /mnt
+mount --mkdir /dev/${disk}1 /mnt/boot
 else
 fdisk /dev/$disk <<EOF
 g
@@ -68,6 +68,6 @@ mkswap /dev/${disk}2 -L swap
 mkfs.ext4 /dev/${disk}3 -L root<<EOF
 y
 EOF
-mount /dev/${disk}3 /mnt;
-mount --mkdir /dev/${disk}1 /mnt/boot;
+mount /dev/${disk}3 /mnt
+mount --mkdir /dev/${disk}1 /mnt/boot
 fi
