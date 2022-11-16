@@ -33,7 +33,7 @@ t
 #4
 #
 #
-#w
+w
 #EOF
 mkfs.ext2 /dev/${disk}1 -L boot<<EOF
 y
