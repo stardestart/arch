@@ -157,10 +157,8 @@ initrd  /initramfs-linux-zen.img
 options root=/dev/${disk}3 rw" > /mnt/boot/loader/entries/arch.conf;
 fi
 if [ "$cpu" == "amd-ucode" ];
-then
-arch-chroot /mnt pacman -Sy amd-ucode --noconfirm;
-elif [ "$cpu" == "intel-ucode" ];
-arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm;
+then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm;
+elif [ "$cpu" == "intel-ucode" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm;
 fi
 arch-chroot /mnt sed -i 's/#Color/Color/' /etc/pacman.conf
 echo '[multilib]
@@ -172,6 +170,7 @@ elif [ "$gpu" == "nvidia" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia
 fi
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
 arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xorg-apps xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit network-manager-applet dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk cheese kwrite mesa lib32-mesa go wireless_tools packagekit-qt5 winetricks wine geoclue2  --noconfirm
+arch-chroot /mnt pacman -Ss geoclue2
 echo '#Указание на конфигурационные файлы.
 userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
