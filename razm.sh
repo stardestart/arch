@@ -8,6 +8,7 @@ echo "
 "
 read -p "Введите метку диска на который будет установлена ОС: " disk
 echo "
+"
 boot="$(efibootmgr | grep Boot)"
 if [ -z "$boot" ];
 then
