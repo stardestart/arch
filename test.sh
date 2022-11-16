@@ -152,13 +152,13 @@ timeout 2
 editor 0' > /mnt/boot/loader/loader.conf
 echo "title  Arch Linux Virtual
 linux  /vmlinuz-linux-zen
-initrd /intel-ucode.img
+initrd /$microcode.img
 initrd  /initramfs-linux-zen.img
 options root=/dev/${disk}3 rw" > /mnt/boot/loader/entries/arch.conf;
 fi
-#if [ "$cpu" == "amd-ucode" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm;
-#elif [ "$cpu" == "intel-ucode" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm;
-#fi
+if [ "$microcode" == "amd-ucode" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm;
+elif [ "$microcode" == "intel-ucode" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm;
+fi
 arch-chroot /mnt sed -i 's/#Color/Color/' /etc/pacman.conf
 echo '[multilib]
 Include = /etc/pacman.d/mirrorlist' >> /mnt/etc/pacman.conf
