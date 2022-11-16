@@ -1176,10 +1176,10 @@ activeForeground=252,252,252
 inactiveBackground=42,46,50
 inactiveBlend=161,169,177
 inactiveForeground=161,169,177' > /mnt/home/$username/.config/kdeglobals
-if [ -z "$boot" ];
-then
-arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg;
-fi
+#if [ -z "$boot" ];
+#then
+#arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg;
+#fi
 if [ -z "$wifi" ];
 then
 arch-chroot /mnt ip link set $net up
