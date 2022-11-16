@@ -2,33 +2,33 @@
 loadkeys ru
 setfont ter-v18n
 gpu="$(lspci | grep -i VGA | grep -i amd)"
-if [ -n "$gpu" ]; then gpu=amd;
+if [ -n "$gpu" ]; then gpu=amd
 elif
 gpu="$(lspci | grep -i VGA | grep -i nvidia)";
-[ -n "$gpu" ]; then gpu=nvidia;
+[ -n "$gpu" ]; then gpu=nvidia
 fi
 cpu="$(lscpu | grep -i intel)"
 if [ -z "$cpu" ];
 then
-microcode=amd-ucode;
+microcode=amd-ucode
 else
-microcode=intel-ucode;
+microcode=intel-ucode
 fi
 net="$(iwctl device list | awk '{print $2}' | tail -n 2 | xargs)"
 if [ -z "$net" ];
 then
-wifi="";
+wifi=""
 else
 read -p "Обнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:
-" wifi;
+" wifi
 fi
 if [ -z "$wifi" ];
 then
-net="$(ip -br link show | grep -v UNKNOWN | grep -v DOWN | awk '{print $1}' | xargs)";
+net="$(ip -br link show | grep -v UNKNOWN | grep -v DOWN | awk '{print $1}' | xargs)"
 else
 read -p "Пароль wifi:
-" passwifi;
-iwctl --passphrase $passwifi station $net connect $wifi;
+" passwifi
+iwctl --passphrase $passwifi station $net connect $wifi
 fi
 time="$(curl https://ipapi.co/timezone)"
 timedatectl set-timezone $time
@@ -81,9 +81,9 @@ mkswap /dev/${disk}3 -L swap
 mkfs.ext4 /dev/${disk}4 -L root<<EOF
 y
 EOF
-mount /dev/${disk}4 /mnt;
-mount --mkdir /dev/${disk}1 /mnt/boot;
-swapon /dev/${disk}3;
+mount /dev/${disk}4 /mnt
+mount --mkdir /dev/${disk}1 /mnt/boot
+swapon /dev/${disk}3
 else
 fdisk /dev/$disk <<EOF
 g
@@ -108,9 +108,9 @@ mkswap /dev/${disk}2 -L swap
 mkfs.ext4 /dev/${disk}3 -L root<<EOF
 y
 EOF
-mount /dev/${disk}3 /mnt;
-mount --mkdir /dev/${disk}1 /mnt/boot;
-swapon /dev/${disk}2;
+mount /dev/${disk}3 /mnt
+mount --mkdir /dev/${disk}1 /mnt/boot
+swapon /dev/${disk}2
 fi
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
 genfstab -p -U /mnt >> /mnt/etc/fstab
@@ -143,7 +143,7 @@ if [ -z "$boot" ];
 then
 arch-chroot /mnt pacman -S grub --noconfirm
 arch-chroot /mnt grub-install /dev/$disk
-arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg;
+arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 else
 arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
 arch-chroot /mnt bootctl install
@@ -154,17 +154,17 @@ echo "title  Arch Linux Virtual
 linux  /vmlinuz-linux-zen
 initrd /$microcode.img
 initrd  /initramfs-linux-zen.img
-options root=/dev/${disk}3 rw" > /mnt/boot/loader/entries/arch.conf;
+options root=/dev/${disk}3 rw" > /mnt/boot/loader/entries/arch.conf
 fi
-if [ "$microcode" == "amd-ucode" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm;
-elif [ "$microcode" == "intel-ucode" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm;
+if [ "$microcode" == "amd-ucode" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm
+elif [ "$microcode" == "intel-ucode" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm
 fi
 arch-chroot /mnt sed -i 's/#Color/Color/' /etc/pacman.conf
 echo '[multilib]
 Include = /etc/pacman.d/mirrorlist' >> /mnt/etc/pacman.conf
 echo 'kernel.sysrq=1' > /mnt/etc/sysctl.d/99-sysctl.conf
 arch-chroot /mnt pacman -Sy reflector --noconfirm
-if [ "$gpu" == "amd" ]; then arch-chroot /mnt pacman -Sy amdvlk;
+if [ "$gpu" == "amd" ]; then arch-chroot /mnt pacman -Sy amdvlk
 elif [ "$gpu" == "nvidia" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda;
 fi
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
