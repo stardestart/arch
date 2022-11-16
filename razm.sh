@@ -78,5 +78,3 @@ mount /dev/${disk}3 /mnt;
 mount --mkdir /dev/${disk}1 /mnt/boot;
 swapon /dev/${disk}2;
 fi
-lsblk -l
-fdisk -l
