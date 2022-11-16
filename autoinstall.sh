@@ -156,8 +156,7 @@ initrd /$microcode.img
 initrd  /initramfs-linux-zen.img
 options root=/dev/${disk}3 rw" > /mnt/boot/loader/entries/arch.conf;
 fi
-if [ "$cpu" == "amd-ucode" ];
-then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm;
+if [ "$cpu" == "amd-ucode" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm;
 elif [ "$cpu" == "intel-ucode" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm;
 fi
 arch-chroot /mnt sed -i 's/#Color/Color/' /etc/pacman.conf
