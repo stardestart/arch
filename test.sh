@@ -58,10 +58,10 @@ n
 2048
 +512m
 y
-\n
+
 n
 2
-\n
+
 +1m
 y
 t
@@ -69,12 +69,12 @@ t
 4
 n
 3
-\n
+
 +1g
 n
 4
-\n
-\n
+
+
 w
 EOF
 mkfs.ext2 /dev/${disk}1 -L boot<<EOF
@@ -95,16 +95,16 @@ n
 2048
 +512m
 t
-\n
+
 1
 n
 2
-\n
+
 +1g
 n
 3
-\n
-\n
+
+
 w
 EOF
 mkfs.fat -F32 /dev/${disk}1 -n boot
@@ -1192,11 +1192,12 @@ arch-chroot /mnt ip link set $net up
 mkdir -p /mnt/var/lib/iwd
 cp /var/lib/iwd/$wifi.psk /mnt/var/lib/iwd/$wifi.psk
 fi
-arch-chroot /mnt su $username <<EOF
-WINEARCH=win32 winecfg
-winetricks directx9 d3dx9 d3dx9_26 d3dx9_28 d3dx9_31 d3dx9_35 d3dx9_36 d3dx9_42 d3dx9_43 d3dx10 d3dx10_43 d3dx11_42 d3dx11_43 d3dxof
-EOF
 arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 arch-chroot /mnt chmod u+x /home/$username/.xinitrc
 arch-chroot /mnt chown -R $username:users /home/$username/
+arch-chroot /mnt su $username <<EOF
+startx
+WINEARCH=win32 winecfg
+winetricks directx9 d3dx9 d3dx9_26 d3dx9_28 d3dx9_31 d3dx9_35 d3dx9_36 d3dx9_42 d3dx9_43 d3dx10 d3dx10_43 d3dx11_42 d3dx11_43 d3dxof
+EOF
