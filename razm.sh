@@ -8,7 +8,6 @@ echo "
 "
 read -p "Введите метку диска на который будет установлена ОС: " disk
 echo "
-read -p "Введите пароль для root: " passroot
 boot="$(efibootmgr | grep Boot)"
 if [ -z "$boot" ];
 then
