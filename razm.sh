@@ -20,30 +20,30 @@ n
 +512m
 n
 2
-\n
+
 +1m
 t
 2
 4
 n
 3
-\n
+
 +1g
 n
 4
-\n
-\n
+
+
 w
 EOF
-#mkfs.ext2 /dev/${disk}1 -L boot<<EOF
-#y
-#EOF
-#mkswap /dev/${disk}3 -L swap
-#mkfs.ext4 /dev/${disk}4 -L root<<EOF
-#y
-#EOF
-#mount /dev/${disk}4 /mnt
-#mount --mkdir /dev/${disk}1 /mnt/boot
+mkfs.ext2 /dev/${disk}1 -L boot<<EOF
+y
+EOF
+mkswap /dev/${disk}3 -L swap
+mkfs.ext4 /dev/${disk}4 -L root<<EOF
+y
+EOF
+mount /dev/${disk}4 /mnt
+mount --mkdir /dev/${disk}1 /mnt/boot
 else
 fdisk /dev/$disk <<EOF
 g
