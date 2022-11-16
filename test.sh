@@ -1198,5 +1198,5 @@ arch-chroot /mnt chmod u+x /home/$username/.xinitrc
 arch-chroot /mnt chown -R $username:users /home/$username/
 arch-chroot /mnt su $username <<EOF
 WINEARCH=win32 winecfg
-winetricks directx9 d3dx9 d3dx9_26 d3dx9_28 d3dx9_31 d3dx9_35 d3dx9_36 d3dx9_42 d3dx9_43 d3dx10 d3dx10_43 d3dx11_42 d3dx11_43 d3dxof
+winetricks directx9 vcrun2008
 EOF
