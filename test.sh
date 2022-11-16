@@ -7,13 +7,13 @@ elif
 gpu="$(lspci | grep -i VGA | grep -i nvidia)";
 [ -n "$gpu" ]; then gpu=nvidia;
 fi
-#cpu="$(lscpu | grep -i intel)"
-#if [ -z "$cpu" ];
-#then
-#microcode=amd-ucode;
-#else
-#microcode=intel-ucode;
-#fi
+cpu="$(lscpu | grep -i intel)"
+if [ -z "$cpu" ];
+then
+microcode=amd-ucode;
+else
+microcode=intel-ucode;
+fi
 net="$(iwctl device list | awk '{print $2}' | tail -n 2 | xargs)"
 if [ -z "$net" ];
 then
@@ -169,10 +169,10 @@ arch-chroot /mnt pacman -Sy reflector --noconfirm
 #else
 #arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm;
 #fi
-#if [ "$gpu" == "amd" ]; then arch-chroot /mnt pacman -Sy amdvlk;
-#elif
-#[ "$gpu" == "nvidia" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda;
-#fi
+if [ "$gpu" == "amd" ]; then arch-chroot /mnt pacman -Sy amdvlk;
+elif
+[ "$gpu" == "nvidia" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda;
+fi
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
 #arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xorg-apps xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit network-manager-applet dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk cheese kwrite mesa lib32-mesa go wireless_tools packagekit-qt5 winetricks wine --noconfirm
 #arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/; git clone https://aur.archlinux.org/yay.git; cd /home/$username/yay; BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
