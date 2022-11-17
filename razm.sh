@@ -22,19 +22,19 @@ n
 +512m
 n
 2
-""
+
 +1m
 t
 2
 4
 n
 3
-""
+
 +1g
 n
 4
-""
-""
+
+
 w
 EEOF
 mkfs.ext2 /dev/${disk}1 -L boot <<EEOF
