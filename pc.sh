@@ -1222,6 +1222,6 @@ arch-chroot /mnt chmod u+x /home/$username/.xinitrc
 arch-chroot /mnt chown -R $username:users /home/$username/
 arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/; git clone https://aur.archlinux.org/yay.git; cd /home/$username/yay; BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
 rm -Rf /mnt/home/$username/yay
-arch-chroot /mnt/ sudo -u $username yay -S transset-df hardinfo r-linux debtap auto-cpufreq volctl libreoffice-extension-languagetool cups-xerox-b2xx --noconfirm
+arch-chroot /mnt/ sudo -u $username yay -S transset-df hardinfo volctl libreoffice-extension-languagetool cups-xerox-b2xx --noconfirm
 #umount -R /mnt
 #reboot
