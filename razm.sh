@@ -19,11 +19,15 @@ g
 n
 1
 2048
-+512m
++512m<<EOF1
+y
+EOF1
 n
 2
 \n
-+1m
++1m<<EOF1
+n
+EOF1
 t
 2
 4
@@ -37,9 +41,13 @@ n
 \n
 w
 EOF
-mkfs.ext2 /dev/${disk}1 -L boot
+mkfs.ext2 /dev/${disk}1 -L boot<<EOF
+y
+EOF
 mkswap /dev/${disk}3 -L swap
-mkfs.ext4 /dev/${disk}4 -L root
+mkfs.ext4 /dev/${disk}4 -L root<<EOF
+y
+EOF
 mount /dev/${disk}4 /mnt
 mount --mkdir /dev/${disk}1 /mnt/boot
 else
