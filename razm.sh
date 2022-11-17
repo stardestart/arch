@@ -63,7 +63,9 @@ n
 \n
 w
 EOF
-mkfs.fat -F32 /dev/${disk}1 -n boot
+mkfs.fat -F32 /dev/${disk}1 -n boot<<EOF
+y
+EOF
 mkswap /dev/${disk}2 -L swap
 mkfs.ext4 /dev/${disk}3 -L root<<EOF
 y
