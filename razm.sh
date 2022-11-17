@@ -15,6 +15,10 @@ boot="$(efibootmgr | grep Boot)"
 if [ -z "$boot" ];
 then
 fdisk /dev/$disk<<EOF
+o
+w
+EOF
+fdisk /dev/$disk<<EOF
 g
 n
 1
