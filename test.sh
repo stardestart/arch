@@ -51,7 +51,7 @@ read -p "Введите пароль для root: " passroot
 boot="$(efibootmgr | grep Boot)"
 if [ -z "$boot" ];
 then
-fdisk /dev/$disk <<EOF
+fdisk /dev/$disk<<EOF
 g
 n
 1
@@ -74,18 +74,18 @@ n
 \n
 w
 EOF
-mkfs.ext2 /dev/${disk}1 -L boot <<EOF
+mkfs.ext2 /dev/${disk}1 -L boot<<EOF
 y
 EOF
 mkswap /dev/${disk}3 -L swap
-mkfs.ext4 /dev/${disk}4 -L root <<EOF
+mkfs.ext4 /dev/${disk}4 -L root<<EOF
 y
 EOF
 mount /dev/${disk}4 /mnt
 mount --mkdir /dev/${disk}1 /mnt/boot
 swapon /dev/${disk}3
 else
-fdisk /dev/$disk <<EOF
+fdisk /dev/$disk<<EOF
 g
 n
 1
@@ -105,7 +105,7 @@ w
 EOF
 mkfs.fat -F32 /dev/${disk}1 -n boot
 mkswap /dev/${disk}2 -L swap
-mkfs.ext4 /dev/${disk}3 -L root <<EOF
+mkfs.ext4 /dev/${disk}3 -L root<<EOF
 y
 EOF
 mount /dev/${disk}3 /mnt
@@ -129,12 +129,12 @@ echo "127.0.0.1 localhost
 ::1 localhost
 127.0.1.1 $hostname.localdomain $hostname" > /mnt/etc/hosts
 arch-chroot /mnt passwd
-
+arch-chroot /mnt passwd<<EOF
 $passroot
 $passroot
 EOF
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $username
-arch-chroot /mnt passwd $username <<EOF
+arch-chroot /mnt passwd $username<<EOF
 $passuser
 $passuser
 EOF
@@ -1185,7 +1185,7 @@ arch-chroot /mnt chown -R $username:users /home/$username/
 arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/; git clone https://aur.archlinux.org/yay.git; cd /home/$username/yay; BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
 rm -Rf /mnt/home/$username/yay
 arch-chroot /mnt/ sudo -u $username yay -S transset-df volctl --noconfirm
-arch-chroot /mnt su $username <<EOF
+arch-chroot /mnt su $username<<EOF
 WINEARCH=win32 winecfg
 winetricks directx9 vcrun2008
 EOF
