@@ -74,11 +74,11 @@ n
 \n
 w
 EOF
-mkfs.ext2 /dev/${disk}1 -L boot<<EOF
+mkfs.ext2 /dev/${disk}1 -L boot <<EOF
 y
 EOF
 mkswap /dev/${disk}3 -L swap
-mkfs.ext4 /dev/${disk}4 -L root<<EOF
+mkfs.ext4 /dev/${disk}4 -L root <<EOF
 y
 EOF
 mount /dev/${disk}4 /mnt
@@ -105,7 +105,7 @@ w
 EOF
 mkfs.fat -F32 /dev/${disk}1 -n boot
 mkswap /dev/${disk}2 -L swap
-mkfs.ext4 /dev/${disk}3 -L root<<EOF
+mkfs.ext4 /dev/${disk}3 -L root <<EOF
 y
 EOF
 mount /dev/${disk}3 /mnt
@@ -128,12 +128,12 @@ echo $hostname > /mnt/etc/hostname
 echo "127.0.0.1 localhost
 ::1 localhost
 127.0.1.1 $hostname.localdomain $hostname" > /mnt/etc/hosts
-arch-chroot /mnt passwd<<EOF
+arch-chroot /mnt passwd <<EOF
 $passroot
 $passroot
 EOF
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $username
-arch-chroot /mnt passwd $username<<EOF
+arch-chroot /mnt passwd $username <<EOF
 $passuser
 $passuser
 EOF
