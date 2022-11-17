@@ -22,19 +22,19 @@ n
 +512m
 n
 2
-
+""
 +1m
 t
 2
 4
 n
 3
-
+""
 +1g
 n
 4
-
-
+""
+""
 w
 EEOF
 mkfs.ext2 /dev/${disk}1 -L boot <<EEOF
@@ -57,12 +57,12 @@ t
 1
 n
 2
-
+""
 +1g
 n
 3
-
-
+""
+""
 w
 EEOF
 mkfs.fat -F32 /dev/${disk}1 -n boot <<EEOF
