@@ -15,10 +15,6 @@ boot="$(efibootmgr | grep Boot)"
 if [ -z "$boot" ];
 then
 fdisk /dev/$disk<<EOF
-o
-w
-EOF
-fdisk /dev/$disk<<EOF
 g
 n
 1
@@ -40,16 +36,16 @@ n
 \n
 \n
 w
-EOF
+EOF;
 mkfs.ext2 /dev/${disk}1 -L boot<<EOF
 y
-EOF
-mkswap /dev/${disk}3 -L swap
+EOF;
+mkswap /dev/${disk}3 -L swap;
 mkfs.ext4 /dev/${disk}4 -L root<<EOF
 y
-EOF
-mount /dev/${disk}4 /mnt
-mount --mkdir /dev/${disk}1 /mnt/boot
+EOF;
+mount /dev/${disk}4 /mnt;
+mount --mkdir /dev/${disk}1 /mnt/boot;
 else
 fdisk /dev/$disk<<EOF
 g
