@@ -19,15 +19,13 @@ g
 n
 1
 2048
-+512m<<EOF1
++512m
 y
-EOF1
 n
 2
 \n
-+1m<<EOF1
++1m
 n
-EOF1
 t
 2
 4
