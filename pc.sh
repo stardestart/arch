@@ -172,7 +172,7 @@ if [ "$gpu" == "amd" ]; then arch-chroot /mnt pacman -Sy amdvlk
 elif [ "$gpu" == "nvidia" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda
 fi
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
-arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xorg-apps xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img network-manager-applet rng-tools dbus-broker giflib lib32-giflib gtk4 gtk3 lib32-gtk3 gtk2 lib32-gtk2 dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra variety alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol faudio lib32-faudio freetype2 noto-fonts-extra noto-fonts-cjk ttf-joypixels audacity kdenlive cheese kwrite sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf avahi bluez bluez-utils bluez-cups bluez-hid2hci bluez-libs bluez-plugins bluez-qt bluez-tools python-bluepy python-pybluez blueman steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa go wireless_tools packagekit-qt5 --noconfirm
+arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra variety alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk ttf-joypixels audacity kdenlive cheese kate sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 echo '#Указание на конфигурационные файлы.
 userresources=$HOME/.Xresources
@@ -1216,16 +1216,12 @@ arch-chroot /mnt ip link set $net up
 mkdir -p /mnt/var/lib/iwd
 cp /var/lib/iwd/$wifi.psk /mnt/var/lib/iwd/$wifi.psk
 fi
-arch-chroot /mnt systemctl disable dbus
-arch-chroot /mnt systemctl enable dbus-broker
-arch-chroot /mnt systemctl enable avahi-daemon saned.socket cups.socket bluetooth auto-cpufreq rngd cups-browsed fstrim.timer reflector.timer xdm-archlinux dhcpcd
+arch-chroot /mnt systemctl enable saned.socket cups.socket cups-browsed fstrim.timer reflector.timer xdm-archlinux dhcpcd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 arch-chroot /mnt chmod u+x /home/$username/.xinitrc
 arch-chroot /mnt chown -R $username:users /home/$username/
 arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/; git clone https://aur.archlinux.org/yay.git; cd /home/$username/yay; BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
 rm -Rf /mnt/home/$username/yay
 arch-chroot /mnt/ sudo -u $username yay -S transset-df hardinfo r-linux debtap auto-cpufreq volctl libreoffice-extension-languagetool cups-xerox-b2xx --noconfirm
-arch-chroot /mnt su $username WINEARCH=win32 winecfg
-arch-chroot /mnt su $username xvfb-run winetricks directx9 d3dx9 d3dx9_26 d3dx9_28 d3dx9_31 d3dx9_35 d3dx9_36 d3dx9_42 d3dx9_43 d3dx10 d3dx10_43 d3dx11_42 d3dx11_43 d3dxof devenum dinput8 dinput dirac directmusic directplay dmsynth dsound dxdiagn gdiplus mfc40 mfc42 msxml6 quartz vb5run vcrun2005 vcrun2008 vcrun2012 vcrun2013 vcrun2015 vcrun6 vcrun6sp6 wsh57 xact xinput
 #umount -R /mnt
 #reboot
