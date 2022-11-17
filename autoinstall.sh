@@ -48,6 +48,8 @@ read -p "Введите пароль для $username: " passuser
 echo "
 "
 read -p "Введите пароль для root: " passroot
+swapoff -a
+umount -R /mnt
 boot="$(efibootmgr | grep Boot)"
 if [ -z "$boot" ];
 then
