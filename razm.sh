@@ -10,7 +10,7 @@ read -p "Введите метку диска на который будет у�
 echo "
 "
 swapoff -a
-umount -R /dev/{disk}
+umount -R /mnt
 boot="$(efibootmgr | grep Boot)"
 if [ -z "$boot" ];
 then
