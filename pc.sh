@@ -1217,7 +1217,8 @@ mkdir -p /mnt/var/lib/iwd
 cp /var/lib/iwd/$wifi.psk /mnt/var/lib/iwd/$wifi.psk
 fi
 arch-chroot /mnt systemctl disable dbus
-arch-chroot /mnt systemctl enable avahi-daemon saned.socket cups.socket bluetooth acpid auto-cpufreq dbus-broker rngd cups-browsed fstrim.timer reflector.timer xdm-archlinux dhcpcd
+arch-chroot /mnt systemctl enable dbus-broker
+arch-chroot /mnt systemctl enable avahi-daemon saned.socket cups.socket bluetooth acpid auto-cpufreq rngd cups-browsed fstrim.timer reflector.timer xdm-archlinux dhcpcd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 arch-chroot /mnt chmod u+x /home/$username/.xinitrc
 arch-chroot /mnt chown -R $username:users /home/$username/
