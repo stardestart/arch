@@ -57,12 +57,12 @@ t
 1
 n
 2
-""
+
 +1g
 n
 3
-""
-""
+
+
 w
 EEOF
 mkfs.fat -F32 /dev/${disk}1 -n boot <<EEOF
