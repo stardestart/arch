@@ -37,13 +37,9 @@ n
 \n
 w
 EOF
-mkfs.ext2 /dev/${disk}1 -L boot<<EOF
-y
-EOF
+mkfs.ext2 /dev/${disk}1 -L boot
 mkswap /dev/${disk}3 -L swap
-mkfs.ext4 /dev/${disk}4 -L root<<EOF
-y
-EOF
+mkfs.ext4 /dev/${disk}4 -L root
 mount /dev/${disk}4 /mnt
 mount --mkdir /dev/${disk}1 /mnt/boot
 else
