@@ -1188,5 +1188,5 @@ arch-chroot /mnt chown -R $username:users /home/$username/
 arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/; git clone https://aur.archlinux.org/yay.git; cd /home/$username/yay; BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
 rm -Rf /mnt/home/$username/yay
 arch-chroot /mnt/ sudo -u $username yay -S transset-df volctl --noconfirm
-arch-chroot /mnt sudo -u $username "$(WINEARCH=win32 winecfg)"
-arch-chroot /mnt sudo -u $username "$(xvfb-run winetricks directx9 vcrun2008)"
+arch-chroot /mnt sudo -u $username WINEARCH=win32 winecfg
+arch-chroot /mnt sudo -u $username xvfb-run -a winetricks directx9 vcrun2008
