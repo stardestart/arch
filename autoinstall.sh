@@ -1225,7 +1225,7 @@ arch-chroot /mnt chown -R $username:users /home/$username/
 arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/; git clone https://aur.archlinux.org/yay.git; cd /home/$username/yay; BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
 rm -Rf /mnt/home/$username/yay
 arch-chroot /mnt/ sudo -u $username yay -S transset-df hardinfo r-linux debtap auto-cpufreq volctl libreoffice-extension-languagetool --noconfirm
-arch-chroot /mnt su $username WINEARCH=win32 winecfg
+arch-chroot /mnt sudo -u $username WINEARCH=win32 winecfg
 arch-chroot /mnt sudo -u $username xvfb-run -a winetricks directx9 d3dx9 d3dx9_26 d3dx9_28 d3dx9_31 d3dx9_35 d3dx9_36 d3dx9_42 d3dx9_43 d3dx10 d3dx10_43 d3dx11_42 d3dx11_43 d3dxof devenum dinput8 dinput dirac directmusic directplay dmsynth dsound dxdiagn gdiplus mfc40 mfc42 msxml6 quartz vb5run vcrun2005 vcrun2008 vcrun2012 vcrun2013 vcrun2015 vcrun6 vcrun6sp6 wsh57 xact xinput
 umount -R /mnt
 reboot
