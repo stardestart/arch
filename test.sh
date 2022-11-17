@@ -128,7 +128,6 @@ echo $hostname > /mnt/etc/hostname
 echo "127.0.0.1 localhost
 ::1 localhost
 127.0.1.1 $hostname.localdomain $hostname" > /mnt/etc/hosts
-arch-chroot /mnt passwd
 arch-chroot /mnt passwd<<EOF
 $passroot
 $passroot
