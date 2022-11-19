@@ -1205,6 +1205,11 @@ activeForeground=252,252,252
 inactiveBackground=42,46,50
 inactiveBlend=161,169,177
 inactiveForeground=161,169,177' > /mnt/home/$username/.config/kdeglobals
+arch-chroot /mnt  sh -c "cd /usr/share/fonts/
+curl -L https://github.com/stardestart/arch/raw/main/font/Snowstorm.zip > Snowstorm.zip
+curl -L https://github.com/stardestart/arch/raw/main/font/30144_PostIndex.ttf > 30144_PostIndex.ttf
+unzip -o *.zip
+rm *.zip *.txt"
 fstrim -v -a
 if [ -z "$wifi" ];
 then
