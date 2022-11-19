@@ -619,7 +619,7 @@ exec --no-startup-id dolphin --daemon
 bindsym $mod+Return exec i3-sensible-terminal
 #
 # Запуск dmenu (программа запуска) с параметрами шрифта, приглашения, цвета фона.
-bindsym $mod+d exec --no-startup-id dmenu_run -fn "Snowstorm Kraft 30" -p "Поиск программы:" -nb "#2b0f2b" -sf "#2b2b0f" -nf "#2bf02b" -sb "#f92b2b"
+bindsym $mod+d exec --no-startup-id dmenu_run -fn "Snowstorm Kraft-30" -p "Поиск программы:" -nb "#2b0f2b" -sf "#2b2b0f" -nf "#2bf02b" -sb "#f92b2b"
 #
 # Используйте mod+f1, чтобы запустить firefox.
 bindsym $mod+F1 exec --no-startup-id firefox
