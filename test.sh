@@ -1168,10 +1168,11 @@ activeForeground=252,252,252
 inactiveBackground=42,46,50
 inactiveBlend=161,169,177
 inactiveForeground=161,169,177' > /mnt/home/$username/.config/kdeglobals
-arch-chroot /mnt/usr/share/fonts/ curl -L https://github.com/stardestart/arch/raw/main/font/Snowstorm.zip > "Snowstorm.zip"
-arch-chroot /mnt/usr/share/fonts/ curl -L https://github.com/stardestart/arch/raw/main/font/30144_PostIndex.ttf > "30144_PostIndex.ttf"
-arch-chroot /mnt/usr/share/fonts/ unzip -o "*.zip"
-arch-chroot /mnt/usr/share/fonts/ rm *.zip *.txt'
+arch-chroot /mnt  sh -c "cd /usr/share/fonts/
+curl -L https://github.com/stardestart/arch/raw/main/font/Snowstorm.zip > Snowstorm.zip
+curl -L https://github.com/stardestart/arch/raw/main/font/30144_PostIndex.ttf > 30144_PostIndex.ttf
+unzip -o *.zip
+rm *.zip *.txt"
 if [ -z "$wifi" ];
 then
 arch-chroot /mnt ip link set $net up
@@ -1186,7 +1187,10 @@ arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 arch-chroot /mnt chmod u+x /home/$username/.xinitrc
 arch-chroot /mnt chown -R $username:users /home/$username/
-arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/; git clone https://aur.archlinux.org/yay.git; cd /home/$username/yay; BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
+arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/
+git clone https://aur.archlinux.org/yay.git
+cd /home/$username/yay
+BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
 rm -Rf /mnt/home/$username/yay
 arch-chroot /mnt/ sudo -u $username yay -S transset-df volctl --noconfirm
 fdisk -l
