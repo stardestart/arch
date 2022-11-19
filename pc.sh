@@ -1225,7 +1225,10 @@ arch-chroot /mnt systemctl enable saned.socket cups.socket cups-browsed fstrim.t
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 arch-chroot /mnt chmod u+x /home/$username/.xinitrc
 arch-chroot /mnt chown -R $username:users /home/$username/
-arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/; git clone https://aur.archlinux.org/yay.git; cd /home/$username/yay; BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
+arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/
+git clone https://aur.archlinux.org/yay.git
+cd /home/$username/yay
+BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
 rm -Rf /mnt/home/$username/yay
 arch-chroot /mnt/ sudo -u $username yay -S transset-df hardinfo debtap volctl libreoffice-extension-languagetool cups-xerox-b2xx --noconfirm
 #umount -R /mnt
