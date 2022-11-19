@@ -1195,3 +1195,5 @@ rm -Rf /mnt/home/$username/yay
 arch-chroot /mnt/ sudo -u $username yay -S transset-df volctl --noconfirm
 fdisk -l
 lsblk -l
+arch-chroot /mnt  sh -c "startx
+echo 'hi bro'"
