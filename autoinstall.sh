@@ -310,29 +310,49 @@ ${color #b2b2b2}Свободно:$color$alignr${fs_free /home/} / ${fs_size /hom
 ]]' > /mnt/home/$username/.config/conky/conky.conf
 echo '[[ -f ~/.profile ]] && . ~/.profile' > /mnt/home/$username/.bash_profile
 echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
-[ -n "$XTERM_VERSION" ] && transset-df --id "$WINDOWID" >/dev/null #Автоматическая прозрачность xterm.
-alias grep="grep --color=auto" #Раскрашиваем grep.
-alias ip="ip --color=auto" #Раскрашиваем ip.
-alias ping="grc --colour=auto ping" #Раскрашиваем ping.
-alias gcc="grc --colour=auto gcc" #Раскрашиваем gcc.
-alias diff="grc --colour=auto diff" #Раскрашиваем diff.
-alias log="grc --colour=auto log" #Раскрашиваем log.
-alias cvs="grc --colour=auto cvs" #Раскрашиваем cvs.
-alias mount="grc --colour=auto mount" #Раскрашиваем mount.
-alias ps="grc --colour=auto ps" #Раскрашиваем ps.
-alias ls="grc --colour=auto ls" #Раскрашиваем ls.
-alias df="grc --colour=auto df" #Раскрашиваем df.
-PS1="\[\e[2;32m\][\A]\[\e[0m\]\[\e[3;31m\][\u@\h \W]\[\e[0m\]\[\e[5;36m\]\$: \[\e[0m\]" #Изменяем вид приглашения командной строки.
-#\[\e[2;32m\] 2 - более темный цвет, 32 - зеленый цвет.
-#[\A] Текущее время в 24-часовом формате.
-#\[\e[0m\] Конец изменениям.
-#\[\e[3;31m\] 3 - курсив, 31 - красный цвет.
-#[\u@\h \W] ИмяПользователя@имя хоста Текущий относительный путь.
-#\[\e[0m\] Конец изменениям.
-#\[\e[5;35m\] 5 - моргание, 36 - голубой цвет.
+#Автоматическая прозрачность xterm.
+[ -n "$XTERM_VERSION" ] && transset-df --id "$WINDOWID" >/dev/null
+alias grep="grep --color=always" #Раскрашиваем grep.
+alias ip="ip --color=always" #Раскрашиваем ip.
+alias diff="diff --color=always" #Раскрашиваем diff.
+alias ls="ls --color" #Раскрашиваем ls.
+alias df="grc --colour=on df" #Раскрашиваем df.
+alias zgrep="grc --colour=on zgrep" #Раскрашиваем zgrep.
+alias cvs="grc --colour=on cvs" #Раскрашиваем cvs.
+alias esperanto="grc --colour=on esperanto" #Раскрашиваем esperanto.
+alias irclog="grc --colour=on irclog" #Раскрашиваем irclog.
+alias ldap="grc --colour=on ldap" #Раскрашиваем ldap.
+alias log="grc --colour=on log" #Раскрашиваем log.
+alias netstat="grc --colour=on netstat" #Раскрашиваем netstat.
+alias proftpd="grc --colour=on proftpd" #Раскрашиваем proftpd.
+alias traceroute="grc --colour=on traceroute" #Раскрашиваем traceroute.
+alias wdiff="grc --colour=on wdiff" #Раскрашиваем wdiff.
+alias dig="grc --colour=on dig" #Раскрашиваем dig.
+alias cat="grc --colour=on cat" #Раскрашиваем cat.
+alias zcat="grc --colour=on zcat" #Раскрашиваем zcat.
+alias make="grc --colour=on make" #Раскрашиваем make.
+alias g++="grc --colour=on g++" #Раскрашиваем g++.
+alias head="grc --colour=on head" #Раскрашиваем head.
+alias mtr="grc --colour=on mtr" #Раскрашиваем mtr.
+alias ping="grc --colour=on ping" #Раскрашиваем ping.
+alias gcc="grc --colour=on gcc" #Раскрашиваем gcc.
+alias mount="grc --colour=on mount" #Раскрашиваем mount.
+alias ps="grc --colour=on ps" #Раскрашиваем ps.
+#Изменяем вид приглашения командной строки.
+PS1="\033[43m\033[2;34m\A\033[0m\033[44m\033[3;33m\u@\h \W/\033[0m\033[5;91m\$: \033[0m"
+#\033[43m - тёмно-жёлтый цвет фона.
+#\033[2;34m 2 - более темный цвет, 34 - тёмно-синий цвет.
+#\A Текущее время в 24-часовом формате.
+#\033[0m Конец изменениям.
+#\033[44m - тёмно-синий цвет фона.
+#\033[3;33m 3 - курсив, 33 - тёмно-жёлтый цвет.
+#\u@\h \W ИмяПользователя@ИмяХоста ТекущийОтносительныйПуть.
+#\033[0m Конец изменениям.
+#\[\e[5;91m\] 5 - моргание, 91 - красный цвет.
 #\$: Символ приглашения (# для root, $ для обычных пользователей).
-#\[\e[0m\] Конец изменениям.
-export HISTCONTROL="ignoreboth" #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
+#\033[0m Конец изменениям.
+#Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
+export HISTCONTROL="ignoreboth"
 export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' > /mnt/home/$username/.bashrc
 echo 'setleds -D +num #Включенный по умолчанию NumLock.
 [[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
