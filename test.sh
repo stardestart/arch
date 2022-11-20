@@ -14,6 +14,23 @@ microcode=amd-ucode
 else
 microcode=intel-ucode
 fi
+export PS1="\[\e[2;32m\][\A]\[\e[0m\]\[\e[3;31m\][\u@\h \W]\[\e[0m\]\[\e[5;36m\]\$: \[\e[0m\]"
+PS3="Выберете разрешение монитора: "
+select resolution in "~480p" "~720p-1080p" "~4K"
+do
+    case $resolution in
+        "~480p")
+            echo "Вы выбрали $resolution"
+            ;;
+        "~720p-1080p")
+            echo "Вы выбрали $resolution"
+            ;;
+        "~4K")
+            echo "Вы выбрали $resolution"
+            ;;
+        *) echo "Что значит - $REPLY? До трёх посчитать не можешь и Arch Linux ставишь?";;
+    esac
+done
 net="$(iwctl device list | awk '{print $2}' | tail -n 2 | xargs)"
 if [ -z "$net" ];
 then
