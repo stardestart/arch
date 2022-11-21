@@ -353,8 +353,9 @@ PS1="\[\033[43m\]\[\033[2;34m\]\A\[\033[0m\]\[\033[44m\]\[\033[3;33m\]\u@\h \W/\
 #\[\033[0m\] - Конец изменениям.
 #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
 export HISTCONTROL="ignoreboth"
-export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' > /mnt/etc/bash.bashrc
+export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' > /mnt/home/$username/.bashrc
 echo 'setleds -D +num #Включенный по умолчанию NumLock.
+[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
 export QT_QPA_PLATFORMTHEME="qt5ct" #Изменение внешнего вида приложений использующих qt.' > /mnt/home/$username/.profile
 echo '[D-BUS Service]
 Name=org.freedesktop.Notifications
