@@ -232,7 +232,7 @@ EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
 mkdir -p /mnt/etc/sane.d
 echo 'localhost
 192.168.0.0/24' >> /mnt/etc/sane.d/net.conf
-core=($(sensors | grep Core | awk '{print $1}' | xargs))
+core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 j=(${#core[*]}-1)
 for (( i=0; i<=$j; i++ ))
 do
