@@ -219,7 +219,7 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
  unset f
 fi
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
-exec i3 #Автозапуск i3.' > /mnt/home/$username/.xinitrc
+exec i3 #Автозапуск i3.' > /mnt/etc/X11/xinit/xinitrc
 echo 'Section "InputClass"
 Identifier "system-keyboard"
 MatchIsKeyboard "on"
