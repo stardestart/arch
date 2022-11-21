@@ -893,7 +893,7 @@ border_color_pressed = #000000 100
 #-------------------------------------
 # Panel
 panel_items = LS
-panel_size = 100% 60
+panel_size = 100% '$gap'
 panel_margin = 0 0
 panel_padding = 2 0 2
 panel_background_id = 1
