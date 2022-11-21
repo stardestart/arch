@@ -55,14 +55,17 @@ do
         "~480p")
             font=8
             gap=40
+            brake
             ;;
         "~720p-1080p")
             font=10
             gap=50
+            break
             ;;
         "~4K")
             font=12
             gap=60
+            break
             ;;
         *) echo -e "\033[41mЧто значит - $REPLY? До трёх посчитать не можешь и Arch Linux ставишь?\033[0m";;
     esac
