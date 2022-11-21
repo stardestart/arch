@@ -14,23 +14,6 @@ microcode=amd-ucode
 else
 microcode=intel-ucode
 fi
-export PS1="\[\e[2;32m\][\A]\[\e[0m\]\[\e[3;31m\][\u@\h \W]\[\e[0m\]\[\e[5;36m\]\$: \[\e[0m\]"
-PS3="Выберете разрешение монитора: "
-select resolution in "~480p" "~720p-1080p" "~4K"
-do
-    case $resolution in
-        "~480p")
-            echo "Вы выбрали $resolution"
-            ;;
-        "~720p-1080p")
-            echo "Вы выбрали $resolution"
-            ;;
-        "~4K")
-            echo "Вы выбрали $resolution"
-            ;;
-        *) echo "Что значит - $REPLY? До трёх посчитать не можешь и Arch Linux ставишь?";;
-    esac
-done
 net="$(iwctl device list | awk '{print $2}' | tail -n 2 | xargs)"
 if [ -z "$net" ];
 then
@@ -65,6 +48,25 @@ read -p "Введите пароль для $username: " passuser
 echo "
 "
 read -p "Введите пароль для root: " passroot
+PS3="$(echo -e "\033[41m\033[30mВыберете разрешение монитора:\033[0m ")"
+select resolution in "~480p" "~720p-1080p" "~4K"
+do
+    case $resolution in
+        "~480p")
+            font=8
+            gap=40
+            ;;
+        "~720p-1080p")
+            font=10
+            gap=50
+            ;;
+        "~4K")
+            font=12
+            gap=60
+            ;;
+        *) echo -e "\033[41mЧто значит - $REPLY? До трёх посчитать не можешь и Arch Linux ставишь?\033[0m";;
+    esac
+done
 swapoff -a
 umount -R /mnt
 boot="$(efibootmgr | grep Boot)"
@@ -227,10 +229,18 @@ EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
 mkdir -p /mnt/etc/sane.d
 echo 'localhost
 192.168.0.0/24' >> /mnt/etc/sane.d/net.conf
+core=($(sensors | grep Core | awk '{print $1}' | xargs))
+j=(${#core[*]}-1)
+for (( i=0; i<=$j; i++ ))
+do
+coreconf+="
+"
+coreconf+='$alignr${execi 10 sensors | grep "Core '$i':" | cut -b1-22 } /'
+done
 mkdir -p /mnt/home/$username/.config/conky
 echo 'conky.config = { --Внешний вид.
-alignment = "middle_right", --Располжение виджета.
-border_inner_margin = 20, --Отступ от внутренних границ.
+alignment = "top_right", --Располжение виджета.
+border_inner_margin = 30, --Отступ от внутренних границ.
 border_width = 1, --Толщина рамки.
 cpu_avg_samples = 2, --Усреднение значений нагрузки.
 default_color = "#2bf92b", --Цвет по умолчанию.
@@ -238,8 +248,9 @@ default_outline_color = "#2bf92b", --Цвет рамки по умолчанию
 double_buffer = true, --Включение двойной буферизации.
 draw_shades = false, --Оттенки.
 draw_borders = true, --Включение границ.
-font = "Noto Sans Mono:size=8", --Шрифт и размер шрифта.
-gap_x = 30, --Отступ от края.
+font = "Noto Sans Mono:size='$font'", --Шрифт и размер шрифта.
+gap_y = '$(($gap*2))', --Отступ сверху.
+gap_x = 40, --Отступ от края.
 own_window = true, --Собственное окно.
 own_window_class = "Conky", --Класс окна.
 own_window_type = "override", --Тип окна (возможные варианты: "normal", "desktop", "ock", "panel", "override" выбираем в зависимости от оконного менеджера и личных предпочтений).
@@ -250,9 +261,9 @@ use_xft = true, } --Использование шрифтов X сервера.
 conky.text = [[ #Наполнение виджета.
 #Блок "Время".
 #Часы.
-${font :size=22}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
+${font :size='$gap'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
 #Дата.
-${font :size=10}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
+${font :size='$font'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
 #Блок "Система".
 #Разделитель.
 ${color #f92b2b}SYS${hr 3}$color
@@ -268,15 +279,8 @@ ${color #b2b2b2}Нагрузка ЦП:$color$alignr$cpu %
 #Частота ЦП.
 ${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz
 #Температура ЦП.
-${color #b2b2b2}Температура ЦП:$color$alignr${execi 10 sensors | grep "id 0:" | cut -b15-22}
-#Температура Ядра 1.
-$alignr${execi 10 sensors | grep "Core 0:" | cut -b1-22 }
-#Температура Ядра 2.
-$alignr${execi 10 sensors | grep "Core 1:" | cut -b1-22 }
-#Температура Ядра 3.
-$alignr${execi 10 sensors | grep "Core 2:" | cut -b1-22 }
-#Температура Ядра 4.
-$alignr${execi 10 sensors | grep "Core 3:" | cut -b1-22 }
+${color #b2b2b2}Температура ЦП:
+#Температура Ядрер ЦП. '${coreconf[@]}'
 #Блок "ОЗУ".
 #Разделитель.
 ${color #f92b2b}RAM${hr 3}$color
@@ -321,9 +325,9 @@ ${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}
 #Разделитель.
 ${color #f92b2b}/home${hr 3}$color
 #Занято.
-${color #b2b2b2}Задействовано:$color$alignr${fs_used /home/} / ${fs_size /home/}
+${color #b2b2b2}Задействовано:$color$alignr${fs_used /} / ${fs_size /}
 #Свободно.
-${color #b2b2b2}Свободно:$color$alignr${fs_free /home/} / ${fs_size /home/}
+${color #b2b2b2}Свободно:$color$alignr${fs_free /} / ${fs_size /}
 ]]' > /mnt/home/$username/.config/conky/conky.conf
 echo '[[ -f ~/.profile ]] && . ~/.profile' > /mnt/home/$username/.bash_profile
 echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
@@ -966,7 +970,7 @@ systray_name_filter =
 launcher_padding = 2 4 2
 launcher_background_id = 0
 launcher_icon_background_id = 0
-launcher_icon_size = 60
+launcher_icon_size = '$gap'
 launcher_icon_asb = 100 0 0
 launcher_icon_theme = Papirus-Dark
 launcher_icon_theme_override = 0
