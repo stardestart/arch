@@ -283,7 +283,7 @@ ${color #b2b2b2}Нагрузка ЦП:$color$alignr$cpu %
 ${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz
 #Температура ЦП.
 ${color #b2b2b2}Температура ЦП:
-#Температура Ядрер ЦП. '${coreconf[@]}'
+#Температура Ядрер ЦП. '"${coreconf[@]}"'
 #Блок "ОЗУ".
 #Разделитель.
 ${color #f92b2b}RAM${hr 3}$color
