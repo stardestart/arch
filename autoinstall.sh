@@ -48,7 +48,7 @@ read -p "Введите пароль для $username: " passuser
 echo "
 "
 read -p "Введите пароль для root: " passroot
-PS3="$(echo -e "\033[41m\033[30mВыберете разрешение монитора:\033[0m ")"
+PS3="$(echo -e "\033[41m\033[33mВыберете разрешение монитора:\033[0m ")"
 select resolution in "~480p" "~720p-1080p" "~4K"
 do
     case $resolution in
@@ -67,7 +67,7 @@ do
             gap=60
             break
             ;;
-        *) echo -e "\033[41mЧто значит - $REPLY? До трёх посчитать не можешь и Arch Linux ставишь?\033[0m";;
+        *) echo -e "\033[31mЧто значит - $REPLY? До трёх посчитать не можешь и Arch Linux ставишь?\033[0m";;
     esac
 done
 swapoff -a
