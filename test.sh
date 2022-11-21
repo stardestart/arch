@@ -55,7 +55,7 @@ do
         "~480p")
             font=8
             gap=40
-            brake
+            break
             ;;
         "~720p-1080p")
             font=10
