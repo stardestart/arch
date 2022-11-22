@@ -19,15 +19,13 @@ if [ -z "$net" ];
 then
 wifi=""
 else
-read -p "Обнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:
-" wifi
+echo -e "\033[41m\033[33mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" wifi
 fi
 if [ -z "$wifi" ];
 then
 net="$(ip -br link show | grep -v UNKNOWN | grep -v DOWN | awk '{print $1}' | xargs)"
 else
-read -p "Пароль wifi:
-" passwifi
+echo -e "\033[41m\033[33mПароль wifi:\033[0m";read -p ">" passwifi
 iwctl --passphrase $passwifi station $net connect $wifi
 fi
 time="$(curl https://ipapi.co/timezone)"
@@ -35,20 +33,21 @@ timedatectl set-timezone $time
 lsblk -d
 echo "
 "
-read -p "Введите метку диска на который будет установлена ОС: " disk
+echo -e "\033[41m\033[33mВведите метку диска на который будет установлена ОС:\033[0m";read -p ">" disk
 echo "
 "
-read -p "Введите имя компьютера: " hostname
+echo -e "\033[41m\033[33mВведите имя компьютера:\033[0m";read -p ">" hostname
 echo "
 "
-read -p "Введите имя пользователя: " username
+echo -e "\033[41m\033[33mВведите имя пользователя:\033[0m";read -p ">" username
 echo "
 "
-read -p "Введите пароль для $username: " passuser
+echo -e "\033[41m\033[33mВведите пароль для $username:\033[0m";read -p ">" passuser
 echo "
 "
-read -p "Введите пароль для root: " passroot
-PS3="$(echo -e "\033[41m\033[33mВыберете разрешение монитора:\033[0m ")"
+echo -e "\033[41m\033[33mВведите пароль для root:\033[0m";read -p ">" passroot
+PS3="$(echo -e "\033[41m\033[33mВыберете разрешение монитора:\033[0m
+>")"
 select resolution in "~480p" "~720p-1080p" "~4K"
 do
     case $resolution in
