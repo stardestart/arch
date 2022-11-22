@@ -239,6 +239,20 @@ coreconf+="
 "
 coreconf+='$alignr${execi 10 sensors | grep "Core '$i':" | cut -b1-22 } /'
 done
+if [ "$gpu" == "nvidia" ]; then
+nvidiac+="
+"
+nvidiac+='${color #f92b2b}GPU${hr 3}$color'
+nvidiac+="
+"
+nvidiac+='${color #b2b2b2}Частота ГП:$color$alignr${nvidia gpufreq} Mhz'
+nvidiac+="
+"
+nvidiac+='${color #b2b2b2}Видео ОЗУ:$color$alignr${nvidia mem} / ${nvidia memmax} MiB'
+nvidiac+="
+"
+nvidiac+='${color #b2b2b2}Температура ГП:$color$alignr${nvidia temp} °C'
+fi
 mkdir -p /mnt/home/$username/.config/conky
 echo 'conky.config = { --Внешний вид.
 alignment = "middle_right", --Располжение виджета.
@@ -283,6 +297,7 @@ ${color #b2b2b2}Нагрузка ЦП:$color$alignr$cpu %
 ${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz
 ${color #b2b2b2}Температура ядер ЦП:
 #Температура ядер ЦП. '"${coreconf[@]}"'
+#Блок "Видеокарта Nvidia". '"${nvidiac[@]}"'
 #Блок "ОЗУ".
 #Разделитель.
 ${color #f92b2b}RAM${hr 3}$color
