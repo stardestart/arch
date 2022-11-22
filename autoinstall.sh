@@ -52,17 +52,17 @@ select resolution in "~480p" "~720p-1080p" "~4K"
 do
     case $resolution in
         "~480p")
-            font=8
+            font=6
             gap=40
             break
             ;;
         "~720p-1080p")
-            font=10
+            font=8
             gap=50
             break
             ;;
         "~4K")
-            font=12
+            font=10
             gap=60
             break
             ;;
@@ -242,7 +242,8 @@ done
 mkdir -p /mnt/home/$username/.config/conky
 echo 'conky.config = { --Внешний вид.
 alignment = "middle_right", --Располжение виджета.
-border_inner_margin = 20, --Отступ от внутренних границ.
+border_inner_margin = '$font', --Отступ от внутренних границ.
+border_outer_margin = '$font', --Отступ от края окна.
 border_width = 1, --Толщина рамки.
 cpu_avg_samples = 2, --Усреднение значений нагрузки.
 default_color = "#2bf92b", --Цвет по умолчанию.
@@ -251,7 +252,7 @@ double_buffer = true, --Включение двойной буферизации
 draw_shades = false, --Оттенки.
 draw_borders = true, --Включение границ.
 font = "Noto Sans Mono:size='$font'", --Шрифт и размер шрифта.
-gap_y = '$(($gap*2))', --Отступ сверху.
+gap_y = '$(($gap/2+$gap))', --Отступ сверху.
 gap_x = 30, --Отступ от края.
 own_window = true, --Собственное окно.
 own_window_class = "Conky", --Класс окна.
@@ -263,7 +264,7 @@ use_xft = true, } --Использование шрифтов X сервера.
 conky.text = [[ #Наполнение виджета.
 #Блок "Время".
 #Часы.
-${font :size='$gap'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
+${font :size='$(($font*3))'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
 #Дата.
 ${font :size='$font'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
 #Блок "Система".
