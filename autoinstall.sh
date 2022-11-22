@@ -36,16 +36,16 @@ echo "
 echo -e "\033[41m\033[33mВведите метку диска на который будет установлена ОС:\033[0m";read -p ">" disk
 echo "
 "
-echo -e "\033[41m\033[33mВведите имя компьютера:\033[0m";read -p ">" hostname
+echo -e "\033[41m\030[33mВведите имя компьютера:\033[0m";read -p ">" hostname
 echo "
 "
-echo -e "\033[41m\033[33mВведите имя пользователя:\033[0m";read -p ">" username
+echo -e "\033[41m\030[33mВведите имя пользователя:\033[0m";read -p ">" username
 echo "
 "
-echo -e "\033[41m\033[33mВведите пароль для $username:\033[0m";read -p ">" passuser
+echo -e "\033[41m\030[33mВведите пароль для $username:\033[0m";read -p ">" passuser
 echo "
 "
-echo -e "\033[41m\033[33mВведите пароль для root:\033[0m";read -p ">" passroot
+echo -e "\033[41m\030[33mВведите пароль для root:\033[0m";read -p ">" passroot
 PS3="$(echo -e "\033[41m\033[33mВыберете разрешение монитора:\033[0m
 >")"
 select resolution in "~480p" "~720p-1080p" "~4K"
