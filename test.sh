@@ -19,15 +19,13 @@ if [ -z "$net" ];
 then
 wifi=""
 else
-read -p "Обнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:
-" wifi
+echo -e "\033[41m\033[33mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" wifi
 fi
 if [ -z "$wifi" ];
 then
 net="$(ip -br link show | grep -v UNKNOWN | grep -v DOWN | awk '{print $1}' | xargs)"
 else
-read -p "Пароль wifi:
-" passwifi
+echo -e "\033[41m\033[33mПароль wifi:\033[0m";read -p ">" passwifi
 iwctl --passphrase $passwifi station $net connect $wifi
 fi
 time="$(curl https://ipapi.co/timezone)"
@@ -48,7 +46,8 @@ echo -e "\033[41m\033[33mВведите пароль для $username:\033[0m";r
 echo "
 "
 echo -e "\033[41m\033[33mВведите пароль для root:\033[0m";read -p ">" passroot
-PS3="$(echo -e "\033[41m\033[33mВыберете разрешение монитора:\033[0m ")"
+PS3="$(echo -e "\033[41m\033[33mВыберете разрешение монитора:\033[0m
+>")"
 select resolution in "~480p" "~720p-1080p" "~4K"
 do
     case $resolution in
