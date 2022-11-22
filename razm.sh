@@ -46,6 +46,7 @@ y
 EOF
 mount /dev/${disk}4 /mnt
 mount --mkdir /dev/${disk}1 /mnt/boot
+swapon /dev/${disk}3
 else
 fdisk /dev/$disk<<EOF
 g
