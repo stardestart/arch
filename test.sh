@@ -40,9 +40,11 @@ echo -e "\033[41m\033[30mДоступных дисков не обнаружен
 exit 0
 else
 echo -e "\033[41m\033[30mВведите метку диска (выделено красным) на который будет установлена ОС:\033[0m"
-for (( j=0, i=1; i<=${#massdisk[*]}; i++, j++ ))
+for (( j=0, i=1; i<="${#massdisk[*]}"; i++, j++ ))
 do
+echo ${massdisk[$j]}
 grep1+="${massdisk[$j]}|"
+echo $grep1
 done
 lsscsi -s | grep -v -i -E "rom|usb" | grep -E "$grep1"
 read -p ">" sysdisk
