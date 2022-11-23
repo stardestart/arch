@@ -14,12 +14,23 @@ microcode=amd-ucode
 else
 microcode=intel-ucode
 fi
-net="$(iwctl device list | awk '{print $2}' | tail -n 2 | xargs)"
-if [ -z "$net" ];
+massnet=($(ifconfig | grep wl | awk -F":" '{print $1}'))
+if [ ${#massnet[*]} = 1 ];
 then
-wifi=""
-else
+net="${massnet[0]}"
 echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" wifi
+elif [ ${#massnet[*]} = 0 ];
+then
+echo -e "\033[41m\033[30mДоступных wifi модулей не обнаружено\033[0m"
+elif [ ${#massnet[*]} -gt 1 ];
+then
+echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" wifi
+if [ -n "$wifi" ];
+then
+echo -e "\033[41m\033[30mВыберите wifi модуль:\033[0m"
+ifconfig | grep wl
+read -p ">" net
+fi
 fi
 if [ -z "$wifi" ];
 then
