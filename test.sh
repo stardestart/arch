@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash2
 loadkeys ru
 setfont ter-v18n
 gpu="$(lspci | grep -i vga | grep -i amd)"
