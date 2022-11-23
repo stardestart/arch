@@ -1279,5 +1279,5 @@ cd /home/$username/yay
 BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
 rm -Rf /mnt/home/$username/yay
 arch-chroot /mnt/ sudo -u $username yay -S transset-df volctl --noconfirm
-fdisk -l
+#fdisk -l
 lsblk -l
