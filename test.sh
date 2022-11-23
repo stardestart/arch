@@ -14,27 +14,16 @@ microcode=amd-ucode
 else
 microcode=intel-ucode
 fi
-massnet=($(ifconfig | grep wl | awk -F":" '{print $1}'))
-if [ ${#massnet[*]} = 1 ];
+net="$(iwctl device list | awk '{print $2}' | tail -n 2 | xargs)"
+if [ -z "$net" ];
 then
-net="${massnet[0]}"
+wifi=""
+else
 echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" wifi
-elif [ ${#massnet[*]} = 0 ];
-then
-echo -e "\033[41m\033[30mДоступных wifi модулей не обнаружено\033[0m"
-elif [ ${#massnet[*]} -gt 1 ];
-then
-echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" wifi
-if [ -n "$wifi" ];
-then
-echo -e "\033[41m\033[30mВыберите wifi модуль:\033[0m"
-ifconfig | grep wl
-read -p ">" net
-fi
 fi
 if [ -z "$wifi" ];
 then
-net="$(ip -br link show | grep -vE "UNKNOWN|DOWN" | awk '{print $1}' | xargs)"
+net="$(ip -br link show | grep -v UNKNOWN | grep -v DOWN | awk '{print $1}' | xargs)"
 else
 echo -e "\033[41m\033[30mПароль wifi:\033[0m";read -p ">" passwifi
 iwctl --passphrase $passwifi station $net connect $wifi
