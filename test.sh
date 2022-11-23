@@ -1,10 +1,10 @@
 #!/bin/bash
 loadkeys ru
 setfont ter-v18n
-gpu="$(lspci | grep -i VGA | grep -i amd)"
+gpu="$(lspci | grep -i vga | grep -i amd)"
 if [ -n "$gpu" ]; then gpu=amd
 elif
-gpu="$(lspci | grep -i VGA | grep -i nvidia)";
+gpu="$(lspci | grep -i vga | grep -i nvidia)";
 [ -n "$gpu" ]; then gpu=nvidia
 fi
 cpu="$(lscpu | grep -i intel)"
@@ -23,17 +23,44 @@ echo -e "\033[41m\033[30mОбнаружен wifi модуль, если осно
 fi
 if [ -z "$wifi" ];
 then
-net="$(ip -br link show | grep -v UNKNOWN | grep -v DOWN | awk '{print $1}' | xargs)"
+net="$(ip -br link show | grep -vE "UNKNOWN|DOWN" | awk '{print $1}' | xargs)"
 else
 echo -e "\033[41m\033[30mПароль wifi:\033[0m";read -p ">" passwifi
 iwctl --passphrase $passwifi station $net connect $wifi
 fi
 time="$(curl https://ipapi.co/timezone)"
 timedatectl set-timezone $time
-lsblk -d
-echo "
-"
-echo -e "\033[41m\033[30mВведите метку диска на который будет установлена ОС:\033[0m";read -p ">" disk
+massdisk=($(lsscsi | grep -v -i -E "rom|usb" | awk '{print $NF}' | cut -b6-20))
+if [ ${#massdisk[*]} = 1 ];
+then
+sysdisk="${massdisk[0]}"
+elif [ ${#massdisk[*]} = 0 ];
+then
+echo -e "\033[41m\033[30mДоступных дисков не обнаружено\033[0m"
+exit 0
+else
+echo -e "\033[41m\033[30mВведите метку диска (выделено красным) на который будет установлена ОС:\033[0m"
+for (( j=0, i=1; i<=${#massdisk[*]}; i++, j++ ))
+do
+grep1+="${massdisk[$j]}|"
+done
+lsscsi -s | grep -v -i -E "rom|usb" | grep -E "$grep1"
+read -p ">" sysdisk
+fi
+nvmep="$(echo "$sysdisk" | grep -i "nvme")"
+echo "$nvmep"
+if [ -z "$nvmep" ];
+then
+p1="1"
+p2="2"
+p3="3"
+p4="4"
+else
+p1="p1"
+p2="p2"
+p3="p3"
+p4="p4"
+fi
 echo "
 "
 echo -e "\033[41m\033[30mВведите имя компьютера:\033[0m";read -p ">" hostname
@@ -46,7 +73,7 @@ echo -e "\033[41m\033[30mВведите пароль для $username:\033[0m";r
 echo "
 "
 echo -e "\033[41m\033[30mВведите пароль для root:\033[0m";read -p ">" passroot
-PS3="$(echo -e "\033[41m\030[33mВыберете разрешение монитора:\033[0m
+PS3="$(echo -e "\033[41m\033[30mВыберете разрешение монитора:\033[0m
 >")"
 select resolution in "~480p" "~720p-1080p" "~4K"
 do
@@ -74,7 +101,7 @@ umount -R /mnt
 boot="$(efibootmgr | grep Boot)"
 if [ -z "$boot" ];
 then
-fdisk /dev/$disk<<EOF
+fdisk /dev/$sysdisk<<EOF
 g
 n
 1
@@ -97,18 +124,19 @@ n
 
 w
 EOF
-mkfs.ext2 /dev/${disk}1 -L boot<<EOF
+mkfs.ext2 /dev/${sysdisk}$p1 -L boot<<EOF
 y
 EOF
-mkswap /dev/${disk}3 -L swap
-mkfs.ext4 /dev/${disk}4 -L root<<EOF
+mkswap /dev/${sysdisk}$p3 -L swap
+mkfs.ext4 /dev/${sysdisk}$p4 -L root<<EOF
 y
 EOF
-mount /dev/${disk}4 /mnt
-mount --mkdir /dev/${disk}1 /mnt/boot
-swapon /dev/${disk}3
+mount /dev/${sysdisk}$p4 /mnt
+mount --mkdir /dev/${sysdisk}$p1 /mnt/boot
+swapon /dev/${sysdisk}$p3
 else
-fdisk /dev/$disk<<EOF
+sysdisk+="p"
+fdisk /dev/$sysdisk<<EOF
 g
 n
 1
@@ -126,16 +154,16 @@ n
 
 w
 EOF
-mkfs.fat -F32 /dev/${disk}1 -n boot<<EOF
+mkfs.fat -F32 /dev/${sysdisk}$p1 -n boot<<EOF
 y
 EOF
-mkswap /dev/${disk}2 -L swap
-mkfs.ext4 /dev/${disk}3 -L root<<EOF
+mkswap /dev/${sysdisk}$p2 -L swap
+mkfs.ext4 /dev/${sysdisk}$p3 -L root<<EOF
 y
 EOF
-mount /dev/${disk}3 /mnt
-mount --mkdir /dev/${disk}1 /mnt/boot
-swapon /dev/${disk}2
+mount /dev/${sysdisk}$p3 /mnt
+mount --mkdir /dev/${sysdisk}$p1 /mnt/boot
+swapon /dev/${sysdisk}$p2
 fi
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
 genfstab -p -U /mnt >> /mnt/etc/fstab
@@ -167,7 +195,7 @@ boot="$(efibootmgr | grep Boot)"
 if [ -z "$boot" ];
 then
 arch-chroot /mnt pacman -S grub --noconfirm
-arch-chroot /mnt grub-install /dev/$disk
+arch-chroot /mnt grub-install /dev/$sysdisk
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 else
 arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
@@ -179,7 +207,7 @@ echo "title  Arch Linux Virtual
 linux  /vmlinuz-linux-zen
 initrd /$microcode.img
 initrd  /initramfs-linux-zen.img
-options root=/dev/${disk}3 rw" > /mnt/boot/loader/entries/arch.conf
+options root=/dev/${sysdisk}$p3 rw" > /mnt/boot/loader/entries/arch.conf
 fi
 if [ "$microcode" == "amd-ucode" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm
 elif [ "$microcode" == "intel-ucode" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm
@@ -1251,4 +1279,5 @@ cd /home/$username/yay
 BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
 rm -Rf /mnt/home/$username/yay
 arch-chroot /mnt/ sudo -u $username yay -S transset-df volctl --noconfirm
-
+fdisk -l
+lsblk -l
