@@ -14,7 +14,7 @@ microcode=amd-ucode
 else
 microcode=intel-ucode
 fi
-net="$(iwctl device list | awk '{print $2}' | tail -n 2 | xargs)"
+net="$(iwctl device list | awk '{print $2}' | grep wl | xargs)"
 if [ -z "$net" ];
 then
 wifi=""
@@ -23,7 +23,7 @@ echo -e "\033[41m\033[30mОбнаружен wifi модуль, если осно
 fi
 if [ -z "$wifi" ];
 then
-net="$(ip -br link show | grep -v UNKNOWN | grep -v DOWN | awk '{print $1}' | xargs)"
+net="$(ip -br link show | grep -vE "UNKNOWN|DOWN" | awk '{print $1}' | xargs)"
 else
 echo -e "\033[41m\033[30mПароль wifi:\033[0m";read -p ">" passwifi
 iwctl --passphrase $passwifi station $net connect $wifi
@@ -135,7 +135,6 @@ mount /dev/${sysdisk}$p4 /mnt
 mount --mkdir /dev/${sysdisk}$p1 /mnt/boot
 swapon /dev/${sysdisk}$p3
 else
-sysdisk+="p"
 fdisk /dev/$sysdisk<<EOF
 g
 n
@@ -221,7 +220,7 @@ if [ "$gpu" == "amd" ]; then arch-chroot /mnt pacman -Sy amdvlk
 elif [ "$gpu" == "nvidia" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda
 fi
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
-arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk ttf-font-awesome awesome-terminal-fonts cheese kate mesa lib32-mesa go wireless_tools winetricks wine avahi konsole --noconfirm
+arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk ttf-font-awesome awesome-terminal-fonts cheese kate mesa lib32-mesa go wireless_tools winetricks wine avahi --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 echo '#Указание на конфигурационные файлы.
 userresources=$HOME/.Xresources
@@ -1269,7 +1268,7 @@ arch-chroot /mnt ip link set $net up
 mkdir -p /mnt/var/lib/iwd
 cp /var/lib/iwd/$wifi.psk /mnt/var/lib/iwd/$wifi.psk
 fi
-arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd
+arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd avahi-daemon
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 arch-chroot /mnt chmod u+x /home/$username/.xinitrc
 arch-chroot /mnt chown -R $username:users /home/$username/
