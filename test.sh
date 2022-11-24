@@ -35,7 +35,7 @@ for (( j=0, i=1; i<="${#massdisk[*]}"; i++, j++ ))
 do
 grepmassdisk+="${massdisk[$j]}|"
 done
-lsscsi -s | grep -viE "rom|usb" | grep -iE "$grepmassdisk"
+lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisk"
 read -p ">" sysdisk
 fi
 nvmep="$(echo "$sysdisk" | grep -i "nvme")"
