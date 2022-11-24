@@ -12,6 +12,6 @@ arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/${massdisks
 else
 echo ${massdisks[$j]}
 lsblk -no LABEL /dev/${massdisks[$j]}
-arch-chroot /mnt mount --mkdir /dev/$(lsblk -no LABEL /dev/${massdisks[$j]}) /home/$username/$(lsblk -no LABEL /dev/${massdisks[$j]})/
+arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/$(lsblk -no LABEL /dev/${massdisks[$j]})/
 fi
 done
