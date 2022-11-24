@@ -21,7 +21,7 @@ iwctl --passphrase $passwifi station $netdev connect $namewifi
 fi
 timezone="$(curl https://ipapi.co/timezone)"
 timedatectl set-timezone $timezone
-massdisk=($(lsscsi | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20))
+massdisk=($(lsscsi -t | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20))
 if [ ${#massdisk[*]} = 1 ];
 then
 sysdisk="${massdisk[0]}"
@@ -39,7 +39,6 @@ lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisk"
 read -p ">" sysdisk
 fi
 nvmep="$(echo "$sysdisk" | grep -i "nvme")"
-echo "$nvmep"
 if [ -z "$nvmep" ];
 then
 p1="1"
@@ -156,7 +155,6 @@ mount --mkdir /dev/${sysdisk}$p1 /mnt/boot
 swapon /dev/${sysdisk}$p2
 fi
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
-genfstab -p -U /mnt >> /mnt/etc/fstab
 net="$(ip -br link show | grep -v -i -E "unknown|down" | cut -b1-20)"
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
 arch-chroot /mnt hwclock --systohc
@@ -180,6 +178,18 @@ arch-chroot /mnt passwd $username<<EOF
 $passuser
 $passuser
 EOF
+massdisks=$(lsblk -sno Name | grep -ivE "└─|$sysdisk")
+echo -e $massdisks
+for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
+do
+if [ -z $(lsblk -no LABEL /dev/${massdisks[$j]}) ];
+then
+mount --mkdir /mnt/dev/${massdisks[$j]} /home/$username/${massdisks[$j]}/
+else
+mount --mkdir /mnt/dev/$(lsblk -no LABEL /dev/${massdisks[$j]}) /home/$username/$(lsblk -no LABEL /dev/${massdisks[$j]})/
+fi
+done
+genfstab -p -U /mnt >> /mnt/etc/fstab
 echo "$username ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
 boot="$(efibootmgr | grep Boot)"
 if [ -z "$boot" ];
@@ -211,7 +221,7 @@ if [ "$gpu" == "amd" ]; then arch-chroot /mnt pacman -Sy amdvlk
 elif [ "$gpu" == "nvidia" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda
 fi
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
-arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk ttf-font-awesome awesome-terminal-fonts cheese kate mesa lib32-mesa go wireless_tools winetricks wine avahi --noconfirm
+arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 echo '#Указание на конфигурационные файлы.
 userresources=$HOME/.Xresources
