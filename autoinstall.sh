@@ -1,51 +1,69 @@
 #!/bin/bash
 loadkeys ru
 setfont ter-v18n
-gpu="$(lspci | grep -i VGA | grep -i amd)"
-if [ -n "$gpu" ]; then gpu=amd
-elif
-gpu="$(lspci | grep -i VGA | grep -i nvidia)";
-[ -n "$gpu" ]; then gpu=nvidia
+if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then gpu=amd
+elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then gpu=nvidia
 fi
-cpu="$(lscpu | grep -i intel)"
-if [ -z "$cpu" ];
-then
-microcode=amd-ucode
-else
-microcode=intel-ucode
+if [ -n "$(lscpu | grep -i amd)" ]; then microcode="initrd /amd-ucode.img"
+elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="initrd /intel-ucode.img"
 fi
-net="$(iwctl device list | awk '{print $2}' | tail -n 2 | xargs)"
-if [ -z "$net" ];
+if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | xargs)" ];
 then
-wifi=""
-else
-echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" wifi
+echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" namewifi
+netdev="$(iwctl device list | awk '{print $2}' | grep wl | xargs)"
 fi
-if [ -z "$wifi" ];
+if [ -z "$namewifi" ];
 then
-net="$(ip -br link show | grep -v UNKNOWN | grep -v DOWN | awk '{print $1}' | xargs)"
+netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
 else
 echo -e "\033[41m\033[30mПароль wifi:\033[0m";read -p ">" passwifi
-iwctl --passphrase $passwifi station $net connect $wifi
+iwctl --passphrase $passwifi station $netdev connect $namewifi
 fi
-time="$(curl https://ipapi.co/timezone)"
-timedatectl set-timezone $time
-lsblk -d
+timezone="$(curl https://ipapi.co/timezone)"
+timedatectl set-timezone $timezone
+massdisk=($(lsscsi | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20))
+if [ ${#massdisk[*]} = 1 ];
+then
+sysdisk="${massdisk[0]}"
+elif [ ${#massdisk[*]} = 0 ];
+then
+echo -e "\033[41m\033[30mДоступных дисков не обнаружено\033[0m"
+exit 0
+else
+echo -e "\033[41m\033[30mВведите метку диска (выделено красным) на который будет установлена ОС:\033[0m"
+for (( j=0, i=1; i<="${#massdisk[*]}"; i++, j++ ))
+do
+grepmassdisk+="${massdisk[$j]}|"
+done
+lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisk"
+read -p ">" sysdisk
+fi
+nvmep="$(echo "$sysdisk" | grep -i "nvme")"
+echo "$nvmep"
+if [ -z "$nvmep" ];
+then
+p1="1"
+p2="2"
+p3="3"
+p4="4"
+else
+p1="p1"
+p2="p2"
+p3="p3"
+p4="p4"
+fi
 echo "
 "
-echo -e "\033[41m\033[30mВведите метку диска на который будет установлена ОС:\033[0m";read -p ">" disk
+echo -e "\033[41m\033[30mВведите имя компьютера:\033[0m";read -p ">" hostname
 echo "
 "
-echo -e "\033[41m\030[33mВведите имя компьютера:\033[0m";read -p ">" hostname
+echo -e "\033[41m\033[30mВведите имя пользователя:\033[0m";read -p ">" username
 echo "
 "
-echo -e "\033[41m\030[33mВведите имя пользователя:\033[0m";read -p ">" username
+echo -e "\033[41m\033[30mВведите пароль для $username:\033[0m";read -p ">" passuser
 echo "
 "
-echo -e "\033[41m\030[33mВведите пароль для $username:\033[0m";read -p ">" passuser
-echo "
-"
-echo -e "\033[41m\030[33mВведите пароль для root:\033[0m";read -p ">" passroot
+echo -e "\033[41m\033[30mВведите пароль для root:\033[0m";read -p ">" passroot
 PS3="$(echo -e "\033[41m\033[30mВыберете разрешение монитора:\033[0m
 >")"
 select resolution in "~480p" "~720p-1080p" "~4K"
@@ -74,7 +92,7 @@ umount -R /mnt
 boot="$(efibootmgr | grep Boot)"
 if [ -z "$boot" ];
 then
-fdisk /dev/$disk<<EOF
+fdisk /dev/$sysdisk<<EOF
 g
 n
 1
@@ -97,18 +115,18 @@ n
 
 w
 EOF
-mkfs.ext2 /dev/${disk}1 -L boot<<EOF
+mkfs.ext2 /dev/${sysdisk}$p1 -L boot<<EOF
 y
 EOF
-mkswap /dev/${disk}3 -L swap
-mkfs.ext4 /dev/${disk}4 -L root<<EOF
+mkswap /dev/${sysdisk}$p3 -L swap
+mkfs.ext4 /dev/${sysdisk}$p4 -L root<<EOF
 y
 EOF
-mount /dev/${disk}4 /mnt
-mount --mkdir /dev/${disk}1 /mnt/boot
-swapon /dev/${disk}3
+mount /dev/${sysdisk}$p4 /mnt
+mount --mkdir /dev/${sysdisk}$p1 /mnt/boot
+swapon /dev/${sysdisk}$p3
 else
-fdisk /dev/$disk<<EOF
+fdisk /dev/$sysdisk<<EOF
 g
 n
 1
@@ -126,21 +144,21 @@ n
 
 w
 EOF
-mkfs.fat -F32 /dev/${disk}1 -n boot<<EOF
+mkfs.fat -F32 /dev/${sysdisk}$p1 -n boot<<EOF
 y
 EOF
-mkswap /dev/${disk}2 -L swap
-mkfs.ext4 /dev/${disk}3 -L root<<EOF
+mkswap /dev/${sysdisk}$p2 -L swap
+mkfs.ext4 /dev/${sysdisk}$p3 -L root<<EOF
 y
 EOF
-mount /dev/${disk}3 /mnt
-mount --mkdir /dev/${disk}1 /mnt/boot
-swapon /dev/${disk}2
+mount /dev/${sysdisk}$p3 /mnt
+mount --mkdir /dev/${sysdisk}$p1 /mnt/boot
+swapon /dev/${sysdisk}$p2
 fi
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
 genfstab -p -U /mnt >> /mnt/etc/fstab
-net="$(ip -br link show | grep -v UNKNOWN | grep -v DOWN | cut -b1-10)"
-arch-chroot /mnt ln -sf /usr/share/zoneinfo/$time /etc/localtime
+net="$(ip -br link show | grep -v -i -E "unknown|down" | cut -b1-20)"
+arch-chroot /mnt ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
 arch-chroot /mnt hwclock --systohc
 arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
 arch-chroot /mnt sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
@@ -167,7 +185,7 @@ boot="$(efibootmgr | grep Boot)"
 if [ -z "$boot" ];
 then
 arch-chroot /mnt pacman -S grub --noconfirm
-arch-chroot /mnt grub-install /dev/$disk
+arch-chroot /mnt grub-install /dev/$sysdisk
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 else
 arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
@@ -177,12 +195,12 @@ timeout 2
 editor 0' > /mnt/boot/loader/loader.conf
 echo "title  Arch Linux Virtual
 linux  /vmlinuz-linux-zen
-initrd /$microcode.img
+$microcode
 initrd  /initramfs-linux-zen.img
-options root=/dev/${disk}3 rw" > /mnt/boot/loader/entries/arch.conf
+options root=/dev/${sysdisk}$p3 rw" > /mnt/boot/loader/entries/arch.conf
 fi
-if [ "$microcode" == "amd-ucode" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm
-elif [ "$microcode" == "intel-ucode" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm
+if [ "$microcode" == "initrd /amd-ucode.img" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm
+elif [ "$microcode" == "initrd /intel-ucode.img" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm
 fi
 arch-chroot /mnt sed -i 's/#Color/Color/' /etc/pacman.conf
 echo '[multilib]
@@ -193,7 +211,7 @@ if [ "$gpu" == "amd" ]; then arch-chroot /mnt pacman -Sy amdvlk
 elif [ "$gpu" == "nvidia" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda
 fi
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
-arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra variety alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk ttf-font-awesome awesome-terminal-fonts audacity kdenlive cheese kate sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools --noconfirm
+arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra variety alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk ttf-font-awesome awesome-terminal-fonts audacity kdenlive cheese kate sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 echo '#Указание на конфигурационные файлы.
 userresources=$HOME/.Xresources
@@ -255,7 +273,7 @@ nvidiac+='${color #b2b2b2}Температура ГП:$color$alignr${nvidia temp
 fi
 mkdir -p /mnt/home/$username/.config/conky
 echo 'conky.config = { --Внешний вид.
-alignment = "middle_right", --Располжение виджета.
+alignment = "top_right", --Располжение виджета.
 border_inner_margin = '$font', --Отступ от внутренних границ.
 border_outer_margin = '$font', --Отступ от края окна.
 border_width = 1, --Толщина рамки.
@@ -267,7 +285,7 @@ draw_shades = false, --Оттенки.
 draw_borders = true, --Включение границ.
 font = "Noto Sans Mono:size='$font'", --Шрифт и размер шрифта.
 gap_y = '$(($gap/2+$gap))', --Отступ сверху.
-gap_x = 30, --Отступ от края.
+gap_x = 40, --Отступ от края.
 own_window = true, --Собственное окно.
 own_window_class = "Conky", --Класс окна.
 own_window_type = "override", --Тип окна (возможные варианты: "normal", "desktop", "ock", "panel", "override" выбираем в зависимости от оконного менеджера и личных предпочтений).
@@ -1269,17 +1287,17 @@ curl -L https://github.com/stardestart/arch/raw/main/font/30144_PostIndex.ttf > 
 unzip -o *.zip
 rm *.zip *.txt"
 fstrim -v -a
-if [ -z "$wifi" ];
+if [ -z "$namewifi" ];
 then
-arch-chroot /mnt ip link set $net up
+arch-chroot /mnt ip link set $netdev up
 else
 arch-chroot /mnt pacman -Sy iwd  --noconfirm
 arch-chroot /mnt systemctl enable iwd
-arch-chroot /mnt ip link set $net up
+arch-chroot /mnt ip link set $netdev up
 mkdir -p /mnt/var/lib/iwd
-cp /var/lib/iwd/$wifi.psk /mnt/var/lib/iwd/$wifi.psk
+cp /var/lib/iwd/$namewifi.psk /mnt/var/lib/iwd/$namewifi.psk
 fi
-arch-chroot /mnt systemctl enable saned.socket cups.socket cups-browsed fstrim.timer reflector.timer xdm-archlinux dhcpcd
+arch-chroot /mnt systemctl enable saned.socket cups.socket cups-browsed fstrim.timer reflector.timer xdm-archlinux dhcpcd avahi-daemon
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 arch-chroot /mnt chmod u+x /home/$username/.xinitrc
 arch-chroot /mnt chown -R $username:users /home/$username/
