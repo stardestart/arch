@@ -25,9 +25,6 @@ grepmassdisk+="${massdisk[$j]}|"
 echo -E "$grepmassdisk
 "
 done
-disk+="${grepmassdisk%?}"
-echo -E "$disk
-"
-lsscsi -s | grep -viE "rom|usb" | grep -iE ""$grepmassdisk""
+lsscsi -s | grep -iE ""$grepmassdisk""
 read -p ">" sysdisk
 fi
