@@ -1,6 +1,10 @@
 #!/bin/bash
 loadkeys ru
 setfont ter-v18n
+massdisk=()
+grepmassdisk=""
+sysdisk=""
+disk=""
 lsscsi | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20
 massdisk=($(lsscsi | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20))
 echo ${#massdisk[*]}
@@ -18,10 +22,12 @@ for (( j=0, i=1; i<="${#massdisk[*]}"; i++, j++ ))
 do
 echo ${massdisk[$j]}
 grepmassdisk+="${massdisk[$j]}|"
-echo $grepmassdisk
+echo -E "$grepmassdisk
+"
 done
-grepmassdisk+="${grepmassdisk%?}"
-echo $grepmassdisk
-lsscsi -s | grep -viE "rom|usb" | grep -iE "$grepmassdisk"
+disk+="${grepmassdisk%?}"
+echo -E "$disk
+"
+lsscsi -s | grep -viE "rom|usb" | grep -iE ""$grepmassdisk""
 read -p ">" sysdisk
 fi
