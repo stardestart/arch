@@ -1,36 +1,27 @@
 #!/bin/bash
 loadkeys ru
 setfont ter-v18n
-gpu="$(lspci | grep -i vga | grep -i amd)"
-if [ -n "$gpu" ]; then gpu=amd
-elif
-gpu="$(lspci | grep -i vga | grep -i nvidia)";
-[ -n "$gpu" ]; then gpu=nvidia
+if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then gpu=amd
+elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then gpu=nvidia
 fi
-cpu="$(lscpu | grep -i intel)"
-if [ -z "$cpu" ];
-then
-microcode=amd-ucode
-else
-microcode=intel-ucode
+if [ -n "$(lscpu | grep -i amd)" ]; then microcode="initrd /amd-ucode.img"
+elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="initrd /intel-ucode.img"
 fi
-net="$(iwctl device list | awk '{print $2}' | grep wl | xargs)"
-if [ -z "$net" ];
+if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | xargs)" ];
 then
-wifi=""
-else
-echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" wifi
+echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" namewifi
+netdev="$(iwctl device list | awk '{print $2}' | grep wl | xargs)"
 fi
-if [ -z "$wifi" ];
+if [ -z "$namewifi" ];
 then
-net="$(ip -br link show | grep -vE "UNKNOWN|DOWN" | awk '{print $1}' | xargs)"
+netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
 else
 echo -e "\033[41m\033[30mПароль wifi:\033[0m";read -p ">" passwifi
-iwctl --passphrase $passwifi station $net connect $wifi
+iwctl --passphrase $passwifi station $netdev connect $namewifi
 fi
-time="$(curl https://ipapi.co/timezone)"
-timedatectl set-timezone $time
-massdisk=($(lsscsi | grep -v -i -E "rom|usb" | awk '{print $NF}' | cut -b6-20))
+timezone="$(curl https://ipapi.co/timezone)"
+timedatectl set-timezone $timezone
+massdisk=($(lsscsi | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20))
 if [ ${#massdisk[*]} = 1 ];
 then
 sysdisk="${massdisk[0]}"
@@ -42,11 +33,9 @@ else
 echo -e "\033[41m\033[30mВведите метку диска (выделено красным) на который будет установлена ОС:\033[0m"
 for (( j=0, i=1; i<="${#massdisk[*]}"; i++, j++ ))
 do
-echo ${massdisk[$j]}
-grep1+="${massdisk[$j]}|"
-echo $grep1
+grepmassdisk+="${massdisk[$j]}|"
 done
-lsscsi -s | grep -v -i -E "rom|usb" | grep -E "$grep1"
+lsscsi -s | grep -viE "rom|usb" | grep -iE "$grepmassdisk"
 read -p ">" sysdisk
 fi
 nvmep="$(echo "$sysdisk" | grep -i "nvme")"
@@ -168,8 +157,8 @@ swapon /dev/${sysdisk}$p2
 fi
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
 genfstab -p -U /mnt >> /mnt/etc/fstab
-net="$(ip -br link show | grep -v UNKNOWN | grep -v DOWN | cut -b1-10)"
-arch-chroot /mnt ln -sf /usr/share/zoneinfo/$time /etc/localtime
+net="$(ip -br link show | grep -v -i -E "unknown|down" | cut -b1-20)"
+arch-chroot /mnt ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
 arch-chroot /mnt hwclock --systohc
 arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
 arch-chroot /mnt sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
@@ -206,12 +195,12 @@ timeout 2
 editor 0' > /mnt/boot/loader/loader.conf
 echo "title  Arch Linux Virtual
 linux  /vmlinuz-linux-zen
-initrd /$microcode.img
+$microcode
 initrd  /initramfs-linux-zen.img
 options root=/dev/${sysdisk}$p3 rw" > /mnt/boot/loader/entries/arch.conf
 fi
-if [ "$microcode" == "amd-ucode" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm
-elif [ "$microcode" == "intel-ucode" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm
+if [ "$microcode" == "initrd /amd-ucode.img" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm
+elif [ "$microcode" == "initrd /intel-ucode.img" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm
 fi
 arch-chroot /mnt sed -i 's/#Color/Color/' /etc/pacman.conf
 echo '[multilib]
@@ -1260,15 +1249,15 @@ curl -L https://github.com/stardestart/arch/raw/main/font/Snowstorm.zip > Snowst
 curl -L https://github.com/stardestart/arch/raw/main/font/30144_PostIndex.ttf > 30144_PostIndex.ttf
 unzip -o *.zip
 rm *.zip *.txt"
-if [ -z "$wifi" ];
+if [ -z "$namewifi" ];
 then
-arch-chroot /mnt ip link set $net up
+arch-chroot /mnt ip link set $netdev up
 else
 arch-chroot /mnt pacman -Sy iwd  --noconfirm
 arch-chroot /mnt systemctl enable iwd
-arch-chroot /mnt ip link set $net up
+arch-chroot /mnt ip link set $netdev up
 mkdir -p /mnt/var/lib/iwd
-cp /var/lib/iwd/$wifi.psk /mnt/var/lib/iwd/$wifi.psk
+cp /var/lib/iwd/$namewifi.psk /mnt/var/lib/iwd/$namewifi.psk
 fi
 arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd avahi-daemon
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
