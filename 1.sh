@@ -1,4 +1,6 @@
 #!/bin/bash
+loadkeys ru
+setfont ter-v18n
 lsscsi | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20
 massdisk=($(lsscsi | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20))
 echo ${#massdisk[*]}
@@ -18,6 +20,8 @@ echo ${massdisk[$j]}
 grepmassdisk+="${massdisk[$j]}|"
 echo $grepmassdisk
 done
+grepmassdisk+="${grepmassdisk%?}"
+echo $grepmassdisk
 lsscsi -s | grep -viE "rom|usb" | grep -iE "$grepmassdisk"
 read -p ">" sysdisk
 fi
