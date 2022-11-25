@@ -17,15 +17,15 @@ then
 netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
 else
 echo -e "\033[41m\033[30mПароль wifi:\033[0m";read -p ">" passwifi
-iwctl --passphrase "$passwifi" station "$netdev" connect "$namewifi"
+iwctl --passphrase $passwifi station $netdev connect $namewifi
 fi
 timezone="$(curl https://ipapi.co/timezone)"
-timedatectl set-timezone "$timezone"
-massdisk=("$(lsscsi -t | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20)")
-if [ "${#massdisk[*]}" = 1 ];
+timedatectl set-timezone $timezone
+massdisk=($(lsscsi -t | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20))
+if [ ${#massdisk[*]} = 1 ];
 then
 sysdisk="${massdisk[0]}"
-elif [ "${#massdisk[*]}" = 0 ];
+elif [ ${#massdisk[*]} = 0 ];
 then
 echo -e "\033[41m\033[30mДоступных дисков не обнаружено\033[0m"
 exit 0
@@ -38,7 +38,8 @@ done
 lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisk"
 read -p ">" sysdisk
 fi
-if [ -z "$(echo "$sysdisk" | grep -i "nvme")" ];
+nvmep="$(echo "$sysdisk" | grep -i "nvme")"
+if [ -z "$nvmep" ];
 then
 p1="1"
 p2="2"
