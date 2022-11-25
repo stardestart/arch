@@ -15,7 +15,7 @@ echo -e "\033[31mВидеокарта:"$(lspci | grep -i vga)""
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="initrd /amd-ucode.img"
 elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="initrd /intel-ucode.img"
 fi
-echo -e "Процессор:"$(lscpu | grep "model name")""
+echo -e "Процессор:"$(lscpu | grep -i "model name")""
 #
 #Определяем сетевое устройство.
 if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
@@ -27,10 +27,10 @@ if [ -z "$namewifi" ];
     then
         netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
     else
-        echo -e "\033[41m\033[30mПароль wifi:\033[0m";read -p ">" passwifi
+        echo -e "\033[41m\033[30mПароль wifi:\033[32m";read -p ">" passwifi
         iwctl --passphrase $passwifi station $netdev connect $namewifi
 fi
-echo -e "\033[31mСетевое устройство:"$netdev""
+echo -e "\033[31mСетевое устройство:"$netdev"\033[32m"
 #
 #Определяем часовой пояс.
 timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
