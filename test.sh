@@ -34,6 +34,7 @@ echo -e "\033[31mСетевое устройство:"$netdev"\033[32m"
 #
 #Определяем часовой пояс.
 timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
+echo -e "\033[31mЧасовой пояс:"$(curl https://ipapi.co/timezone)"\033[32m"
 #
 #Определяем физический диск на который будет установлена ОС.
 massdisk=($(lsscsi -t | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20))
