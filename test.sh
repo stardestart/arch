@@ -9,18 +9,18 @@ echo -e "\033[41m\033[30m - чёрный;\033[0m\n\033[0m\033[31m - красны
 if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then gpu=amd
 elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then gpu=nvidia
 fi
-echo -e "\033[32m"$gpu""
+echo -e "\033[31mВидеокарта:"$(lspci | grep -i vga)""
 #
 #Определяем процессор.
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="initrd /amd-ucode.img"
 elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="initrd /intel-ucode.img"
 fi
-echo -e "\033[32m"$microcode""
+echo -e "Процессор:"$(lscpu | grep "model name")""
 #
 #Определяем сетевое устройство.
 if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
     then
-        echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" namewifi
+        echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[32m";read -p ">" namewifi
         netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
 fi
 if [ -z "$namewifi" ];
@@ -30,6 +30,7 @@ if [ -z "$namewifi" ];
         echo -e "\033[41m\033[30mПароль wifi:\033[0m";read -p ">" passwifi
         iwctl --passphrase $passwifi station $netdev connect $namewifi
 fi
+echo -e "\033[31mСетевое устройство:"$netdev""
 #
 #Определяем часовой пояс.
 timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
