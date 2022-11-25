@@ -18,18 +18,18 @@ echo $microcode
 #
 #Определяем сетевое устройство.
 if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
-    then
-        echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" namewifi
-        netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
-        echo $netdev
+then
+echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" namewifi
+netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
+echo $netdev
 fi
 if [ -z "$namewifi" ];
-    then
-        netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
-        echo $netdev
-    else
-        echo -e "\033[41m\033[30mПароль wifi:\033[0m";read -p ">" passwifi
-        iwctl --passphrase $passwifi station $netdev connect $namewifi
+then
+netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
+echo $netdev
+else
+echo -e "\033[41m\033[30mПароль wifi:\033[0m";read -p ">" passwifi
+iwctl --passphrase $passwifi station $netdev connect $namewifi
 fi
 #
 #Определяем процессор.
