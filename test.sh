@@ -14,8 +14,8 @@ echo -e "$gpu"
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="initrd /amd-ucode.img"
 elif [ -n $(lscpu | grep -i intel) ]; then microcode="initrd /intel-ucode.img"
 fi
-echo -e "$microcode"
-echo -e "чваочваое"
+printf "$microcode \n"
+printf "чваочваое"
 #
 #Определяем сетевое устройство.
 if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
