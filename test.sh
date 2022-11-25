@@ -4,6 +4,10 @@
 loadkeys ru
 setfont ter-v18n
 #
+#
+swapoff -a
+umount -R /mnt
+#
 #Определяем видеокарту.
 echo -e "\033[41m\033[30m - чёрный;\033[0m\n\033[0m\033[31m - красный;\n\033[32m - зелёный;\n\033[33m - желтый;\n\033[34m - синий;\n\033[35m - фиолетовый;\n\033[36m - голубой;\n\033[37m - серый\n"
 if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then gpu=amd
@@ -102,14 +106,12 @@ do
             gap=60
             break
             ;;
-        *) echo -e "\033[31mЧто значит - $REPLY? До трёх посчитать не можешь и Arch Linux ставишь?\033[0m";;
+        *) echo -e "\033[31mЧто значит - $REPLY? До трёх посчитать не можешь и Arch Linux ставишь?\033[36m";;
     esac
 done
-swapoff -a
-umount -R /mnt
-boot="$(efibootmgr | grep Boot)"
-if [ -z "$boot" ];
+if [ -z "$(efibootmgr | grep Boot)" ];
 then
+echo -e "\033[31mLegacy boot\033[32m"
 fdisk /dev/$sysdisk<<EOF
 g
 n
@@ -144,6 +146,7 @@ mount /dev/${sysdisk}$p4 /mnt
 mount --mkdir /dev/${sysdisk}$p1 /mnt/boot
 swapon /dev/${sysdisk}$p3
 else
+echo -e "\033[31mUEFI boot\033[32m"
 fdisk /dev/$sysdisk<<EOF
 g
 n
@@ -199,7 +202,7 @@ $passuser
 EOF
 echo "$username ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
 boot="$(efibootmgr | grep Boot)"
-if [ -z "$boot" ];
+if [ -z "$(efibootmgr | grep Boot)" ];
 then
 arch-chroot /mnt pacman -S grub --noconfirm
 arch-chroot /mnt grub-install /dev/$sysdisk
