@@ -15,6 +15,7 @@ echo -e "\033[32m"$gpu""
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="initrd /amd-ucode.img"
 elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="initrd /intel-ucode.img"
 fi
+echo -e "\033[32m"$microcode""
 #
 #Определяем сетевое устройство.
 if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
