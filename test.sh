@@ -42,10 +42,10 @@ echo -e "\033[31mЧасовой пояс:"$(curl https://ipapi.co/timezone)"\033
 #
 #Определяем физический диск на который будет установлена ОС.
 massdisk=($(lsscsi -t | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20))
-if [ ${#massdisk[*]} = 1 ];
+if [ "${#massdisk[*]}" = 1 ];
 then
 sysdisk="${massdisk[0]}"
-elif [ ${#massdisk[*]} = 0 ];
+elif [ "${#massdisk[*]}" = 0 ];
 then
 echo -e "\033[41m\033[30mДоступных дисков не обнаружено\033[32m"
 exit 0
@@ -82,7 +82,7 @@ echo "
 echo -e "\033[41m\033[30mВведите имя пользователя:\033[0m\033[36m";read -p ">" username
 echo "
 "
-echo -e "\033[41m\033[30mВведите пароль для $username:\033[0m\033[36m";read -p ">" passuser
+echo -e "\033[41m\033[30mВведите пароль для "$username":\033[0m\033[36m";read -p ">" passuser
 echo "
 "
 echo -e "\033[41m\033[30mВведите пароль для root:\033[0m\033[36m";read -p ">" passroot
@@ -90,7 +90,7 @@ PS3="$(echo -e "\033[41m\033[30mВыберете разрешение монит
 >")"
 select resolution in "~480p" "~720p-1080p" "~4K"
 do
-    case $resolution in
+    case "$resolution" in
         "~480p")
             font=6
             gap=40
@@ -106,13 +106,13 @@ do
             gap=60
             break
             ;;
-        *) echo -e "\033[31mЧто значит - $REPLY? До трёх посчитать не можешь и Arch Linux ставишь?\033[36m";;
+        *) echo -e "\033[31mЧто значит - "$REPLY"? До трёх посчитать не можешь и Arch Linux ставишь?\033[36m";;
     esac
 done
 if [ -z "$(efibootmgr | grep Boot)" ];
 then
 echo -e "\033[31mLegacy boot\033[32m"
-fdisk /dev/$sysdisk<<EOF
+fdisk /dev/"$sysdisk"<<EOF
 g
 n
 1
@@ -135,19 +135,19 @@ n
 
 w
 EOF
-mkfs.ext2 /dev/${sysdisk}$p1 -L boot<<EOF
+mkfs.ext2 /dev/"$sysdisk""$p1" -L boot<<EOF
 y
 EOF
-mkswap /dev/${sysdisk}$p3 -L swap
-mkfs.ext4 /dev/${sysdisk}$p4 -L root<<EOF
+mkswap /dev/"$sysdisk""$p3" -L swap
+mkfs.ext4 /dev/"$sysdisk""$p4" -L root<<EOF
 y
 EOF
-mount /dev/${sysdisk}$p4 /mnt
-mount --mkdir /dev/${sysdisk}$p1 /mnt/boot
-swapon /dev/${sysdisk}$p3
+mount /dev/"$sysdisk""$p4" /mnt
+mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
+swapon /dev/"$sysdisk""$p3"
 else
 echo -e "\033[31mUEFI boot\033[32m"
-fdisk /dev/$sysdisk<<EOF
+fdisk /dev/"$sysdisk"<<EOF
 g
 n
 1
@@ -165,20 +165,19 @@ n
 
 w
 EOF
-mkfs.fat -F32 /dev/${sysdisk}$p1 -n boot<<EOF
+mkfs.fat -F32 /dev/"$sysdisk""$p1" -n boot<<EOF
 y
 EOF
-mkswap /dev/${sysdisk}$p2 -L swap
-mkfs.ext4 /dev/${sysdisk}$p3 -L root<<EOF
+mkswap /dev/"$sysdisk""$p2" -L swap
+mkfs.ext4 /dev/"$sysdisk""$p3" -L root<<EOF
 y
 EOF
-mount /dev/${sysdisk}$p3 /mnt
-mount --mkdir /dev/${sysdisk}$p1 /mnt/boot
-swapon /dev/${sysdisk}$p2
+mount /dev/"$sysdisk""$p3" /mnt
+mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
+swapon /dev/"$sysdisk""$p2"
 fi
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
-net="$(ip -br link show | grep -v -i -E "unknown|down" | cut -b1-20)"
-arch-chroot /mnt ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
+arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$timezone" /etc/localtime
 arch-chroot /mnt hwclock --systohc
 arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
 arch-chroot /mnt sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
@@ -366,10 +365,10 @@ $swapperc%${swapbar 4}
 #Блок "Сеть".
 #Разделитель.
 ${color #f92b2b}NET${hr 3}$color
-#Скорость приёма ('${net}' определенно командой "ls /sys/class/net" в терминале).
-${color #b2b2b2}Скорость приёма:$color$alignr${upspeedf '${net}'}
+#Скорость приёма ('"$netdev"' определенно командой "ls /sys/class/net" в терминале).
+${color #b2b2b2}Скорость приёма:$color$alignr${upspeedf '"$netdev"'}
 #Скорость отдачи.
-${color #b2b2b2}Скорость отдачи:$color$alignr${downspeedf '${net}'}
+${color #b2b2b2}Скорость отдачи:$color$alignr${downspeedf '"$netdev"'}
 #IP адрес.
 ${color #b2b2b2}IP адрес:$color$alignr${curl eth0.me}
 #Блок "Процессы".
