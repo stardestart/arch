@@ -178,17 +178,6 @@ arch-chroot /mnt passwd $username<<EOF
 $passuser
 $passuser
 EOF
-massdisks=($(lsblk -snAo +TRAN | grep -ivE "└─|$sysdisk|rom|usb|/|SWAP" | awk '{print $1}'))
-for (( j=0, i=1; i<=${#massdisks[*]}; i++, j++ ))
-do
-if [ -z $(lsblk -no LABEL /dev/${massdisks[$j]}) ];
-then
-arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/${massdisks[$j]}
-else
-arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/"$(lsblk -no LABEL /dev/${massdisks[$j]})"
-fi
-done
-genfstab -p -U /mnt >> /mnt/etc/fstab
 echo "$username ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
 boot="$(efibootmgr | grep Boot)"
 if [ -z "$boot" ];
@@ -222,6 +211,17 @@ fi
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
 arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
+massdisks=($(lsblk -snAo +TRAN | grep -ivE "└─|$sysdisk|rom|usb|/|SWAP" | awk '{print $1}'))
+for (( j=0, i=1; i<=${#massdisks[*]}; i++, j++ ))
+do
+if [ -z $(lsblk -no LABEL /dev/${massdisks[$j]}) ];
+then
+arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/${massdisks[$j]}
+else
+arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/$(lsblk -no LABEL /dev/${massdisks[$j]})
+fi
+done
+genfstab -p -U /mnt >> /mnt/etc/fstab
 echo '#Указание на конфигурационные файлы.
 userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
