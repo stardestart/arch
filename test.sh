@@ -1,46 +1,44 @@
 #!/bin/bash
 loadkeys ru
 setfont ter-v18n
-#
-if [ -n $(lspci | grep -i vga | grep -i amd) ]; then gpu=amd
-elif [ -n $(lspci | grep -i vga | grep -i nvidia) ]; then gpu=nvidia
+if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then gpu=amd
+elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then gpu=nvidia
 fi
-
-if [ -n $(lscpu | grep -i amd) ]; then microcode="initrd /amd-ucode.img"
-elif [ -n $(lscpu | grep -i intel) ]; then microcode="initrd /intel-ucode.img"
+if [ -n "$(lscpu | grep -i amd)" ]; then microcode="initrd /amd-ucode.img"
+elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="initrd /intel-ucode.img"
 fi
-if [ -n $(iwctl device list | awk '{print $2}' | grep wl | head -n 1) ];
+if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
 then
 echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" namewifi
-netdev=$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)
+netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
 fi
-if [ -z $namewifi ];
+if [ -z "$namewifi" ];
 then
-netdev=$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)
+netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
 else
 echo -e "\033[41m\033[30mПароль wifi:\033[0m";read -p ">" passwifi
-iwctl --passphrase $passwifi station $netdev connect $namewifi
+iwctl --passphrase "$passwifi" station "$netdev" connect "$namewifi"
 fi
-timezone=$(curl https://ipapi.co/timezone)
-timedatectl set-timezone $timezone
-massdisk=($(lsscsi -t | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20))
-if [ ${#massdisk[*]} = 1 ];
+timezone="$(curl https://ipapi.co/timezone)"
+timedatectl set-timezone "$timezone"
+massdisk=("$(lsscsi -t | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20)")
+if [ "${#massdisk[*]}" = 1 ];
 then
-sysdisk=${massdisk[0]}
-elif [ ${#massdisk[*]} = 0 ];
+sysdisk="${massdisk[0]}"
+elif [ "${#massdisk[*]}" = 0 ];
 then
 echo -e "\033[41m\033[30mДоступных дисков не обнаружено\033[0m"
 exit 0
 else
 echo -e "\033[41m\033[30mВведите метку диска (выделено красным) на который будет установлена ОС:\033[0m"
-for (( j=0, i=1; i<=${#massdisk[*]}; i++, j++ ))
+for (( j=0, i=1; i<="${#massdisk[*]}"; i++, j++ ))
 do
 grepmassdisk+="${massdisk[$j]}|"
 done
-lsscsi -s | grep -viE "rom|usb" | grep --color -iE $grepmassdisk
+lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisk"
 read -p ">" sysdisk
 fi
-if [ -z $(echo $sysdisk | grep -i "nvme") ];
+if [ -z "$(echo "$sysdisk" | grep -i "nvme")" ];
 then
 p1="1"
 p2="2"
