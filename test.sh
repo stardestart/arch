@@ -52,7 +52,7 @@ do
 grepmassdisk+="${massdisk[$j]}|"
 done
 lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisk"
-read -p ">" sysdisk
+read -p "\033[36m>" sysdisk
 fi
 echo -e "\033[31mФизический диск на который будет установлена ОС:"$sysdisk"\033[32m"
 #
