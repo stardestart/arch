@@ -178,15 +178,14 @@ arch-chroot /mnt passwd $username<<EOF
 $passuser
 $passuser
 EOF
-massdisks=$(lsblk -sn | grep -ivE "└─|$sysdisk|rom|usb|/" | awk '{print $1}')
-for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
+massdisks=($(lsblk -snAo +TRAN | grep -ivE "└─|$sysdisk|rom|usb|/|SWAP" | awk '{print $1}'))
+for (( j=0, i=1; i<=${#massdisks[*]}; i++, j++ ))
 do
 if [ -z $(lsblk -no LABEL /dev/${massdisks[$j]}) ];
 then
-arch-chroot /mnt mount --mkdir /dev/"${massdisks[$j]}" /home/$username/${massdisks[$j]}/
+arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/${massdisks[$j]}
 else
-lsblk -no LABEL /dev/${massdisks[$j]}
-arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/"$(lsblk -no LABEL /dev/${massdisks[$j]})"/
+arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/"$(lsblk -no LABEL /dev/${massdisks[$j]})"
 fi
 done
 genfstab -p -U /mnt >> /mnt/etc/fstab
