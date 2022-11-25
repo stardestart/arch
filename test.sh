@@ -71,17 +71,17 @@ p4="p4"
 fi
 echo "
 "
-echo -e "\033[41m\033[30mВведите имя компьютера:\033[36m";read -p ">" hostname
+echo -e "\033[41m\033[30mВведите имя компьютера:\033[0m\033[36m";read -p ">" hostname
 echo "
 "
-echo -e "\033[41m\033[30mВведите имя пользователя:\033[36m";read -p ">" username
+echo -e "\033[41m\033[30mВведите имя пользователя:\033[0m\033[36m";read -p ">" username
 echo "
 "
-echo -e "\033[41m\033[30mВведите пароль для $username:\033[36m";read -p ">" passuser
+echo -e "\033[41m\033[30mВведите пароль для $username:\033[0m\033[36m";read -p ">" passuser
 echo "
 "
-echo -e "\033[41m\033[30mВведите пароль для root:\033[36m";read -p ">" passroot
-PS3="$(echo -e "\033[41m\033[30mВыберете разрешение монитора:\033[36m
+echo -e "\033[41m\033[30mВведите пароль для root:\033[0m\033[36m";read -p ">" passroot
+PS3="$(echo -e "\033[41m\033[30mВыберете разрешение монитора:\033[0m\033[36m
 >")"
 select resolution in "~480p" "~720p-1080p" "~4K"
 do
