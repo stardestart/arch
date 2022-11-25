@@ -8,34 +8,30 @@ setfont ter-v18n
 if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then gpu=amd
 elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then gpu=nvidia
 fi
-echo -e "$gpu"
 #
 #Определяем процессор.
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="initrd /amd-ucode.img"
 elif [ -n $(lscpu | grep -i intel) ]; then microcode="initrd /intel-ucode.img"
 fi
-printf "$microcode \n"
-printf "чваочваое"
 #
 #Определяем сетевое устройство.
 if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
-then
-echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" namewifi
-netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
-echo -e "$netdev"
+    then
+        echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" namewifi
+        netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
 fi
 if [ -z "$namewifi" ];
-then
-netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
-echo -e "$netdev"
-else
-echo -e "\033[41m\033[30mПароль wifi:\033[0m";read -p ">" passwifi
-iwctl --passphrase $passwifi station $netdev connect $namewifi
+    then
+        netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
+    else
+        echo -e "\033[41m\033[30mПароль wifi:\033[0m";read -p ">" passwifi
+        iwctl --passphrase $passwifi station $netdev connect $namewifi
 fi
 #
-#Определяем процессор.
-timezone="$(curl https://ipapi.co/timezone)"
-timedatectl set-timezone $timezone
+#Определяем часовой пояс.
+timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
+#
+#Определяем физический диск на который будет установлена ОС.
 massdisk=($(lsscsi -t | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20))
 if [ ${#massdisk[*]} = 1 ];
 then
@@ -53,6 +49,8 @@ done
 lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisk"
 read -p ">" sysdisk
 fi
+#
+#Определяем есть ли nvme контролер системного диска.
 if [ -z "$(echo "$sysdisk" | grep -i "nvme")" ];
 then
 p1="1"
