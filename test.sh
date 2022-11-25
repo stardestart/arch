@@ -74,6 +74,8 @@ p2="p2"
 p3="p3"
 p4="p4"
 fi
+#
+#Сбор данных пользователя.
 echo "
 "
 echo -e "\033[41m\033[30mВведите имя компьютера:\033[0m\033[36m";read -p ">" hostname
@@ -109,6 +111,8 @@ do
         *) echo -e "\033[31mЧто значит - "$REPLY"? До трёх посчитать не можешь и Arch Linux ставишь?\033[36m";;
     esac
 done
+#
+#Разметка системного диска.
 if [ -z "$(efibootmgr | grep Boot)" ];
 then
 echo -e "\033[31mLegacy boot\033[32m"
@@ -176,15 +180,16 @@ mount /dev/"$sysdisk""$p3" /mnt
 mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
 swapon /dev/"$sysdisk""$p2"
 fi
+#
+#Установка ОС.
+echo -e "\033[31mУстановка ОС\033[32m"
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$timezone" /etc/localtime
 arch-chroot /mnt hwclock --systohc
 arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
 arch-chroot /mnt sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
-echo 'LANG="ru_RU.UTF-8"' > /mnt/etc/locale.conf
-echo "KEYMAP=ru
-FONT=ter-v18n
-USECOLOR=yes" > /mnt/etc/vconsole.conf
+echo -e "LANG=\"ru_RU.UTF-8\"" > /mnt/etc/locale.conf
+echo -e "KEYMAP=ru\nFONT=ter-v18n\nUSECOLOR=yes" > /mnt/etc/vconsole.conf
 arch-chroot /mnt locale-gen
 echo $hostname > /mnt/etc/hostname
 echo "127.0.0.1 localhost
