@@ -38,8 +38,7 @@ done
 lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisk"
 read -p ">" sysdisk
 fi
-nvmep="$(echo "$sysdisk" | grep -i "nvme")"
-if [ -z "$nvmep" ];
+if [ -z "$(echo "$sysdisk" | grep -i "nvme")" ];
 then
 p1="1"
 p2="2"
