@@ -5,6 +5,7 @@ loadkeys ru
 setfont ter-v18n
 #
 #Определяем видеокарту.
+echo -e "\033[41m\033[30m - чёрный;\033[0m\n\033[0m\033[31m - красный;\n\033[32m - зелёный;\n\033[33m - желтый;\n\033[34m - синий;\n\033[35m - фиолетовый;\n\033[36m - голубой;\n\033[37m - серый\n"
 if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then gpu=amd
 elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then gpu=nvidia
 fi
