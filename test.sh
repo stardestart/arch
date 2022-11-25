@@ -9,10 +9,11 @@ echo -e "\033[41m\033[30m - чёрный;\033[0m\n\033[0m\033[31m - красны
 if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then gpu=amd
 elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then gpu=nvidia
 fi
+echo -e "\033[32m"$gpu""
 #
 #Определяем процессор.
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="initrd /amd-ucode.img"
-elif [ -n $(lscpu | grep -i intel) ]; then microcode="initrd /intel-ucode.img"
+elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="initrd /intel-ucode.img"
 fi
 #
 #Определяем сетевое устройство.
