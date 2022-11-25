@@ -1,9 +1,13 @@
 #!/bin/bash
+#Установим язык, цвет и шрифт консоли.
+export PS1="\[\033[43m\]\[\033[2;34m\]\A\[\033[0m\]\[\033[44m\]\[\033[3;33m\]\u@\h \W/\[\033[0m\]\[\033[5;91m\]\$: \[\033[33m\]"
 loadkeys ru
 setfont ter-v18n
+#Определяем видеокарту.
 if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then gpu=amd
 elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then gpu=nvidia
 fi
+
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="initrd /amd-ucode.img"
 elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="initrd /intel-ucode.img"
 fi
