@@ -114,8 +114,8 @@ done
 #
 #Разметка системного диска.
 if [ -z "$(efibootmgr | grep Boot)" ];
-then
-echo -e "\033[31mLegacy boot\033[32m"
+    then
+        echo -e "\033[31mLegacy boot\033[32m"
 fdisk /dev/"$sysdisk"<<EOF
 g
 n
@@ -149,8 +149,8 @@ EOF
 mount /dev/"$sysdisk""$p4" /mnt
 mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
 swapon /dev/"$sysdisk""$p3"
-else
-echo -e "\033[31mUEFI boot\033[32m"
+    else
+        echo -e "\033[31mUEFI boot\033[32m"
 fdisk /dev/"$sysdisk"<<EOF
 g
 n
@@ -184,28 +184,42 @@ fi
 #Установка ОС.
 echo -e "\033[31mУстановка ОС\033[32m"
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
+#
+#Установка часового пояса.
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$(curl https://ipapi.co/timezone)" /etc/localtime
 arch-chroot /mnt hwclock --systohc
+#
+#Настройка локали.
 arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
 arch-chroot /mnt sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
 echo -e "LANG=\"ru_RU.UTF-8\"" > /mnt/etc/locale.conf
 echo -e "KEYMAP=ru\nFONT=ter-v18n\nUSECOLOR=yes" > /mnt/etc/vconsole.conf
 arch-chroot /mnt locale-gen
-echo $hostname > /mnt/etc/hostname
+#
+#Имя ПК.
+echo "$hostname" > /mnt/etc/hostname
 echo "127.0.0.1 localhost
 ::1 localhost
-127.0.1.1 $hostname.localdomain $hostname" > /mnt/etc/hosts
+127.0.1.1 "$hostname".localdomain "$hostname"" > /mnt/etc/hosts
+#
+#ROOT пароль.
 arch-chroot /mnt passwd<<EOF
-$passroot
-$passroot
+"$passroot"
+"$passroot"
 EOF
-arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $username
-arch-chroot /mnt passwd $username<<EOF
+#
+#Создание пользователя.
+arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "$username"
+#
+#Пароль пользователя.
+arch-chroot /mnt passwd "$username"<<EOF
 $passuser
 $passuser
 EOF
-echo "$username ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
-boot="$(efibootmgr | grep Boot)"
+#
+#Убираем sudo пароль для пользователя.
+echo ""$username" ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
+
 if [ -z "$(efibootmgr | grep Boot)" ];
 then
 arch-chroot /mnt pacman -S grub --noconfirm
