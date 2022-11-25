@@ -184,7 +184,7 @@ fi
 #Установка ОС.
 echo -e "\033[31mУстановка ОС\033[32m"
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
-arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$timezone" /etc/localtime
+arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$(curl https://ipapi.co/timezone)" /etc/localtime
 arch-chroot /mnt hwclock --systohc
 arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
 arch-chroot /mnt sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
