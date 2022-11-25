@@ -1,56 +1,65 @@
 #!/bin/bash
+#
+swapoff -a
+umount -R /mnt
+#
 loadkeys ru
 setfont ter-v18n
+#
 if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then gpu=amd
 elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then gpu=nvidia
 fi
+#
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="initrd /amd-ucode.img"
 elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="initrd /intel-ucode.img"
 fi
+#
 if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | xargs)" ];
-then
-echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" namewifi
-netdev="$(iwctl device list | awk '{print $2}' | grep wl | xargs)"
+    then
+        echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" namewifi
+        netdev=$(iwctl device list | awk '{print $2}' | grep wl | xargs)
 fi
-if [ -z "$namewifi" ];
-then
-netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
-else
-echo -e "\033[41m\033[30mПароль wifi:\033[0m";read -p ">" passwifi
-iwctl --passphrase $passwifi station $netdev connect $namewifi
+#
+if [ -z $namewifi ];
+    then netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
+    else
+        echo -e "\033[41m\033[30mПароль wifi:\033[0m";read -p ">" passwifi
+        iwctl --passphrase $passwifi station $netdev connect $namewifi
 fi
+#
 timezone="$(curl https://ipapi.co/timezone)"
 timedatectl set-timezone $timezone
+#
 massdisk=($(lsscsi -t | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20))
-if [ ${#massdisk[*]} = 1 ];
-then
-sysdisk="${massdisk[0]}"
+if [ ${#massdisk[*]} = 1 ]; then sysdisk="${massdisk[0]}"
 elif [ ${#massdisk[*]} = 0 ];
-then
-echo -e "\033[41m\033[30mДоступных дисков не обнаружено\033[0m"
-exit 0
-else
-echo -e "\033[41m\033[30mВведите метку диска (выделено красным) на который будет установлена ОС:\033[0m"
-for (( j=0, i=1; i<="${#massdisk[*]}"; i++, j++ ))
-do
-grepmassdisk+="${massdisk[$j]}|"
-done
-lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisk"
-read -p ">" sysdisk
+    then
+        echo -e "\033[41m\033[30mДоступных дисков не обнаружено\033[0m"
+        exit 0
+    else
+        echo -e "\033[41m\033[30mВведите метку диска (выделено красным) на который будет установлена ОС:\033[0m"
+        for (( j=0, i=1; i<="${#massdisk[*]}"; i++, j++ ))
+            do
+            grepmassdisk+="${massdisk[$j]}|"
+        done
+        lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisk"
+        read -p ">" sysdisk
 fi
+#
 nvmep="$(echo "$sysdisk" | grep -i "nvme")"
 if [ -z "$nvmep" ];
-then
-p1="1"
-p2="2"
-p3="3"
-p4="4"
-else
-p1="p1"
-p2="p2"
-p3="p3"
-p4="p4"
+    then
+        p1="1"
+        p2="2"
+        p3="3"
+        p4="4"
+    else
+        p1="p1"
+        p2="p2"
+        p3="p3"
+        p4="p4"
 fi
+#
 echo "
 "
 echo -e "\033[41m\033[30mВведите имя компьютера:\033[0m";read -p ">" hostname
@@ -65,6 +74,7 @@ echo "
 echo -e "\033[41m\033[30mВведите пароль для root:\033[0m";read -p ">" passroot
 PS3="$(echo -e "\033[41m\033[30mВыберете разрешение монитора:\033[0m
 >")"
+#
 select resolution in "~480p" "~720p-1080p" "~4K"
 do
     case $resolution in
@@ -86,11 +96,9 @@ do
         *) echo -e "\033[31mЧто значит - $REPLY? До трёх посчитать не можешь и Arch Linux ставишь?\033[0m";;
     esac
 done
-swapoff -a
-umount -R /mnt
-boot="$(efibootmgr | grep Boot)"
-if [ -z "$boot" ];
-then
+#
+if [ -z $(efibootmgr | grep Boot) ];
+    then
 fdisk /dev/$sysdisk<<EOF
 g
 n
@@ -124,7 +132,7 @@ EOF
 mount /dev/${sysdisk}$p4 /mnt
 mount --mkdir /dev/${sysdisk}$p1 /mnt/boot
 swapon /dev/${sysdisk}$p3
-else
+    else
 fdisk /dev/$sysdisk<<EOF
 g
 n
@@ -154,74 +162,95 @@ mount /dev/${sysdisk}$p3 /mnt
 mount --mkdir /dev/${sysdisk}$p1 /mnt/boot
 swapon /dev/${sysdisk}$p2
 fi
+#
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
-net="$(ip -br link show | grep -v -i -E "unknown|down" | cut -b1-20)"
+#
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
 arch-chroot /mnt hwclock --systohc
-arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
-arch-chroot /mnt sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
-echo 'LANG="ru_RU.UTF-8"' > /mnt/etc/locale.conf
+#
+echo "en_US.UTF-8
+ru_RU.UTF-8/" >> /etc/locale.gen
+#
+echo "LANG=\"ru_RU.UTF-8\"" > /mnt/etc/locale.conf
+#
 echo "KEYMAP=ru
 FONT=ter-v18n
 USECOLOR=yes" > /mnt/etc/vconsole.conf
+#
 arch-chroot /mnt locale-gen
+#
 echo $hostname > /mnt/etc/hostname
+#
 echo "127.0.0.1 localhost
 ::1 localhost
 127.0.1.1 $hostname.localdomain $hostname" > /mnt/etc/hosts
+#
 arch-chroot /mnt passwd<<EOF
 $passroot
 $passroot
 EOF
+#
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $username
 arch-chroot /mnt passwd $username<<EOF
 $passuser
 $passuser
 EOF
+#
 echo "$username ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
-boot="$(efibootmgr | grep Boot)"
-if [ -z "$boot" ];
-then
-arch-chroot /mnt pacman -S grub --noconfirm
-arch-chroot /mnt grub-install /dev/$sysdisk
-arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
-else
-arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
-arch-chroot /mnt bootctl install
-echo 'default arch
+#
+if [ -z $(efibootmgr | grep Boot) ];
+    then
+        arch-chroot /mnt pacman -S grub --noconfirm
+        arch-chroot /mnt grub-install /dev/$sysdisk
+        arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+    else
+        arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
+        arch-chroot /mnt bootctl install
+        echo "default arch
 timeout 2
-editor 0' > /mnt/boot/loader/loader.conf
-echo "title  Arch Linux Virtual
+editor 0" > /mnt/boot/loader/loader.conf
+        echo "title  Arch Linux Virtual
 linux  /vmlinuz-linux-zen
 $microcode
 initrd  /initramfs-linux-zen.img
 options root=/dev/${sysdisk}$p3 rw" > /mnt/boot/loader/entries/arch.conf
 fi
-if [ "$microcode" == "initrd /amd-ucode.img" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm
-elif [ "$microcode" == "initrd /intel-ucode.img" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm
+#
+if [ $microcode == "initrd /amd-ucode.img" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm
+elif [ $microcode == "initrd /intel-ucode.img" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm
 fi
-arch-chroot /mnt sed -i 's/#Color/Color/' /etc/pacman.conf
-echo '[multilib]
-Include = /etc/pacman.d/mirrorlist' >> /mnt/etc/pacman.conf
-echo 'kernel.sysrq=1' > /mnt/etc/sysctl.d/99-sysctl.conf
+#
+echo "Color
+[multilib]
+Include = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
+#
+echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
+#
 arch-chroot /mnt pacman -Sy reflector --noconfirm
+#
 if [ "$gpu" == "amd" ]; then arch-chroot /mnt pacman -Sy amdvlk
 elif [ "$gpu" == "nvidia" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda
 fi
+#
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
+#
 arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify --noconfirm
+#
 arch-chroot /mnt pacman -Ss geoclue2
+#
 massdisks=($(lsblk -snAo +TRAN | grep -ivE "└─|$sysdisk|rom|usb|/|SWAP" | awk '{print $1}'))
 for (( j=0, i=1; i<=${#massdisks[*]}; i++, j++ ))
-do
-if [ -z $(lsblk -no LABEL /dev/${massdisks[$j]}) ];
-then
-arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/${massdisks[$j]}
-else
-arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/$(lsblk -no LABEL /dev/${massdisks[$j]})
-fi
-done
+    do
+        if [ -z $(lsblk -no LABEL /dev/${massdisks[$j]}) ];
+            then
+                arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/${massdisks[$j]}
+            else
+                arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/$(lsblk -no LABEL /dev/${massdisks[$j]})
+        fi
+    done
+#
 genfstab -p -U /mnt >> /mnt/etc/fstab
+#
 echo '#Указание на конфигурационные файлы.
 userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
@@ -249,23 +278,27 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
 fi
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
 exec i3 #Автозапуск i3.' > /mnt/etc/X11/xinit/xinitrc
+#
 echo 'Section "InputClass"
 Identifier "system-keyboard"
 MatchIsKeyboard "on"
 Option "XkbLayout" "us,ru"
 Option "XkbOptions" "grp:alt_shift_toggle,terminate:ctrl_alt_bksp"
 EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
+#
 mkdir -p /mnt/etc/sane.d
 echo 'localhost
 192.168.0.0/24' >> /mnt/etc/sane.d/net.conf
+#
 core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 j=(${#core[*]}-1)
 for (( i=0; i<=$j; i++ ))
-do
-coreconf+="
+    do
+        coreconf+="
 "
-coreconf+='$alignr${execi 10 sensors | grep "Core '$i':" | cut -b1-22 } /'
-done
+        coreconf+='$alignr${execi 10 sensors | grep "Core '$i':" | cut -b1-22 } /'
+    done
+#
 if [ "$gpu" == "nvidia" ]; then
 nvidiac+="
 "
@@ -280,6 +313,7 @@ nvidiac+="
 "
 nvidiac+='${color #b2b2b2}Температура ГП:$color$alignr${nvidia temp} °C'
 fi
+#
 mkdir -p /mnt/home/$username/.config/conky
 echo 'conky.config = { --Внешний вид.
 alignment = "top_right", --Располжение виджета.
@@ -344,10 +378,10 @@ $swapperc%${swapbar 4}
 #Блок "Сеть".
 #Разделитель.
 ${color #f92b2b}NET${hr 3}$color
-#Скорость приёма ('${net}' определенно командой "ls /sys/class/net" в терминале).
-${color #b2b2b2}Скорость приёма:$color$alignr${upspeedf '${net}'}
+#Скорость приёма ('$netdev' определенно командой "ls /sys/class/net" в терминале).
+${color #b2b2b2}Скорость приёма:$color$alignr${upspeedf '$netdev'}
 #Скорость отдачи.
-${color #b2b2b2}Скорость отдачи:$color$alignr${downspeedf '${net}'}
+${color #b2b2b2}Скорость отдачи:$color$alignr${downspeedf '$netdev'}
 #IP адрес.
 ${color #b2b2b2}IP адрес:$color$alignr${curl eth0.me}
 #Блок "Процессы".
@@ -373,7 +407,9 @@ ${color #b2b2b2}Задействовано:$color$alignr${fs_used /} / ${fs_size
 #Свободно.
 ${color #b2b2b2}Свободно:$color$alignr${fs_free /} / ${fs_size /}
 ]]' > /mnt/home/$username/.config/conky/conky.conf
+#
 echo '[[ -f ~/.profile ]] && . ~/.profile' > /mnt/home/$username/.bash_profile
+#
 echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
 #Автоматическая прозрачность xterm.
 [ -n "$XTERM_VERSION" ] && transset-df --id "$WINDOWID" >/dev/null
@@ -419,12 +455,15 @@ PS1="\[\033[43m\]\[\033[2;34m\]\A\[\033[0m\]\[\033[44m\]\[\033[3;33m\]\u@\h \W/\
 #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
 export HISTCONTROL="ignoreboth"
 export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' > /mnt/home/$username/.bashrc
+#
 echo 'setleds -D +num #Включенный по умолчанию NumLock.
 [[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
 export QT_QPA_PLATFORMTHEME="qt5ct" #Изменение внешнего вида приложений использующих qt.' > /mnt/home/$username/.profile
+#
 echo '[D-BUS Service]
 Name=org.freedesktop.Notifications
 Exec=/usr/lib/notification-daemon-1.0/notification-daemon' > /mnt/usr/share/dbus-1/services/org.freedesktop.Notifications.service
+#
 echo '# Прозрачность неактивных окон (0,1–1,0).
 inactive-opacity = 0.8;
 #
@@ -445,6 +484,7 @@ dropdown_menu = { opacity = false; }
 # Отключить прозрачность всплывающего меню.
 popup_menu = { opacity = false; }
 };' > /mnt/home/$username/.config/picom.conf
+#
 echo '!Настройка внешнего вида xterm.
 !
 !Задает имя типа терминала, которое будет установлено в переменной среды TERM.
@@ -501,6 +541,7 @@ xscreensaver-auth.?.Dialog.text.background: #b2f9b2
 xscreensaver-auth.?.passwd.thermometer.foreground: #f92b2b
 xscreensaver-auth.?.passwd.thermometer.background: #b2f9b2' > /mnt/home/$username/.Xresources
 mkdir -p /mnt/home/$username/.config/i3
+#
 echo '########### Основные настройки ###########
 #
 # Назначаем клавишу MOD, Mod4 - это клавиша WIN.
@@ -746,6 +787,7 @@ bar {
          # Сделайте снимок экрана, щелкнув правой кнопкой мыши на панели (--no-startup-id убирает курсор загрузки).
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
 }' > /mnt/home/$username/.config/i3/config
+#
 echo 'general { #Основные настройки.
     colors = true #Включение/выключение поддержки цветов.
     color_good = "#2bf92b" #Цвет OK.
@@ -804,15 +846,18 @@ tztime local { #Вывод даты и времени.
 volume master { #Вывод звука.
     format = "🔈 %volume" #Формат вывода.
     format_muted = "🔇 %volume" } #Формат вывода без звука.' > /mnt/home/$username/.i3status.conf
+#
 echo '[redshift]
 allowed=true
 system=false
 users=' >> /mnt/etc/geoclue/geoclue.conf
+#
 echo 'polkit.addRule(function(action, subject) {
     if (subject.isInGroup("wheel")) {
         return polkit.Result.YES;
     }
 });' > /mnt/etc/polkit-1/rules.d/49-nopasswd_global.rules
+#
 mkdir -p /mnt/home/$username/.config/qt5ct
 echo '[Appearance]
 color_scheme_path=/usr/share/qt5ct/colors/airy.conf
@@ -842,6 +887,7 @@ geometry=@ByteArray(\x1\xd9\xd0\xcb\0\x3\0\0\0\0\0\"\0\0\0\x88\0\0\xe\xdd\0\0\b\
 [Troubleshooting]
 force_raster_widgets=1
 ignored_applications=@Invalid()' > /mnt/home/$username/.config/qt5ct/qt5ct.conf
+#
 mkdir -p /mnt/home/$username/.config/gtk-3.0/
 echo '[Settings]
 gtk-application-prefer-dark-theme=true
@@ -864,6 +910,7 @@ gtk-xft-antialias=1
 gtk-xft-hinting=1
 gtk-xft-hintstyle=hintmedium
 gtk-xft-rgba=rgb' > /mnt/home/$username/.config/gtk-3.0/settings.ini
+#
 mkdir -p /mnt/home/$username/.config/tint2
 echo '#---- Generated by tint2conf df32 ----
 # See https://gitlab.com/o9000/tint2/wikis/Configure for
@@ -1073,6 +1120,7 @@ tooltip_hide_timeout = 0.1
 tooltip_padding = 4 4
 tooltip_background_id = 5
 tooltip_font_color = #dddddd 100' > /mnt/home/$username/.config/tint2/tint2rc
+#
 echo '[$Version]
 update_info=filepicker.upd:filepicker-remove-old-previews-entry,fonts_global.upd:Fonts_Global,fonts_global_toolbar.upd:Fonts_Global_Toolbar,icons_remove_effects.upd:IconsRemoveEffects,kwin.upd:animation-speed,style_widgetstyle_default_breeze.upd:StyleWidgetStyleDefaultBreeze
 [ColorEffects:Disabled]
@@ -1253,30 +1301,37 @@ activeForeground=252,252,252
 inactiveBackground=42,46,50
 inactiveBlend=161,169,177
 inactiveForeground=161,169,177' > /mnt/home/$username/.config/kdeglobals
+#
 arch-chroot /mnt  sh -c "cd /usr/share/fonts/
 curl -L https://github.com/stardestart/arch/raw/main/font/Snowstorm.zip > Snowstorm.zip
 curl -L https://github.com/stardestart/arch/raw/main/font/30144_PostIndex.ttf > 30144_PostIndex.ttf
 unzip -o *.zip
 rm *.zip *.txt"
+#
 if [ -z "$namewifi" ];
-then
-arch-chroot /mnt ip link set $netdev up
-else
-arch-chroot /mnt pacman -Sy iwd  --noconfirm
-arch-chroot /mnt systemctl enable iwd
-arch-chroot /mnt ip link set $netdev up
-mkdir -p /mnt/var/lib/iwd
-cp /var/lib/iwd/$namewifi.psk /mnt/var/lib/iwd/$namewifi.psk
+    then
+        arch-chroot /mnt ip link set $netdev up
+    else
+        arch-chroot /mnt pacman -Sy iwd  --noconfirm
+        arch-chroot /mnt systemctl enable iwd
+        arch-chroot /mnt ip link set $netdev up
+        mkdir -p /mnt/var/lib/iwd
+        cp /var/lib/iwd/$namewifi.psk /mnt/var/lib/iwd/$namewifi.psk
 fi
+#
 arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd avahi-daemon
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
+#
 arch-chroot /mnt chmod u+x /home/$username/.xinitrc
+#
 arch-chroot /mnt chown -R $username:users /home/$username/
+#
 arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/
 git clone https://aur.archlinux.org/yay.git
 cd /home/$username/yay
 BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
 rm -Rf /mnt/home/$username/yay
+#
 arch-chroot /mnt/ sudo -u $username yay -S transset-df volctl --noconfirm
 #fdisk -l
 lsblk -l
