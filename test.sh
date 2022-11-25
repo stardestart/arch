@@ -20,14 +20,14 @@ echo -e "Процессор:"$(lscpu | grep -i "model name")""
 #Определяем сетевое устройство.
 if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
     then
-        echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[32m";read -p ">" namewifi
+        echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[36m";read -p ">" namewifi
         netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
 fi
 if [ -z "$namewifi" ];
     then
         netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
     else
-        echo -e "\033[41m\033[30mПароль wifi:\033[32m";read -p ">" passwifi
+        echo -e "\033[41m\033[30mПароль wifi:\033[36m";read -p ">" passwifi
         iwctl --passphrase $passwifi station $netdev connect $namewifi
 fi
 echo -e "\033[31mСетевое устройство:"$netdev"\033[32m"
@@ -71,17 +71,17 @@ p4="p4"
 fi
 echo "
 "
-echo -e "\033[41m\033[30mВведите имя компьютера:\033[0m";read -p ">" hostname
+echo -e "\033[41m\033[30mВведите имя компьютера:\033[36m";read -p ">" hostname
 echo "
 "
-echo -e "\033[41m\033[30mВведите имя пользователя:\033[0m";read -p ">" username
+echo -e "\033[41m\033[30mВведите имя пользователя:\033[36m";read -p ">" username
 echo "
 "
-echo -e "\033[41m\033[30mВведите пароль для $username:\033[0m";read -p ">" passuser
+echo -e "\033[41m\033[30mВведите пароль для $username:\033[36m";read -p ">" passuser
 echo "
 "
-echo -e "\033[41m\033[30mВведите пароль для root:\033[0m";read -p ">" passroot
-PS3="$(echo -e "\033[41m\033[30mВыберете разрешение монитора:\033[0m
+echo -e "\033[41m\033[30mВведите пароль для root:\033[36m";read -p ">" passroot
+PS3="$(echo -e "\033[41m\033[30mВыберете разрешение монитора:\033[36m
 >")"
 select resolution in "~480p" "~720p-1080p" "~4K"
 do
