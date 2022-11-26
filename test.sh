@@ -252,6 +252,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал.\033[32m"
 arch-chroot /mnt pacman -Sy reflector --noconfirm
 echo -e "--country "$(curl https://ipapi.co/country_name/)"" >> /mnt/etc/xdg/reflector/reflector.conf
+arch-chroot /mnt systemctl start reflector
 #
 #Установим видеодрайвер.
 echo -e "\033[31mУстановка видеодрайвера.\033[32m"
@@ -276,7 +277,13 @@ for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
                 arch-chroot /mnt mount --mkdir /dev/"${massdisks[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"
         fi
     done
-genfstab -p -U /mnt >> /mnt/etc/fstab
+#
+#Копирование файла автоматического монтирования разделов.
+echo -e "\033[31mПеренос genfstab.\033[32m"
+genfstab -pU /mnt >> /mnt/etc/fstab
+#
+#Создание общего конфига загрузки оконного менеджера.
+echo -e "\033[31mСоздание xinit.\033[32m"
 echo '#Указание на конфигурационные файлы.
 userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
@@ -304,23 +311,25 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
 fi
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
 exec i3 #Автозапуск i3.' > /mnt/etc/X11/xinit/xinitrc
+#
+#Создание общего конфига клавиатуры.
+echo -e "\033[31mСоздание 00-keyboard.\033[32m"
 echo 'Section "InputClass"
 Identifier "system-keyboard"
 MatchIsKeyboard "on"
 Option "XkbLayout" "us,ru"
 Option "XkbOptions" "grp:alt_shift_toggle,terminate:ctrl_alt_bksp"
 EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
+#
+#Создание общего конфига сканера.
+echo -e "\033[31mСоздание sane.d.\033[32m"
 mkdir -p /mnt/etc/sane.d
-echo 'localhost
-192.168.0.0/24' >> /mnt/etc/sane.d/net.conf
-core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
-j=(${#core[*]}-1)
-for (( i=0; i<=$j; i++ ))
-do
-coreconf+="
-"
-coreconf+='$alignr${execi 10 sensors | grep "Core '$i':" | cut -b1-22 } /'
-done
+echo -e "localhost\n192.168.0.0/24" >> /mnt/etc/sane.d/net.conf
+#
+#
+coreconf="
+$(sensors | awk '/^Core/' | awk '{print $1, $2, $3}')"
+
 if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
 nvidiac+="
 "
@@ -378,7 +387,7 @@ ${color #b2b2b2}Нагрузка ЦП:$color$alignr$cpu %
 #Частота ЦП.
 ${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz
 ${color #b2b2b2}Температура ядер ЦП:
-#Температура ядер ЦП. '"${coreconf[@]}"'
+#Температура ядер ЦП. '"$coreconf"'
 #Блок "Видеокарта Nvidia". '"${nvidiac[@]}"'
 #Блок "ОЗУ".
 #Разделитель.
