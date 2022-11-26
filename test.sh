@@ -34,7 +34,7 @@ timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
 echo -e "\033[31mЧасовой пояс:"$(curl https://ipapi.co/timezone)"\033[32m"
 #
 #Определяем физический диск на который будет установлена ОС.
-massdisk=($(lsscsi -t | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20))
+massdisk=("$(lsblk -fno +TRAN | grep -ivE "├─|└─|rom|usb|/|SWAP" | awk '{print $1}')")
 if [ "${#massdisk[*]}" = 1 ];
 then
 sysdisk="${massdisk[0]}"
@@ -266,7 +266,7 @@ arch-chroot /mnt pacman -Ss geoclue2
 #
 #Поиск не смонтированных разделов.
 echo -e "\033[31mПоиск не смонтированных разделов.\033[32m"
-massdisks=($(lsblk -sno +TRAN | grep -ivE "└─|"$sysdisk"|rom|usb|/|SWAP" | awk '{print $1}'))
+massdisks=("$(lsblk -sno +TRAN | grep -ivE "└─|"$sysdisk"|rom|usb|/|SWAP" | awk '{print $1}')")
 masslabel=("
 ")
 for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
@@ -334,10 +334,12 @@ mkdir -p /mnt/etc/sane.d
 echo -e "localhost\n192.168.0.0/24" >> /mnt/etc/sane.d/net.conf
 #
 #
-if [ -n "$(sensors | awk '/^Core/')" ]; then
-coreconf="
-"$(sensors | awk '/^Core/' | awk '{print $1, $2, $3}')""
-fi
+core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
+for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
+do
+coreconf+='
+$alignr${execi 10 sensors | grep "Core '$i':" | cut -b1-22 } /'
+done
 #
 #
 if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
