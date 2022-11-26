@@ -34,7 +34,7 @@ timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
 echo -e "\033[31mЧасовой пояс:"$(curl https://ipapi.co/timezone)"\033[32m"
 #
 #Определяем физический диск на который будет установлена ОС.
-massdisk=("$(lsblk -fno +TRAN | grep -ivE "├─|└─|rom|usb|/|SWAP" | awk '{print $1}')")
+massdisk=($(lsblk -fno +TRAN | grep -ivE "├─|└─|rom|usb|/|SWAP" | awk '{print $1}'))
 if [ "${#massdisk[*]}" = 1 ];
 then
 sysdisk="${massdisk[0]}"
@@ -266,7 +266,7 @@ arch-chroot /mnt pacman -Ss geoclue2
 #
 #Поиск не смонтированных разделов.
 echo -e "\033[31mПоиск не смонтированных разделов.\033[32m"
-massdisks=("$(lsblk -sno +TRAN | grep -ivE "└─|"$sysdisk"|rom|usb|/|SWAP" | awk '{print $1}')")
+massdisks=($(lsblk -sno +TRAN | grep -ivE "└─|"$sysdisk"|rom|usb|/|SWAP" | awk '{print $1}'))
 masslabel=("
 ")
 for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
