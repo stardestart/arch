@@ -220,7 +220,7 @@ EOF
 echo ""$username" ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
 #
 #Установим загрузчик.
-echo -e "\033[32m"
+echo -e "\033[31mУстановка загрузчика.\033[32m"
 if [ -z "$(efibootmgr | grep Boot)" ];
     then
         arch-chroot /mnt pacman -Sy grub --noconfirm
@@ -234,32 +234,33 @@ if [ -z "$(efibootmgr | grep Boot)" ];
 fi
 #
 #Установим микроинструкции для процессора.
-echo -e "\033[32m"
+echo -e "\033[31mУстановка микроинструкций для процессора.\033[32m"
 if [ "$microcode" = "\ninitrd /amd-ucode.img" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm
 elif [ "$microcode" = "\ninitrd /intel-ucode.img" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm
 fi
 #
 #Настройка установщика.
-echo -e "\033[32m"
+echo -e "\033[31mНастройка установщика.\033[32m"
 arch-chroot /mnt sed -i "s/#Color/Color/" /etc/pacman.conf
-echo "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
+echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
 #
 #Настройка sysrq.
+echo -e "\033[31mНастройка sysrq.\033[32m"
 echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установим и настроим программу для фильтрования зеркал.
-echo -e "\033[32m"
+echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал.\033[32m"
 arch-chroot /mnt pacman -Sy reflector --noconfirm
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country '$(curl https://ipapi.co/country_name/)'' /etc/xdg/reflector/reflector.conf
 #
 #Установим видеодрайвер.
-echo -e "\033[32m"
+echo -e "\033[31mУстановка видеодрайвера.\033[32m"
 if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then arch-chroot /mnt pacman -Sy amdvlk
 elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda
 fi
 #
-#.
-echo -e "\033[32m"
+#Установка программ.
+echo -e "\033[31mУстановка программ.\033[32m"
 arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 massdisks=($(lsblk -snAo +TRAN | grep -ivE "└─|$sysdisk|rom|usb|/|SWAP" | awk '{print $1}'))
