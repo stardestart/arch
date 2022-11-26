@@ -201,8 +201,8 @@ echo -e "127.0.0.1 localhost\n::1 localhost\n127.0.1.1 "$hostname".localdomain "
 #ROOT пароль.
 echo -e "\033[32m"
 arch-chroot /mnt passwd<<EOF
-"$passroot"
-"$passroot"
+$passroot
+$passroot
 EOF
 #
 #Создание пользователя.
@@ -212,8 +212,8 @@ arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "$username"
 #Пароль пользователя.
 echo -e "\033[32m"
 arch-chroot /mnt passwd "$username"<<EOF
-"$passuser"
-"$passuser"
+$passuser
+$passuser
 EOF
 #
 #Убираем sudo пароль для пользователя.
