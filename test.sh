@@ -267,7 +267,7 @@ arch-chroot /mnt pacman -Ss geoclue2
 #
 #Поиск не смонтированных разделов.
 echo -e "\033[31mПоиск не смонтированных разделов.\033[32m"
-massdisks=($(lsblk -snAo +TRAN | grep -ivE "└─|"$sysdisk"|rom|usb|/|SWAP" | awk '{print $1}'))
+massdisks=($(lsblk -sno +TRAN | grep -ivE "└─|"$sysdisk"|rom|usb|/|SWAP" | awk '{print $1}'))
 for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
     do
         if [ -z "$(lsblk -no LABEL /dev/"${massdisks[$j]}")" ];
@@ -327,24 +327,22 @@ mkdir -p /mnt/etc/sane.d
 echo -e "localhost\n192.168.0.0/24" >> /mnt/etc/sane.d/net.conf
 #
 #
+if [ -n "$(sensors | awk '/^Core/')" ]; then
 coreconf="
-$(sensors | awk '/^Core/' | awk '{print $1, $2, $3}')"
-
-if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
-nvidiac+="
-"
-nvidiac+='${color #f92b2b}GPU${hr 3}$color'
-nvidiac+="
-"
-nvidiac+='${color #b2b2b2}Частота ГП:$color$alignr${nvidia gpufreq} Mhz'
-nvidiac+="
-"
-nvidiac+='${color #b2b2b2}Видео ОЗУ:$color$alignr${nvidia mem} / ${nvidia memmax} MiB'
-nvidiac+="
-"
-nvidiac+='${color #b2b2b2}Температура ГП:$color$alignr${nvidia temp} °C'
+"$(sensors | awk '/^Core/' | awk '{print $1, $2, $3}')""
 fi
-mkdir -p /mnt/home/$username/.config/conky
+#
+#
+if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
+nvidiac='
+${color #f92b2b}GPU${hr 3}$color
+${color #b2b2b2}Частота ГП:$color$alignr${nvidia gpufreq} Mhz
+${color #b2b2b2}Видео ОЗУ:$color$alignr${nvidia mem} / ${nvidia memmax} MiB
+${color #b2b2b2}Температура ГП:$color$alignr${nvidia temp} °C'
+fi
+#
+#
+mkdir -p /mnt/home/"$username"/.config/conky
 echo 'conky.config = { --Внешний вид.
 alignment = "top_right", --Располжение виджета.
 border_inner_margin = '$font', --Отступ от внутренних границ.
@@ -369,7 +367,7 @@ use_xft = true, } --Использование шрифтов X сервера.
 conky.text = [[ #Наполнение виджета.
 #Блок "Время".
 #Часы.
-${font :size='$(($font*3))'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
+${font :size='$(($font*4))'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
 #Дата.
 ${font :size='$font'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
 #Блок "Система".
@@ -388,7 +386,7 @@ ${color #b2b2b2}Нагрузка ЦП:$color$alignr$cpu %
 ${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz
 ${color #b2b2b2}Температура ядер ЦП:
 #Температура ядер ЦП. '"$coreconf"'
-#Блок "Видеокарта Nvidia". '"${nvidiac[@]}"'
+#Блок "Видеокарта Nvidia". '"$nvidiac"'
 #Блок "ОЗУ".
 #Разделитель.
 ${color #f92b2b}RAM${hr 3}$color
@@ -436,7 +434,9 @@ ${color #f92b2b}/home${hr 3}$color
 ${color #b2b2b2}Задействовано:$color$alignr${fs_used /} / ${fs_size /}
 #Свободно.
 ${color #b2b2b2}Свободно:$color$alignr${fs_free /} / ${fs_size /}
-]]' > /mnt/home/$username/.config/conky/conky.conf
+]]' > /mnt/home/"$username"/.config/conky/conky.conf
+#
+#
 echo '[[ -f ~/.profile ]] && . ~/.profile' > /mnt/home/$username/.bash_profile
 echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
 #Автоматическая прозрачность xterm.
