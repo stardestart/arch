@@ -26,7 +26,7 @@ if [ -z "$namewifi" ];
         netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
     else
         echo -e "\033[41m\033[30mПароль wifi:\033[36m";read -p ">" passwifi
-        iwctl --passphrase $passwifi station $netdev connect $namewifi
+        iwctl --passphrase "$passwifi" station "$netdev" connect "$namewifi"
 fi
 echo -e "\033[31mСетевое устройство:"$netdev"\033[32m"
 #
@@ -212,8 +212,8 @@ arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "$username"
 #Пароль пользователя.
 echo -e "\033[32m"
 arch-chroot /mnt passwd "$username"<<EOF
-$passuser
-$passuser
+"$passuser"
+"$passuser"
 EOF
 #
 #Убираем sudo пароль для пользователя.
@@ -251,7 +251,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #Установим и настроим программу для фильтрования зеркал.
 echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал.\033[32m"
 arch-chroot /mnt pacman -Sy reflector --noconfirm
-arch-chroot /mnt sed -i 's/# --country France,Germany/--country '$(curl https://ipapi.co/country_name/)'' /etc/xdg/reflector/reflector.conf
+echo -e "--country "$(curl https://ipapi.co/country_name/)"" >> /mnt/etc/xdg/reflector/reflector.conf
 #
 #Установим видеодрайвер.
 echo -e "\033[31mУстановка видеодрайвера.\033[32m"
@@ -263,16 +263,19 @@ fi
 echo -e "\033[31mУстановка программ.\033[32m"
 arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
-massdisks=($(lsblk -snAo +TRAN | grep -ivE "└─|$sysdisk|rom|usb|/|SWAP" | awk '{print $1}'))
-for (( j=0, i=1; i<=${#massdisks[*]}; i++, j++ ))
-do
-if [ -z $(lsblk -no LABEL /dev/${massdisks[$j]}) ];
-then
-arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/${massdisks[$j]}
-else
-arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/$(lsblk -no LABEL /dev/${massdisks[$j]})
-fi
-done
+#
+#Поиск не смонтированных разделов.
+echo -e "\033[31mПоиск не смонтированных разделов.\033[32m"
+massdisks=($(lsblk -snAo +TRAN | grep -ivE "└─|"$sysdisk"|rom|usb|/|SWAP" | awk '{print $1}'))
+for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
+    do
+        if [ -z "$(lsblk -no LABEL /dev/"${massdisks[$j]}")" ];
+            then
+                arch-chroot /mnt mount --mkdir /dev/"${massdisks[$j]}" /home/"$username"/"${massdisks[$j]}"
+            else
+                arch-chroot /mnt mount --mkdir /dev/"${massdisks[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"
+        fi
+    done
 genfstab -p -U /mnt >> /mnt/etc/fstab
 echo '#Указание на конфигурационные файлы.
 userresources=$HOME/.Xresources
