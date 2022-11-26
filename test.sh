@@ -280,9 +280,9 @@ for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
                 $color(${fs_type /'"${massdisks[$j]}"'})${fs_bar 4 /'"${massdisks[$j]}"'}'
             else
                 arch-chroot /mnt mount --mkdir /dev/"${massdisks[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"
-                masslabel+='${color #f92b2b}/'"$(lsblk -no LABEL /dev/"${massdisks[$j]}"'${hr 3}$color
-                ${color #b2b2b2}Объём:$alignr${fs_size /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}"'} / ${fs_used /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}"'} / $color${fs_free /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}"'}
-                $color(${fs_type /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}"'})${fs_bar 4 /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}"'}'
+                masslabel+='${color #f92b2b}/'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'${hr 3}$color
+                ${color #b2b2b2}Объём:$alignr${fs_size /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'} / ${fs_used /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'} / $color${fs_free /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'}
+                $color(${fs_type /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'})${fs_bar 4 /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'}'
         fi
     done
 #
