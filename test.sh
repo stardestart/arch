@@ -267,21 +267,21 @@ arch-chroot /mnt pacman -Ss geoclue2
 #Поиск не смонтированных разделов.
 echo -e "\033[31mПоиск не смонтированных разделов.\033[32m"
 massdisks=($(lsblk -sno +TRAN | grep -ivE "└─|"$sysdisk"|rom|usb|/|SWAP" | awk '{print $1}'))
-masslabel=("
-")
 for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
     do
         if [ -z "$(lsblk -no LABEL /dev/"${massdisks[$j]}")" ];
             then
                 arch-chroot /mnt mount --mkdir /dev/"${massdisks[$j]}" /home/"$username"/"${massdisks[$j]}"
-masslabel+='${color #f92b2b}/'"${massdisks[$j]}"'${hr 3}$color
+masslabel+='
+${color #f92b2b}/'"${massdisks[$j]}"'${hr 3}
 ${color #b2b2b2}Объём:$alignr${fs_size /'"${massdisks[$j]}"'} / ${fs_used /'"${massdisks[$j]}"'} / $color${fs_free /'"${massdisks[$j]}"'}
-$color(${fs_type /'"${massdisks[$j]}"'})${fs_bar 4 /'"${massdisks[$j]}"'}'
+(${fs_type /'"${massdisks[$j]}"'})${fs_bar 4 /'"${massdisks[$j]}"'}'
             else
                 arch-chroot /mnt mount --mkdir /dev/"${massdisks[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"
-masslabel+='${color #f92b2b}/'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'${hr 3}$color
+masslabel+='
+${color #f92b2b}/'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'${hr 3}
 ${color #b2b2b2}Объём:$alignr${fs_size /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'} / ${fs_used /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'} / $color${fs_free /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'}
-$color(${fs_type /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'})${fs_bar 4 /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'}'
+(${fs_type /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'})${fs_bar 4 /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'}'
         fi
     done
 #
@@ -337,8 +337,8 @@ echo -e "localhost\n192.168.0.0/24" >> /mnt/etc/sane.d/net.conf
 core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
 do
-coreconf+='
-$alignr${execi 10 sensors | grep "Core '$i':" | cut -b1-22 } /'
+coreconf+="
+\$alignr\${execi 10 sensors | grep \"Core '$i'\:\" | awk '{print \$1, \$2, \$3}' } /"
 done
 #
 #
