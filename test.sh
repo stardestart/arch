@@ -251,12 +251,13 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал.\033[32m"
 arch-chroot /mnt pacman -Sy reflector --noconfirm
 echo -e "--country "$(curl https://ipapi.co/country_name/)"" >> /mnt/etc/xdg/reflector/reflector.conf
-arch-chroot /mnt systemctl start reflector
 #
 #Установим видеодрайвер.
 echo -e "\033[31mУстановка видеодрайвера.\033[32m"
-if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then arch-chroot /mnt pacman -Sy amdvlk
-elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda
+if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then arch-chroot /mnt pacman -Sy vulkan-radeon xf86-video-amdgpu lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i ati)" ]; then arch-chroot /mnt pacman -Sy xf86-video-ati libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then arch-chroot /mnt pacman -Sy xf86-video-intel vulkan-intel --noconfirm
 fi
 #
 #Установка программ.
@@ -371,7 +372,7 @@ own_window_class = "Conky", --Класс окна.
 own_window_type = "override", --Тип окна (возможные варианты: "normal", "desktop", "ock", "panel", "override" выбираем в зависимости от оконного менеджера и личных предпочтений).
 own_window_hints = "undecorated, skip_taskbar", --Задаем эфекты отображения окна.
 own_window_argb_visual = true, --Прозрачность окна.
-own_window_argb_value = 180, --Уровень прозрачности.
+own_window_argb_value = 200, --Уровень прозрачности.
 use_xft = true, } --Использование шрифтов X сервера.
 conky.text = [[ #Наполнение виджета.
 #Блок "Время".
@@ -394,7 +395,7 @@ ${color #b2b2b2}Нагрузка ЦП:$color$alignr$cpu %
 #Частота ЦП.
 ${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz
 ${color #b2b2b2}Температура ядер ЦП:
-#Температура ядер ЦП. '"$coreconf"'
+#Температура ядер ЦП. '"${coreconf[@]}"'
 #Блок "Видеокарта Nvidia". '"$nvidiac"'
 #Блок "ОЗУ".
 #Разделитель.
