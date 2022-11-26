@@ -46,7 +46,7 @@ fi
 #Настройка установщика.
 echo -e "\033[32m"
 arch-chroot /mnt sed -i "s/#Color/Color/" /etc/pacman.conf
-echo "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
+echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
 #
 #Настройка sysrq.
 echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
