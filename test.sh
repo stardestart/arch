@@ -247,10 +247,10 @@ echo "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
 #Настройка sysrq.
 echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
-#Установим программу для фильтрования зеркал.
+#Установим и настроим программу для фильтрования зеркал.
 echo -e "\033[32m"
 arch-chroot /mnt pacman -Sy reflector --noconfirm
-arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
+arch-chroot /mnt sed -i 's/# --country France,Germany/--country '$(curl https://ipapi.co/country_name/)'' /etc/xdg/reflector/reflector.conf
 #
 #Установим видеодрайвер.
 echo -e "\033[32m"
