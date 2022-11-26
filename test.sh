@@ -7,17 +7,11 @@ setfont ter-v18n
 #
 swapoff -a
 umount -R /mnt
-#
-#Определяем видеокарту.
 echo -e "\033[41m\033[30m - чёрный;\033[0m\n\033[0m\033[31m - красный;\n\033[32m - зелёный;\n\033[33m - желтый;\n\033[34m - синий;\n\033[35m - фиолетовый;\n\033[36m - голубой;\n\033[37m - серый\n"
-if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then gpu=amd
-elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then gpu=nvidia
-fi
-echo -e "\033[31mВидеокарта:"$(lspci | grep -i vga)""
 #
 #Определяем процессор.
-if [ -n "$(lscpu | grep -i amd)" ]; then microcode="initrd /amd-ucode.img"
-elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="initrd /intel-ucode.img"
+if [ -n "$(lscpu | grep -i amd)" ]; then microcode="\ninitrd /amd-ucode.img"
+elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="\ninitrd /intel-ucode.img"
 fi
 echo -e "Процессор:"$(lscpu | grep -i "model name")""
 #
@@ -47,7 +41,7 @@ then
 sysdisk="${massdisk[0]}"
 elif [ "${#massdisk[*]}" = 0 ];
 then
-echo -e "\033[41m\033[30mДоступных дисков не обнаружено\033[32m"
+echo -e "\033[41m\033[30mДоступных дисков не обнаружено!\033[32m"
 exit 0
 else
 echo -e "\033[41m\033[30mВведите метку диска (выделено красным) на который будет установлена ОС:\033[0m"
@@ -90,20 +84,20 @@ echo "
 echo -e "\033[41m\033[30mВведите пароль для root:\033[0m\033[36m";read -p ">" passroot
 PS3="$(echo -e "\033[41m\033[30mВыберете разрешение монитора:\033[0m\033[36m
 >")"
-select resolution in "~480p" "~720p-1080p" "~4K"
+select resolution in "~480p." "~720p-1080p." "~4K."
 do
     case "$resolution" in
-        "~480p")
+        "~480p.")
             font=6
             gap=40
             break
             ;;
-        "~720p-1080p")
+        "~720p-1080p.")
             font=8
             gap=50
             break
             ;;
-        "~4K")
+        "~4K.")
             font=10
             gap=60
             break
@@ -115,7 +109,7 @@ done
 #Разметка системного диска.
 if [ -z "$(efibootmgr | grep Boot)" ];
     then
-        echo -e "\033[31mLegacy boot\033[32m"
+        echo -e "\033[31mLegacy boot.\033[32m"
 fdisk /dev/"$sysdisk"<<EOF
 g
 n
@@ -150,7 +144,7 @@ mount /dev/"$sysdisk""$p4" /mnt
 mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
 swapon /dev/"$sysdisk""$p3"
     else
-        echo -e "\033[31mUEFI boot\033[32m"
+        echo -e "\033[31mUEFI boot.\033[32m"
 fdisk /dev/"$sysdisk"<<EOF
 g
 n
@@ -182,36 +176,41 @@ swapon /dev/"$sysdisk""$p2"
 fi
 #
 #Установка ОС.
-echo -e "\033[31mУстановка ОС\033[32m"
+echo -e "\033[31mУстановка ОС.\033[32m"
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
 #
 #Установка часового пояса.
+echo -e "\033[31mУстановка часового пояса.\033[32m"
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$(curl https://ipapi.co/timezone)" /etc/localtime
+echo -e "\033[32m"
 arch-chroot /mnt hwclock --systohc
 #
 #Настройка локали.
+echo -e "\033[31mНастройка локали.\033[32m"
 arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
 arch-chroot /mnt sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
 echo -e "LANG=\"ru_RU.UTF-8\"" > /mnt/etc/locale.conf
 echo -e "KEYMAP=ru\nFONT=ter-v18n\nUSECOLOR=yes" > /mnt/etc/vconsole.conf
+echo -e "\033[32m"
 arch-chroot /mnt locale-gen
 #
 #Имя ПК.
 echo "$hostname" > /mnt/etc/hostname
-echo "127.0.0.1 localhost
-::1 localhost
-127.0.1.1 "$hostname".localdomain "$hostname"" > /mnt/etc/hosts
+echo -e "127.0.0.1 localhost\n::1 localhost\n127.0.1.1 "$hostname".localdomain "$hostname"" > /mnt/etc/hosts
 #
 #ROOT пароль.
+echo -e "\033[32m"
 arch-chroot /mnt passwd<<EOF
 "$passroot"
 "$passroot"
 EOF
 #
 #Создание пользователя.
+echo -e "\033[31mСоздание пользователя.\033[32m"
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "$username"
 #
 #Пароль пользователя.
+echo -e "\033[32m"
 arch-chroot /mnt passwd "$username"<<EOF
 $passuser
 $passuser
@@ -219,36 +218,48 @@ EOF
 #
 #Убираем sudo пароль для пользователя.
 echo ""$username" ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
-
+#
+#Установим загрузчик.
+echo -e "\033[32m"
 if [ -z "$(efibootmgr | grep Boot)" ];
-then
-arch-chroot /mnt pacman -S grub --noconfirm
-arch-chroot /mnt grub-install /dev/$sysdisk
-arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
-else
-arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
-arch-chroot /mnt bootctl install
-echo 'default arch
-timeout 2
-editor 0' > /mnt/boot/loader/loader.conf
-echo "title  Arch Linux Virtual
-linux  /vmlinuz-linux-zen
-$microcode
-initrd  /initramfs-linux-zen.img
-options root=/dev/${sysdisk}$p3 rw" > /mnt/boot/loader/entries/arch.conf
+    then
+        arch-chroot /mnt pacman -Sy grub --noconfirm
+        arch-chroot /mnt grub-install /dev/"$sysdisk"
+        arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+    else
+        arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
+        arch-chroot /mnt bootctl install
+        echo -e "default arch\ntimeout 2\neditor 0" > /mnt/boot/loader/loader.conf
+        echo -e "title  Arch Linux Virtual\nlinux  /vmlinuz-linux-zen"$microcode"\ninitrd  /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw" > /mnt/boot/loader/entries/arch.conf
 fi
-if [ "$microcode" == "initrd /amd-ucode.img" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm
-elif [ "$microcode" == "initrd /intel-ucode.img" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm
+#
+#Установим микроинструкции для процессора.
+echo -e "\033[32m"
+if [ "$microcode" = "\ninitrd /amd-ucode.img" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm
+elif [ "$microcode" = "\ninitrd /intel-ucode.img" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm
 fi
-arch-chroot /mnt sed -i 's/#Color/Color/' /etc/pacman.conf
-echo '[multilib]
-Include = /etc/pacman.d/mirrorlist' >> /mnt/etc/pacman.conf
-echo 'kernel.sysrq=1' > /mnt/etc/sysctl.d/99-sysctl.conf
+#
+#Настройка установщика.
+echo -e "\033[32m"
+arch-chroot /mnt sed -i "s/#Color/Color/" /etc/pacman.conf
+echo "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
+#
+#Настройка sysrq.
+echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
+#
+#Установим программу для фильтрования зеркал.
+echo -e "\033[32m"
 arch-chroot /mnt pacman -Sy reflector --noconfirm
-if [ "$gpu" == "amd" ]; then arch-chroot /mnt pacman -Sy amdvlk
-elif [ "$gpu" == "nvidia" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda
-fi
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
+#
+#Установим видеодрайвер.
+echo -e "\033[32m"
+if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then arch-chroot /mnt pacman -Sy amdvlk
+elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda
+fi
+#
+#.
+echo -e "\033[32m"
 arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 massdisks=($(lsblk -snAo +TRAN | grep -ivE "└─|$sysdisk|rom|usb|/|SWAP" | awk '{print $1}'))
@@ -306,7 +317,7 @@ coreconf+="
 "
 coreconf+='$alignr${execi 10 sensors | grep "Core '$i':" | cut -b1-22 } /'
 done
-if [ "$gpu" == "nvidia" ]; then
+if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
 nvidiac+="
 "
 nvidiac+='${color #f92b2b}GPU${hr 3}$color'
