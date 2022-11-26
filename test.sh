@@ -268,13 +268,21 @@ arch-chroot /mnt pacman -Ss geoclue2
 #Поиск не смонтированных разделов.
 echo -e "\033[31mПоиск не смонтированных разделов.\033[32m"
 massdisks=($(lsblk -sno +TRAN | grep -ivE "└─|"$sysdisk"|rom|usb|/|SWAP" | awk '{print $1}'))
+masslabel=(
+)
 for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
     do
         if [ -z "$(lsblk -no LABEL /dev/"${massdisks[$j]}")" ];
             then
                 arch-chroot /mnt mount --mkdir /dev/"${massdisks[$j]}" /home/"$username"/"${massdisks[$j]}"
+                masslabel+='${color #f92b2b}/'"${massdisks[$j]}"'${hr 3}$color
+                ${color #b2b2b2}Объём:$alignr${fs_size /'"${massdisks[$j]}"'} / ${fs_used /'"${massdisks[$j]}"'} / $color${fs_free /'"${massdisks[$j]}"'}
+                $color(${fs_type /'"${massdisks[$j]}"'})${fs_bar 4 /'"${massdisks[$j]}"'}'
             else
                 arch-chroot /mnt mount --mkdir /dev/"${massdisks[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"
+                masslabel+='${color #f92b2b}/'"$(lsblk -no LABEL /dev/"${massdisks[$j]}"'${hr 3}$color
+                ${color #b2b2b2}Объём:$alignr${fs_size /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}"'} / ${fs_used /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}"'} / $color${fs_free /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}"'}
+                $color(${fs_type /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}"'})${fs_bar 4 /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}"'}'
         fi
     done
 #
@@ -429,11 +437,12 @@ ${top name 4} $alignr ${top pid 4}|${top cpu 4}|${top mem 4}
 ${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}
 #Блок "Диск1".
 #Разделитель.
-${color #f92b2b}/home${hr 3}$color
-#Занято.
-${color #b2b2b2}Задействовано:$color$alignr${fs_used /} / ${fs_size /}
-#Свободно.
-${color #b2b2b2}Свободно:$color$alignr${fs_free /} / ${fs_size /}
+${color #f92b2b}/ROOT${hr 3}$color
+#Общее/Занято/Свободно.
+${color #b2b2b2}Объём:$alignr${fs_size /} / ${fs_used /} / $color${fs_free /}
+#Полоса загрузки.
+$color(${fs_type /})${fs_bar 4 /}
+#Блок "Диски".'"${masslabel[@]}"'
 ]]' > /mnt/home/"$username"/.config/conky/conky.conf
 #
 #
