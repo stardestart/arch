@@ -7,7 +7,6 @@ setfont ter-v18n
 #
 swapoff -a
 umount -R /mnt
-echo -e "\033[41m\033[30m - чёрный;\033[0m\n\033[0m\033[31m - красный;\n\033[32m - зелёный;\n\033[33m - желтый;\n\033[34m - синий;\n\033[35m - фиолетовый;\n\033[36m - голубой;\n\033[37m - серый\n"
 #
 #Определяем процессор.
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="\ninitrd /amd-ucode.img"
@@ -18,7 +17,7 @@ echo -e "Процессор:"$(lscpu | grep -i "model name")""
 #Определяем сетевое устройство.
 if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
     then
-        echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[36m";read -p ">" namewifi
+        echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m\033[36m";read -p ">" namewifi
         netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
 fi
 if [ -z "$namewifi" ];
@@ -268,21 +267,21 @@ arch-chroot /mnt pacman -Ss geoclue2
 #Поиск не смонтированных разделов.
 echo -e "\033[31mПоиск не смонтированных разделов.\033[32m"
 massdisks=($(lsblk -sno +TRAN | grep -ivE "└─|"$sysdisk"|rom|usb|/|SWAP" | awk '{print $1}'))
-masslabel=(
-)
+masslabel=("
+")
 for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
     do
         if [ -z "$(lsblk -no LABEL /dev/"${massdisks[$j]}")" ];
             then
                 arch-chroot /mnt mount --mkdir /dev/"${massdisks[$j]}" /home/"$username"/"${massdisks[$j]}"
-                masslabel+='${color #f92b2b}/'"${massdisks[$j]}"'${hr 3}$color
-                ${color #b2b2b2}Объём:$alignr${fs_size /'"${massdisks[$j]}"'} / ${fs_used /'"${massdisks[$j]}"'} / $color${fs_free /'"${massdisks[$j]}"'}
-                $color(${fs_type /'"${massdisks[$j]}"'})${fs_bar 4 /'"${massdisks[$j]}"'}'
+masslabel+='${color #f92b2b}/'"${massdisks[$j]}"'${hr 3}$color
+${color #b2b2b2}Объём:$alignr${fs_size /'"${massdisks[$j]}"'} / ${fs_used /'"${massdisks[$j]}"'} / $color${fs_free /'"${massdisks[$j]}"'}
+$color(${fs_type /'"${massdisks[$j]}"'})${fs_bar 4 /'"${massdisks[$j]}"'}'
             else
                 arch-chroot /mnt mount --mkdir /dev/"${massdisks[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"
-                masslabel+='${color #f92b2b}/'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'${hr 3}$color
-                ${color #b2b2b2}Объём:$alignr${fs_size /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'} / ${fs_used /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'} / $color${fs_free /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'}
-                $color(${fs_type /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'})${fs_bar 4 /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'}'
+masslabel+='${color #f92b2b}/'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'${hr 3}$color
+${color #b2b2b2}Объём:$alignr${fs_size /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'} / ${fs_used /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'} / $color${fs_free /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'}
+$color(${fs_type /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'})${fs_bar 4 /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'}'
         fi
     done
 #
