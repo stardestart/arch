@@ -89,11 +89,11 @@ do
         "~480p.")
             font=8
             gap=40
-            xterm="500 250"
+            xterm="700 350"
             break
             ;;
         "~720p-1080p.")
-            font=9
+            font=8
             gap=50
             xterm="1000 500"
             break
@@ -405,10 +405,8 @@ ${color #b2b2b2}Температура ядер ЦП:
 #Блок "ОЗУ".
 #Разделитель.
 ${color #f92b2b}RAM${hr 3}$color
-#Задействовано ОЗУ.
-${color #b2b2b2}Задействовано:$color$alignr$mem / $memmax
-#Свободно ОЗУ.
-${color #b2b2b2}Свободно:$color$alignr$memeasyfree / $memmax
+#ОЗУ.
+${color #b2b2b2}ОЗУ:$color$alignr$mem / $memeasyfree / $memmax
 #Полоса загрузки ОЗУ.
 $memperc%${membar 4}
 #Блок "Подкачка".
@@ -454,7 +452,7 @@ $color(${fs_type /home})${fs_bar 4 /home}
 #
 #Создание bash_profile.
 echo -e "\033[31mСоздание bash_profile.\033[32m"
-echo '[[ -f ~/.profile ]] && . ~/.profile' > /mnt/home/$username/.bash_profile
+echo '[[ -f ~/.profile ]] && . ~/.profile' > /mnt/home/"$username"/.bash_profile
 #
 #Создание bashrc.
 echo -e "\033[31mСоздание bashrc.\033[32m"
@@ -502,13 +500,13 @@ PS1="\[\033[43m\]\[\033[2;34m\]\A\[\033[0m\]\[\033[44m\]\[\033[3;33m\]\u@\h \W/\
 #\[\033[0m\] - Конец изменениям.
 #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
 export HISTCONTROL="ignoreboth"
-export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' > /mnt/home/$username/.bashrc
+export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' > /mnt/home/"$username"/.bashrc
 #
 #Создание profile.
 echo -e "\033[31mСоздание profile.\033[32m"
 echo 'setleds -D +num #Включенный по умолчанию NumLock.
 [[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
-export QT_QPA_PLATFORMTHEME="qt5ct" #Изменение внешнего вида приложений использующих qt.' > /mnt/home/$username/.profile
+export QT_QPA_PLATFORMTHEME="qt5ct" #Изменение внешнего вида приложений использующих qt.' > /mnt/home/"$username"/.profile
 #
 #Создание конфига сервера уведомлений.
 echo -e "\033[31mСоздание конфига сервера уведомлений.\033[32m"
@@ -539,11 +537,11 @@ dropdown_menu = { opacity = false; };
 popup_menu = { opacity = false; }
 };
 
-# Прозрачность i3status.
+# Прозрачность i3status и dmenu.
 opacity-rule = [
 \"60:class_g = 'i3bar' && !focused\",
 \"80:class_g = 'dmenu' && !focused\"
-];" > /mnt/home/$username/.config/picom.conf
+];" > /mnt/home/"$username"/.config/picom.conf
 #
 #Создание xresources.
 echo -e "\033[31mСоздание xresources.\033[32m"
@@ -581,6 +579,10 @@ xterm*scrollKey: true
 !Указывает, должна ли полоса прокрутки отображаться справа.
 xterm*rightScrollBar: true
 !
+!Размер курсора.
+Xcursor.size: '"$(($font*3))"'
+Xcursor.theme: Adwaita
+!
 !
 !Настройка внешнего вида xscreensaver.
 !
@@ -601,11 +603,11 @@ xscreensaver-auth.?.Dialog.Button.background: #b2f9b2
 xscreensaver-auth.?.Dialog.text.foreground: #2b2b2b
 xscreensaver-auth.?.Dialog.text.background: #b2f9b2
 xscreensaver-auth.?.passwd.thermometer.foreground: #f92b2b
-xscreensaver-auth.?.passwd.thermometer.background: #b2f9b2' > /mnt/home/$username/.Xresources
+xscreensaver-auth.?.passwd.thermometer.background: #b2f9b2' > /mnt/home/"$username"/.Xresources
 #
 #Создание директории и конфига i3.
 echo -e "\033[31mСоздание конфига i3.\033[32m"
-mkdir -p /mnt/home/$username/.config/i3
+mkdir -p /mnt/home/"$username"/.config/i3
 echo '########### Основные настройки ###########
 #
 # Назначаем клавишу MOD, Mod4 - это клавиша WIN.
@@ -875,7 +877,7 @@ bar {
             }
          # Сделайте снимок экрана, щелкнув правой кнопкой мыши на панели (--no-startup-id убирает курсор загрузки).
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
-}' > /mnt/home/$username/.config/i3/config
+}' > /mnt/home/"$username"/.config/i3/config
 #
 #Создание конфига i3status.
 echo -e "\033[31mСоздание конфига i3status.\033[32m"
@@ -926,18 +928,29 @@ tztime 1 { #Вывод даты и времени.
 tztime 2 { #Вывод даты и времени.
     format = "⌛ %H:%M:%S %Z" } #Формат вывода.
 tztime 0 { #Вывод разделителя.
-    format = "|" } #Формат вывода.' > /mnt/home/$username/.i3status.conf
-
+    format = "|" } #Формат вывода.' > /mnt/home/"$username"/.i3status.conf
+#
+#Создание конфига redshift.
+echo -e "\033[31mСоздание конфига redshift.\033[32m"
 echo '[redshift]
 allowed=true
 system=false
 users=' >> /mnt/etc/geoclue/geoclue.conf
+#
+#Отключение запроса пароля.
+echo -e "\033[31mОтключение запроса пароля.\033[32m"
 echo 'polkit.addRule(function(action, subject) {
     if (subject.isInGroup("wheel")) {
         return polkit.Result.YES;
     }
 });' > /mnt/etc/polkit-1/rules.d/49-nopasswd_global.rules
-mkdir -p /mnt/home/$username/.config/qt5ct
+#
+#Создание директории и конфига qt5ct.
+echo -e "\033[31mСоздание конфига qt5ct.\033[32m"
+if [ "$font" = "8" ]; then fontqt="(\0\0\0@\0\0\0\x1c\0N\0o\0t\0o\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@ \0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)"
+elif [ "$font" = "10" ]; then fontqt="(\0\0\0@\0\0\0\x1c\0N\0o\0t\0o\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@$\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)"
+fi
+mkdir -p /mnt/home/"$username"/.config/qt5ct
 echo '[Appearance]
 color_scheme_path=/usr/share/qt5ct/colors/airy.conf
 custom_palette=false
@@ -945,8 +958,8 @@ icon_theme=ePapirus-Dark
 standard_dialogs=default
 style=Adwaita-Dark
 [Fonts]
-fixed=@Variant(\0\0\0@\0\0\0\x14\0S\0\x61\0n\0s\0 \0S\0\x65\0r\0i\0\x66@\"\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)
-general=@Variant(\0\0\0@\0\0\0\x14\0S\0\x61\0n\0s\0 \0S\0\x65\0r\0i\0\x66@\"\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)
+fixed=@Variant'"$fontqt"'
+general=@Variant'"$fontqt"'
 [Interface]
 activate_item_on_single_click=1
 buttonbox_layout=0
@@ -960,23 +973,26 @@ show_shortcuts_in_context_menus=true
 stylesheets=@Invalid()
 toolbutton_style=4
 underline_shortcut=1
-wheel_scroll_lines=3
+wheel_scroll_lines='"$(($font/2))"'
 [SettingsWindow]
 geometry=@ByteArray(\x1\xd9\xd0\xcb\0\x3\0\0\0\0\0\"\0\0\0\x88\0\0\xe\xdd\0\0\b\x1e\0\0\0+\0\0\0\x88\0\0\xe\xd4\0\0\b\x15\0\0\0\0\0\0\0\0\xf\0\0\0\0+\0\0\0\x88\0\0\xe\xd4\0\0\b\x15)
 [Troubleshooting]
 force_raster_widgets=1
 ignored_applications=@Invalid()' > /mnt/home/$username/.config/qt5ct/qt5ct.conf
+#
+#Создание директории и конфига gtk.
+echo -e "\033[31mСоздание конфига gtk.\033[32m"
 mkdir -p /mnt/home/$username/.config/gtk-3.0/
 echo '[Settings]
 gtk-application-prefer-dark-theme=true
 gtk-button-images=1
 gtk-cursor-theme-name=Adwaita
-gtk-cursor-theme-size=24
+gtk-cursor-theme-size='"$(($font*3))"'
 gtk-decoration-layout=icon:minimize,maximize,close
 gtk-enable-animations=false
 gtk-enable-event-sounds=1
 gtk-enable-input-feedback-sounds=1
-gtk-font-name=Noto Sans Mono,  10
+gtk-font-name=Noto Sans Mono '"$(($font/2+$font))"'
 gtk-icon-theme-name=Papirus-Dark
 gtk-menu-images=1
 gtk-modules=colorreload-gtk-module:window-decorations-gtk-module
@@ -987,8 +1003,10 @@ gtk-toolbar-style=GTK_TOOLBAR_BOTH_HORIZ
 gtk-xft-antialias=1
 gtk-xft-hinting=1
 gtk-xft-hintstyle=hintmedium
-gtk-xft-rgba=rgb' > /mnt/home/$username/.config/gtk-3.0/settings.ini
-mkdir -p /mnt/home/$username/.config/tint2
+gtk-xft-rgba=rgb' > /mnt/home/"$username"/.config/gtk-3.0/settings.ini
+#
+#
+mkdir -p /mnt/home/"$username"/.config/tint2
 echo '#---- Generated by tint2conf df32 ----
 # See https://gitlab.com/o9000/tint2/wikis/Configure for
 # full documentation of the configuration options.
@@ -1002,7 +1020,7 @@ border_width = 0
 border_sides = TBLR
 border_content_tint_weight = 0
 background_content_tint_weight = 0
-background_color = #000000 60
+background_color = #2b2b2b 80
 border_color = #000000 30
 background_color_hover = #000000 60
 border_color_hover = #000000 30
