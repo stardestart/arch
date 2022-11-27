@@ -24,7 +24,7 @@ if [ -z "$namewifi" ];
     then
         netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
     else
-        echo -e "\033[41m\033[30mПароль wifi:\033[36m";read -p ">" passwifi
+        echo -e "\033[41m\033[30mПароль wifi:\033[0m\033[36m";read -p ">" passwifi
         iwctl --passphrase "$passwifi" station "$netdev" connect "$namewifi"
 fi
 echo -e "\033[31mСетевое устройство:"$netdev"\033[32m"
@@ -87,18 +87,21 @@ select resolution in "~480p." "~720p-1080p." "~4K."
 do
     case "$resolution" in
         "~480p.")
-            font=6
+            font=8
             gap=40
+            xterm="500 250"
             break
             ;;
         "~720p-1080p.")
-            font=8
+            font=9
             gap=50
+            xterm="1000 500"
             break
             ;;
         "~4K.")
             font=10
             gap=60
+            xterm="2000 1000"
             break
             ;;
         *) echo -e "\033[31mЧто значит - "$REPLY"? До трёх посчитать не можешь и Arch Linux ставишь?\033[36m";;
@@ -334,15 +337,17 @@ echo -e "\033[31mСоздание sane.d.\033[32m"
 mkdir -p /mnt/etc/sane.d
 echo -e "localhost\n192.168.0.0/24" >> /mnt/etc/sane.d/net.conf
 #
+echo -e "\033[31mФормируется конфиг conky.\033[32m"
 #
+#Температура ядер процессора.
 core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
-do
+    do
 coreconf+="
-\$alignr\${execi 10 sensors | grep \"Core '$i'\:\" | awk '{print \$1, \$2, \$3}' } /"
-done
+\$alignr\${execi 10 sensors | grep \"Core $i:\" | awk '{print \$1, \$2, \$3}' }"
+    done
 #
-#
+#Параметры для видеокарт nvidia.
 if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
 nvidiac='
 ${color #f92b2b}GPU${hr 3}$color
@@ -351,12 +356,12 @@ ${color #b2b2b2}Видео ОЗУ:$color$alignr${nvidia mem} / ${nvidia memmax} 
 ${color #b2b2b2}Температура ГП:$color$alignr${nvidia temp} °C'
 fi
 #
-#
+#Создание директории и конфига.
 mkdir -p /mnt/home/"$username"/.config/conky
 echo 'conky.config = { --Внешний вид.
 alignment = "top_right", --Располжение виджета.
-border_inner_margin = '$font', --Отступ от внутренних границ.
-border_outer_margin = '$font', --Отступ от края окна.
+border_inner_margin = '"$font"', --Отступ от внутренних границ.
+border_outer_margin = '"$font"', --Отступ от края окна.
 border_width = 1, --Толщина рамки.
 cpu_avg_samples = 2, --Усреднение значений нагрузки.
 default_color = "#2bf92b", --Цвет по умолчанию.
@@ -364,8 +369,8 @@ default_outline_color = "#2bf92b", --Цвет рамки по умолчанию
 double_buffer = true, --Включение двойной буферизации.
 draw_shades = false, --Оттенки.
 draw_borders = true, --Включение границ.
-font = "Noto Sans Mono:size='$font'", --Шрифт и размер шрифта.
-gap_y = '$(($gap/2+$gap))', --Отступ сверху.
+font = "Noto Sans Mono:size='"$font"'", --Шрифт и размер шрифта.
+gap_y = '"$(($gap/2+$gap))"', --Отступ сверху.
 gap_x = 40, --Отступ от края.
 own_window = true, --Собственное окно.
 own_window_class = "Conky", --Класс окна.
@@ -377,9 +382,9 @@ use_xft = true, } --Использование шрифтов X сервера.
 conky.text = [[ #Наполнение виджета.
 #Блок "Время".
 #Часы.
-${font :size='$(($font*4))'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
+${font :size='"$(($font*4))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
 #Дата.
-${font :size='$font'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
+${font :size='"$font"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
 #Блок "Система".
 #Разделитель.
 ${color #f92b2b}SYS${hr 3}$color
@@ -439,16 +444,20 @@ ${top name 4} $alignr ${top pid 4}|${top cpu 4}|${top mem 4}
 ${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}
 #Блок "Диск1".
 #Разделитель.
-${color #f92b2b}/ROOT${hr 3}$color
+${color #f92b2b}/home${hr 3}$color
 #Общее/Занято/Свободно.
-${color #b2b2b2}Объём:$alignr${fs_size /} / ${fs_used /} / $color${fs_free /}
+${color #b2b2b2}Объём:$alignr${fs_size /home} / ${fs_used /home} / $color${fs_free /home}
 #Полоса загрузки.
-$color(${fs_type /})${fs_bar 4 /}
+$color(${fs_type /home})${fs_bar 4 /home}
 #Блок "Диски".'"${masslabel[@]}"'
 ]]' > /mnt/home/"$username"/.config/conky/conky.conf
 #
-#
+#Создание bash_profile.
+echo -e "\033[31mСоздание bash_profile.\033[32m"
 echo '[[ -f ~/.profile ]] && . ~/.profile' > /mnt/home/$username/.bash_profile
+#
+#Создание bashrc.
+echo -e "\033[31mСоздание bashrc.\033[32m"
 echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
 #Автоматическая прозрачность xterm.
 [ -n "$XTERM_VERSION" ] && transset-df --id "$WINDOWID" >/dev/null
@@ -494,17 +503,26 @@ PS1="\[\033[43m\]\[\033[2;34m\]\A\[\033[0m\]\[\033[44m\]\[\033[3;33m\]\u@\h \W/\
 #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
 export HISTCONTROL="ignoreboth"
 export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' > /mnt/home/$username/.bashrc
+#
+#Создание profile.
+echo -e "\033[31mСоздание profile.\033[32m"
 echo 'setleds -D +num #Включенный по умолчанию NumLock.
 [[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
 export QT_QPA_PLATFORMTHEME="qt5ct" #Изменение внешнего вида приложений использующих qt.' > /mnt/home/$username/.profile
+#
+#Создание конфига сервера уведомлений.
+echo -e "\033[31mСоздание конфига сервера уведомлений.\033[32m"
 echo '[D-BUS Service]
 Name=org.freedesktop.Notifications
 Exec=/usr/lib/notification-daemon-1.0/notification-daemon' > /mnt/usr/share/dbus-1/services/org.freedesktop.Notifications.service
-echo '# Прозрачность неактивных окон (0,1–1,0).
-inactive-opacity = 0.8;
+#
+#Создание конфига picom.
+echo -e "\033[31mСоздание конфига picom.\033[32m"
+echo -e "# Прозрачность неактивных окон (0,1–1,0).
+inactive-opacity = 0.9;
 #
 # Затемнение неактивных окон (0,0–1,0).
-inactive-dim = 0.5
+inactive-dim = 0.4;
 #
 # Включить вертикальную синхронизацию (если picom выдает ошибку по vsync, то отключаем заменой true на false).
 vsync = true;
@@ -515,11 +533,20 @@ mark-ovredir-focused = true;
 wintypes:
 {
 # Отключить прозрачность выпадающего меню.
-dropdown_menu = { opacity = false; }
+dropdown_menu = { opacity = false; };
 #
 # Отключить прозрачность всплывающего меню.
 popup_menu = { opacity = false; }
-};' > /mnt/home/$username/.config/picom.conf
+};
+
+# Прозрачность i3status.
+opacity-rule = [
+\"60:class_g = 'i3bar' && !focused\",
+\"80:class_g = 'dmenu' && !focused\"
+];" > /mnt/home/$username/.config/picom.conf
+#
+#Создание xresources.
+echo -e "\033[31mСоздание xresources.\033[32m"
 echo '!Настройка внешнего вида xterm.
 !
 !Задает имя типа терминала, которое будет установлено в переменной среды TERM.
@@ -529,13 +556,13 @@ xterm*termName: xterm-256color
 xterm*locale: true
 !
 !Определяет количество строк, сохраняемых за пределами верхней части экрана, когда включена полоса прокрутки.
-xterm*saveLines: 14096
+xterm*saveLines: 10000
 !
 !Укажите шаблон для масштабируемых шрифтов.
 xterm*faceName: Noto Sans Mono
 !
 !Размер шрифтов.
-xterm*faceSize: 10
+xterm*faceSize: '"$font"'
 !
 !Указывает цвет фона.
 xterm*background: #2b0f2b
@@ -546,7 +573,7 @@ xterm*foreground: #2bf92b
 xterm*scrollBar: true
 !
 !Определяет ширину полосы прокрутки.
-xterm*scrollbar.width: 10
+xterm*scrollbar.width: '"$(($font/2))"'
 !
 !Указывает, должно ли нажатие клавиши автоматически перемещать полосу прокрутки в нижнюю часть области прокрутки.
 xterm*scrollKey: true
@@ -558,23 +585,26 @@ xterm*rightScrollBar: true
 !Настройка внешнего вида xscreensaver.
 !
 !Указывает шрифт.
-xscreensaver-auth.?.Dialog.headingFont: Noto Sans Mono 12
-xscreensaver-auth.?.Dialog.bodyFont: Noto Sans Mono 12
-xscreensaver-auth.?.Dialog.labelFont: Noto Sans Mono 12
-xscreensaver-auth.?.Dialog.unameFont: Noto Sans Mono 12
-xscreensaver-auth.?.Dialog.buttonFont: Noto Sans Mono 12
-xscreensaver-auth.?.Dialog.dateFont: Noto Sans Mono 12
-xscreensaver-auth.?.passwd.passwdFont: Noto Sans Mono 12
+xscreensaver-auth.?.Dialog.headingFont: Noto Sans Mono '"$font"'
+xscreensaver-auth.?.Dialog.bodyFont: Noto Sans Mono '"$font"'
+xscreensaver-auth.?.Dialog.labelFont: Noto Sans Mono '"$font"'
+xscreensaver-auth.?.Dialog.unameFont: Noto Sans Mono '"$font"'
+xscreensaver-auth.?.Dialog.buttonFont: Noto Sans Mono '"$font"'
+xscreensaver-auth.?.Dialog.dateFont: Noto Sans Mono '"$font"'
+xscreensaver-auth.?.passwd.passwdFont: Noto Sans Mono '"$font"'
 !
 !Указывает цвета.
 xscreensaver-auth.?.Dialog.foreground: #b2f9b2
-xscreensaver-auth.?.Dialog.background: #b20fb2
-xscreensaver-auth.?.Dialog.Button.foreground: #b20fb2
+xscreensaver-auth.?.Dialog.background: #2b2b2b
+xscreensaver-auth.?.Dialog.Button.foreground: #2b2b2b
 xscreensaver-auth.?.Dialog.Button.background: #b2f9b2
-xscreensaver-auth.?.Dialog.text.foreground: #b20fb2
+xscreensaver-auth.?.Dialog.text.foreground: #2b2b2b
 xscreensaver-auth.?.Dialog.text.background: #b2f9b2
 xscreensaver-auth.?.passwd.thermometer.foreground: #f92b2b
 xscreensaver-auth.?.passwd.thermometer.background: #b2f9b2' > /mnt/home/$username/.Xresources
+#
+#Создание директории и конфига i3.
+echo -e "\033[31mСоздание конфига i3.\033[32m"
 mkdir -p /mnt/home/$username/.config/i3
 echo '########### Основные настройки ###########
 #
@@ -637,7 +667,7 @@ bindsym $mod+space focus mode_toggle
 # Определяем имена для рабочих областей по умолчанию.
 set $ws1 "1"
 set $ws2 "2: 🌍"
-set $ws3 "3"
+set $ws3 "3: 🎮"
 set $ws4 "4"
 set $ws5 "5"
 set $ws6 "6"
@@ -709,16 +739,16 @@ force_xinerama yes
 ########### Внешний вид ###########
 #
 # Шрифт для заголовков окон. Также будет использоваться ibar, если не выбран другой шрифт.
-font pango:Snowstorm Kraft 12
+font pango:Snowstorm Kraft '"$(($font*2))"'
 #
 # Просветы между окнами.
-gaps inner 10
+gaps inner '"$font"'
 #
 # Толщина границы окна.
-default_border normal 3
+default_border normal '"$(($font/3))"'
 #
 # Толщина границы плавающего окна.
-default_floating_border normal 3
+default_floating_border normal '"$(($font/3))"'
 #
 # Устанавливаем цвет рамки активного окна #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.
 client.focused #2b2bf9 #2b2bf9 #2bf92b #2b2bf9 #2b2bf9
@@ -730,17 +760,17 @@ client.unfocused #2b2b0f #2b2b0f #b2b2b2 #2b2b0f #2b2b0f
 # for_window [all] title_format "<span foreground="#d64c2f"><b>Заголовок | %title</b></span>"
 #
 # Включить значки окон для всех окон с дополнительным горизонтальным отступом.
-for_window [all] title_window_icon padding 3px
+for_window [all] title_window_icon padding '"$(($font/3))"'px
 #
 # Внешний вид XTerm
 # Включить плавающий режим для всех окон XTerm.
 for_window [class="XTerm"] floating enable
-# Сделать границу в 1 пиксель для всех окон XTerm.
-for_window [class="XTerm"] border normal 1
+# Сделать границу в 0 пикселей для всех окон XTerm.
+for_window [class="XTerm"] border normal 0
 # Липкие плавающие окна, окно XTerm прилипло к стеклу.
 for_window [class="XTerm"] sticky enable
 # Задаем размеры окна XTerm.
-for_window [class="XTerm"] resize set 1000 500
+for_window [class="XTerm"] resize set '"$xterm"'
 #
 ########### Автозапуск программ ###########
 #
@@ -752,6 +782,12 @@ exec --no-startup-id volctl
 #
 # Автозапуск flameshot.
 exec --no-startup-id flameshot
+#
+# Автозапуск copyq.
+exec --no-startup-id copyq
+#
+# Автозапуск obs.
+exec --no-startup-id obs
 #
 # Автозапуск tint2.
 exec --no-startup-id tint2
@@ -765,6 +801,9 @@ exec --no-startup-id conky
 # Автозапуск numlockx.
 exec --no-startup-id numlockx
 #
+# Автозапуск transmission.
+exec --no-startup-id transmission-qt -m
+#
 # Приветствие в течении 10 сек.
 exec --no-startup-id notify-send -t 10000 "✊Доброго времени суток✊"
 #
@@ -773,13 +812,26 @@ exec --no-startup-id xscreensaver --no-splash
 #
 # Автозапуск dolphin.
 exec --no-startup-id dolphin --daemon
+#
+# Автозапуск steam, через gamemod "exec --no-startup-id gamemoderun steam -silent %U".
+exec --no-startup-id steam -silent %U
+#
+# Автозапуск telegram.
+exec --no-startup-id telegram-desktop -startintray -- %u
+#
+# Автозапуск variety.
+exec --no-startup-id variety
+#
+# Автоматическая разблокировка KWallet.
+exec --no-startup-id /usr/lib/pam_kwallet_init
+#
 ########### Горячие клавиши запуска программ ###########
 #
 # Используйте mod+enter, чтобы запустить терминал ("i3-sensible-terminal" можно заменить "xterm", "terminator" или любым другим на выбор).
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec xterm
 #
 # Запуск dmenu (программа запуска) с параметрами шрифта, приглашения, цвета фона.
-bindsym $mod+d exec --no-startup-id dmenu_run -fn "Snowstorm Kraft-30" -p "Поиск программы:" -nb "#2b0f2b" -sf "#2b2b0f" -nf "#2bf02b" -sb "#f92b2b"
+bindsym $mod+d exec --no-startup-id dmenu_run -fn "Snowstorm Kraft-'"$(($font*3))"'" -p "Поиск программы:" -nb "#2b2b2b" -sf "#2b2bf9" -nf "#2bf92b" -sb "#f92b2b"
 #
 # Используйте mod+f1, чтобы запустить firefox.
 bindsym $mod+F1 exec --no-startup-id firefox
@@ -795,6 +847,9 @@ bindsym $mod+minus scratchpad show
 # Firefox будет запускаться на 2 рабочем столе.
 assign [class="firefox"] "2: 🌍"
 #
+# Steam будет запускаться на 3 рабочем столе.
+assign [title="Steam"] "3: 🎮"
+#
 ########### Настройка панели задач ###########
 #
 bar {
@@ -805,15 +860,15 @@ bar {
         separator_symbol "☭"
         #
         # Назначить шрифт.
-        font pango:Noto Sans Mono 12
+        font pango:Noto Sans Mono '"$(($font/2+$font))"'
         #
         # Назначить цвета.
         colors {
             # Цвет фона i3status.
-            background #2b0f2b
+            background #2b2b2b
             #
             # Цвет текста в i3status.
-            statusline #2bf92b
+            statusline #b2b2b2
             #
             # Цвет разделителя в i3status.
             separator #f92b2b
@@ -821,36 +876,30 @@ bar {
          # Сделайте снимок экрана, щелкнув правой кнопкой мыши на панели (--no-startup-id убирает курсор загрузки).
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
 }' > /mnt/home/$username/.config/i3/config
+#
+#Создание конфига i3status.
+echo -e "\033[31mСоздание конфига i3status.\033[32m"
 echo 'general { #Основные настройки.
     colors = true #Включение/выключение поддержки цветов.
     color_good = "#2bf92b" #Цвет OK.
     color_bad = "#f92b2b" #Цвет ошибки.
     interval = 1 #Интервал обновления строки статуса.
     output_format = "i3bar" } #Формат вывода.
+order += "tztime 0" #0 модуль - пробел.
 order += "ethernet _first_" #1 модуль - rj45.
-order += "run_watch openvpn" #2 модуль - openvpn.
-order += "run_watch openconnect" #3 модуль - openconnect.
-order += "wireless _first_" #4 модуль - Wi-Fi.
-order += "battery all" #5 модуль - батарея.
-order += "disk /" #6 модуль - root директория.
-order += "memory" #7 модуль - ram.
-order += "cpu_usage" #8 модуль - использование ЦП.
-order += "cpu_temperature 0" #9 модуль - температура ЦП.
-order += "tztime local" #10 модуль - время.
-order += "volume master" #11 модуль - звук.
+order += "wireless _first_" #2 модуль - Wi-Fi.
+order += "battery all" #3 модуль - батарея.
+order += "memory" #4 модуль - ram.
+order += "cpu_usage" #5 модуль - использование ЦП.
+order += "cpu_temperature 0" #6 модуль - температура ЦП.
+order += "tztime 1" #7 модуль - дата.
+order += "tztime 2" #8 модуль - время.
+order += "tztime 0" #0 модуль - пробел.
 ethernet _first_ { #Индикатор rj45.
-        format_up = "🖧: %ip (%speed)" #Формат вывода.
-        format_down = "" } #При неактивном процессе блок будет отсутствовать.
-run_watch openvpn { #Индикатор openvpn.
-    pidfile = "/var/run/openvpn.pid" #Путь данных.
-    format = "🖧 openvpn" #Формат вывода.
-    format_down="" } #При неактивном процессе блок будет отсутствовать.
-run_watch openconnect { #Индикатор openconnect.
-    pidfile = "/var/run/openconnect.pid" #Путь данных.
-    format = "🖧 vpn" #Формат вывода.
-    format_down="" } #При неактивном процессе блок будет отсутствовать.
+    format_up = "🖧: %ip " #Формат вывода.
+    format_down = "" } #При неактивном процессе блок будет отсутствовать.
 wireless _first_ { #Индикатор WI-FI.
-    format_up = "📶%quality %frequency %essid %ip" #Формат вывода.
+    format_up = "📶%quality | %frequency | %essid: %ip " #Формат вывода.
     format_down = "" } #При неактивном процессе блок будет отсутствовать.
 battery all { #Индикатор батареи
     format = "%status %percentage" #Формат вывода.
@@ -860,25 +909,25 @@ battery all { #Индикатор батареи
     status_bat = "🔋" #Режим работы от батареи.
     path = "/sys/class/power_supply/BAT%d/uevent" #Путь данных.
     low_threshold = 10 } #Нижний порог заряда.
-disk "/" { #Root директория.
-    format = "♚ %avail / %total" } #Формат вывода.
 memory { #Индикатор ram
-    format = "🗂 %used" #Формат вывода.
-    threshold_degraded = "1G" #Желтый порог.
-    threshold_critical = "200M" #Красный порог.
-    format_degraded = "🗂 %available" } #Формат вывода желтого/красного порога.
+    format = "RAM: %used /%total" #Формат вывода.
+    threshold_degraded = 10% #Желтый порог.
+    threshold_critical = 5% #Красный порог.
+    format_degraded = "RAM: %used /%total" } #Формат вывода желтого/красного порога.
 cpu_usage { #Использование ЦП.
-    format = "🖳 %usage" } #Формат вывода.
+    format = "CPU: %usage" } #Формат вывода.
 cpu_temperature 0 { #Температура ЦП.
-    format = "🌡 %degrees°C" #Формат вывода.
-    max_threshold = "80" #Красный порог.
-    format_above_threshold = "🌡 %degrees°C" #Формат вывода красного порога.
-    path = "/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp1_input"} #Путь данных.
-tztime local { #Вывод даты и времени.
-    format = "📅 %a %d-%m-%Y(%W) 🕗 %H:%M:%S" } #Формат вывода.
-volume master { #Вывод звука.
-    format = "🔈 %volume" #Формат вывода.
-    format_muted = "🔇 %volume" } #Формат вывода без звука.' > /mnt/home/$username/.i3status.conf
+    format = "Θ°CPU: %degrees°C" #Формат вывода.
+    max_threshold = "70" #Красный порог.
+    format_above_threshold = "Θ CPU: %degrees°C" #Формат вывода красного порога.
+    path = "/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp1_input" } #Путь данных.path: /sys/devices/platform/coretemp.0/temp1_input
+tztime 1 { #Вывод даты и времени.
+    format = "📆 %a %d-%m-%Y(%W)" } #Формат вывода.
+tztime 2 { #Вывод даты и времени.
+    format = "⌛ %H:%M:%S %Z" } #Формат вывода.
+tztime 0 { #Вывод разделителя.
+    format = "|" } #Формат вывода.' > /mnt/home/$username/.i3status.conf
+
 echo '[redshift]
 allowed=true
 system=false
@@ -1345,7 +1394,6 @@ cp /var/lib/iwd/$namewifi.psk /mnt/var/lib/iwd/$namewifi.psk
 fi
 arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd avahi-daemon
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
-arch-chroot /mnt chmod u+x /home/$username/.xinitrc
 arch-chroot /mnt chown -R $username:users /home/$username/
 arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/
 git clone https://aur.archlinux.org/yay.git
