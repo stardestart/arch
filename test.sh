@@ -4,17 +4,20 @@
 loadkeys ru
 setfont ter-v18n
 #
-#
+#Сброс переменных и размонтирование разделов, на случай повторного запуска скрипта.
+echo -e "\033[31mСброс переменных и размонтирование разделов, на случай повторного запуска скрипта.\033[32m"
 swapoff -a
 umount -R /mnt
 #
 #Определяем процессор.
+echo -e "\033[31mОпределяем процессор.\033[32m"
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="\ninitrd /amd-ucode.img"
 elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="\ninitrd /intel-ucode.img"
 fi
 echo -e "Процессор:"$(lscpu | grep -i "model name")""
 #
 #Определяем сетевое устройство.
+echo -e "\033[31mОпределяем сетевое устройство.\033[32m"
 if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
     then
         echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m\033[36m";read -p ">" namewifi
@@ -30,45 +33,47 @@ fi
 echo -e "\033[31mСетевое устройство:"$netdev"\033[32m"
 #
 #Определяем часовой пояс.
+echo -e "\033[31mОпределяем часовой пояс.\033[32m"
 timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
 echo -e "\033[31mЧасовой пояс:"$(curl https://ipapi.co/timezone)"\033[32m"
 #
 #Определяем физический диск на который будет установлена ОС.
-massdisk=($(lsblk -fno +TRAN | grep -ivE "├─|└─|rom|usb|/|SWAP" | awk '{print $1}'))
-if [ "${#massdisk[*]}" = 1 ];
-then
-sysdisk="${massdisk[0]}"
-elif [ "${#massdisk[*]}" = 0 ];
-then
-echo -e "\033[41m\033[30mДоступных дисков не обнаружено!\033[32m"
-exit 0
-else
-echo -e "\033[41m\033[30mВведите метку диска (выделено красным) на который будет установлена ОС:\033[0m"
-for (( j=0, i=1; i<="${#massdisk[*]}"; i++, j++ ))
-do
-grepmassdisk+="${massdisk[$j]}|"
-done
-lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisk"
-echo -e "\033[36m"
-read -p ">" sysdisk
+echo -e "\033[31mОпределяем физический диск на который будет установлена ОС.\033[32m"
+massdisks=($(lsblk -fno +TRAN | grep -ivE "├─|└─|rom|usb|/|SWAP" | awk '{print $1}'))
+if [ "${#massdisks[*]}" = 1 ]; then sysdisk="${massdisks[0]}"
+elif [ "${#massdisks[*]}" = 0 ];
+    then
+        echo -e "\033[41m\033[30mДоступных дисков не обнаружено!\033[32m"
+        exit 0
+    else
+        echo -e "\033[41m\033[30mВведите метку диска (выделено красным) на который будет установлена ОС:\033[0m"
+        for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
+            do
+                grepmassdisks+="${massdisks[$j]}|"
+            done
+        lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisks"
+        echo -e "\033[36m"
+        read -p ">" sysdisk
 fi
 echo -e "\033[31mФизический диск на который будет установлена ОС:"$sysdisk"\033[32m"
 #
 #Определяем есть ли nvme контролер системного диска.
+echo -e "\033[31mОпределяем есть ли nvme контролер системного диска.\033[32m"
 if [ -z "$(echo "$sysdisk" | grep -i "nvme")" ];
-then
-p1="1"
-p2="2"
-p3="3"
-p4="4"
-else
-p1="p1"
-p2="p2"
-p3="p3"
-p4="p4"
+    then
+        p1="1"
+        p2="2"
+        p3="3"
+        p4="4"
+    else
+        p1="p1"
+        p2="p2"
+        p3="p3"
+        p4="p4"
 fi
 #
 #Сбор данных пользователя.
+echo -e "\033[31mСбор данных пользователя.\033[32m"
 echo "
 "
 echo -e "\033[41m\033[30mВведите имя компьютера:\033[0m\033[36m";read -p ">" hostname
@@ -87,14 +92,14 @@ select resolution in "~480p." "~720p-1080p." "~4K."
 do
     case "$resolution" in
         "~480p.")
-            font=8
-            gap=40
+            font=6
+            gap=20
             xterm="700 350"
             break
             ;;
         "~720p-1080p.")
             font=8
-            gap=50
+            gap=40
             xterm="1000 500"
             break
             ;;
@@ -109,6 +114,7 @@ do
 done
 #
 #Разметка системного диска.
+echo -e "\033[31mРазметка системного диска.\033[32m"
 if [ -z "$(efibootmgr | grep Boot)" ];
     then
         echo -e "\033[31mLegacy boot.\033[32m"
@@ -265,27 +271,27 @@ fi
 #
 #Установка программ.
 echo -e "\033[31mУстановка программ.\033[32m"
-arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify --noconfirm
+arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar--noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Поиск не смонтированных разделов.
 echo -e "\033[31mПоиск не смонтированных разделов.\033[32m"
-massdisks=($(lsblk -sno +TRAN | grep -ivE "└─|"$sysdisk"|rom|usb|/|SWAP" | awk '{print $1}'))
-for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
+massparts=($(lsblk -sno +TRAN | grep -ivE "└─|"$sysdisk"|rom|usb|/|SWAP" | awk '{print $1}'))
+for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
     do
-        if [ -z "$(lsblk -no LABEL /dev/"${massdisks[$j]}")" ];
+        if [ -z "$(lsblk -no LABEL /dev/"${massparts[$j]}")" ];
             then
-                arch-chroot /mnt mount --mkdir /dev/"${massdisks[$j]}" /home/"$username"/"${massdisks[$j]}"
+                arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/"${massparts[$j]}"
 masslabel+='
-${color #f92b2b}/'"${massdisks[$j]}"'${hr 3}
-${color #b2b2b2}Объём:$alignr${fs_size /'"${massdisks[$j]}"'} / ${fs_used /'"${massdisks[$j]}"'} / $color${fs_free /'"${massdisks[$j]}"'}
-(${fs_type /'"${massdisks[$j]}"'})${fs_bar 4 /'"${massdisks[$j]}"'}'
+${color #f92b2b}/home/'"$username"'/'"${massparts[$j]}"'${hr 3}
+${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"${massparts[$j]}"'} / ${fs_used /home/'"$username"'/'"${massparts[$j]}"'} / $color${fs_free /home/'"$username"'/'"${massparts[$j]}"'}
+(${fs_type /home/'"$username"'/'"${massparts[$j]}"'})${fs_bar 4 /home/'"$username"'/'"${massparts[$j]}"'}'
             else
-                arch-chroot /mnt mount --mkdir /dev/"${massdisks[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"
+                arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
 masslabel+='
-${color #f92b2b}/'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'${hr 3}
-${color #b2b2b2}Объём:$alignr${fs_size /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'} / ${fs_used /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'} / $color${fs_free /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'}
-(${fs_type /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'})${fs_bar 4 /'"$(lsblk -no LABEL /dev/"${massdisks[$j]}")"'}'
+${color #f92b2b}/home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'${hr 3}
+${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${fs_used /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / $color${fs_free /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}
+(${fs_type /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'})${fs_bar 4 /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}'
         fi
     done
 #
@@ -343,13 +349,13 @@ echo -e "\033[31mФормируется конфиг conky.\033[32m"
 core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
     do
-coreconf+="
+        coreconf+="
 \$alignr\${execi 10 sensors | grep \"Core $i:\" | awk '{print \$1, \$2, \$3}' }"
     done
 #
 #Параметры для видеокарт nvidia.
 if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
-nvidiac='
+    nvidiac='
 ${color #f92b2b}GPU${hr 3}$color
 ${color #b2b2b2}Частота ГП:$color$alignr${nvidia gpufreq} Mhz
 ${color #b2b2b2}Видео ОЗУ:$color$alignr${nvidia mem} / ${nvidia memmax} MiB
@@ -539,7 +545,7 @@ popup_menu = { opacity = false; }
 
 # Прозрачность i3status и dmenu.
 opacity-rule = [
-\"60:class_g = 'i3bar' && !focused\",
+\"70:class_g = 'i3bar' && !focused\",
 \"80:class_g = 'dmenu' && !focused\"
 ];" > /mnt/home/"$username"/.config/picom.conf
 #
@@ -922,7 +928,7 @@ cpu_temperature 0 { #Температура ЦП.
     format = "Θ°CPU: %degrees°C" #Формат вывода.
     max_threshold = "70" #Красный порог.
     format_above_threshold = "Θ CPU: %degrees°C" #Формат вывода красного порога.
-    path = "/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp1_input" } #Путь данных.path: /sys/devices/platform/coretemp.0/temp1_input
+    path = "/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp*_input" } #Путь данных.path: /sys/devices/platform/coretemp.0/temp1_input
 tztime 1 { #Вывод даты и времени.
     format = "📆 %a %d-%m-%Y(%W)" } #Формат вывода.
 tztime 2 { #Вывод даты и времени.
@@ -947,7 +953,8 @@ echo 'polkit.addRule(function(action, subject) {
 #
 #Создание директории и конфига qt5ct.
 echo -e "\033[31mСоздание конфига qt5ct.\033[32m"
-if [ "$font" = "8" ]; then fontqt="(\0\0\0@\0\0\0\x1c\0N\0o\0t\0o\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@ \0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)"
+if [ "$font" = "6" ]; then fontqt="(\0\0\0@\0\0\0\x1c\0N\0o\0t\0o\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@\x18\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)"
+elif [ "$font" = "8" ]; then fontqt="(\0\0\0@\0\0\0\x1c\0N\0o\0t\0o\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@ \0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)"
 elif [ "$font" = "10" ]; then fontqt="(\0\0\0@\0\0\0\x1c\0N\0o\0t\0o\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@$\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)"
 fi
 mkdir -p /mnt/home/"$username"/.config/qt5ct
@@ -992,7 +999,7 @@ gtk-decoration-layout=icon:minimize,maximize,close
 gtk-enable-animations=false
 gtk-enable-event-sounds=1
 gtk-enable-input-feedback-sounds=1
-gtk-font-name=Noto Sans Mono '"$(($font/2+$font))"'
+gtk-font-name=Noto Sans Mono '"$font"'
 gtk-icon-theme-name=Papirus-Dark
 gtk-menu-images=1
 gtk-modules=colorreload-gtk-module:window-decorations-gtk-module
@@ -1005,7 +1012,8 @@ gtk-xft-hinting=1
 gtk-xft-hintstyle=hintmedium
 gtk-xft-rgba=rgb' > /mnt/home/"$username"/.config/gtk-3.0/settings.ini
 #
-#
+#Создание директории и конфига tint2.
+echo -e "\033[31mСоздание конфига tint2.\033[32m"
 mkdir -p /mnt/home/"$username"/.config/tint2
 echo '#---- Generated by tint2conf df32 ----
 # See https://gitlab.com/o9000/tint2/wikis/Configure for
@@ -1076,8 +1084,8 @@ background_color_pressed = #ffffaa 100
 border_color_pressed = #000000 100
 #-------------------------------------
 # Panel
-panel_items = LS
-panel_size = 100% '$gap'
+panel_items = L
+panel_size = 100% '"$gap"'
 panel_margin = 0 0
 panel_padding = 2 0 2
 panel_background_id = 1
@@ -1156,7 +1164,7 @@ systray_name_filter =
 launcher_padding = 2 4 2
 launcher_background_id = 0
 launcher_icon_background_id = 0
-launcher_icon_size = '$gap'
+launcher_icon_size = '"$gap"'
 launcher_icon_asb = 100 0 0
 launcher_icon_theme = Papirus-Dark
 launcher_icon_theme_override = 0
@@ -1214,7 +1222,10 @@ tooltip_show_timeout = 0.5
 tooltip_hide_timeout = 0.1
 tooltip_padding = 4 4
 tooltip_background_id = 5
-tooltip_font_color = #dddddd 100' > /mnt/home/$username/.config/tint2/tint2rc
+tooltip_font_color = #dddddd 100' > /mnt/home/"$username"/.config/tint2/tint2rc
+#
+#Создание конфига kdeglobals.
+echo -e "\033[31mСоздание конфига kdeglobals.\033[32m"
 echo '[$Version]
 update_info=filepicker.upd:filepicker-remove-old-previews-entry,fonts_global.upd:Fonts_Global,fonts_global_toolbar.upd:Fonts_Global_Toolbar,icons_remove_effects.upd:IconsRemoveEffects,kwin.upd:animation-speed,style_widgetstyle_default_breeze.upd:StyleWidgetStyleDefaultBreeze
 [ColorEffects:Disabled]
@@ -1351,11 +1362,11 @@ TerminalApplication=xterm
 TerminalService=xterm.desktop
 XftHintStyle=hintslight
 XftSubPixel=rgb
-fixed=Noto Sans Mono,10,-1,5,50,0,0,0,0,0
-font=Noto Sans Mono,10,-1,5,50,0,0,0,0,0
-menuFont=Noto Sans Mono,10,-1,5,50,0,0,0,0,0
-smallestReadableFont=Noto Sans Mono,8,-1,5,50,0,0,0,0,0
-toolBarFont=Noto Sans Mono,10,-1,5,50,0,0,0,0,0
+fixed=Noto Sans Mono,'"$font"',-1,5,50,0,0,0,0,0
+font=Noto Sans Mono,'"$font"',-1,5,50,0,0,0,0,0
+menuFont=Noto Sans Mono,'"$font"',-1,5,50,0,0,0,0,0
+smallestReadableFont=Noto Sans Mono,'"$font"',-1,5,50,0,0,0,0,0
+toolBarFont=Noto Sans Mono,'"$font"',-1,5,50,0,0,0,0,0
 [Icons]
 Theme=Papirus-Dark
 [KDE]
@@ -1390,34 +1401,53 @@ MaximumRemoteSize=5242880
 [WM]
 activeBackground=49,54,59
 activeBlend=252,252,252
-activeFont=Noto Sans Mono,10,-1,5,50,0,0,0,0,0
+activeFont=Noto Sans Mono,'"$font"',-1,5,50,0,0,0,0,0
 activeForeground=252,252,252
 inactiveBackground=42,46,50
 inactiveBlend=161,169,177
-inactiveForeground=161,169,177' > /mnt/home/$username/.config/kdeglobals
+inactiveForeground=161,169,177' > /mnt/home/"$username"/.config/kdeglobals
+#
+#Установка атмосферных шрифтов.
+echo -e "\033[31mУстановка атмосферных шрифтов.\033[32m"
 arch-chroot /mnt  sh -c "cd /usr/share/fonts/
 curl -L https://github.com/stardestart/arch/raw/main/font/Snowstorm.zip > Snowstorm.zip
 curl -L https://github.com/stardestart/arch/raw/main/font/30144_PostIndex.ttf > 30144_PostIndex.ttf
 unzip -o *.zip
 rm *.zip *.txt"
-if [ -z "$namewifi" ];
-then
-arch-chroot /mnt ip link set $netdev up
-else
-arch-chroot /mnt pacman -Sy iwd  --noconfirm
-arch-chroot /mnt systemctl enable iwd
-arch-chroot /mnt ip link set $netdev up
-mkdir -p /mnt/var/lib/iwd
-cp /var/lib/iwd/$namewifi.psk /mnt/var/lib/iwd/$namewifi.psk
+#
+#Передача интернет настроек в установленную систему.
+echo -e "\033[31mПередача интернет настроек в установленную систему.\033[32m"
+if [ -z "$namewifi" ]; then arch-chroot /mnt ip link set "$netdev" up
+    else
+        arch-chroot /mnt pacman -Sy iwd  --noconfirm
+        arch-chroot /mnt systemctl enable iwd
+        arch-chroot /mnt ip link set "$netdev" up
+        mkdir -p /mnt/var/lib/iwd
+        cp /var/lib/iwd/"$namewifi".psk /mnt/var/lib/iwd/"$namewifi".psk
 fi
+#
+#Автозапуск служб.
+echo -e "\033[31mАвтозапуск служб.\033[32m"
 arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd avahi-daemon
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
-arch-chroot /mnt chown -R $username:users /home/$username/
-arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/
+#
+#Передача прав созданному пользователю.
+echo -e "\033[31mПередача прав созданному пользователю.\033[32m"
+arch-chroot /mnt chown -R "$username":users /home/"$username"/
+#
+#Установка помощника yay для работы с AUR.
+echo -e "\033[31mУстановка помощника yay для работы с AUR.\033[32m"
+arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
 git clone https://aur.archlinux.org/yay.git
-cd /home/$username/yay
-BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
-rm -Rf /mnt/home/$username/yay
-arch-chroot /mnt/ sudo -u $username yay -S transset-df volctl --noconfirm
+cd /home/'"$username"'/yay
+BUILDDIR=/tmp/makepkg makepkg -i --noconfirm'
+rm -Rf /mnt/home/"$username"/yay
+#
+#Установка программ из AUR.
+echo -e "\033[31mУстановка программ из AUR.\033[32m"
+arch-chroot /mnt/ sudo -u "$username" yay -S transset-df volctl --noconfirm
+#
+#Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
+echo -e "\033[31mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[32m"
 #fdisk -l
 lsblk -l
