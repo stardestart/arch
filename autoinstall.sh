@@ -209,7 +209,7 @@ if [ "$gpu" == "amd" ]; then arch-chroot /mnt pacman -Sy amdvlk
 elif [ "$gpu" == "nvidia" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda
 fi
 arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
-arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra variety alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk ttf-font-awesome awesome-terminal-fonts audacity kdenlive cheese kate sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify --noconfirm
+arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra variety alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 ttf-droid ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts audacity kdenlive cheese kate sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 massdisks=($(lsblk -snAo +TRAN | grep -ivE "└─|$sysdisk|rom|usb|/|SWAP" | awk '{print $1}'))
 for (( j=0, i=1; i<=${#massdisks[*]}; i++, j++ ))
@@ -292,7 +292,7 @@ default_outline_color = "#2bf92b", --Цвет рамки по умолчанию
 double_buffer = true, --Включение двойной буферизации.
 draw_shades = false, --Оттенки.
 draw_borders = true, --Включение границ.
-font = "Noto Sans Mono:size='$font'", --Шрифт и размер шрифта.
+font = "Fantasque Sans Mono:italic:size='$font'", --Шрифт и размер шрифта.
 gap_y = '$(($gap/2+$gap))', --Отступ сверху.
 gap_x = 40, --Отступ от края.
 own_window = true, --Собственное окно.

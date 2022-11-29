@@ -54,6 +54,16 @@ elif [ "${#massdisks[*]}" = 0 ];
         lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisks"
         echo -e "\033[36m"
         read -p ">" sysdisk
+        massdisks=( ${massdisks[@]/$sysdisk} )
+        for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
+            do
+            if [ -z "$(fdisk -l /dev/"${massdisks[$j]}" | awk '/^\/dev\//' | awk '{print $1}' | cut -b6-15)" ];
+            then
+            massparts+=("${massdisks[$j]}")
+            else
+                massparts+=($(fdisk -l /dev/"${massdisks[$j]}" | awk '/^\/dev\//' | awk '{print $1}' | cut -b6-15))
+            fi
+            done
 fi
 echo -e "\033[31mФизический диск на который будет установлена ОС:"$sysdisk"\033[32m"
 #
@@ -93,14 +103,14 @@ select resolution in "~480p." "~720p-1080p." "~4K."
 do
     case "$resolution" in
         "~480p.")
-            font=6
-            gap=20
+            font=8
+            gap=48
             xterm="700 350"
             break
             ;;
         "~720p-1080p.")
-            font=8
-            gap=40
+            font=9
+            gap=54
             xterm="1000 500"
             break
             ;;
@@ -274,12 +284,11 @@ fi
 #
 #Установка программ.
 echo -e "\033[31mУстановка программ.\033[32m"
-arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-extra noto-fonts-cjk ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar --noconfirm
+arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 ttf-droid ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Поиск не смонтированных разделов.
 echo -e "\033[31mПоиск не смонтированных разделов.\033[32m"
-massparts=($(lsblk -sno +TRAN | grep -ivE "└─|"$sysdisk"|rom|usb|/|SWAP" | awk '{print $1}'))
 for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
     do
         if [ -z "$(lsblk -no LABEL /dev/"${massparts[$j]}")" ];
@@ -378,7 +387,7 @@ default_outline_color = "#2bf92b", --Цвет рамки по умолчанию
 double_buffer = true, --Включение двойной буферизации.
 draw_shades = false, --Оттенки.
 draw_borders = true, --Включение границ.
-font = "Noto Sans Mono:size='"$font"'", --Шрифт и размер шрифта.
+font = "Fantasque Sans Mono:italic:size='"$font"'", --Шрифт и размер шрифта.
 gap_y = '"$(($gap/2+$gap))"', --Отступ сверху.
 gap_x = 40, --Отступ от края.
 own_window = true, --Собственное окно.
@@ -391,9 +400,9 @@ use_xft = true, } --Использование шрифтов X сервера.
 conky.text = [[ #Наполнение виджета.
 #Блок "Время".
 #Часы.
-${font :size='"$(($font*4))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
+${font Fantasque Sans Mono:italic:size='"$(($font*4))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
 #Дата.
-${font :size='"$font"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
+${font Fantasque Sans Mono:italic:size='"$font"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
 #Блок "Система".
 #Разделитель.
 ${color #f92b2b}SYS${hr 3}$color
@@ -548,8 +557,8 @@ popup_menu = { opacity = false; }
 
 # Прозрачность i3status и dmenu.
 opacity-rule = [
-\"70:class_g = 'i3bar' && !focused\",
-\"80:class_g = 'dmenu' && !focused\"
+\"80:class_g = 'i3bar' && !focused\",
+\"90:class_g = 'dmenu' && !focused\"
 ];" > /mnt/home/"$username"/.config/picom.conf
 #
 #Создание xresources.
@@ -565,14 +574,11 @@ xterm*locale: true
 !Определяет количество строк, сохраняемых за пределами верхней части экрана, когда включена полоса прокрутки.
 xterm*saveLines: 10000
 !
-!Укажите шаблон для масштабируемых шрифтов.
-xterm*faceName: Noto Sans Mono
-!
-!Размер шрифтов.
-xterm*faceSize: '"$font"'
+!Шрифт xterm.
+xterm*faceName: Fantasque Sans Mono:style=bold:size='"$font"'
 !
 !Указывает цвет фона.
-xterm*background: #2b0f2b
+xterm*background: #2b2b2b
 !Определяет цвет, который будет использоваться для переднего плана.
 xterm*foreground: #2bf92b
 !
@@ -596,13 +602,13 @@ Xcursor.theme: Adwaita
 !Настройка внешнего вида xscreensaver.
 !
 !Указывает шрифт.
-xscreensaver-auth.?.Dialog.headingFont: Noto Sans Mono '"$font"'
-xscreensaver-auth.?.Dialog.bodyFont: Noto Sans Mono '"$font"'
-xscreensaver-auth.?.Dialog.labelFont: Noto Sans Mono '"$font"'
-xscreensaver-auth.?.Dialog.unameFont: Noto Sans Mono '"$font"'
-xscreensaver-auth.?.Dialog.buttonFont: Noto Sans Mono '"$font"'
-xscreensaver-auth.?.Dialog.dateFont: Noto Sans Mono '"$font"'
-xscreensaver-auth.?.passwd.passwdFont: Noto Sans Mono '"$font"'
+xscreensaver-auth.?.Dialog.headingFont: Fantasque Sans Mono Italic '"$font"'
+xscreensaver-auth.?.Dialog.bodyFont: Fantasque Sans Mono Italic '"$font"'
+xscreensaver-auth.?.Dialog.labelFont: Fantasque Sans Mono Italic '"$font"'
+xscreensaver-auth.?.Dialog.unameFont: Fantasque Sans Mono Italic '"$font"'
+xscreensaver-auth.?.Dialog.buttonFont: Fantasque Sans Mono Italic '"$font"'
+xscreensaver-auth.?.Dialog.dateFont: Fantasque Sans Mono Italic '"$font"'
+xscreensaver-auth.?.passwd.passwdFont: Fantasque Sans Mono Italic '"$font"'
 !
 !Указывает цвета.
 xscreensaver-auth.?.Dialog.foreground: #b2f9b2
@@ -750,7 +756,7 @@ force_xinerama yes
 ########### Внешний вид ###########
 #
 # Шрифт для заголовков окон. Также будет использоваться ibar, если не выбран другой шрифт.
-font pango:Snowstorm Kraft '"$(($font*2))"'
+font pango:Fantasque Sans Mono Bold '"$(($font*2))"'
 #
 # Просветы между окнами.
 gaps inner '"$font"'
@@ -842,7 +848,7 @@ exec --no-startup-id /usr/lib/pam_kwallet_init
 bindsym $mod+Return exec xterm
 #
 # Запуск dmenu (программа запуска) с параметрами шрифта, приглашения, цвета фона.
-bindsym $mod+d exec --no-startup-id dmenu_run -fn "Snowstorm Kraft-'"$(($font*3))"'" -p "Поиск программы:" -nb "#2b2b2b" -sf "#2b2bf9" -nf "#2bf92b" -sb "#f92b2b"
+bindsym $mod+d exec --no-startup-id dmenu_run -fn "Fantasque Sans Mono:style=bold:size='"$(($font*3))"'" -p "Поиск программы:" -nb "#2b2b2b" -sf "#2b2bf9" -nf "#2bf92b" -sb "#f92b2b"
 #
 # Используйте mod+f1, чтобы запустить firefox.
 bindsym $mod+F1 exec --no-startup-id firefox
@@ -871,7 +877,7 @@ bar {
         separator_symbol "☭"
         #
         # Назначить шрифт.
-        font pango:Noto Sans Mono '"$(($font/2+$font))"'
+        font pango:Fantasque Sans Mono Bold Italic '"$(($font/2+$font))"'
         #
         # Назначить цвета.
         colors {
@@ -956,9 +962,9 @@ echo 'polkit.addRule(function(action, subject) {
 #
 #Создание директории и конфига qt5ct.
 echo -e "\033[31mСоздание конфига qt5ct.\033[32m"
-if [ "$font" = "6" ]; then fontqt="(\0\0\0@\0\0\0\x1c\0N\0o\0t\0o\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@\x18\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)"
-elif [ "$font" = "8" ]; then fontqt="(\0\0\0@\0\0\0\x1c\0N\0o\0t\0o\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@ \0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)"
-elif [ "$font" = "10" ]; then fontqt="(\0\0\0@\0\0\0\x1c\0N\0o\0t\0o\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@$\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)"
+if [ "$font" = "8" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@ \0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0K\x11)"
+elif [ "$font" = "10" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@$\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x11)"
+elif [ "$font" = "12" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@(\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x11)"
 fi
 mkdir -p /mnt/home/"$username"/.config/qt5ct
 echo '[Appearance]
@@ -1002,7 +1008,7 @@ gtk-decoration-layout=icon:minimize,maximize,close
 gtk-enable-animations=false
 gtk-enable-event-sounds=1
 gtk-enable-input-feedback-sounds=1
-gtk-font-name=Noto Sans Mono '"$font"'
+gtk-font-name=Fantasque Sans Mono Italic '"$font"'
 gtk-icon-theme-name=Papirus-Dark
 gtk-menu-images=1
 gtk-modules=colorreload-gtk-module:window-decorations-gtk-module
@@ -1365,11 +1371,11 @@ TerminalApplication=xterm
 TerminalService=xterm.desktop
 XftHintStyle=hintslight
 XftSubPixel=rgb
-fixed=Noto Sans Mono,'"$font"',-1,5,50,0,0,0,0,0
-font=Noto Sans Mono,'"$font"',-1,5,50,0,0,0,0,0
-menuFont=Noto Sans Mono,'"$font"',-1,5,50,0,0,0,0,0
-smallestReadableFont=Noto Sans Mono,'"$font"',-1,5,50,0,0,0,0,0
-toolBarFont=Noto Sans Mono,'"$font"',-1,5,50,0,0,0,0,0
+fixed=Fantasque Sans Mono Italic,'"$font"',-1,5,50,0,0,0,0,0
+font=Fantasque Sans Mono Italic,'"$font"',-1,5,50,0,0,0,0,0
+menuFont=Fantasque Sans Mono Italic,'"$font"',-1,5,50,0,0,0,0,0
+smallestReadableFont=Fantasque Sans Mono Italic,'"$font"',-1,5,50,0,0,0,0,0
+toolBarFont=Fantasque Sans Mono Italic,'"$font"',-1,5,50,0,0,0,0,0
 [Icons]
 Theme=Papirus-Dark
 [KDE]
@@ -1404,19 +1410,11 @@ MaximumRemoteSize=5242880
 [WM]
 activeBackground=49,54,59
 activeBlend=252,252,252
-activeFont=Noto Sans Mono,'"$font"',-1,5,50,0,0,0,0,0
+activeFont=Fantasque Sans Mono Italic,'"$font"',-1,5,50,0,0,0,0,0
 activeForeground=252,252,252
 inactiveBackground=42,46,50
 inactiveBlend=161,169,177
 inactiveForeground=161,169,177' > /mnt/home/"$username"/.config/kdeglobals
-#
-#Установка атмосферных шрифтов.
-echo -e "\033[31mУстановка атмосферных шрифтов.\033[32m"
-arch-chroot /mnt  sh -c "cd /usr/share/fonts/
-curl -L https://github.com/stardestart/arch/raw/main/font/Snowstorm.zip > Snowstorm.zip
-curl -L https://github.com/stardestart/arch/raw/main/font/30144_PostIndex.ttf > 30144_PostIndex.ttf
-unzip -o *.zip
-rm *.zip *.txt"
 #
 #Передача интернет настроек в установленную систему.
 echo -e "\033[31mПередача интернет настроек в установленную систему.\033[32m"
