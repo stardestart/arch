@@ -51,7 +51,7 @@ elif [ "${#massdisks[*]}" = 0 ];
             do
                 grepmassdisks+="${massdisks[$j]}|"
             done
-        lsscsi -s | grep --color -iE "$grepmassdisks"
+        lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisks"
         echo -e "\033[36m"
         read -p ">" sysdisk
         massdisks=( ${massdisks[@]/$sysdisk} )
@@ -127,14 +127,14 @@ done
 #Вычисление swap.
 echo -e "\033[31mВычисление swap.\033[32m"
 ram="$(free -g | grep -i mem | awk '{print $2}')"
-if [ "128" -le "$ram" ]; then swap="+11g"
-elif [ "64" -le "$ram" ]; then swap="+8g"
-elif [ "32" -le "$ram" ]; then swap="+6g"
-elif [ "24" -le "$ram" ]; then swap="+5g"
-elif [ "16" -le "$ram" ]; then swap="+4g"
-elif [ "12" -le "$ram" ]; then swap="+3g"
-elif [ "6" -le "$ram" ]; then swap="+2g"
-elif [ "2" -le "$ram" ]; then swap="+1g"
+if [ "$ram" -ge 128 ]; then swap="11"
+elif [ "$ram" -ge 64 ]; then swap="8"
+elif [ "$ram" -ge 32 ]; then swap="6"
+elif [ "$ram" -ge 24 ]; then swap="5"
+elif [ "$ram" -ge 16 ]; then swap="4"
+elif [ "$ram" -ge 12 ]; then swap="3"
+elif [ "$ram" -ge 6 ]; then swap="2"
+elif [ "$ram" -ge 2 ]; then swap="1"
 fi
 #
 #Разметка системного диска.
