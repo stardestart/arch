@@ -104,18 +104,18 @@ do
     case "$resolution" in
         "~480p.")
             font=8
-            gap=48
+            gap=40
             xterm="700 350"
             break
             ;;
         "~720p-1080p.")
-            font=9
-            gap=54
+            font=10
+            gap=50
             xterm="1000 500"
             break
             ;;
         "~4K.")
-            font=10
+            font=12
             gap=60
             xterm="2000 1000"
             break
