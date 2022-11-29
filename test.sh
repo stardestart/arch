@@ -127,14 +127,14 @@ done
 #Вычисление swap.
 echo -e "\033[31mВычисление swap.\033[32m"
 ram="$(free -g | grep -i mem | awk '{print $2}')"
-if [ "$ram" -ge 128 ]; then swap=11
-elif [ "$ram" -ge 64 ]; then swap=8
-elif [ "$ram" -ge 32 ]; then swap=6
-elif [ "$ram" -ge 24 ]; then swap=5
-elif [ "$ram" -ge 16 ]; then swap=4
-elif [ "$ram" -ge 12 ]; then swap=3
-elif [ "$ram" -ge 6 ]; then swap=2
-else swap=1
+if [ "$ram" -ge 128 ]; then swap="+11g"
+elif [ "$ram" -ge 64 ]; then swap="+8g"
+elif [ "$ram" -ge 32 ]; then swap="+6g"
+elif [ "$ram" -ge 24 ]; then swap="+5g"
+elif [ "$ram" -ge 16 ]; then swap="+4g"
+elif [ "$ram" -ge 12 ]; then swap="+3g"
+elif [ "$ram" -ge 6 ]; then swap="+2g"
+else swap="+1g"
 fi
 #
 #Разметка системного диска.
