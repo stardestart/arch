@@ -51,18 +51,18 @@ elif [ "${#massdisks[*]}" = 0 ];
             do
                 grepmassdisks+="${massdisks[$j]}|"
             done
-        lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisks"
+        lsscsi -s | grep --color -iE "$grepmassdisks"
         echo -e "\033[36m"
         read -p ">" sysdisk
         massdisks=( ${massdisks[@]/$sysdisk} )
         for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
             do
-            if [ -z "$(fdisk -l /dev/"${massdisks[$j]}" | awk '/^\/dev\//' | awk '{print $1}' | cut -b6-15)" ];
-            then
-            massparts+=("${massdisks[$j]}")
-            else
-                massparts+=($(fdisk -l /dev/"${massdisks[$j]}" | awk '/^\/dev\//' | awk '{print $1}' | cut -b6-15))
-            fi
+                if [ -z "$(fdisk -l /dev/"${massdisks[$j]}" | awk '/^\/dev\//' | awk '{print $1}' | cut -b6-15)" ];
+                    then
+                        massparts+=("${massdisks[$j]}")
+                    else
+                        massparts+=($(fdisk -l /dev/"${massdisks[$j]}" | awk '/^\/dev\//' | awk '{print $1}' | cut -b6-15))
+                fi
             done
 fi
 echo -e "\033[31mФизический диск на который будет установлена ОС:"$sysdisk"\033[32m"
@@ -124,6 +124,19 @@ do
     esac
 done
 #
+#Вычисление swap.
+echo -e "\033[31mВычисление swap.\033[32m"
+ram="$(free -g | grep -i mem | awk '{print $2}')"
+if [ "128" -le "$ram" ]; then swap="+11g"
+elif [ "64" -le "$ram" ]; then swap="+8g"
+elif [ "32" -le "$ram" ]; then swap="+6g"
+elif [ "24" -le "$ram" ]; then swap="+5g"
+elif [ "16" -le "$ram" ]; then swap="+4g"
+elif [ "12" -le "$ram" ]; then swap="+3g"
+elif [ "6" -le "$ram" ]; then swap="+2g"
+elif [ "2" -le "$ram" ]; then swap="+1g"
+fi
+#
 #Разметка системного диска.
 echo -e "\033[31mРазметка системного диска.\033[32m"
 if [ -z "$(efibootmgr | grep Boot)" ];
@@ -145,7 +158,7 @@ t
 n
 3
 
-+1g
+$swap
 n
 4
 
@@ -175,7 +188,7 @@ t
 n
 2
 
-+1g
+$swap
 n
 3
 
@@ -296,13 +309,13 @@ for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
                 arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/"${massparts[$j]}"
 masslabel+='
 ${color #f92b2b}/home/'"$username"'/'"${massparts[$j]}"'${hr 3}
-${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"${massparts[$j]}"'} / ${fs_used /home/'"$username"'/'"${massparts[$j]}"'} / $color${fs_free /home/'"$username"'/'"${massparts[$j]}"'}
+${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"${massparts[$j]}"'} / ${color #f92b2b}${fs_used /home/'"$username"'/'"${massparts[$j]}"'} / $color${fs_free /home/'"$username"'/'"${massparts[$j]}"'}
 (${fs_type /home/'"$username"'/'"${massparts[$j]}"'})${fs_bar 4 /home/'"$username"'/'"${massparts[$j]}"'}'
             else
                 arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
 masslabel+='
 ${color #f92b2b}/home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'${hr 3}
-${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${fs_used /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / $color${fs_free /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}
+${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${color #f92b2b}${fs_used /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / $color${fs_free /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}
 (${fs_type /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'})${fs_bar 4 /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}'
         fi
     done
@@ -368,7 +381,7 @@ for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
 #Параметры для видеокарт nvidia.
 if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
     nvidiac='
-${color #f92b2b}GPU${hr 3}$color
+${color #f92b2b}GPU${hr 3}
 ${color #b2b2b2}Частота ГП:$color$alignr${nvidia gpufreq} Mhz
 ${color #b2b2b2}Видео ОЗУ:$color$alignr${nvidia mem} / ${nvidia memmax} MiB
 ${color #b2b2b2}Температура ГП:$color$alignr${nvidia temp} °C'
@@ -387,7 +400,7 @@ default_outline_color = "#2bf92b", --Цвет рамки по умолчанию
 double_buffer = true, --Включение двойной буферизации.
 draw_shades = false, --Оттенки.
 draw_borders = true, --Включение границ.
-font = "Fantasque Sans Mono:italic:size='"$font"'", --Шрифт и размер шрифта.
+font = "Fantasque Sans Mono:size='"$font"'", --Шрифт и размер шрифта.
 gap_y = '"$(($gap/2+$gap))"', --Отступ сверху.
 gap_x = 40, --Отступ от края.
 own_window = true, --Собственное окно.
@@ -402,7 +415,7 @@ conky.text = [[ #Наполнение виджета.
 #Часы.
 ${font Fantasque Sans Mono:italic:size='"$(($font*4))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
 #Дата.
-${font Fantasque Sans Mono:italic:size='"$font"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
+${font Fantasque Sans Mono:italic:size='"$(($font*2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
 #Блок "Система".
 #Разделитель.
 ${color #f92b2b}SYS${hr 3}$color
@@ -424,7 +437,7 @@ ${color #b2b2b2}Температура ядер ЦП:
 #Разделитель.
 ${color #f92b2b}RAM${hr 3}$color
 #ОЗУ.
-${color #b2b2b2}ОЗУ:$color$alignr$mem / $memeasyfree / $memmax
+${color #b2b2b2}ОЗУ:$alignr$memmax / ${color #f92b2b}$mem / $color$memeasyfree
 #Полоса загрузки ОЗУ.
 $memperc%${membar 4}
 #Блок "Подкачка".
@@ -462,7 +475,7 @@ ${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}
 #Разделитель.
 ${color #f92b2b}/home${hr 3}$color
 #Общее/Занято/Свободно.
-${color #b2b2b2}Объём:$alignr${fs_size /home} / ${fs_used /home} / $color${fs_free /home}
+${color #b2b2b2}Объём:$alignr${fs_size /home} / ${color #f92b2b}${fs_used /home} / $color${fs_free /home}
 #Полоса загрузки.
 $color(${fs_type /home})${fs_bar 4 /home}
 #Блок "Диски".'"${masslabel[@]}"'
@@ -504,16 +517,20 @@ alias gcc="grc --colour=on gcc" #Раскрашиваем gcc.
 alias mount="grc --colour=on mount" #Раскрашиваем mount.
 alias ps="grc --colour=on ps" #Раскрашиваем ps.
 #Изменяем вид приглашения командной строки.
-PS1="\[\033[43m\]\[\033[2;34m\]\A\[\033[0m\]\[\033[44m\]\[\033[3;33m\]\u@\h \W/\[\033[0m\]\[\033[5;91m\]\$: \[\033[0m\]"
-#\[\033[43m\] - тёмно-жёлтый цвет фона.
-#\[\033[2;34m\] - 2 - более темный цвет, 34 - тёмно-синий цвет.
+PS1="\[\033[43m\]\[\033[2;34m\]\A\[\033[0m\]\[\033[44m\]\[\033[3;33m\] \u@\h \[\033[0m\]\[\033[2;41m\]\[\033[30m\] \W/ \[\033[0m\]\[\033[5;31m\] \$:\[\033[0m\]"
+#\[\033[43m\] - Жёлтый цвет фона.
+#\[\033[2;34m\] - 2 - Более темный цвет, 34 - Синий цвет.
 #\A Текущее время в 24-часовом формате.
 #\[\033[0m\] - Конец изменениям.
-#\[\033[44m\] - тёмно-синий цвет фона.
-#\[\033[3;33m\] - 3 - курсив, 33 - тёмно-жёлтый цвет.
-#\u@\h \W ИмяПользователя@ИмяХоста ТекущийОтносительныйПуть.
+#\[\033[44m\] - Синий цвет фона.
+#\[\033[3;33m\] - 3 - Курсив, 33 - Жёлтый цвет.
+#\u@\h ИмяПользователя@ИмяХоста
 #\[\033[0m\] - Конец изменениям.
-#\[\033[5;91m\] - 5 - моргание, 91 - красный цвет.
+#\[\033[2;41m\] - 2 - Более темный цвет, 41 - Красный цвет фона.
+#\[\033[30m\]  - Черный цвет.
+#\W  ТекущийОтносительныйПуть.
+#\[\033[0m\] - Конец изменениям.
+#\[\033[5;31m\] - 5 - моргание, 91 - красный цвет.
 #\$: Символ приглашения (# для root, $ для обычных пользователей).
 #\[\033[0m\] - Конец изменениям.
 #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
