@@ -64,7 +64,7 @@ echo -e "\033[31mЧасовой пояс:"$(curl https://ipapi.co/timezone)"\033
 #
 #Определяем физический диск на который будет установлена ОС.
 echo -e "\033[31mОпределяем физический диск на который будет установлена ОС.\033[32m"
-massdisks=($(lsblk -fno +TRAN -o +TYPE | grep -ivE "├─|└─|rom|usb|/|SWAP|part" | awk '{print $1}'))
+massdisks=($(lsblk -fno +TRAN,TYPE | grep -ivE "├─|└─|rom|usb|/|SWAP|part" | awk '{print $1}'))
 if [ "${#massdisks[*]}" = 1 ]; then sysdisk="${massdisks[0]}"
 elif [ "${#massdisks[*]}" = 0 ];
     then
