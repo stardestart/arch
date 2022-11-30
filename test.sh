@@ -104,19 +104,16 @@ do
     case "$resolution" in
         "~480p.")
             font=8
-            gap=40
             xterm="700 350"
             break
             ;;
         "~720p-1080p.")
             font=10
-            gap=50
             xterm="1000 500"
             break
             ;;
         "~4K.")
             font=12
-            gap=60
             xterm="2000 1000"
             break
             ;;
@@ -134,7 +131,7 @@ elif [ "$ram" -ge 24 ]; then swap="+5g"
 elif [ "$ram" -ge 16 ]; then swap="+4g"
 elif [ "$ram" -ge 12 ]; then swap="+3g"
 elif [ "$ram" -ge 6 ]; then swap="+2g"
-else swap="+1g"
+elif [ "$ram" -lt 6 ]; then swap="+1g"
 fi
 #
 #Разметка системного диска.
@@ -297,7 +294,7 @@ fi
 #
 #Установка программ.
 echo -e "\033[31mУстановка программ.\033[32m"
-arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar --noconfirm
+arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol variety freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Поиск не смонтированных разделов.
@@ -401,7 +398,7 @@ double_buffer = true, --Включение двойной буферизации
 draw_shades = false, --Оттенки.
 draw_borders = true, --Включение границ.
 font = "Fantasque Sans Mono:size='"$font"'", --Шрифт и размер шрифта.
-gap_y = '"$(($gap/2+$gap))"', --Отступ сверху.
+gap_y = '"$(($font*7))"', --Отступ сверху.
 gap_x = 40, --Отступ от края.
 own_window = true, --Собственное окно.
 own_window_class = "Conky", --Класс окна.
@@ -539,8 +536,7 @@ export COLORTERM=truecolor #Включаем все 16 миллионов цве
 #
 #Создание profile.
 echo -e "\033[31mСоздание profile.\033[32m"
-echo 'setleds -D +num #Включенный по умолчанию NumLock.
-[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
+echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
 export QT_QPA_PLATFORMTHEME="qt5ct" #Изменение внешнего вида приложений использующих qt.' > /mnt/home/"$username"/.profile
 #
 #Создание конфига сервера уведомлений.
@@ -820,9 +816,6 @@ exec --no-startup-id flameshot
 # Автозапуск copyq.
 exec --no-startup-id copyq
 #
-# Автозапуск obs.
-exec --no-startup-id obs
-#
 # Автозапуск tint2.
 exec --no-startup-id tint2
 #
@@ -832,12 +825,6 @@ exec --no-startup-id picom -b
 # Автозапуск conky.
 exec --no-startup-id conky
 #
-# Автозапуск numlockx.
-exec --no-startup-id numlockx
-#
-# Автозапуск transmission.
-exec --no-startup-id transmission-qt -m
-#
 # Приветствие в течении 10 сек.
 exec --no-startup-id notify-send -t 10000 "✊Доброго времени суток✊"
 #
@@ -846,9 +833,6 @@ exec --no-startup-id xscreensaver --no-splash
 #
 # Автозапуск dolphin.
 exec --no-startup-id dolphin --daemon
-#
-# Автозапуск steam, через gamemod "exec --no-startup-id gamemoderun steam -silent %U".
-exec --no-startup-id steam -silent %U
 #
 # Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u
@@ -1111,7 +1095,7 @@ border_color_pressed = #000000 100
 #-------------------------------------
 # Panel
 panel_items = L
-panel_size = 100% '"$gap"'
+panel_size = 100% '"$(($font*5))"'
 panel_margin = 0 0
 panel_padding = 2 0 2
 panel_background_id = 1
@@ -1190,7 +1174,7 @@ systray_name_filter =
 launcher_padding = 2 4 2
 launcher_background_id = 0
 launcher_icon_background_id = 0
-launcher_icon_size = '"$gap"'
+launcher_icon_size = '"$(($font*5))"'
 launcher_icon_asb = 100 0 0
 launcher_icon_theme = Papirus-Dark
 launcher_icon_theme_override = 0
@@ -1451,7 +1435,7 @@ arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Передача прав созданному пользователю.
 echo -e "\033[31mПередача прав созданному пользователю.\033[32m"
-arch-chroot /mnt chown -R "$username":users /home/"$username"/
+arch-chroot /mnt chown -R "$username" /home/"$username"/
 #
 #Установка помощника yay для работы с AUR.
 echo -e "\033[31mУстановка помощника yay для работы с AUR.\033[32m"
