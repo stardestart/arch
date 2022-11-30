@@ -8,6 +8,31 @@ setfont ter-v18n
 echo -e "\033[31mСброс переменных и размонтирование разделов, на случай повторного запуска скрипта.\033[32m"
 swapoff -a
 umount -R /mnt
+microcode=""
+namewifi=""
+passwifi=""
+netdev=""
+massdisks=()
+sysdisk=""
+grepmassdisks=()
+massparts=()
+masslabel=()
+p1=""
+p2=""
+p3=""
+p4=""
+hostname=""
+username=""
+passuser=""
+passroot=""
+font=0
+xterm=""
+ram=0
+swap=0
+core=""
+coremassconf=()
+nvidiac=""
+fontqt=""
 #
 #Определяем процессор.
 echo -e "\033[31mОпределяем процессор.\033[32m"
@@ -371,7 +396,7 @@ echo -e "\033[31mФормируется конфиг conky.\033[32m"
 core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
     do
-        coreconf+="
+        coremassconf+="
 \$alignr\${execi 10 sensors | grep \"Core $i:\" | awk '{print \$1, \$2, \$3}' }"
     done
 #
@@ -428,7 +453,7 @@ ${color #b2b2b2}Нагрузка ЦП:$color$alignr$cpu %
 #Частота ЦП.
 ${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz
 ${color #b2b2b2}Температура ядер ЦП:
-#Температура ядер ЦП. '"${coreconf[@]}"'
+#Температура ядер ЦП. '"${coremassconf[@]}"'
 #Блок "Видеокарта Nvidia". '"$nvidiac"'
 #Блок "ОЗУ".
 #Разделитель.
