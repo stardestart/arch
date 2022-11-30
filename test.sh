@@ -1,5 +1,6 @@
 #!/bin/bash
 #
+sh -c "$(
 #Установим язык и шрифт консоли.
 loadkeys ru
 setfont ter-v18n
@@ -218,7 +219,7 @@ echo -e "\033[32m"
 arch-chroot /mnt hwclock --systohc
 #
 #Настройка локали.
-echo -e "\033[31mНастройка локали.\033[32m" &>> /etc/error_install.txt
+echo -e "\033[31mНастройка локали.\033[32m"
 arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
 arch-chroot /mnt sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
 echo -e "LANG=\"ru_RU.UTF-8\"" > /mnt/etc/locale.conf
@@ -1469,3 +1470,4 @@ arch-chroot /mnt/ sudo -u "$username" yay -S transset-df volctl --noconfirm
 echo -e "\033[31mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[32m"
 #fdisk -l
 lsblk -l
+)" &>> /etc/error_install.txt
