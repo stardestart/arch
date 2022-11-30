@@ -218,7 +218,7 @@ echo -e "\033[32m"
 arch-chroot /mnt hwclock --systohc
 #
 #Настройка локали.
-echo -e "\033[31mНастройка локали.\033[32m"
+echo -e "\033[31mНастройка локали.\033[32m" &>> /etc/error_install.txt
 arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
 arch-chroot /mnt sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
 echo -e "LANG=\"ru_RU.UTF-8\"" > /mnt/etc/locale.conf
