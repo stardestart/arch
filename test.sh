@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-sh -c "$(
+sh -c ""$(
 #Установим язык и шрифт консоли.
 loadkeys ru
 setfont ter-v18n
@@ -1470,4 +1470,4 @@ arch-chroot /mnt/ sudo -u "$username" yay -S transset-df volctl --noconfirm
 echo -e "\033[31mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[32m"
 #fdisk -l
 lsblk -l
-)" &>> /etc/error_install.txt
+)"" &>> /etc/error_install.txt
