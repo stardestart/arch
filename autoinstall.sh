@@ -1,97 +1,148 @@
 #!/bin/bash
+#
+#Установим язык и шрифт консоли.
 loadkeys ru
 setfont ter-v18n
-if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then gpu=amd
-elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then gpu=nvidia
-fi
-if [ -n "$(lscpu | grep -i amd)" ]; then microcode="initrd /amd-ucode.img"
-elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="initrd /intel-ucode.img"
-fi
-if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | xargs)" ];
-then
-echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m";read -p ">" namewifi
-netdev="$(iwctl device list | awk '{print $2}' | grep wl | xargs)"
-fi
-if [ -z "$namewifi" ];
-then
-netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
-else
-echo -e "\033[41m\033[30mПароль wifi:\033[0m";read -p ">" passwifi
-iwctl --passphrase $passwifi station $netdev connect $namewifi
-fi
-timezone="$(curl https://ipapi.co/timezone)"
-timedatectl set-timezone $timezone
-massdisk=($(lsscsi -t | grep -viE "rom|usb" | awk '{print $NF}' | cut -b6-20))
-if [ ${#massdisk[*]} = 1 ];
-then
-sysdisk="${massdisk[0]}"
-elif [ ${#massdisk[*]} = 0 ];
-then
-echo -e "\033[41m\033[30mДоступных дисков не обнаружено\033[0m"
-exit 0
-else
-echo -e "\033[41m\033[30mВведите метку диска (выделено красным) на который будет установлена ОС:\033[0m"
-for (( j=0, i=1; i<="${#massdisk[*]}"; i++, j++ ))
-do
-grepmassdisk+="${massdisk[$j]}|"
-done
-lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisk"
-read -p ">" sysdisk
-fi
-nvmep="$(echo "$sysdisk" | grep -i "nvme")"
-if [ -z "$nvmep" ];
-then
-p1="1"
-p2="2"
-p3="3"
-p4="4"
-else
-p1="p1"
-p2="p2"
-p3="p3"
-p4="p4"
-fi
-echo "
-"
-echo -e "\033[41m\033[30mВведите имя компьютера:\033[0m";read -p ">" hostname
-echo "
-"
-echo -e "\033[41m\033[30mВведите имя пользователя:\033[0m";read -p ">" username
-echo "
-"
-echo -e "\033[41m\033[30mВведите пароль для $username:\033[0m";read -p ">" passuser
-echo "
-"
-echo -e "\033[41m\033[30mВведите пароль для root:\033[0m";read -p ">" passroot
-PS3="$(echo -e "\033[41m\033[30mВыберете разрешение монитора:\033[0m
->")"
-select resolution in "~480p" "~720p-1080p" "~4K"
-do
-    case $resolution in
-        "~480p")
-            font=6
-            gap=40
-            break
-            ;;
-        "~720p-1080p")
-            font=8
-            gap=50
-            break
-            ;;
-        "~4K")
-            font=10
-            gap=60
-            break
-            ;;
-        *) echo -e "\033[31mЧто значит - $REPLY? До трёх посчитать не можешь и Arch Linux ставишь?\033[0m";;
-    esac
-done
+#
+#Сброс переменных и размонтирование разделов, на случай повторного запуска скрипта.
+echo -e "\033[31mСброс переменных и размонтирование разделов, на случай повторного запуска скрипта.\033[32m"
 swapoff -a
 umount -R /mnt
-boot="$(efibootmgr | grep Boot)"
-if [ -z "$boot" ];
-then
-fdisk /dev/$sysdisk<<EOF
+#
+#Определяем процессор.
+echo -e "\033[31mОпределяем процессор.\033[32m"
+if [ -n "$(lscpu | grep -i amd)" ]; then microcode="\ninitrd /amd-ucode.img"
+elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="\ninitrd /intel-ucode.img"
+fi
+echo -e "Процессор:"$(lscpu | grep -i "model name")""
+#
+#Определяем сетевое устройство.
+echo -e "\033[31mОпределяем сетевое устройство.\033[32m"
+if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
+    then
+        echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m\033[36m";read -p ">" namewifi
+        netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
+fi
+if [ -z "$namewifi" ];
+    then
+        netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
+    else
+        echo -e "\033[41m\033[30mПароль wifi:\033[0m\033[36m";read -p ">" passwifi
+        iwctl --passphrase "$passwifi" station "$netdev" connect "$namewifi"
+fi
+echo -e "\033[31mСетевое устройство:"$netdev"\033[32m"
+#
+#Определяем часовой пояс.
+echo -e "\033[31mОпределяем часовой пояс.\033[32m"
+timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
+echo -e "\033[31mЧасовой пояс:"$(curl https://ipapi.co/timezone)"\033[32m"
+#
+#Определяем физический диск на который будет установлена ОС.
+echo -e "\033[31mОпределяем физический диск на который будет установлена ОС.\033[32m"
+massdisks=($(lsblk -fno +TRAN -o +TYPE | grep -ivE "├─|└─|rom|usb|/|SWAP|part" | awk '{print $1}'))
+if [ "${#massdisks[*]}" = 1 ]; then sysdisk="${massdisks[0]}"
+elif [ "${#massdisks[*]}" = 0 ];
+    then
+        echo -e "\033[41m\033[30mДоступных дисков не обнаружено!\033[32m"
+        exit 0
+    else
+        echo -e "\033[41m\033[30mВведите метку диска (выделено красным) на который будет установлена ОС:\033[0m"
+        for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
+            do
+                grepmassdisks+="${massdisks[$j]}|"
+            done
+        lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisks"
+        echo -e "\033[36m"
+        read -p ">" sysdisk
+        massdisks=( ${massdisks[@]/$sysdisk} )
+        for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
+            do
+                if [ -z "$(fdisk -l /dev/"${massdisks[$j]}" | awk '/^\/dev\//' | awk '{print $1}' | cut -b6-15)" ];
+                    then
+                        massparts+=("${massdisks[$j]}")
+                    else
+                        massparts+=($(fdisk -l /dev/"${massdisks[$j]}" | awk '/^\/dev\//' | awk '{print $1}' | cut -b6-15))
+                fi
+            done
+fi
+echo -e "\033[31mФизический диск на который будет установлена ОС:"$sysdisk"\033[32m"
+#
+#Определяем есть ли nvme контролер системного диска.
+echo -e "\033[31mОпределяем есть ли nvme контролер системного диска.\033[32m"
+if [ -z "$(echo "$sysdisk" | grep -i "nvme")" ];
+    then
+        p1="1"
+        p2="2"
+        p3="3"
+        p4="4"
+    else
+        p1="p1"
+        p2="p2"
+        p3="p3"
+        p4="p4"
+fi
+#
+#Сбор данных пользователя.
+echo -e "\033[31mСбор данных пользователя.\033[32m"
+echo "
+"
+echo -e "\033[41m\033[30mВведите имя компьютера:\033[0m\033[36m";read -p ">" hostname
+echo "
+"
+echo -e "\033[41m\033[30mВведите имя пользователя:\033[0m\033[36m";read -p ">" username
+echo "
+"
+echo -e "\033[41m\033[30mВведите пароль для "$username":\033[0m\033[36m";read -p ">" passuser
+echo "
+"
+echo -e "\033[41m\033[30mВведите пароль для root:\033[0m\033[36m";read -p ">" passroot
+echo -e "\033[31mВыберите разрешение монитора:\033[32m"
+PS3="$(echo -e "\033[41m\033[30mПункт №:\033[0m\033[36m
+>")"
+select resolution in "~480p." "~720p-1080p." "~4K."
+do
+    case "$resolution" in
+        "~480p.")
+            font=8
+            gap=40
+            xterm="700 350"
+            break
+            ;;
+        "~720p-1080p.")
+            font=10
+            gap=50
+            xterm="1000 500"
+            break
+            ;;
+        "~4K.")
+            font=12
+            gap=60
+            xterm="2000 1000"
+            break
+            ;;
+        *) echo -e "\033[31mЧто значит - "$REPLY"? До трёх посчитать не можешь и Arch Linux ставишь?\033[36m";;
+    esac
+done
+#
+#Вычисление swap.
+echo -e "\033[31mВычисление swap.\033[32m"
+ram="$(free -g | grep -i mem | awk '{print $2}')"
+if [ "$ram" -ge 128 ]; then swap="+11g"
+elif [ "$ram" -ge 64 ]; then swap="+8g"
+elif [ "$ram" -ge 32 ]; then swap="+6g"
+elif [ "$ram" -ge 24 ]; then swap="+5g"
+elif [ "$ram" -ge 16 ]; then swap="+4g"
+elif [ "$ram" -ge 12 ]; then swap="+3g"
+elif [ "$ram" -ge 6 ]; then swap="+2g"
+else swap="+1g"
+fi
+#
+#Разметка системного диска.
+echo -e "\033[31mРазметка системного диска.\033[32m"
+if [ -z "$(efibootmgr | grep Boot)" ];
+    then
+        echo -e "\033[31mLegacy boot.\033[32m"
+fdisk /dev/"$sysdisk"<<EOF
 g
 n
 1
@@ -107,25 +158,26 @@ t
 n
 3
 
-+1g
+$swap
 n
 4
 
 
 w
 EOF
-mkfs.ext2 /dev/${sysdisk}$p1 -L boot<<EOF
+mkfs.ext2 /dev/"$sysdisk""$p1" -L boot<<EOF
 y
 EOF
-mkswap /dev/${sysdisk}$p3 -L swap
-mkfs.ext4 /dev/${sysdisk}$p4 -L root<<EOF
+mkswap /dev/"$sysdisk""$p3" -L swap
+mkfs.ext4 /dev/"$sysdisk""$p4" -L root<<EOF
 y
 EOF
-mount /dev/${sysdisk}$p4 /mnt
-mount --mkdir /dev/${sysdisk}$p1 /mnt/boot
-swapon /dev/${sysdisk}$p3
-else
-fdisk /dev/$sysdisk<<EOF
+mount /dev/"$sysdisk""$p4" /mnt
+mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
+swapon /dev/"$sysdisk""$p3"
+    else
+        echo -e "\033[31mUEFI boot.\033[32m"
+fdisk /dev/"$sysdisk"<<EOF
 g
 n
 1
@@ -136,92 +188,144 @@ t
 n
 2
 
-+1g
+$swap
 n
 3
 
 
 w
 EOF
-mkfs.fat -F32 /dev/${sysdisk}$p1 -n boot<<EOF
+mkfs.fat -F32 /dev/"$sysdisk""$p1" -n boot<<EOF
 y
 EOF
-mkswap /dev/${sysdisk}$p2 -L swap
-mkfs.ext4 /dev/${sysdisk}$p3 -L root<<EOF
+mkswap /dev/"$sysdisk""$p2" -L swap
+mkfs.ext4 /dev/"$sysdisk""$p3" -L root<<EOF
 y
 EOF
-mount /dev/${sysdisk}$p3 /mnt
-mount --mkdir /dev/${sysdisk}$p1 /mnt/boot
-swapon /dev/${sysdisk}$p2
+mount /dev/"$sysdisk""$p3" /mnt
+mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
+swapon /dev/"$sysdisk""$p2"
 fi
+#
+#Установка ОС.
+echo -e "\033[31mУстановка ОС.\033[32m"
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
-net="$(ip -br link show | grep -v -i -E "unknown|down" | cut -b1-20)"
-arch-chroot /mnt ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
+#
+#Установка часового пояса.
+echo -e "\033[31mУстановка часового пояса.\033[32m"
+arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$(curl https://ipapi.co/timezone)" /etc/localtime
+echo -e "\033[32m"
 arch-chroot /mnt hwclock --systohc
+#
+#Настройка локали.
+echo -e "\033[31mНастройка локали.\033[32m"
 arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
 arch-chroot /mnt sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
-echo 'LANG="ru_RU.UTF-8"' > /mnt/etc/locale.conf
-echo "KEYMAP=ru
-FONT=ter-v18n
-USECOLOR=yes" > /mnt/etc/vconsole.conf
+echo -e "LANG=\"ru_RU.UTF-8\"" > /mnt/etc/locale.conf
+echo -e "KEYMAP=ru\nFONT=ter-v18n\nUSECOLOR=yes" > /mnt/etc/vconsole.conf
+echo -e "\033[32m"
 arch-chroot /mnt locale-gen
-echo $hostname > /mnt/etc/hostname
-echo "127.0.0.1 localhost
-::1 localhost
-127.0.1.1 $hostname.localdomain $hostname" > /mnt/etc/hosts
+#
+#Имя ПК.
+echo "$hostname" > /mnt/etc/hostname
+echo -e "127.0.0.1 localhost\n::1 localhost\n127.0.1.1 "$hostname".localdomain "$hostname"" > /mnt/etc/hosts
+#
+#ROOT пароль.
+echo -e "\033[32m"
 arch-chroot /mnt passwd<<EOF
 $passroot
 $passroot
 EOF
-arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $username
-arch-chroot /mnt passwd $username<<EOF
+#
+#Создание пользователя.
+echo -e "\033[31mСоздание пользователя.\033[32m"
+arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "$username"
+#
+#Пароль пользователя.
+echo -e "\033[32m"
+arch-chroot /mnt passwd "$username"<<EOF
 $passuser
 $passuser
 EOF
-echo "$username ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
-boot="$(efibootmgr | grep Boot)"
-if [ -z "$boot" ];
-then
-arch-chroot /mnt pacman -S grub --noconfirm
-arch-chroot /mnt grub-install /dev/$sysdisk
-arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
-else
-arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
-arch-chroot /mnt bootctl install
-echo 'default arch
-timeout 2
-editor 0' > /mnt/boot/loader/loader.conf
-echo "title  Arch Linux Virtual
-linux  /vmlinuz-linux-zen
-$microcode
-initrd  /initramfs-linux-zen.img
-options root=/dev/${sysdisk}$p3 rw" > /mnt/boot/loader/entries/arch.conf
+#
+#Убираем sudo пароль для пользователя.
+echo ""$username" ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
+#
+#Установим загрузчик.
+echo -e "\033[31mУстановка загрузчика.\033[32m"
+if [ -z "$(efibootmgr | grep Boot)" ];
+    then
+        arch-chroot /mnt pacman -Sy grub --noconfirm
+        arch-chroot /mnt grub-install /dev/"$sysdisk"
+        arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+    else
+        arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
+        arch-chroot /mnt bootctl install
+        echo -e "default arch\ntimeout 2\neditor 0" > /mnt/boot/loader/loader.conf
+        echo -e "title  Arch Linux Virtual\nlinux  /vmlinuz-linux-zen"$microcode"\ninitrd  /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw" > /mnt/boot/loader/entries/arch.conf
 fi
-if [ "$microcode" == "initrd /amd-ucode.img" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm
-elif [ "$microcode" == "initrd /intel-ucode.img" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm
+#
+#Установим микроинструкции для процессора.
+echo -e "\033[31mУстановка микроинструкций для процессора.\033[32m"
+if [ "$microcode" = "\ninitrd /amd-ucode.img" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm
+elif [ "$microcode" = "\ninitrd /intel-ucode.img" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm
 fi
-arch-chroot /mnt sed -i 's/#Color/Color/' /etc/pacman.conf
-echo '[multilib]
-Include = /etc/pacman.d/mirrorlist' >> /mnt/etc/pacman.conf
-echo 'kernel.sysrq=1' > /mnt/etc/sysctl.d/99-sysctl.conf
+#
+#Настройка установщика.
+echo -e "\033[31mНастройка установщика.\033[32m"
+arch-chroot /mnt sed -i "s/#Color/Color/" /etc/pacman.conf
+echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
+#
+#Настройка sysrq.
+echo -e "\033[31mНастройка sysrq.\033[32m"
+echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
+#
+#Установим и настроим программу для фильтрования зеркал.
+echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал.\033[32m"
 arch-chroot /mnt pacman -Sy reflector --noconfirm
-if [ "$gpu" == "amd" ]; then arch-chroot /mnt pacman -Sy amdvlk
-elif [ "$gpu" == "nvidia" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda
+echo -e "--country "$(curl https://ipapi.co/country_name/)"" >> /mnt/etc/xdg/reflector/reflector.conf
+#
+#Установим видеодрайвер.
+echo -e "\033[31mУстановка видеодрайвера.\033[32m"
+if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then arch-chroot /mnt pacman -Sy vulkan-radeon xf86-video-amdgpu lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i ati)" ]; then arch-chroot /mnt pacman -Sy xf86-video-ati libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then arch-chroot /mnt pacman -Sy xf86-video-intel vulkan-intel --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then arch-chroot /mnt pacman -Sy virtualbox-guest-utils virtualbox-guest-iso virtualbox-guest-utils-nox --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mnt pacman -Sy virtualbox-guest-utils virtualbox-guest-iso virtualbox-guest-utils-nox --noconfirm
 fi
-arch-chroot /mnt sed -i 's/# --country France,Germany/--country Finland,Germany,Russia/' /etc/xdg/reflector/reflector.conf
+#
+#Установка программ.
+echo -e "\033[31mУстановка программ.\033[32m"
 arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra variety alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts audacity kdenlive cheese kate sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
-massdisks=($(lsblk -snAo +TRAN | grep -ivE "└─|$sysdisk|rom|usb|/|SWAP" | awk '{print $1}'))
-for (( j=0, i=1; i<=${#massdisks[*]}; i++, j++ ))
-do
-if [ -z $(lsblk -no LABEL /dev/${massdisks[$j]}) ];
-then
-arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/${massdisks[$j]}
-else
-arch-chroot /mnt mount --mkdir /dev/${massdisks[$j]} /home/$username/$(lsblk -no LABEL /dev/${massdisks[$j]})
-fi
-done
-genfstab -p -U /mnt >> /mnt/etc/fstab
+#
+#Поиск не смонтированных разделов.
+echo -e "\033[31mПоиск не смонтированных разделов.\033[32m"
+for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
+    do
+        if [ -z "$(lsblk -no LABEL /dev/"${massparts[$j]}")" ];
+            then
+                arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/"${massparts[$j]}"
+masslabel+='
+${color #f92b2b}/home/'"$username"'/'"${massparts[$j]}"'${hr 3}
+${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"${massparts[$j]}"'} / ${color #f92b2b}${fs_used /home/'"$username"'/'"${massparts[$j]}"'} / $color${fs_free /home/'"$username"'/'"${massparts[$j]}"'}
+(${fs_type /home/'"$username"'/'"${massparts[$j]}"'})${fs_bar 4 /home/'"$username"'/'"${massparts[$j]}"'}'
+            else
+                arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
+masslabel+='
+${color #f92b2b}/home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'${hr 3}
+${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${color #f92b2b}${fs_used /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / $color${fs_free /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}
+(${fs_type /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'})${fs_bar 4 /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}'
+        fi
+    done
+#
+#Копирование файла автоматического монтирования разделов.
+echo -e "\033[31mПеренос genfstab.\033[32m"
+genfstab -pU /mnt >> /mnt/etc/fstab
+#
+#Создание общего конфига загрузки оконного менеджера.
+echo -e "\033[31mСоздание xinit.\033[32m"
 echo '#Указание на конфигурационные файлы.
 userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
@@ -249,42 +353,46 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
 fi
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
 exec i3 #Автозапуск i3.' > /mnt/etc/X11/xinit/xinitrc
+#
+#Создание общего конфига клавиатуры.
+echo -e "\033[31mСоздание 00-keyboard.\033[32m"
 echo 'Section "InputClass"
 Identifier "system-keyboard"
 MatchIsKeyboard "on"
 Option "XkbLayout" "us,ru"
 Option "XkbOptions" "grp:alt_shift_toggle,terminate:ctrl_alt_bksp"
 EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
+#
+#Создание общего конфига сканера.
+echo -e "\033[31mСоздание sane.d.\033[32m"
 mkdir -p /mnt/etc/sane.d
-echo 'localhost
-192.168.0.0/24' >> /mnt/etc/sane.d/net.conf
+echo -e "localhost\n192.168.0.0/24" >> /mnt/etc/sane.d/net.conf
+#
+echo -e "\033[31mФормируется конфиг conky.\033[32m"
+#
+#Температура ядер процессора.
 core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
-j=(${#core[*]}-1)
-for (( i=0; i<=$j; i++ ))
-do
-coreconf+="
-"
-coreconf+='$alignr${execi 10 sensors | grep "Core '$i':" | cut -b1-22 } /'
-done
-if [ "$gpu" == "nvidia" ]; then
-nvidiac+="
-"
-nvidiac+='${color #f92b2b}GPU${hr 3}$color'
-nvidiac+="
-"
-nvidiac+='${color #b2b2b2}Частота ГП:$color$alignr${nvidia gpufreq} Mhz'
-nvidiac+="
-"
-nvidiac+='${color #b2b2b2}Видео ОЗУ:$color$alignr${nvidia mem} / ${nvidia memmax} MiB'
-nvidiac+="
-"
-nvidiac+='${color #b2b2b2}Температура ГП:$color$alignr${nvidia temp} °C'
+for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
+    do
+        coreconf+="
+\$alignr\${execi 10 sensors | grep \"Core $i:\" | awk '{print \$1, \$2, \$3}' }"
+    done
+#
+#Параметры для видеокарт nvidia.
+if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
+    nvidiac='
+${color #f92b2b}GPU${hr 3}
+${color #b2b2b2}Частота ГП:$color$alignr${nvidia gpufreq} Mhz
+${color #b2b2b2}Видео ОЗУ:$color$alignr${nvidia mem} / ${nvidia memmax} MiB
+${color #b2b2b2}Температура ГП:$color$alignr${nvidia temp} °C'
 fi
-mkdir -p /mnt/home/$username/.config/conky
+#
+#Создание директории и конфига.
+mkdir -p /mnt/home/"$username"/.config/conky
 echo 'conky.config = { --Внешний вид.
 alignment = "top_right", --Располжение виджета.
-border_inner_margin = '$font', --Отступ от внутренних границ.
-border_outer_margin = '$font', --Отступ от края окна.
+border_inner_margin = '"$font"', --Отступ от внутренних границ.
+border_outer_margin = '"$font"', --Отступ от края окна.
 border_width = 1, --Толщина рамки.
 cpu_avg_samples = 2, --Усреднение значений нагрузки.
 default_color = "#2bf92b", --Цвет по умолчанию.
@@ -292,22 +400,22 @@ default_outline_color = "#2bf92b", --Цвет рамки по умолчанию
 double_buffer = true, --Включение двойной буферизации.
 draw_shades = false, --Оттенки.
 draw_borders = true, --Включение границ.
-font = "Fantasque Sans Mono:italic:size='$font'", --Шрифт и размер шрифта.
-gap_y = '$(($gap/2+$gap))', --Отступ сверху.
+font = "Fantasque Sans Mono:size='"$font"'", --Шрифт и размер шрифта.
+gap_y = '"$(($gap/2+$gap))"', --Отступ сверху.
 gap_x = 40, --Отступ от края.
 own_window = true, --Собственное окно.
 own_window_class = "Conky", --Класс окна.
 own_window_type = "override", --Тип окна (возможные варианты: "normal", "desktop", "ock", "panel", "override" выбираем в зависимости от оконного менеджера и личных предпочтений).
 own_window_hints = "undecorated, skip_taskbar", --Задаем эфекты отображения окна.
 own_window_argb_visual = true, --Прозрачность окна.
-own_window_argb_value = 180, --Уровень прозрачности.
+own_window_argb_value = 200, --Уровень прозрачности.
 use_xft = true, } --Использование шрифтов X сервера.
 conky.text = [[ #Наполнение виджета.
 #Блок "Время".
 #Часы.
-${font :size='$(($font*3))'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
+${font Fantasque Sans Mono:italic:size='"$(($font*4))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
 #Дата.
-${font :size='$font'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
+${font Fantasque Sans Mono:italic:size='"$(($font*2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
 #Блок "Система".
 #Разделитель.
 ${color #f92b2b}SYS${hr 3}$color
@@ -324,14 +432,12 @@ ${color #b2b2b2}Нагрузка ЦП:$color$alignr$cpu %
 ${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz
 ${color #b2b2b2}Температура ядер ЦП:
 #Температура ядер ЦП. '"${coreconf[@]}"'
-#Блок "Видеокарта Nvidia". '"${nvidiac[@]}"'
+#Блок "Видеокарта Nvidia". '"$nvidiac"'
 #Блок "ОЗУ".
 #Разделитель.
 ${color #f92b2b}RAM${hr 3}$color
-#Задействовано ОЗУ.
-${color #b2b2b2}Задействовано:$color$alignr$mem / $memmax
-#Свободно ОЗУ.
-${color #b2b2b2}Свободно:$color$alignr$memeasyfree / $memmax
+#ОЗУ.
+${color #b2b2b2}ОЗУ:$alignr$memmax / ${color #f92b2b}$mem / $color$memeasyfree
 #Полоса загрузки ОЗУ.
 $memperc%${membar 4}
 #Блок "Подкачка".
@@ -344,10 +450,10 @@ $swapperc%${swapbar 4}
 #Блок "Сеть".
 #Разделитель.
 ${color #f92b2b}NET${hr 3}$color
-#Скорость приёма ('${net}' определенно командой "ls /sys/class/net" в терминале).
-${color #b2b2b2}Скорость приёма:$color$alignr${upspeedf '${net}'}
+#Скорость приёма ('"$netdev"' определенно командой "ls /sys/class/net" в терминале).
+${color #b2b2b2}Скорость приёма:$color$alignr${upspeedf '"$netdev"'}
 #Скорость отдачи.
-${color #b2b2b2}Скорость отдачи:$color$alignr${downspeedf '${net}'}
+${color #b2b2b2}Скорость отдачи:$color$alignr${downspeedf '"$netdev"'}
 #IP адрес.
 ${color #b2b2b2}IP адрес:$color$alignr${curl eth0.me}
 #Блок "Процессы".
@@ -368,12 +474,19 @@ ${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}
 #Блок "Диск1".
 #Разделитель.
 ${color #f92b2b}/home${hr 3}$color
-#Занято.
-${color #b2b2b2}Задействовано:$color$alignr${fs_used /} / ${fs_size /}
-#Свободно.
-${color #b2b2b2}Свободно:$color$alignr${fs_free /} / ${fs_size /}
-]]' > /mnt/home/$username/.config/conky/conky.conf
-echo '[[ -f ~/.profile ]] && . ~/.profile' > /mnt/home/$username/.bash_profile
+#Общее/Занято/Свободно.
+${color #b2b2b2}Объём:$alignr${fs_size /home} / ${color #f92b2b}${fs_used /home} / $color${fs_free /home}
+#Полоса загрузки.
+$color(${fs_type /home})${fs_bar 4 /home}
+#Блок "Диски".'"${masslabel[@]}"'
+]]' > /mnt/home/"$username"/.config/conky/conky.conf
+#
+#Создание bash_profile.
+echo -e "\033[31mСоздание bash_profile.\033[32m"
+echo '[[ -f ~/.profile ]] && . ~/.profile' > /mnt/home/"$username"/.bash_profile
+#
+#Создание bashrc.
+echo -e "\033[31mСоздание bashrc.\033[32m"
 echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
 #Автоматическая прозрачность xterm.
 [ -n "$XTERM_VERSION" ] && transset-df --id "$WINDOWID" >/dev/null
@@ -404,32 +517,45 @@ alias gcc="grc --colour=on gcc" #Раскрашиваем gcc.
 alias mount="grc --colour=on mount" #Раскрашиваем mount.
 alias ps="grc --colour=on ps" #Раскрашиваем ps.
 #Изменяем вид приглашения командной строки.
-PS1="\[\033[43m\]\[\033[2;34m\]\A\[\033[0m\]\[\033[44m\]\[\033[3;33m\]\u@\h \W/\[\033[0m\]\[\033[5;91m\]\$: \[\033[0m\]"
-#\[\033[43m\] - тёмно-жёлтый цвет фона.
-#\[\033[2;34m\] - 2 - более темный цвет, 34 - тёмно-синий цвет.
+PS1="\[\033[43m\]\[\033[2;34m\]\A\[\033[0m\]\[\033[44m\]\[\033[3;33m\] \u@\h \[\033[0m\]\[\033[2;41m\]\[\033[30m\] \W/ \[\033[0m\]\[\033[5;31m\] \$:\[\033[0m\]"
+#\[\033[43m\] - Жёлтый цвет фона.
+#\[\033[2;34m\] - 2 - Более темный цвет, 34 - Синий цвет.
 #\A Текущее время в 24-часовом формате.
 #\[\033[0m\] - Конец изменениям.
-#\[\033[44m\] - тёмно-синий цвет фона.
-#\[\033[3;33m\] - 3 - курсив, 33 - тёмно-жёлтый цвет.
-#\u@\h \W ИмяПользователя@ИмяХоста ТекущийОтносительныйПуть.
+#\[\033[44m\] - Синий цвет фона.
+#\[\033[3;33m\] - 3 - Курсив, 33 - Жёлтый цвет.
+#\u@\h ИмяПользователя@ИмяХоста
 #\[\033[0m\] - Конец изменениям.
-#\[\033[5;91m\] - 5 - моргание, 91 - красный цвет.
+#\[\033[2;41m\] - 2 - Более темный цвет, 41 - Красный цвет фона.
+#\[\033[30m\]  - Черный цвет.
+#\W  ТекущийОтносительныйПуть.
+#\[\033[0m\] - Конец изменениям.
+#\[\033[5;31m\] - 5 - моргание, 91 - красный цвет.
 #\$: Символ приглашения (# для root, $ для обычных пользователей).
 #\[\033[0m\] - Конец изменениям.
 #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
 export HISTCONTROL="ignoreboth"
-export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' > /mnt/home/$username/.bashrc
+export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' > /mnt/home/"$username"/.bashrc
+#
+#Создание profile.
+echo -e "\033[31mСоздание profile.\033[32m"
 echo 'setleds -D +num #Включенный по умолчанию NumLock.
 [[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
-export QT_QPA_PLATFORMTHEME="qt5ct" #Изменение внешнего вида приложений использующих qt.' > /mnt/home/$username/.profile
+export QT_QPA_PLATFORMTHEME="qt5ct" #Изменение внешнего вида приложений использующих qt.' > /mnt/home/"$username"/.profile
+#
+#Создание конфига сервера уведомлений.
+echo -e "\033[31mСоздание конфига сервера уведомлений.\033[32m"
 echo '[D-BUS Service]
 Name=org.freedesktop.Notifications
 Exec=/usr/lib/notification-daemon-1.0/notification-daemon' > /mnt/usr/share/dbus-1/services/org.freedesktop.Notifications.service
-echo '# Прозрачность неактивных окон (0,1–1,0).
-inactive-opacity = 0.8;
+#
+#Создание конфига picom.
+echo -e "\033[31mСоздание конфига picom.\033[32m"
+echo -e "# Прозрачность неактивных окон (0,1–1,0).
+inactive-opacity = 0.9;
 #
 # Затемнение неактивных окон (0,0–1,0).
-inactive-dim = 0.5
+inactive-dim = 0.4;
 #
 # Включить вертикальную синхронизацию (если picom выдает ошибку по vsync, то отключаем заменой true на false).
 vsync = true;
@@ -440,11 +566,20 @@ mark-ovredir-focused = true;
 wintypes:
 {
 # Отключить прозрачность выпадающего меню.
-dropdown_menu = { opacity = false; }
+dropdown_menu = { opacity = false; };
 #
 # Отключить прозрачность всплывающего меню.
 popup_menu = { opacity = false; }
-};' > /mnt/home/$username/.config/picom.conf
+};
+
+# Прозрачность i3status и dmenu.
+opacity-rule = [
+\"80:class_g = 'i3bar' && !focused\",
+\"90:class_g = 'dmenu' && !focused\"
+];" > /mnt/home/"$username"/.config/picom.conf
+#
+#Создание xresources.
+echo -e "\033[31mСоздание xresources.\033[32m"
 echo '!Настройка внешнего вида xterm.
 !
 !Задает имя типа терминала, которое будет установлено в переменной среды TERM.
@@ -454,16 +589,13 @@ xterm*termName: xterm-256color
 xterm*locale: true
 !
 !Определяет количество строк, сохраняемых за пределами верхней части экрана, когда включена полоса прокрутки.
-xterm*saveLines: 14096
+xterm*saveLines: 10000
 !
-!Укажите шаблон для масштабируемых шрифтов.
-xterm*faceName: Noto Sans Mono
-!
-!Размер шрифтов.
-xterm*faceSize: 10
+!Шрифт xterm.
+xterm*faceName: Fantasque Sans Mono:style=bold:size='"$font"'
 !
 !Указывает цвет фона.
-xterm*background: #2b0f2b
+xterm*background: #2b2b2b
 !Определяет цвет, который будет использоваться для переднего плана.
 xterm*foreground: #2bf92b
 !
@@ -471,7 +603,7 @@ xterm*foreground: #2bf92b
 xterm*scrollBar: true
 !
 !Определяет ширину полосы прокрутки.
-xterm*scrollbar.width: 10
+xterm*scrollbar.width: '"$(($font/2))"'
 !
 !Указывает, должно ли нажатие клавиши автоматически перемещать полосу прокрутки в нижнюю часть области прокрутки.
 xterm*scrollKey: true
@@ -479,28 +611,35 @@ xterm*scrollKey: true
 !Указывает, должна ли полоса прокрутки отображаться справа.
 xterm*rightScrollBar: true
 !
+!Размер курсора.
+Xcursor.size: '"$(($font*3))"'
+Xcursor.theme: Adwaita
+!
 !
 !Настройка внешнего вида xscreensaver.
 !
 !Указывает шрифт.
-xscreensaver-auth.?.Dialog.headingFont: Noto Sans Mono 12
-xscreensaver-auth.?.Dialog.bodyFont: Noto Sans Mono 12
-xscreensaver-auth.?.Dialog.labelFont: Noto Sans Mono 12
-xscreensaver-auth.?.Dialog.unameFont: Noto Sans Mono 12
-xscreensaver-auth.?.Dialog.buttonFont: Noto Sans Mono 12
-xscreensaver-auth.?.Dialog.dateFont: Noto Sans Mono 12
-xscreensaver-auth.?.passwd.passwdFont: Noto Sans Mono 12
+xscreensaver-auth.?.Dialog.headingFont: Fantasque Sans Mono Italic '"$font"'
+xscreensaver-auth.?.Dialog.bodyFont: Fantasque Sans Mono Italic '"$font"'
+xscreensaver-auth.?.Dialog.labelFont: Fantasque Sans Mono Italic '"$font"'
+xscreensaver-auth.?.Dialog.unameFont: Fantasque Sans Mono Italic '"$font"'
+xscreensaver-auth.?.Dialog.buttonFont: Fantasque Sans Mono Italic '"$font"'
+xscreensaver-auth.?.Dialog.dateFont: Fantasque Sans Mono Italic '"$font"'
+xscreensaver-auth.?.passwd.passwdFont: Fantasque Sans Mono Italic '"$font"'
 !
 !Указывает цвета.
 xscreensaver-auth.?.Dialog.foreground: #b2f9b2
-xscreensaver-auth.?.Dialog.background: #b20fb2
-xscreensaver-auth.?.Dialog.Button.foreground: #b20fb2
+xscreensaver-auth.?.Dialog.background: #2b2b2b
+xscreensaver-auth.?.Dialog.Button.foreground: #2b2b2b
 xscreensaver-auth.?.Dialog.Button.background: #b2f9b2
-xscreensaver-auth.?.Dialog.text.foreground: #b20fb2
+xscreensaver-auth.?.Dialog.text.foreground: #2b2b2b
 xscreensaver-auth.?.Dialog.text.background: #b2f9b2
 xscreensaver-auth.?.passwd.thermometer.foreground: #f92b2b
-xscreensaver-auth.?.passwd.thermometer.background: #b2f9b2' > /mnt/home/$username/.Xresources
-mkdir -p /mnt/home/$username/.config/i3
+xscreensaver-auth.?.passwd.thermometer.background: #b2f9b2' > /mnt/home/"$username"/.Xresources
+#
+#Создание директории и конфига i3.
+echo -e "\033[31mСоздание конфига i3.\033[32m"
+mkdir -p /mnt/home/"$username"/.config/i3
 echo '########### Основные настройки ###########
 #
 # Назначаем клавишу MOD, Mod4 - это клавиша WIN.
@@ -562,7 +701,7 @@ bindsym $mod+space focus mode_toggle
 # Определяем имена для рабочих областей по умолчанию.
 set $ws1 "1"
 set $ws2 "2: 🌍"
-set $ws3 "3"
+set $ws3 "3: 🎮"
 set $ws4 "4"
 set $ws5 "5"
 set $ws6 "6"
@@ -634,16 +773,16 @@ force_xinerama yes
 ########### Внешний вид ###########
 #
 # Шрифт для заголовков окон. Также будет использоваться ibar, если не выбран другой шрифт.
-font pango:Snowstorm Kraft 12
+font pango:Fantasque Sans Mono Bold '"$font"'
 #
 # Просветы между окнами.
-gaps inner 10
+gaps inner '"$font"'
 #
 # Толщина границы окна.
-default_border normal 3
+default_border normal '"$(($font/3))"'
 #
 # Толщина границы плавающего окна.
-default_floating_border normal 3
+default_floating_border normal '"$(($font/3))"'
 #
 # Устанавливаем цвет рамки активного окна #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.
 client.focused #2b2bf9 #2b2bf9 #2bf92b #2b2bf9 #2b2bf9
@@ -655,17 +794,17 @@ client.unfocused #2b2b0f #2b2b0f #b2b2b2 #2b2b0f #2b2b0f
 # for_window [all] title_format "<span foreground="#d64c2f"><b>Заголовок | %title</b></span>"
 #
 # Включить значки окон для всех окон с дополнительным горизонтальным отступом.
-for_window [all] title_window_icon padding 3px
+for_window [all] title_window_icon padding '"$(($font/3))"'px
 #
 # Внешний вид XTerm
 # Включить плавающий режим для всех окон XTerm.
 for_window [class="XTerm"] floating enable
-# Сделать границу в 1 пиксель для всех окон XTerm.
-for_window [class="XTerm"] border normal 1
+# Сделать границу в 0 пикселей для всех окон XTerm.
+for_window [class="XTerm"] border normal 0
 # Липкие плавающие окна, окно XTerm прилипло к стеклу.
 for_window [class="XTerm"] sticky enable
 # Задаем размеры окна XTerm.
-for_window [class="XTerm"] resize set 1000 500
+for_window [class="XTerm"] resize set '"$xterm"'
 #
 ########### Автозапуск программ ###########
 #
@@ -683,6 +822,9 @@ exec --no-startup-id flameshot
 #
 # Автозапуск copyq.
 exec --no-startup-id copyq
+#
+# Автозапуск obs.
+exec --no-startup-id obs
 #
 # Автозапуск tint2.
 exec --no-startup-id tint2
@@ -711,6 +853,9 @@ exec --no-startup-id xscreensaver --no-splash
 # Автозапуск dolphin.
 exec --no-startup-id dolphin --daemon
 #
+# Автозапуск steam, через gamemod "exec --no-startup-id gamemoderun steam -silent %U".
+exec --no-startup-id steam -silent %U
+#
 # Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u
 #
@@ -723,10 +868,10 @@ exec --no-startup-id /usr/lib/pam_kwallet_init
 ########### Горячие клавиши запуска программ ###########
 #
 # Используйте mod+enter, чтобы запустить терминал ("i3-sensible-terminal" можно заменить "xterm", "terminator" или любым другим на выбор).
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec xterm
 #
 # Запуск dmenu (программа запуска) с параметрами шрифта, приглашения, цвета фона.
-bindsym $mod+d exec --no-startup-id dmenu_run -fn "Snowstorm Kraft-30" -p "Поиск программы:" -nb "#2b0f2b" -sf "#2b2b0f" -nf "#2bf02b" -sb "#f92b2b"
+bindsym $mod+d exec --no-startup-id dmenu_run -fn "Fantasque Sans Mono:style=bold:size='"$(($font*3))"'" -p "Поиск программы:" -nb "#2b2b2b" -sf "#2b2bf9" -nf "#2bf92b" -sb "#f92b2b"
 #
 # Используйте mod+f1, чтобы запустить firefox.
 bindsym $mod+F1 exec --no-startup-id firefox
@@ -742,6 +887,9 @@ bindsym $mod+minus scratchpad show
 # Firefox будет запускаться на 2 рабочем столе.
 assign [class="firefox"] "2: 🌍"
 #
+# Steam будет запускаться на 3 рабочем столе.
+assign [title="Steam"] "3: 🎮"
+#
 ########### Настройка панели задач ###########
 #
 bar {
@@ -752,52 +900,46 @@ bar {
         separator_symbol "☭"
         #
         # Назначить шрифт.
-        font pango:Noto Sans Mono 12
+        font pango:Fantasque Sans Mono Bold Italic '"$(($font/2+$font))"'
         #
         # Назначить цвета.
         colors {
             # Цвет фона i3status.
-            background #2b0f2b
+            background #2b2b2b
             #
             # Цвет текста в i3status.
-            statusline #2bf92b
+            statusline #b2b2b2
             #
             # Цвет разделителя в i3status.
             separator #f92b2b
             }
          # Сделайте снимок экрана, щелкнув правой кнопкой мыши на панели (--no-startup-id убирает курсор загрузки).
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
-}' > /mnt/home/$username/.config/i3/config
+}' > /mnt/home/"$username"/.config/i3/config
+#
+#Создание конфига i3status.
+echo -e "\033[31mСоздание конфига i3status.\033[32m"
 echo 'general { #Основные настройки.
     colors = true #Включение/выключение поддержки цветов.
     color_good = "#2bf92b" #Цвет OK.
     color_bad = "#f92b2b" #Цвет ошибки.
     interval = 1 #Интервал обновления строки статуса.
     output_format = "i3bar" } #Формат вывода.
+order += "tztime 0" #0 модуль - пробел.
 order += "ethernet _first_" #1 модуль - rj45.
-order += "run_watch openvpn" #2 модуль - openvpn.
-order += "run_watch openconnect" #3 модуль - openconnect.
-order += "wireless _first_" #4 модуль - Wi-Fi.
-order += "battery all" #5 модуль - батарея.
-order += "disk /" #6 модуль - root директория.
-order += "memory" #7 модуль - ram.
-order += "cpu_usage" #8 модуль - использование ЦП.
-order += "cpu_temperature 0" #9 модуль - температура ЦП.
-order += "tztime local" #10 модуль - время.
-order += "volume master" #11 модуль - звук.
+order += "wireless _first_" #2 модуль - Wi-Fi.
+order += "battery all" #3 модуль - батарея.
+order += "memory" #4 модуль - ram.
+order += "cpu_usage" #5 модуль - использование ЦП.
+order += "cpu_temperature 0" #6 модуль - температура ЦП.
+order += "tztime 1" #7 модуль - дата.
+order += "tztime 2" #8 модуль - время.
+order += "tztime 0" #0 модуль - пробел.
 ethernet _first_ { #Индикатор rj45.
-        format_up = "🖧: %ip (%speed)" #Формат вывода.
-        format_down = "" } #При неактивном процессе блок будет отсутствовать.
-run_watch openvpn { #Индикатор openvpn.
-    pidfile = "/var/run/openvpn.pid" #Путь данных.
-    format = "🖧 openvpn" #Формат вывода.
-    format_down="" } #При неактивном процессе блок будет отсутствовать.
-run_watch openconnect { #Индикатор openconnect.
-    pidfile = "/var/run/openconnect.pid" #Путь данных.
-    format = "🖧 vpn" #Формат вывода.
-    format_down="" } #При неактивном процессе блок будет отсутствовать.
+    format_up = "🖧: %ip " #Формат вывода.
+    format_down = "" } #При неактивном процессе блок будет отсутствовать.
 wireless _first_ { #Индикатор WI-FI.
-    format_up = "📶%quality %frequency %essid %ip" #Формат вывода.
+    format_up = "📶%quality | %frequency | %essid: %ip " #Формат вывода.
     format_down = "" } #При неактивном процессе блок будет отсутствовать.
 battery all { #Индикатор батареи
     format = "%status %percentage" #Формат вывода.
@@ -807,35 +949,47 @@ battery all { #Индикатор батареи
     status_bat = "🔋" #Режим работы от батареи.
     path = "/sys/class/power_supply/BAT%d/uevent" #Путь данных.
     low_threshold = 10 } #Нижний порог заряда.
-disk "/" { #Root директория.
-    format = "♚ %avail / %total" } #Формат вывода.
 memory { #Индикатор ram
-    format = "🗂 %used" #Формат вывода.
-    threshold_degraded = "1G" #Желтый порог.
-    threshold_critical = "200M" #Красный порог.
-    format_degraded = "🗂 %available" } #Формат вывода желтого/красного порога.
+    format = "RAM: %used /%total" #Формат вывода.
+    threshold_degraded = 10% #Желтый порог.
+    threshold_critical = 5% #Красный порог.
+    format_degraded = "RAM: %used /%total" } #Формат вывода желтого/красного порога.
 cpu_usage { #Использование ЦП.
-    format = "🖳 %usage" } #Формат вывода.
+    format = "CPU: %usage" } #Формат вывода.
 cpu_temperature 0 { #Температура ЦП.
-    format = "🌡 %degrees°C" #Формат вывода.
-    max_threshold = "80" #Красный порог.
-    format_above_threshold = "🌡 %degrees°C" #Формат вывода красного порога.
-    path = "/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp1_input"} #Путь данных.
-tztime local { #Вывод даты и времени.
-    format = "📅 %a %d-%m-%Y(%W) 🕗 %H:%M:%S" } #Формат вывода.
-volume master { #Вывод звука.
-    format = "🔈 %volume" #Формат вывода.
-    format_muted = "🔇 %volume" } #Формат вывода без звука.' > /mnt/home/$username/.i3status.conf
+    format = "Θ°CPU: %degrees°C" #Формат вывода.
+    max_threshold = "70" #Красный порог.
+    format_above_threshold = "Θ CPU: %degrees°C" #Формат вывода красного порога.
+    path = "/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp*_input" } #Путь данных.path: /sys/devices/platform/coretemp.0/temp1_input
+tztime 1 { #Вывод даты и времени.
+    format = "📆 %a %d-%m-%Y(%W)" } #Формат вывода.
+tztime 2 { #Вывод даты и времени.
+    format = "⌛ %H:%M:%S %Z" } #Формат вывода.
+tztime 0 { #Вывод разделителя.
+    format = "|" } #Формат вывода.' > /mnt/home/"$username"/.i3status.conf
+#
+#Создание конфига redshift.
+echo -e "\033[31mСоздание конфига redshift.\033[32m"
 echo '[redshift]
 allowed=true
 system=false
 users=' >> /mnt/etc/geoclue/geoclue.conf
+#
+#Отключение запроса пароля.
+echo -e "\033[31mОтключение запроса пароля.\033[32m"
 echo 'polkit.addRule(function(action, subject) {
     if (subject.isInGroup("wheel")) {
         return polkit.Result.YES;
     }
 });' > /mnt/etc/polkit-1/rules.d/49-nopasswd_global.rules
-mkdir -p /mnt/home/$username/.config/qt5ct
+#
+#Создание директории и конфига qt5ct.
+echo -e "\033[31mСоздание конфига qt5ct.\033[32m"
+if [ "$font" = "8" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@ \0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0K\x11)"
+elif [ "$font" = "10" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@$\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x11)"
+elif [ "$font" = "12" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@(\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x11)"
+fi
+mkdir -p /mnt/home/"$username"/.config/qt5ct
 echo '[Appearance]
 color_scheme_path=/usr/share/qt5ct/colors/airy.conf
 custom_palette=false
@@ -843,8 +997,8 @@ icon_theme=ePapirus-Dark
 standard_dialogs=default
 style=Adwaita-Dark
 [Fonts]
-fixed=@Variant(\0\0\0@\0\0\0\x14\0S\0\x61\0n\0s\0 \0S\0\x65\0r\0i\0\x66@\"\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)
-general=@Variant(\0\0\0@\0\0\0\x14\0S\0\x61\0n\0s\0 \0S\0\x65\0r\0i\0\x66@\"\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)
+fixed=@Variant'"$fontqt"'
+general=@Variant'"$fontqt"'
 [Interface]
 activate_item_on_single_click=1
 buttonbox_layout=0
@@ -858,23 +1012,26 @@ show_shortcuts_in_context_menus=true
 stylesheets=@Invalid()
 toolbutton_style=4
 underline_shortcut=1
-wheel_scroll_lines=3
+wheel_scroll_lines='"$(($font/2))"'
 [SettingsWindow]
 geometry=@ByteArray(\x1\xd9\xd0\xcb\0\x3\0\0\0\0\0\"\0\0\0\x88\0\0\xe\xdd\0\0\b\x1e\0\0\0+\0\0\0\x88\0\0\xe\xd4\0\0\b\x15\0\0\0\0\0\0\0\0\xf\0\0\0\0+\0\0\0\x88\0\0\xe\xd4\0\0\b\x15)
 [Troubleshooting]
 force_raster_widgets=1
 ignored_applications=@Invalid()' > /mnt/home/$username/.config/qt5ct/qt5ct.conf
+#
+#Создание директории и конфига gtk.
+echo -e "\033[31mСоздание конфига gtk.\033[32m"
 mkdir -p /mnt/home/$username/.config/gtk-3.0/
 echo '[Settings]
 gtk-application-prefer-dark-theme=true
 gtk-button-images=1
 gtk-cursor-theme-name=Adwaita
-gtk-cursor-theme-size=24
+gtk-cursor-theme-size='"$(($font*3))"'
 gtk-decoration-layout=icon:minimize,maximize,close
 gtk-enable-animations=false
 gtk-enable-event-sounds=1
 gtk-enable-input-feedback-sounds=1
-gtk-font-name=Noto Sans Mono,  10
+gtk-font-name=Fantasque Sans Mono Italic '"$font"'
 gtk-icon-theme-name=Papirus-Dark
 gtk-menu-images=1
 gtk-modules=colorreload-gtk-module:window-decorations-gtk-module
@@ -885,8 +1042,11 @@ gtk-toolbar-style=GTK_TOOLBAR_BOTH_HORIZ
 gtk-xft-antialias=1
 gtk-xft-hinting=1
 gtk-xft-hintstyle=hintmedium
-gtk-xft-rgba=rgb' > /mnt/home/$username/.config/gtk-3.0/settings.ini
-mkdir -p /mnt/home/$username/.config/tint2
+gtk-xft-rgba=rgb' > /mnt/home/"$username"/.config/gtk-3.0/settings.ini
+#
+#Создание директории и конфига tint2.
+echo -e "\033[31mСоздание конфига tint2.\033[32m"
+mkdir -p /mnt/home/"$username"/.config/tint2
 echo '#---- Generated by tint2conf df32 ----
 # See https://gitlab.com/o9000/tint2/wikis/Configure for
 # full documentation of the configuration options.
@@ -900,7 +1060,7 @@ border_width = 0
 border_sides = TBLR
 border_content_tint_weight = 0
 background_content_tint_weight = 0
-background_color = #000000 60
+background_color = #2b2b2b 80
 border_color = #000000 30
 background_color_hover = #000000 60
 border_color_hover = #000000 30
@@ -956,8 +1116,8 @@ background_color_pressed = #ffffaa 100
 border_color_pressed = #000000 100
 #-------------------------------------
 # Panel
-panel_items = LS
-panel_size = 100% '$gap'
+panel_items = L
+panel_size = 100% '"$gap"'
 panel_margin = 0 0
 panel_padding = 2 0 2
 panel_background_id = 1
@@ -1036,7 +1196,7 @@ systray_name_filter =
 launcher_padding = 2 4 2
 launcher_background_id = 0
 launcher_icon_background_id = 0
-launcher_icon_size = '$gap'
+launcher_icon_size = '"$gap"'
 launcher_icon_asb = 100 0 0
 launcher_icon_theme = Papirus-Dark
 launcher_icon_theme_override = 0
@@ -1109,7 +1269,10 @@ tooltip_show_timeout = 0.5
 tooltip_hide_timeout = 0.1
 tooltip_padding = 4 4
 tooltip_background_id = 5
-tooltip_font_color = #dddddd 100' > /mnt/home/$username/.config/tint2/tint2rc
+tooltip_font_color = #dddddd 100' > /mnt/home/"$username"/.config/tint2/tint2rc
+#
+#Создание конфига kdeglobals.
+echo -e "\033[31mСоздание конфига kdeglobals.\033[32m"
 echo '[$Version]
 update_info=filepicker.upd:filepicker-remove-old-previews-entry,fonts_global.upd:Fonts_Global,fonts_global_toolbar.upd:Fonts_Global_Toolbar,icons_remove_effects.upd:IconsRemoveEffects,kwin.upd:animation-speed,style_widgetstyle_default_breeze.upd:StyleWidgetStyleDefaultBreeze
 [ColorEffects:Disabled]
@@ -1246,11 +1409,11 @@ TerminalApplication=xterm
 TerminalService=xterm.desktop
 XftHintStyle=hintslight
 XftSubPixel=rgb
-fixed=Noto Sans Mono,10,-1,5,50,0,0,0,0,0
-font=Noto Sans Mono,10,-1,5,50,0,0,0,0,0
-menuFont=Noto Sans Mono,10,-1,5,50,0,0,0,0,0
-smallestReadableFont=Noto Sans Mono,8,-1,5,50,0,0,0,0,0
-toolBarFont=Noto Sans Mono,10,-1,5,50,0,0,0,0,0
+fixed=Fantasque Sans Mono Italic,'"$font"',-1,5,50,0,0,0,0,0
+font=Fantasque Sans Mono Italic,'"$font"',-1,5,50,0,0,0,0,0
+menuFont=Fantasque Sans Mono Italic,'"$font"',-1,5,50,0,0,0,0,0
+smallestReadableFont=Fantasque Sans Mono Italic,'"$font"',-1,5,50,0,0,0,0,0
+toolBarFont=Fantasque Sans Mono Italic,'"$font"',-1,5,50,0,0,0,0,0
 [Icons]
 Theme=Papirus-Dark
 [KDE]
@@ -1285,36 +1448,45 @@ MaximumRemoteSize=5242880
 [WM]
 activeBackground=49,54,59
 activeBlend=252,252,252
-activeFont=Noto Sans Mono,10,-1,5,50,0,0,0,0,0
+activeFont=Fantasque Sans Mono Italic,'"$font"',-1,5,50,0,0,0,0,0
 activeForeground=252,252,252
 inactiveBackground=42,46,50
 inactiveBlend=161,169,177
-inactiveForeground=161,169,177' > /mnt/home/$username/.config/kdeglobals
-arch-chroot /mnt  sh -c "cd /usr/share/fonts/
-curl -L https://github.com/stardestart/arch/raw/main/font/Snowstorm.zip > Snowstorm.zip
-curl -L https://github.com/stardestart/arch/raw/main/font/30144_PostIndex.ttf > 30144_PostIndex.ttf
-unzip -o *.zip
-rm *.zip *.txt"
-fstrim -v -a
-if [ -z "$namewifi" ];
-then
-arch-chroot /mnt ip link set $netdev up
-else
-arch-chroot /mnt pacman -Sy iwd  --noconfirm
-arch-chroot /mnt systemctl enable iwd
-arch-chroot /mnt ip link set $netdev up
-mkdir -p /mnt/var/lib/iwd
-cp /var/lib/iwd/$namewifi.psk /mnt/var/lib/iwd/$namewifi.psk
+inactiveForeground=161,169,177' > /mnt/home/"$username"/.config/kdeglobals
+#
+#Передача интернет настроек в установленную систему.
+echo -e "\033[31mПередача интернет настроек в установленную систему.\033[32m"
+if [ -z "$namewifi" ]; then arch-chroot /mnt ip link set "$netdev" up
+    else
+        arch-chroot /mnt pacman -Sy iwd  --noconfirm
+        arch-chroot /mnt systemctl enable iwd
+        arch-chroot /mnt ip link set "$netdev" up
+        mkdir -p /mnt/var/lib/iwd
+        cp /var/lib/iwd/"$namewifi".psk /mnt/var/lib/iwd/"$namewifi".psk
 fi
-arch-chroot /mnt systemctl enable saned.socket cups.socket cups-browsed fstrim.timer reflector.timer xdm-archlinux dhcpcd avahi-daemon
+#
+#Автозапуск служб.
+echo -e "\033[31mАвтозапуск служб.\033[32m"
+arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd avahi-daemon
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
-arch-chroot /mnt chmod u+x /home/$username/.xinitrc
-arch-chroot /mnt chown -R $username:users /home/$username/
-arch-chroot /mnt/ sudo -u $username sh -c "cd /home/$username/
+#
+#Передача прав созданному пользователю.
+echo -e "\033[31mПередача прав созданному пользователю.\033[32m"
+arch-chroot /mnt chown -R "$username":users /home/"$username"/
+#
+#Установка помощника yay для работы с AUR.
+echo -e "\033[31mУстановка помощника yay для работы с AUR.\033[32m"
+arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
 git clone https://aur.archlinux.org/yay.git
-cd /home/$username/yay
-BUILDDIR=/tmp/makepkg makepkg -i --noconfirm"
-rm -Rf /mnt/home/$username/yay
-arch-chroot /mnt/ sudo -u $username yay -S transset-df hardinfo debtap volctl libreoffice-extension-languagetool --noconfirm
+cd /home/'"$username"'/yay
+BUILDDIR=/tmp/makepkg makepkg -i --noconfirm'
+rm -Rf /mnt/home/"$username"/yay
+#
+#Установка программ из AUR.
+echo -e "\033[31mУстановка программ из AUR.\033[32m"
+arch-chroot /mnt/ sudo -u "$username" yay -S transset-df hardinfo debtap volctl libreoffice-extension-languagetool --noconfirm
+#
+#Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
+echo -e "\033[31mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[32m"
 umount -R /mnt
 reboot
