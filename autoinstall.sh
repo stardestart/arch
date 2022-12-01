@@ -911,6 +911,9 @@ bindsym $mod+Shift+minus move scratchpad
 # Показать первое окно черновика/блокнота.
 bindsym $mod+minus scratchpad show
 #
+# Снимок экрана.
+bindsym Print exec flameshot full
+#
 ########### Распределение окон по рабочим столам ###########
 #
 # Firefox будет запускаться на 2 рабочем столе.
