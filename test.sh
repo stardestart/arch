@@ -785,7 +785,7 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 #
 # Выход из i3 (выходит из сеанса X).
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m \'Вы действительно хотите выйти из i3\? Это завершит вашу сессию X.\' -B \'Да, выйти из i3\' \'i3 -msg exit\'"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m ''Вы действительно хотите выйти из i3? Это завершит вашу сессию X.'' -B ''Да, выйти из i3'' ''i3 -msg exit''"
 #
 # Войти в режим изменения размеров окон.
 bindsym $mod+r mode "resize"
