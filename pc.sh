@@ -418,7 +418,7 @@ echo -e "\033[31mФормируется конфиг conky.\033[32m"
 core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
     do
-        coreconf+="
+        coremassconf+="
 \$alignr\${execi 10 sensors | grep \"Core $i:\" | awk '{print \$1, \$2, \$3}' }"
     done
 #
@@ -445,7 +445,7 @@ double_buffer = true, --Включение двойной буферизации
 draw_shades = false, --Оттенки.
 draw_borders = true, --Включение границ.
 font = "Fantasque Sans Mono:size='"$font"'", --Шрифт и размер шрифта.
-gap_y = '"$(($gap/2+$gap))"', --Отступ сверху.
+gap_y = '"$(($font*7))"', --Отступ сверху.
 gap_x = 40, --Отступ от края.
 own_window = true, --Собственное окно.
 own_window_class = "Conky", --Класс окна.
