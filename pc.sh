@@ -306,7 +306,7 @@ if [ -z "$(efibootmgr | grep Boot)" ];
         arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
         arch-chroot /mnt bootctl install
         echo -e "default arch\ntimeout 2\neditor 0" > /mnt/boot/loader/loader.conf
-        echo -e "title  Arch Linux Virtual\nlinux  /vmlinuz-linux-zen"$microcode"\ninitrd  /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw" > /mnt/boot/loader/entries/arch.conf
+        echo -e "title  Arch Linux\nlinux  /vmlinuz-linux-zen"$microcode"\ninitrd  /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw" > /mnt/boot/loader/entries/arch.conf
 fi
 #
 #Установим микроинструкции для процессора.
@@ -786,7 +786,7 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 #
 # Выход из i3 (выходит из сеанса X).
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m "Вы действительно хотите выйти из i3? Это завершит вашу сессию X." -B "Да, выйти из i3" "i3-msg exit""
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -B \047Да, выйти из i3\047 \047i3 -msg exit\047"
 #
 # Войти в режим изменения размеров окон.
 bindsym $mod+r mode "resize"
