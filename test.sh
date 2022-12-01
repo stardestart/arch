@@ -341,7 +341,7 @@ fi
 #
 #Установка программ.
 echo -e "\033[31mУстановка программ.\033[32m"
-arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol variety freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar --noconfirm
+arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol archlinux-wallpaper freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Поиск не смонтированных разделов.
@@ -396,6 +396,7 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
  unset f
 fi
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
+feh --bg-max --randomize /usr/share/backgrounds/archlinux/ &
 exec i3 #Автозапуск i3.' > /mnt/etc/X11/xinit/xinitrc
 #
 #Создание общего конфига клавиатуры.
@@ -784,7 +785,7 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 #
 # Выход из i3 (выходит из сеанса X).
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m "Вы действительно хотите выйти из i3? Это завершит вашу сессию X." -B "Да, выйти из i3" "i3-msg exit""
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m \'Вы действительно хотите выйти из i3\? Это завершит вашу сессию X.\' -B \'Да, выйти из i3\' \'i3 -msg exit\'"
 #
 # Войти в режим изменения размеров окон.
 bindsym $mod+r mode "resize"
