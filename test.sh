@@ -396,7 +396,7 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
  unset f
 fi
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
-feh --bg-max --randomize /usr/share/backgrounds/archlinux/ &
+feh --bg-max --randomize /usr/share/backgrounds/archlinux/ & #Автозапуск обоев рабочего стола.
 exec i3 #Автозапуск i3.' > /mnt/etc/X11/xinit/xinitrc
 #
 #Создание общего конфига клавиатуры.
@@ -684,7 +684,7 @@ xscreensaver-auth.?.passwd.thermometer.background: #b2f9b2' > /mnt/home/"$userna
 #Создание директории и конфига i3.
 echo -e "\033[31mСоздание конфига i3.\033[32m"
 mkdir -p /mnt/home/"$username"/.config/i3
-echo '########### Основные настройки ###########
+echo -e '########### Основные настройки ###########
 #
 # Назначаем клавишу MOD, Mod4 - это клавиша WIN.
 set $mod Mod4
@@ -785,7 +785,7 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 #
 # Выход из i3 (выходит из сеанса X).
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m ''Вы действительно хотите выйти из i3? Это завершит вашу сессию X.'' -B ''Да, выйти из i3'' ''i3 -msg exit''"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -B \047Да, выйти из i3\047 \047i3 -msg exit\047"
 #
 # Войти в режим изменения размеров окон.
 bindsym $mod+r mode "resize"

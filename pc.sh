@@ -341,7 +341,7 @@ fi
 #
 #Установка программ.
 echo -e "\033[31mУстановка программ.\033[32m"
-arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra variety alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts audacity kdenlive cheese kate sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify --noconfirm
+arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts audacity kdenlive cheese kate sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Поиск не смонтированных разделов.
@@ -396,6 +396,7 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
  unset f
 fi
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
+feh --bg-max --randomize /usr/share/backgrounds/archlinux/ & #Автозапуск обоев рабочего стола.
 exec i3 #Автозапуск i3.' > /mnt/etc/X11/xinit/xinitrc
 #
 #Создание общего конфига клавиатуры.
