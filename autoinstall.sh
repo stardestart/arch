@@ -1309,6 +1309,10 @@ tooltip_font_color = #dddddd 100' > /mnt/home/"$username"/.config/tint2/tint2rc
 #
 #Создание конфига kdeglobals.
 echo -e "\033[31mСоздание конфига kdeglobals.\033[32m"
+echo '[$Version]
+update_info=filepicker.upd:filepicker-remove-old-previews-entry
+[Colors:View]
+BackgroundNormal=43,43,43' > /mnt/home/"$username"/.config/kdeglobals
 #
 #Передача интернет настроек в установленную систему.
 echo -e "\033[31mПередача интернет настроек в установленную систему.\033[32m"
