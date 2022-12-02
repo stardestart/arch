@@ -1504,13 +1504,13 @@ inactiveForeground=161,169,177' > /mnt/home/"$username"/.config/kdeglobals
 #
 #Передача интернет настроек в установленную систему.
 echo -e "\033[31mПередача интернет настроек в установленную систему.\033[32m"
-if [ -z $namewifi ]; then arch-chroot /mnt ip link set $netdev up
+if [ -z "$namewifi" ]; then arch-chroot /mnt ip link set "$netdev" up
     else
         arch-chroot /mnt pacman -Sy iwd  --noconfirm
         arch-chroot /mnt systemctl enable iwd
-        arch-chroot /mnt ip link set $netdev up
+        arch-chroot /mnt ip link set "$netdev" up
         mkdir -p /mnt/var/lib/iwd
-        cp /var/lib/iwd/$namewifi.psk /mnt/var/lib/iwd/$namewifi.psk
+        cp /var/lib/iwd/"$namewifi".psk /mnt/var/lib/iwd/"$namewifi".psk
 fi
 #
 #Автозапуск служб.
@@ -1520,19 +1520,19 @@ arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Передача прав созданному пользователю.
 echo -e "\033[31mПередача прав созданному пользователю.\033[32m"
-arch-chroot /mnt chown -R $username /home/$username/
+arch-chroot /mnt chown -R "$username" /home/"$username"/
 #
 #Установка помощника yay для работы с AUR.
 echo -e "\033[31mУстановка помощника yay для работы с AUR.\033[32m"
-arch-chroot /mnt/ sudo -u $username sh -c 'cd /home/'$username'/
+arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
 git clone https://aur.archlinux.org/yay.git
-cd /home/'$username'/yay
+cd /home/'"$username"'/yay
 BUILDDIR=/tmp/makepkg makepkg -i --noconfirm'
-rm -Rf /mnt/home/$username/yay
+rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR.
 echo -e "\033[31mУстановка программ из AUR.\033[32m"
-arch-chroot /mnt/ sudo -u $username yay -S transset-df hardinfo debtap volctl libreoffice-extension-languagetool cups-xerox-b2xx --noconfirm
+arch-chroot /mnt/ sudo -u "$username" yay -S transset-df hardinfo debtap volctl libreoffice-extension-languagetool cups-xerox-b2xx --noconfirm
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[31mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[32m"
