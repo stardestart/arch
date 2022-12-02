@@ -254,7 +254,7 @@ fi
 #
 #Установка ОС.
 echo -e "\033[31mУстановка ОС.\033[32m"
-pacstrap /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
+pacstrap -i /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
 #
 #Установка часового пояса.
 echo -e "\033[31mУстановка часового пояса.\033[32m"
