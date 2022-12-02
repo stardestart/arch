@@ -58,8 +58,8 @@ fontqt=""
 #
 #Определяем процессор.
 echo -e "\033[31mОпределяем процессор.\033[32m"
-if [ -n "$(lscpu | grep -i amd)" ]; then microcode="\ninitrd /amd-ucode.img"
-elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="\ninitrd /intel-ucode.img"
+if [ -n $(lscpu | grep -i amd) ]; then microcode="\ninitrd /amd-ucode.img"
+elif [ -n $(lscpu | grep -i intel) ]; then microcode="\ninitrd /intel-ucode.img"
 fi
 echo -e "Процессор:"$(lscpu | grep -i "model name")""
 #
@@ -421,16 +421,16 @@ core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
     do
         coremassconf+="
-\$alignr\${execi 10 sensors | grep \"Core $i:\" | awk \'{print \$1, \$2, \$3}\' }"
+\$alignr\${execi 10 sensors | grep \"Core $i:\" | awk \'{print \$1, \$2, \$3}\'}"
     done
 #
 #Параметры для видеокарт nvidia.
 if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
-    nvidiac='
-${color #f92b2b}GPU${hr 3}
-${color #b2b2b2}Частота ГП:$color$alignr${nvidia gpufreq} Mhz
-${color #b2b2b2}Видео ОЗУ:$color$alignr${nvidia mem} / ${nvidia memmax} MiB
-${color #b2b2b2}Температура ГП:$color$alignr${nvidia temp} °C'
+    nvidiac="
+\${color #f92b2b}GPU\${hr 3}
+\${color #b2b2b2}Частота ГП:\$color\$alignr\${nvidia gpufreq} Mhz
+\${color #b2b2b2}Видео ОЗУ:\$color\$alignr\${nvidia mem} / \${nvidia memmax} MiB
+\${color #b2b2b2}Температура ГП:\$color\$alignr\${nvidia temp} °C"
 fi
 #
 #Создание директории и конфига.
