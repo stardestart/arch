@@ -252,14 +252,9 @@ mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
 swapon /dev/"$sysdisk""$p2"
 fi
 #
-#Обновления ключей.
-echo -e "\033[31mОбновления ключей.\033[32m"
-pacman-key --populate archlinux
-pacman -Sy
-#
 #Установка ОС.
 echo -e "\033[31mУстановка ОС.\033[32m"
-pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
+pacstrap /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
 #
 #Установка часового пояса.
 echo -e "\033[31mУстановка часового пояса.\033[32m"
