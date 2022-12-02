@@ -255,7 +255,6 @@ fi
 #Установка и настройка программы для фильтрования зеркал и обновление ключей.
 echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[32m"
 pacman -Sy archlinux-keyring reflector --noconfirm
-#pacman-key --refresh-keys
 pacman-key --populate archlinux
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
@@ -354,14 +353,12 @@ for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
         if [ -z "$(lsblk -no LABEL /dev/"${massparts[$j]}")" ];
             then
                 arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/"${massparts[$j]}"
-                arch-chroot /mnt chown -R "$username" /home/"$username"/"${massparts[$j]}"
 masslabel+='
 ${color #f92b2b}/home/'"$username"'/'"${massparts[$j]}"'${hr 3}
 ${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"${massparts[$j]}"'} / ${color #f92b2b}${fs_used /home/'"$username"'/'"${massparts[$j]}"'} / $color${fs_free /home/'"$username"'/'"${massparts[$j]}"'}
 (${fs_type /home/'"$username"'/'"${massparts[$j]}"'})${fs_bar 4 /home/'"$username"'/'"${massparts[$j]}"'}'
             else
                 arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
-                arch-chroot /mnt chown -R "$username" /home/"$username"/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
 masslabel+='
 ${color #f92b2b}/home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'${hr 3}
 ${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${color #f92b2b}${fs_used /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / $color${fs_free /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}
