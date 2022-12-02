@@ -255,7 +255,7 @@ fi
 #Установка и настройка программы для фильтрования зеркал и обновление ключей.
 echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[32m"
 pacman -Sy archlinux-keyring reflector --noconfirm
-pacman-key --refresh-keys
+#pacman-key --refresh-keys
 pacman-key --populate archlinux
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
@@ -1295,7 +1295,7 @@ Theme=Papirus-Dark' > /mnt/home/"$username"/.config/kdeglobals
 echo -e "\033[31mПередача интернет настроек в установленную систему.\033[32m"
 if [ -z "$namewifi" ]; then arch-chroot /mnt ip link set "$netdev" up
     else
-        arch-chroot /mnt pacman -Sy iwd  --noconfirm
+        arch-chroot /mnt pacman -Sy iwd --noconfirm
         arch-chroot /mnt systemctl enable iwd
         arch-chroot /mnt ip link set "$netdev" up
         mkdir -p /mnt/var/lib/iwd
