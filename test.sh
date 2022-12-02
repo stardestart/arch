@@ -171,15 +171,16 @@ done
 #Вычисление swap.
 echo -e "\033[31mВычисление swap.\033[32m"
 ram="$(free -g | grep -i mem | awk '{print $2}')"
-if [ "$ram" -ge 128 ]; then swap="+11g"
-elif [ "$ram" -ge 64 ]; then swap="+8g"
-elif [ "$ram" -ge 32 ]; then swap="+6g"
-elif [ "$ram" -ge 24 ]; then swap="+5g"
-elif [ "$ram" -ge 16 ]; then swap="+4g"
-elif [ "$ram" -ge 12 ]; then swap="+3g"
-elif [ "$ram" -ge 6 ]; then swap="+2g"
-elif [ "$ram" -lt 6 ]; then swap="+1g"
+if [ "$ram" -ge 128 ]; then swap="11G"
+elif [ "$ram" -ge 64 ]; then swap="8G"
+elif [ "$ram" -ge 32 ]; then swap="6G"
+elif [ "$ram" -ge 24 ]; then swap="5G"
+elif [ "$ram" -ge 16 ]; then swap="4G"
+elif [ "$ram" -ge 12 ]; then swap="3G"
+elif [ "$ram" -ge 6 ]; then swap="2G"
+elif [ "$ram" -lt 6 ]; then swap="1G"
 fi
+echo -e "\033[31mРазмер SWAP раздела: $swap\033[32m"
 #
 #Разметка системного диска.
 echo -e "\033[31mРазметка системного диска.\033[32m"
@@ -191,18 +192,18 @@ g
 n
 1
 2048
-+512m
++512M
 n
 2
 
-+1m
++1M
 t
 2
 4
 n
 3
 
-$swap
++$swap
 n
 4
 
@@ -226,13 +227,13 @@ g
 n
 1
 2048
-+512m
++512M
 t
 1
 n
 2
 
-$swap
++$swap
 n
 3
 
