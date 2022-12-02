@@ -254,7 +254,7 @@ fi
 #
 #Обновления ключей.
 echo -e "\033[31mОбновления ключей.\033[32m"
-pacman -Syy archlinux-keyring --noconfirm
+pacman -S archlinux-keyring --noconfirm
 #
 #Установка ОС.
 echo -e "\033[31mУстановка ОС.\033[32m"
