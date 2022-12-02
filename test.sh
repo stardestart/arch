@@ -256,7 +256,6 @@ fi
 echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал и обновим ключи.\033[32m"
 pacman -Sy archlinux-keyring reflector --noconfirm
 pacman-key --populate
-
 #
 #Установка ОС.
 echo -e "\033[31mУстановка ОС.\033[32m"
@@ -422,7 +421,7 @@ core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
     do
         coremassconf+="
-\$alignr\${execi 10 sensors | grep \042Core $i:\042 | awk \047{print \$1, \$2, \$3}\047 }"
+\$alignr\${execi 10 sensors | grep \"Core $i:\" | awk \'{print \$1, \$2, \$3}\' }"
     done
 #
 #Параметры для видеокарт nvidia.

@@ -250,9 +250,11 @@ mount /dev/"$sysdisk""$p3" /mnt
 mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
 swapon /dev/"$sysdisk""$p2"
 fi
-#Обновления ключей.
-echo -e "\033[31mОбновления ключей.\033[32m"
-pacman -Syy archlinux-keyring --noconfirm
+#
+#Установим и настроим программу для фильтрования зеркал и обновим ключи.
+echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал и обновим ключи.\033[32m"
+pacman -Sy archlinux-keyring reflector --noconfirm
+pacman-key --populate
 #
 #Установка ОС.
 echo -e "\033[31mУстановка ОС.\033[32m"
