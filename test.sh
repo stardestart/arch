@@ -61,7 +61,7 @@ echo -e "\033[31mОпределяем процессор.\033[32m"
 if [ -n $(lscpu | grep -i amd) ]; then microcode="\ninitrd /amd-ucode.img"
 elif [ -n $(lscpu | grep -i intel) ]; then microcode="\ninitrd /intel-ucode.img"
 fi
-echo -e "Процессор:"$(lscpu | grep -i "model name")""
+echo -e "Процессор:$(lscpu | grep -i "model name")"
 #
 #Определяем сетевое устройство.
 echo -e "\033[31mОпределяем сетевое устройство.\033[32m"
