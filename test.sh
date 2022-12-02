@@ -255,7 +255,7 @@ fi
 #Установим и настроим программу для фильтрования зеркал и обновим ключи.
 echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал и обновим ключи.\033[32m"
 pacman -Sy archlinux-keyring reflector --noconfirm
-pacman-key --populate
+pacman-key -u
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
