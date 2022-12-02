@@ -58,10 +58,10 @@ fontqt=""
 #
 #Определяем процессор.
 echo -e "\033[31mОпределяем процессор.\033[32m"
-if [ -n $(lscpu | grep -i amd) ]; then microcode="\ninitrd /amd-ucode.img"
-elif [ -n $(lscpu | grep -i intel) ]; then microcode="\ninitrd /intel-ucode.img"
+if [ -n "$(lscpu | grep -i amd)" ]; then microcode="\ninitrd /amd-ucode.img"
+elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="\ninitrd /intel-ucode.img"
 fi
-echo -e "Процессор:$(lscpu | grep -i "model name")"
+echo -e "Процессор:"$(lscpu | grep -i "model name")""
 #
 #Определяем сетевое устройство.
 echo -e "\033[31mОпределяем сетевое устройство.\033[32m"
@@ -70,14 +70,14 @@ if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
         echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m\033[36m";read -p ">" namewifi
         netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
 fi
-if [ -z "$namewifi" ];
+if [ -z $namewifi ];
     then
         netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
     else
         echo -e "\033[41m\033[30mПароль wifi:\033[0m\033[36m";read -p ">" passwifi
-        iwctl --passphrase "$passwifi" station "$netdev" connect "$namewifi"
+        iwctl --passphrase $passwifi station $netdev connect $namewifi
 fi
-echo -e "\033[31mСетевое устройство:"$netdev"\033[32m"
+echo -e "\033[31mСетевое устройство:$netdev\033[32m"
 #
 #Определяем часовой пояс.
 echo -e "\033[31mОпределяем часовой пояс.\033[32m"
@@ -112,11 +112,11 @@ elif [ "${#massdisks[*]}" = 0 ];
                 fi
             done
 fi
-echo -e "\033[31mФизический диск на который будет установлена ОС:"$sysdisk"\033[32m"
+echo -e "\033[31mФизический диск на который будет установлена ОС:$sysdisk\033[32m"
 #
 #Определяем есть ли nvme контролер системного диска.
 echo -e "\033[31mОпределяем есть ли nvme контролер системного диска.\033[32m"
-if [ -z "$(echo "$sysdisk" | grep -i "nvme")" ];
+if [ -z "$(echo $sysdisk | grep -i "nvme")" ];
     then
         p1="1"
         p2="2"
