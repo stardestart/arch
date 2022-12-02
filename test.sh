@@ -254,7 +254,10 @@ fi
 #
 #Обновления ключей.
 echo -e "\033[31mОбновления ключей.\033[32m"
-pacman-key --refresh-keys
+sudo pacman-key --init
+sudo pacman-key --populate archlinux
+sudo pacman-key --refresh-keys
+sudo pacman -Sy
 #
 #Установка ОС.
 echo -e "\033[31mУстановка ОС.\033[32m"
