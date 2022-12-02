@@ -425,7 +425,7 @@ core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
     do
         coremassconf+="
-\$alignr\${execi 10 sensors | grep \042Core $i:\042 | awk '{print \$1, \$2, \$3}' }"
+\$alignr\${execi 10 sensors | grep \042Core $i:\042 | awk \047{print \$1, \$2, \$3}\047 }"
     done
 #
 #Параметры для видеокарт nvidia.
