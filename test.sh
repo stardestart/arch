@@ -251,7 +251,7 @@ mount /dev/"$sysdisk""$p3" /mnt
 mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
 swapon /dev/"$sysdisk""$p2"
 fi
-pacman -Sy archlinux-keyring
+pacman -Sy archlinux-keyring reflector
 #
 #Установка ОС.
 echo -e "\033[31mУстановка ОС.\033[32m"
