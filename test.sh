@@ -251,11 +251,16 @@ mount /dev/"$sysdisk""$p3" /mnt
 mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
 swapon /dev/"$sysdisk""$p2"
 fi
-pacman -Sy archlinux-keyring reflector
+#
+#Установим и настроим программу для фильтрования зеркал и обновим ключи.
+echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал и обновим ключи.\033[32m"
+pacman -Sy archlinux-keyring reflector --noconfirm
+pacman-key --populate
+
 #
 #Установка ОС.
 echo -e "\033[31mУстановка ОС.\033[32m"
-pacstrap /mnt base base-devel linux-zen linux-zen-headers linux-firmware nano dhcpcd
+pacstrap /mnt base base-devel linux-zen linux-zen-headers linux-firmware
 #
 #Установка часового пояса.
 echo -e "\033[31mУстановка часового пояса.\033[32m"
@@ -326,11 +331,6 @@ echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
 echo -e "\033[31mНастройка sysrq.\033[32m"
 echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
-#Установим и настроим программу для фильтрования зеркал.
-echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал.\033[32m"
-arch-chroot /mnt pacman -Sy reflector --noconfirm
-echo -e "--country "$(curl https://ipapi.co/country_name/)"" >> /mnt/etc/xdg/reflector/reflector.conf
-#
 #Установим видеодрайвер.
 echo -e "\033[31mУстановка видеодрайвера.\033[32m"
 if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then arch-chroot /mnt pacman -Sy vulkan-radeon xf86-video-amdgpu lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau --noconfirm
@@ -343,7 +343,7 @@ fi
 #
 #Установка программ.
 echo -e "\033[31mУстановка программ.\033[32m"
-arch-chroot /mnt pacman -Sy xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol archlinux-wallpaper feh freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar --noconfirm
+arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol archlinux-wallpaper feh freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Поиск не смонтированных разделов.
