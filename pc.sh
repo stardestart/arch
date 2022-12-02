@@ -171,15 +171,16 @@ done
 #Вычисление swap.
 echo -e "\033[31mВычисление swap.\033[32m"
 ram="$(free -g | grep -i mem | awk '{print $2}')"
-if [ "$ram" -ge 128 ]; then swap="+11g"
-elif [ "$ram" -ge 64 ]; then swap="+8g"
-elif [ "$ram" -ge 32 ]; then swap="+6g"
-elif [ "$ram" -ge 24 ]; then swap="+5g"
-elif [ "$ram" -ge 16 ]; then swap="+4g"
-elif [ "$ram" -ge 12 ]; then swap="+3g"
-elif [ "$ram" -ge 6 ]; then swap="+2g"
-elif [ "$ram" -lt 6 ]; then swap="+1g"
+if [ "$ram" -ge 128 ]; then swap="11G"
+elif [ "$ram" -ge 64 ]; then swap="8G"
+elif [ "$ram" -ge 32 ]; then swap="6G"
+elif [ "$ram" -ge 24 ]; then swap="5G"
+elif [ "$ram" -ge 16 ]; then swap="4G"
+elif [ "$ram" -ge 12 ]; then swap="3G"
+elif [ "$ram" -ge 6 ]; then swap="2G"
+elif [ "$ram" -lt 6 ]; then swap="1G"
 fi
+echo -e "\033[31mРазмер SWAP раздела: $swap\033[32m"
 #
 #Разметка системного диска.
 echo -e "\033[31mРазметка системного диска.\033[32m"
@@ -191,18 +192,18 @@ g
 n
 1
 2048
-+512m
++512M
 n
 2
 
-+1m
++1M
 t
 2
 4
 n
 3
 
-$swap
++$swap
 n
 4
 
@@ -226,13 +227,13 @@ g
 n
 1
 2048
-+512m
++512M
 t
 1
 n
 2
 
-$swap
++$swap
 n
 3
 
@@ -251,10 +252,12 @@ mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
 swapon /dev/"$sysdisk""$p2"
 fi
 #
-#Установим и настроим программу для фильтрования зеркал и обновим ключи.
-echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал и обновим ключи.\033[32m"
+#Установка и настройка программы для фильтрования зеркал и обновление ключей.
+echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[32m"
 pacman -Sy archlinux-keyring reflector --noconfirm
-pacman-key --populate
+pacman-key --refresh-keys
+pacman-key --populate archlinux
+reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
 echo -e "\033[31mУстановка ОС.\033[32m"
@@ -329,11 +332,6 @@ echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
 echo -e "\033[31mНастройка sysrq.\033[32m"
 echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
-#Установим и настроим программу для фильтрования зеркал.
-echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал.\033[32m"
-arch-chroot /mnt pacman -Sy reflector --noconfirm
-echo -e "--country France,Germany,Russia" >> /mnt/etc/xdg/reflector/reflector.conf
-#
 #Установим видеодрайвер.
 echo -e "\033[31mУстановка видеодрайвера.\033[32m"
 if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then arch-chroot /mnt pacman -Sy vulkan-radeon xf86-video-amdgpu lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau --noconfirm
@@ -346,7 +344,7 @@ fi
 #
 #Установка программ.
 echo -e "\033[31mУстановка программ.\033[32m"
-arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts audacity kdenlive cheese kate sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify --noconfirm
+arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts audacity kdenlive cheese kate sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Поиск не смонтированных разделов.
@@ -401,7 +399,7 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
  unset f
 fi
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
-feh --bg-max --randomize /usr/share/backgrounds/archlinux/ & #Автозапуск обоев рабочего стола.
+feh --bg-max --randomize --no-fehbg /usr/share/backgrounds/archlinux/ & #Автозапуск обоев рабочего стола.
 exec i3 #Автозапуск i3.' > /mnt/etc/X11/xinit/xinitrc
 #
 #Создание общего конфига клавиатуры.
@@ -425,7 +423,7 @@ core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
     do
         coremassconf+="
-\$alignr\${execi 10 sensors | grep \"Core $i:\" | awk '{print \$1, \$2, \$3}' }"
+\$alignr\${execi 10 sensors | grep \"Core $i:\" | awk \'{print \$1, \$2, \$3}\'}"
     done
 #
 #Параметры для видеокарт nvidia.
@@ -690,7 +688,7 @@ xscreensaver-auth.?.passwd.thermometer.background: #b2f9b2' > /mnt/home/"$userna
 #Создание директории и конфига i3.
 echo -e "\033[31mСоздание конфига i3.\033[32m"
 mkdir -p /mnt/home/"$username"/.config/i3
-echo '########### Основные настройки ###########
+echo -e '########### Основные настройки ###########
 #
 # Назначаем клавишу MOD, Mod4 - это клавиша WIN.
 set $mod Mod4

@@ -252,15 +252,16 @@ mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
 swapon /dev/"$sysdisk""$p2"
 fi
 #
-#Установим и настроим программу для фильтрования зеркал и обновим ключи.
-echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал и обновим ключи.\033[32m"
+#Установка и настройка программы для фильтрования зеркал и обновление ключей.
+echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[32m"
 pacman -Sy archlinux-keyring reflector --noconfirm
-pacman-key -u
+pacman-key --refresh-keys
+pacman-key --populate archlinux
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
 echo -e "\033[31mУстановка ОС.\033[32m"
-pacstrap /mnt base base-devel linux-zen linux-zen-headers linux-firmware
+pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware
 #
 #Установка часового пояса.
 echo -e "\033[31mУстановка часового пояса.\033[32m"
@@ -343,7 +344,7 @@ fi
 #
 #Установка программ.
 echo -e "\033[31mУстановка программ.\033[32m"
-arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol archlinux-wallpaper feh freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar --noconfirm
+arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol archlinux-wallpaper feh freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Поиск не смонтированных разделов.
@@ -427,11 +428,11 @@ for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
 #
 #Параметры для видеокарт nvidia.
 if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
-    nvidiac="
-\${color #f92b2b}GPU\${hr 3}
-\${color #b2b2b2}Частота ГП:\$color\$alignr\${nvidia gpufreq} Mhz
-\${color #b2b2b2}Видео ОЗУ:\$color\$alignr\${nvidia mem} / \${nvidia memmax} MiB
-\${color #b2b2b2}Температура ГП:\$color\$alignr\${nvidia temp} °C"
+    nvidiac='
+${color #f92b2b}GPU${hr 3}
+${color #b2b2b2}Частота ГП:$color$alignr${nvidia gpufreq} Mhz
+${color #b2b2b2}Видео ОЗУ:$color$alignr${nvidia mem} / ${nvidia memmax} MiB
+${color #b2b2b2}Температура ГП:$color$alignr${nvidia temp} °C'
 fi
 #
 #Создание директории и конфига.
