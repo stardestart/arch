@@ -1334,7 +1334,7 @@ Theme=Papirus-Dark' > /mnt/home/"$username"/.config/kdeglobals
 echo -e "\033[31mПередача интернет настроек в установленную систему.\033[32m"
 if [ -z "$namewifi" ]; then arch-chroot /mnt ip link set "$netdev" up
     else
-        arch-chroot /mnt pacman -Sy iwd  --noconfirm
+        arch-chroot /mnt pacman -Sy iwd --noconfirm
         arch-chroot /mnt systemctl enable iwd
         arch-chroot /mnt ip link set "$netdev" up
         mkdir -p /mnt/var/lib/iwd
