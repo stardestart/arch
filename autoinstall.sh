@@ -1089,7 +1089,7 @@ echo '[General]
 __userfile__=true
 iconTheme=ePapirus-Dark
 [directorymenu]
-alignment=Right
+alignment=Left
 baseDirectory=/home/'"$username"'
 buttonStyle=IconText
 defaultTerminal=/usr/bin/xterm
@@ -1125,7 +1125,7 @@ lineCount=1
 lockPanel=false
 opacity=80
 panelSize='"$(($font*4))"'
-plugins=spacer, mainmenu, quicklaunch, kbindicator, volume
+plugins=mainmenu, spacer, directorymenu, quicklaunch, kbindicator, volume
 position=Top
 reserve-space=true
 show-delay=0
