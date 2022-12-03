@@ -343,7 +343,7 @@ fi
 #
 #Установка программ.
 echo -e "\033[31mУстановка программ.\033[32m"
-arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts audacity kdenlive cheese kate sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector --noconfirm
+arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts audacity kdenlive cheese kate sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Поиск не смонтированных разделов.
@@ -867,9 +867,6 @@ exec --no-startup-id nm-applet
 # Запуск геолокации (--no-startup-id убирает курсор загрузки).
 exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
 #
-# Автозапуск volctl.
-exec --no-startup-id volctl
-#
 # Автозапуск flameshot.
 exec --no-startup-id flameshot
 #
@@ -1106,7 +1103,14 @@ mkdir -p /mnt/home/"$username"/.config/lxqt
 echo '[General]
 __userfile__=true
 iconTheme=ePapirus-Dark
-
+[directorymenu]
+alignment=Right
+baseDirectory=/home/'"$username"'
+buttonStyle=IconText
+defaultTerminal=/usr/bin/xterm
+icon=
+label=
+type=directorymenu
 [kbindicator]
 alignment=Right
 keeper_type=application
@@ -1116,14 +1120,12 @@ show_layout=true
 show_num_lock=true
 show_scroll_lock=true
 type=kbindicator
-
 [mainmenu]
 alignment=Left
 icon=/usr/share/icons/Papirus-Dark/128x128/apps/distributor-logo-archlinux.svg
 ownIcon=true
 showText=false
 type=mainmenu
-
 [panel1]
 alignment=0
 animation-duration=0
@@ -1138,21 +1140,23 @@ lineCount=1
 lockPanel=false
 opacity=80
 panelSize='"$(($font*4))"'
-plugins=spacer, mainmenu, quicklaunch, kbindicator
+plugins=spacer, mainmenu, quicklaunch, kbindicator, volume
 position=Top
 reserve-space=true
 show-delay=0
 visible-margin=true
 width=100
 width-percent=true
-
 [quicklaunch]
 alignment=Left
 type=quicklaunch
-
 [spacer]
 alignment=Left
-type=spacer' > /mnt/home/"$username"/.config/lxqt/panel.conf
+type=spacer
+[volume]
+alignment=Right
+audioEngine=PulseAudio
+type=volume' > /mnt/home/"$username"/.config/lxqt/panel.conf
 #
 #Создание конфига kdeglobals.
 echo -e "\033[31mСоздание конфига kdeglobals.\033[32m"
@@ -1285,7 +1289,7 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR.
 echo -e "\033[31mУстановка программ из AUR.\033[32m"
-arch-chroot /mnt/ sudo -u "$username" yay -S transset-df hardinfo debtap volctl libreoffice-extension-languagetool cups-xerox-b2xx --noconfirm
+arch-chroot /mnt/ sudo -u "$username" yay -S transset-df hardinfo debtap libreoffice-extension-languagetool cups-xerox-b2xx --noconfirm
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[31mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[32m"
