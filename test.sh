@@ -352,7 +352,7 @@ for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
     do
         if [ -z "$(lsblk -no LABEL /dev/"${massparts[$j]}")" ];
             then
-            if [ "$(lsblk -fn /dev/nvme0n1p2 | awk '{print $2}')" = "vfat" ];
+            if [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "vfat" ];
 then arch-chroot /mnt mount -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /home/"$username"/"${massparts[$j]}"
 else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/"${massparts[$j]}"
 fi
@@ -362,7 +362,7 @@ ${color #f92b2b}/home/'"$username"'/'"${massparts[$j]}"'${hr 3}
 ${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"${massparts[$j]}"'} / ${color #f92b2b}${fs_used /home/'"$username"'/'"${massparts[$j]}"'} / $color${fs_free /home/'"$username"'/'"${massparts[$j]}"'}
 (${fs_type /home/'"$username"'/'"${massparts[$j]}"'})${fs_bar 4 /home/'"$username"'/'"${massparts[$j]}"'}'
             else
-            if [ "$(lsblk -fn /dev/nvme0n1p2 | awk '{print $2}')" = "vfat" ];
+            if [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "vfat" ];
 then arch-chroot /mnt mount -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
 else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
 fi
