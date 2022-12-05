@@ -1278,7 +1278,7 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR.
 echo -e "\033[31mУстановка программ из AUR.\033[32m"
-arch-chroot /mnt/ sudo -u "$username" yay -S transset-df --noconfirm
+arch-chroot /mnt/ sudo -u "$username" yay -S hardinfo --noconfirm
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[31mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[32m"

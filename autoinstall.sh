@@ -255,8 +255,9 @@ fi
 #Установка и настройка программы для фильтрования зеркал и обновление ключей.
 echo -e "\033[31mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[32m"
 pacman -Sy archlinux-keyring reflector --noconfirm
-pacman-key --populate archlinux
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+pacman-key --init
+pacman-key --populate archlinux
 #
 #Установка ОС.
 echo -e "\033[31mУстановка ОС.\033[32m"
@@ -1284,7 +1285,7 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR.
 echo -e "\033[31mУстановка программ из AUR.\033[32m"
-arch-chroot /mnt/ sudo -u "$username" yay -S transset-df hardinfo debtap libreoffice-extension-languagetool --noconfirm
+arch-chroot /mnt/ sudo -u "$username" yay -S hardinfo debtap libreoffice-extension-languagetool --noconfirm
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[31mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[32m"
