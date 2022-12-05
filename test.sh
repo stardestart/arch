@@ -344,7 +344,7 @@ fi
 #
 #Установка программ.
 echo -e "\033[31mУстановка программ.\033[32m"
-arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector --noconfirm
+arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Поиск не смонтированных разделов.
@@ -542,8 +542,6 @@ echo '[[ -f ~/.profile ]] && . ~/.profile' > /mnt/home/"$username"/.bash_profile
 #Создание bashrc.
 echo -e "\033[31mСоздание bashrc.\033[32m"
 echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
-#Автоматическая прозрачность xterm.
-[ -n "$XTERM_VERSION" ] && transset-df --id "$WINDOWID" >/dev/null
 alias grep="grep --color=always" #Раскрашиваем grep.
 alias ip="ip --color=always" #Раскрашиваем ip.
 alias diff="diff --color=always" #Раскрашиваем diff.
@@ -604,8 +602,11 @@ Exec=/usr/lib/notification-daemon-1.0/notification-daemon' > /mnt/usr/share/dbus
 #
 #Создание конфига picom.
 echo -e "\033[31mСоздание конфига picom.\033[32m"
-echo -e "# Прозрачность неактивных окон (0,1–1,0).
-inactive-opacity = 0.9;
+echo -e '# Прозрачность активных окон (0,1–1,0).
+active-opacity = 0.9;
+#
+# Прозрачность неактивных окон (0,1–1,0).
+inactive-opacity = 0.8;
 #
 # Затемнение неактивных окон (0,0–1,0).
 inactive-dim = 0.4;
@@ -616,6 +617,9 @@ vsync = true;
 # Отключить прозрачность и затемнение загаловков окон.
 mark-ovredir-focused = true;
 #
+#Пусть неактивная непрозрачность, переопределяет значения окон.
+inactive-opacity-override = false;
+#
 wintypes:
 {
 # Отключить прозрачность выпадающего меню.
@@ -624,12 +628,31 @@ dropdown_menu = { opacity = false; };
 # Отключить прозрачность всплывающего меню.
 popup_menu = { opacity = false; }
 };
-
-# Прозрачность i3status и dmenu.
+#
+# Прозрачность i3status, dmenu, XTerm и заголовков окон.
 opacity-rule = [
-\"80:class_g = 'i3bar' && !focused\",
-\"90:class_g = 'dmenu' && !focused\"
-];" > /mnt/home/"$username"/.config/picom.conf
+"90:class_g = \047i3bar\047",
+"90:class_g = \047dmenu\047",
+"50:class_g = \047XTerm\047",
+"80:class_g = \047i3-frame\047"
+#
+#Закругленные углы.
+corner-radius = 5;
+rounded-corners-exclude = [
+  "window_type = \047dock\047"
+];
+#
+#Размытие.
+backend = "glx"
+blur: {
+  method = "dual_kawase";
+  strength = 5;
+}
+blur-background-exclude = [
+  "window_type = \047dock\047",
+  "window_type = \047notification\047",
+  "window_type = \047tooltip\047"
+];' > /mnt/home/"$username"/.config/picom.conf
 #
 #Создание xresources.
 echo -e "\033[31mСоздание xresources.\033[32m"
@@ -653,16 +676,10 @@ xterm*background: #2b2b2b
 xterm*foreground: #2bf92b
 !
 !Указывает, должна ли отображаться полоса прокрутки.
-xterm*scrollBar: true
-!
-!Определяет ширину полосы прокрутки.
-xterm*scrollbar.width: '"$(($font/2))"'
+xterm*scrollBar: false
 !
 !Указывает, должно ли нажатие клавиши автоматически перемещать полосу прокрутки в нижнюю часть области прокрутки.
 xterm*scrollKey: true
-!
-!Указывает, должна ли полоса прокрутки отображаться справа.
-xterm*rightScrollBar: true
 !
 !Размер курсора.
 Xcursor.size: '"$(($font*3))"'
@@ -821,7 +838,7 @@ mode "resize" {
 #
 # Некоторые видеодрайверы X11 обеспечивают поддержку только Xinerama вместо RandR.
 # В такой ситуации нужно сказать i3, чтобы он явно использовал подчиненный Xinerama API.
-force_xinerama yes
+#force_xinerama yes
 #
 ########### Внешний вид ###########
 #
@@ -832,28 +849,23 @@ font pango:Fantasque Sans Mono Bold '"$font"'
 gaps inner '"$font"'
 #
 # Толщина границы окна.
-default_border normal '"$(($font/3))"'
-#
-# Толщина границы плавающего окна.
-default_floating_border normal '"$(($font/3))"'
+default_border normal 0
 #
 # Устанавливаем цвет рамки активного окна #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.
-client.focused #2b2bf9 #2b2bf9 #2bf92b #2b2bf9 #2b2bf9
+client.focused #2b2b2b #2b2b2b #2bf92b #2b2b2b #2b2b2b
 #
 # Устанавливаем цвет рамки неактивного окна #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.
-client.unfocused #2b2b0f #2b2b0f #b2b2b2 #2b2b0f #2b2b0f
+client.unfocused #000000 #000000 #b2b2b2 #000000 #000000
 #
 # Печатать все заголовки окон жирным, красным шрифтом.
 # for_window [all] title_format "<span foreground="#d64c2f"><b>Заголовок | %title</b></span>"
 #
 # Включить значки окон для всех окон с дополнительным горизонтальным отступом.
-for_window [all] title_window_icon padding '"$(($font/3))"'px
+for_window [all] title_window_icon padding '"$font"'px
 #
 # Внешний вид XTerm
 # Включить плавающий режим для всех окон XTerm.
 for_window [class="XTerm"] floating enable
-# Сделать границу в 0 пикселей для всех окон XTerm.
-for_window [class="XTerm"] border normal 0
 # Липкие плавающие окна, окно XTerm прилипло к стеклу.
 for_window [class="XTerm"] sticky enable
 # Задаем размеры окна XTerm.
@@ -1099,6 +1111,7 @@ type=kbindicator
 [mainmenu]
 alignment=Left
 icon=/usr/share/icons/Papirus-Dark/128x128/apps/distributor-logo-archlinux.svg
+menu_file=/etc/xdg/menus/arch-applications.menu
 ownIcon=true
 showText=false
 type=mainmenu
