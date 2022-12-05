@@ -636,6 +636,7 @@ opacity-rule = [
 "90:class_g = \047dmenu\047",
 "50:class_g = \047XTerm\047",
 "80:class_g = \047i3-frame\047"
+];
 #
 #Закругленные углы.
 corner-radius = 5;
