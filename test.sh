@@ -361,7 +361,7 @@ masslabel+='
 ${color #f92b2b}/home/'"$username"'/'"${massparts[$j]}"'${hr 3}
 ${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"${massparts[$j]}"'} / ${color #f92b2b}${fs_used /home/'"$username"'/'"${massparts[$j]}"'} / $color${fs_free /home/'"$username"'/'"${massparts[$j]}"'}
 (${fs_type /home/'"$username"'/'"${massparts[$j]}"'})${fs_bar 4 /home/'"$username"'/'"${massparts[$j]}"'}'
-                if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"${massparts[$j]}" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}';
+                if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"${massparts[$j]}" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
                     then
 masslabel+='
 ${color #b2b2b2}Температура:$color$alignr${execi 10 smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk ''!($NF="")'' | awk ''{print $NF}''°C'
@@ -375,7 +375,7 @@ masslabel+='
 ${color #f92b2b}/home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'${hr 3}
 ${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${color #f92b2b}${fs_used /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / $color${fs_free /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}
 (${fs_type /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'})${fs_bar 4 /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}'
-                if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"${massparts[$j]}" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}';
+                if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"${massparts[$j]}" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
                     then
 masslabel+='
 ${color #b2b2b2}Температура:$color$alignr${execi 10 smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk ''!($NF="")'' | awk ''{print $NF}''°C'
