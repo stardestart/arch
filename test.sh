@@ -339,8 +339,16 @@ echo -e "\033[31mУстановка программ.\033[32m"
 arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
+#Проверка наличия температурного датчика у системного диска.
+if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"$sysdisk" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
+    then
+sysdisktemp+='
+${color #b2b2b2}Температура:$color$alignr${execi 10 smartctl -al scttempsts /dev/'"$sysdisk"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047°C'
+fi
+#
 #Поиск не смонтированных разделов.
 echo -e "\033[31mПоиск не смонтированных разделов.\033[32m"
+masslabel+='#Блок "Диски и разделы".'
 for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
     do
         if [ -z "$(lsblk -no LABEL /dev/"${massparts[$j]}")" ];
@@ -430,6 +438,7 @@ echo -e "\033[31mФормируется конфиг conky.\033[32m"
 core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
     do
+        coremassconf+='${color #b2b2b2}Температура ядер ЦП:$color'
         coremassconf+='
 $alignr${execi 10 sensors | grep "Core '$i':" | awk \047{print $1, $2, $3}\047}'
     done
@@ -437,6 +446,7 @@ $alignr${execi 10 sensors | grep "Core '$i':" | awk \047{print $1, $2, $3}\047}'
 #Параметры для видеокарт nvidia.
 if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
     nvidiac='
+#Блок "Видеокарта Nvidia".
 ${color #f92b2b}GPU${hr 3}
 ${color #b2b2b2}Частота ГП:$color$alignr${nvidia gpufreq} Mhz
 ${color #b2b2b2}Видео ОЗУ:$color$alignr${nvidia mem} / ${nvidia memmax} MiB
@@ -486,9 +496,7 @@ ${color #f92b2b}CPU${hr 3}$color
 ${color #b2b2b2}Нагрузка ЦП:$color$alignr$cpu %
 #Частота ЦП.
 ${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz
-${color #b2b2b2}Температура ядер ЦП:
-#Температура ядер ЦП. '"${coremassconf[@]}"'
-#Блок "Видеокарта Nvidia". '"$nvidiac"'
+#Температура ядер ЦП.'"${coremassconf[@]}"''"$nvidiac"'
 #Блок "ОЗУ".
 #Разделитель.
 ${color #f92b2b}RAM${hr 3}$color
@@ -527,14 +535,13 @@ ${top name 3} $alignr ${top pid 3}|${top cpu 3}|${top mem 3}
 ${top name 4} $alignr ${top pid 4}|${top cpu 4}|${top mem 4}
 #Информация о процессе 5.
 ${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}
-#Блок "Диск1".
+#Блок "Системный диск".
 #Разделитель.
 ${color #f92b2b}/home${hr 3}$color
 #Общее/Занято/Свободно.
 ${color #b2b2b2}Объём:$alignr${fs_size /home} / ${color #f92b2b}${fs_used /home} / $color${fs_free /home}
 #Полоса загрузки.
-$color(${fs_type /home})${fs_bar 4 /home}
-#Блок "Диски".'"${masslabel[@]}"'
+$color(${fs_type /home})${fs_bar 4 /home}'"$sysdisktemp"''"${masslabel[@]}"'
 ]]' > /mnt/home/"$username"/.config/conky/conky.conf
 #
 #Создание bash_profile.
