@@ -346,7 +346,7 @@ sysdisktemp+='
 ${color #b2b2b2}Температура:$color$alignr${execi 10 smartctl -al scttempsts /dev/'"$sysdisk"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047°C'
 fi
 #
-#Поиск не смонтированных разделов.
+#Поиск не смонтированных разделов, проверка наличия у них температурного датчика и метки.
 echo -e "\033[31mПоиск не смонтированных разделов.\033[32m"
 masslabel+='#Блок "Диски и разделы".'
 for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
@@ -358,7 +358,13 @@ for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
                     else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/"${massparts[$j]}"
                 fi
 masslabel+='
-${color #f92b2b}/home/'"$username"'/'"${massparts[$j]}"'${hr 3}
+${color #f92b2b}/home/'"$username"'/'"${massparts[$j]}"'${hr 3}'
+                if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"${massparts[$j]}" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
+                    then
+masslabel+='
+${color #b2b2b2}Температура:$color$alignr${execi 10 smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047°C'
+                fi
+masslabel+='
 ${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"${massparts[$j]}"'} / ${color #f92b2b}${fs_used /home/'"$username"'/'"${massparts[$j]}"'} / $color${fs_free /home/'"$username"'/'"${massparts[$j]}"'}
 (${fs_type /home/'"$username"'/'"${massparts[$j]}"'})${fs_bar 4 /home/'"$username"'/'"${massparts[$j]}"'}'
                 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"${massparts[$j]}" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
@@ -372,14 +378,15 @@ ${color #b2b2b2}Температура:$color$alignr${execi 10 smartctl -al sctt
                     else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
                 fi
 masslabel+='
-${color #f92b2b}/home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'${hr 3}
-${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${color #f92b2b}${fs_used /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / $color${fs_free /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}
-(${fs_type /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'})${fs_bar 4 /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}'
+${color #f92b2b}/home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'${hr 3}'
                 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"${massparts[$j]}" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
                     then
 masslabel+='
 ${color #b2b2b2}Температура:$color$alignr${execi 10 smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047°C'
                 fi
+masslabel+='
+${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${color #f92b2b}${fs_used /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / $color${fs_free /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}
+(${fs_type /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'})${fs_bar 4 /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}'
         fi
     done
 #
@@ -519,8 +526,7 @@ ${color #b2b2b2}Скорость приёма:$color$alignr${upspeedf '"$netdev"
 #Скорость отдачи.
 ${color #b2b2b2}Скорость отдачи:$color$alignr${downspeedf '"$netdev"'}
 #IP адрес.
-${color #b2b2b2}IP адрес:$color$alignr${curl eth0.me}
-#Блок "Процессы".
+${color #b2b2b2}IP адрес:$color$alignr${curl eth0.me}#Блок "Процессы".
 #Разделитель.
 ${color #f92b2b}Процессы${hr 3}$color
 #Таблица процессов.
