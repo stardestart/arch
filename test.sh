@@ -443,9 +443,10 @@ echo -e "\033[31mФормируется конфиг conky.\033[32m"
 #
 #Температура ядер процессора.
 core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
+coremassconf+='
+${color #b2b2b2}Температура ядер ЦП:$color'
 for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
     do
-        coremassconf+='${color #b2b2b2}Температура ядер ЦП:$color'
         coremassconf+='
 $alignr${execi 10 sensors | grep "Core '$i':" | awk \047{print $1, $2, $3}\047}'
     done
