@@ -5,7 +5,7 @@ loadkeys ru
 setfont ter-v18n
 #
 #Сброс переменных и размонтирование разделов, на случай повторного запуска скрипта.
-echo -e "\033[31mСброс переменных и размонтирование разделов, на случай повторного запуска скрипта.\033[32m"
+echo -e "\033[31mСброс переменных и размонтирование разделов, на случай повторного запуска скрипта.\033[0m"
 swapoff -a
 umount -R /mnt
 #Переменная назначит образ микрокода ЦП для UEFI загрузчика.
@@ -57,17 +57,17 @@ nvidiac=""
 fontqt=""
 #
 #Определяем процессор.
-echo -e "\033[31mОпределяем процессор.\033[32m"
+echo -e "\033[34mОпределяем процессор.\033[0m"
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="\ninitrd /amd-ucode.img"
 elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="\ninitrd /intel-ucode.img"
 fi
-echo -e "Процессор:"$(lscpu | grep -i "model name")""
+echo -e "\033[34mПроцессор:"$(lscpu | grep -i "model name")"\033[0m"
 #
 #Определяем сетевое устройство.
-echo -e "\033[31mОпределяем сетевое устройство.\033[32m"
+echo -e "\033[34mОпределяем сетевое устройство.\033[0m"
 if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
     then
-        echo -e "\033[41m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m\033[36m";read -p ">" namewifi
+        echo -e "\033[47m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m\033[37m";read -p ">\033[0m" namewifi
         netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
 fi
 if [ -z "$namewifi" ];
@@ -131,17 +131,9 @@ fi
 #
 #Сбор данных пользователя.
 echo -e "\033[31mСбор данных пользователя.\033[32m"
-echo "
-"
 echo -e "\033[41m\033[30mВведите имя компьютера:\033[0m\033[36m";read -p ">" hostname
-echo "
-"
 echo -e "\033[41m\033[30mВведите имя пользователя:\033[0m\033[36m";read -p ">" username
-echo "
-"
 echo -e "\033[41m\033[30mВведите пароль для "$username":\033[0m\033[36m";read -p ">" passuser
-echo "
-"
 echo -e "\033[41m\033[30mВведите пароль для root:\033[0m\033[36m";read -p ">" passroot
 echo -e "\033[31mВыберите разрешение монитора:\033[32m"
 PS3="$(echo -e "\033[41m\033[30mПункт №:\033[0m\033[36m
@@ -364,7 +356,7 @@ ${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"${massparts[$j
                 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"${massparts[$j]}" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
                     then
 masslabel+='
-${color #b2b2b2}Температура:$color$alignr${execi 10 smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk ''!($NF="")'' | awk ''{print $NF}''°C'
+${color #b2b2b2}Температура:$color$alignr${execi 10 smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047°C'
                 fi
             else
                 if [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "vfat" ];
@@ -378,7 +370,7 @@ ${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"$(lsblk -no LA
                 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"${massparts[$j]}" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
                     then
 masslabel+='
-${color #b2b2b2}Температура:$color$alignr${execi 10 smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk ''!($NF="")'' | awk ''{print $NF}''°C'
+${color #b2b2b2}Температура:$color$alignr${execi 10 smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047°C'
                 fi
         fi
     done
@@ -439,7 +431,7 @@ core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
     do
         coremassconf+='
-$alignr${execi 10 sensors | grep "Core '$i':" | awk ''{print $1, $2, $3}''}'
+$alignr${execi 10 sensors | grep "Core '$i':" | awk \047{print $1, $2, $3}\047}'
     done
 #
 #Параметры для видеокарт nvidia.
@@ -453,7 +445,7 @@ fi
 #
 #Создание директории и конфига.
 mkdir -p /mnt/home/"$username"/.config/conky
-echo 'conky.config = { --Внешний вид.
+echo -e 'conky.config = { --Внешний вид.
 alignment = "top_right", --Располжение виджета.
 border_inner_margin = '"$font"', --Отступ от внутренних границ.
 border_outer_margin = '"$font"', --Отступ от края окна.
