@@ -442,14 +442,17 @@ echo -e "localhost\n192.168.0.0/24" >> /mnt/etc/sane.d/net.conf
 echo -e "\033[31mФормируется конфиг conky.\033[32m"
 #
 #Температура ядер процессора.
+if [ -n "$(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs)" ]; then
 core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 coremassconf+='
+#Температура ядер ЦП.
 ${color #b2b2b2}Температура ядер ЦП:$color'
 for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
     do
         coremassconf+='
 $alignr${execi 10 sensors | grep "Core '$i':" | awk \047{print $1, $2, $3}\047}'
     done
+fi
 #
 #Параметры для видеокарт nvidia.
 if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
@@ -503,8 +506,7 @@ ${color #f92b2b}CPU${hr 3}$color
 #Нагрузка ЦП.
 ${color #b2b2b2}Нагрузка ЦП:$color$alignr$cpu %
 #Частота ЦП.
-${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz
-#Температура ядер ЦП.'"${coremassconf[@]}"''"$nvidiac"'
+${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz'"${coremassconf[@]}"''"$nvidiac"'
 #Блок "ОЗУ".
 #Разделитель.
 ${color #f92b2b}RAM${hr 3}$color
