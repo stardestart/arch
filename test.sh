@@ -875,7 +875,7 @@ font pango:Fantasque Sans Mono Bold '"$font"'
 gaps inner '"$font"'
 #
 # Толщина границы окна.
-default_border normal 0
+default_border pixel 1
 #
 # Устанавливаем цвет рамки активного окна #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.
 client.focused #2b2b2b #2b2b2b #2bf92b #2b2b2b #2b2b2b
