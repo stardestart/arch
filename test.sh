@@ -1323,8 +1323,13 @@ echo -e "\033[36mУстановка завершена, после переза�
 #fdisk -l
 lsblk -l
 arch-chroot /mnt pacman -S xdotool
-arch-chroot /mnt startx <<EOF
+arch-chroot /mnt startx
+sleep 10
 xdotool key Return
+sleep 10
+xdotool key Return
+sleep 10
 xdotool key super+Return
+sleep 10
 xdotool key ctrl+d
-EOF
+sleep 10
