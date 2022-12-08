@@ -5,7 +5,7 @@ loadkeys ru
 setfont ter-v18n
 #
 #Сброс переменных и размонтирование разделов, на случай повторного запуска скрипта.
-echo -e "\033[34mСброс переменных и размонтирование разделов, на случай повторного запуска скрипта.\033[0m"
+echo -e "\033[36mСброс переменных и размонтирование разделов, на случай повторного запуска скрипта.\033[0m"
 swapoff -a
 umount -R /mnt
 #Переменная назначит образ микрокода ЦП для UEFI загрузчика.
@@ -59,14 +59,14 @@ fontqt=""
 picomconf=""
 #
 #Определяем процессор.
-echo -e "\033[34mОпределяем процессор.\033[0m"
+echo -e "\033[36mОпределяем процессор.\033[0m"
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="\ninitrd /amd-ucode.img"
 elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="\ninitrd /intel-ucode.img"
 fi
-echo -e "\033[34mПроцессор:"$(lscpu | grep -i "model name")"\033[0m"
+echo -e "\033[36mПроцессор:"$(lscpu | grep -i "model name")"\033[0m"
 #
 #Определяем сетевое устройство.
-echo -e "\033[34mОпределяем сетевое устройство.\033[0m"
+echo -e "\033[36mОпределяем сетевое устройство.\033[0m"
 if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
     then
         echo -e "\033[47m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m\033[37m";read -p ">" namewifi
@@ -79,15 +79,15 @@ if [ -z "$namewifi" ];
         echo -e "\033[47m\033[30mПароль wifi:\033[0m\033[37m";read -p ">" passwifi
         iwctl --passphrase "$passwifi" station "$netdev" connect "$namewifi"
 fi
-echo -e "\033[34mСетевое устройство:"$netdev"\033[0m"
+echo -e "\033[36mСетевое устройство:"$netdev"\033[0m"
 #
 #Определяем часовой пояс.
-echo -e "\033[34mОпределяем часовой пояс.\033[0m"
+echo -e "\033[36mОпределяем часовой пояс.\033[0m"
 timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
-echo -e "\033[34mЧасовой пояс:"$(curl https://ipapi.co/timezone)"\033[0m"
+echo -e "\033[36mЧасовой пояс:"$(curl https://ipapi.co/timezone)"\033[0m"
 #
 #Определяем физический диск на который будет установлена ОС.
-echo -e "\033[34mОпределяем физический диск на который будет установлена ОС.\033[0m"
+echo -e "\033[36mОпределяем физический диск на который будет установлена ОС.\033[0m"
 massdisks=($(lsblk -fno +TRAN,TYPE | grep -ivE "├─|└─|rom|usb|/|SWAP|part" | awk '{print $1}'))
 if [ "${#massdisks[*]}" = 1 ]; then sysdisk="${massdisks[0]}"
 elif [ "${#massdisks[*]}" = 0 ];
@@ -101,7 +101,7 @@ elif [ "${#massdisks[*]}" = 0 ];
                 grepmassdisks+="${massdisks[$j]}|"
             done
         lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisks"
-        echo -e "\033[36m"
+        echo -e "\033[32m"
         read -p ">" sysdisk
         massdisks=( ${massdisks[@]/$sysdisk} )
         for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
@@ -114,10 +114,10 @@ elif [ "${#massdisks[*]}" = 0 ];
                 fi
             done
 fi
-echo -e "\033[34mФизический диск на который будет установлена ОС:"$sysdisk"\033[0m"
+echo -e "\033[36mФизический диск на который будет установлена ОС:"$sysdisk"\033[0m"
 #
 #Определяем есть ли nvme контролер системного диска.
-echo -e "\033[34mОпределяем есть ли nvme контролер системного диска.\033[0m"
+echo -e "\033[36mОпределяем есть ли nvme контролер системного диска.\033[0m"
 if [ -z "$(echo "$sysdisk" | grep -i "nvme")" ];
     then
         p1="1"
@@ -132,13 +132,13 @@ if [ -z "$(echo "$sysdisk" | grep -i "nvme")" ];
 fi
 #
 #Сбор данных пользователя.
-echo -e "\033[34mСбор данных пользователя.\033[0m"
-echo -e "\033[47m\033[30mВведите имя компьютера:\033[0m\033[36m";read -p ">" hostname
-echo -e "\033[47m\033[30mВведите имя пользователя:\033[0m\033[36m";read -p ">" username
-echo -e "\033[47m\033[30mВведите пароль для "$username":\033[0m\033[36m";read -p ">" passuser
-echo -e "\033[47m\033[30mВведите пароль для root:\033[0m\033[36m";read -p ">" passroot
-echo -e "\033[34mВыберите разрешение монитора:\033[0m"
-PS3="$(echo -e "\033[47m\033[30mПункт №:\033[0m\033[36m
+echo -e "\033[36mСбор данных пользователя.\033[0m"
+echo -e "\033[47m\033[30mВведите имя компьютера:\033[0m\033[32m";read -p ">" hostname
+echo -e "\033[47m\033[30mВведите имя пользователя:\033[0m\033[32m";read -p ">" username
+echo -e "\033[47m\033[30mВведите пароль для "$username":\033[0m\033[32m";read -p ">" passuser
+echo -e "\033[47m\033[30mВведите пароль для root:\033[0m\033[32m";read -p ">" passroot
+echo -e "\033[36mВыберите разрешение монитора:\033[0m"
+PS3="$(echo -e "\033[47m\033[30mПункт №:\033[0m\033[32m
 >")"
 select resolution in "~480p." "~720p-1080p." "~4K."
 do
@@ -158,12 +158,12 @@ do
             xterm="2000 1000"
             break
             ;;
-        *) echo -e "\033[34mЧто значит - "$REPLY"? До трёх посчитать не можешь и Arch Linux ставишь?\033[36m";;
+        *) echo -e "\033[36mЧто значит - "$REPLY"? До трёх посчитать не можешь и Arch Linux ставишь?\033[32m";;
     esac
 done
 #
 #Вычисление swap.
-echo -e "\033[34mВычисление swap.\033[0m"
+echo -e "\033[36mВычисление swap.\033[0m"
 ram="$(free -g | grep -i mem | awk '{print $2}')"
 if [ "$ram" -ge 128 ]; then swap="11G"
 elif [ "$ram" -ge 64 ]; then swap="8G"
@@ -174,13 +174,13 @@ elif [ "$ram" -ge 12 ]; then swap="3G"
 elif [ "$ram" -ge 6 ]; then swap="2G"
 elif [ "$ram" -lt 6 ]; then swap="1G"
 fi
-echo -e "\033[34mРазмер SWAP раздела: $swap\033[0m"
+echo -e "\033[36mРазмер SWAP раздела: $swap\033[0m"
 #
 #Разметка системного диска.
-echo -e "\033[34mРазметка системного диска.\033[0m"
+echo -e "\033[36mРазметка системного диска.\033[0m"
 if [ -z "$(efibootmgr | grep Boot)" ];
     then
-        echo -e "\033[34mLegacy boot.\033[0m"
+        echo -e "\033[36mLegacy boot.\033[0m"
 fdisk /dev/"$sysdisk"<<EOF
 g
 n
@@ -215,7 +215,7 @@ mount /dev/"$sysdisk""$p4" /mnt
 mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
 swapon /dev/"$sysdisk""$p3"
     else
-        echo -e "\033[34mUEFI boot.\033[0m"
+        echo -e "\033[36mUEFI boot.\033[0m"
 fdisk /dev/"$sysdisk"<<EOF
 g
 n
@@ -247,23 +247,23 @@ swapon /dev/"$sysdisk""$p2"
 fi
 #
 #Установка и настройка программы для фильтрования зеркал и обновление ключей.
-echo -e "\033[34mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
+echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
 pacman -Sy archlinux-keyring reflector --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 pacman-key --init
 pacman-key --populate archlinux
 #
 #Установка ОС.
-echo -e "\033[34mУстановка ОС.\033[0m"
+echo -e "\033[36mУстановка ОС.\033[0m"
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware
 #
 #Установка часового пояса.
-echo -e "\033[34mУстановка часового пояса.\033[0m"
+echo -e "\033[36mУстановка часового пояса.\033[0m"
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$(curl https://ipapi.co/timezone)" /etc/localtime
 arch-chroot /mnt hwclock --systohc
 #
 #Настройка локали.
-echo -e "\033[34mНастройка локали.\033[0m"
+echo -e "\033[36mНастройка локали.\033[0m"
 arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
 arch-chroot /mnt sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
 echo -e "LANG=\"ru_RU.UTF-8\"" > /mnt/etc/locale.conf
@@ -281,7 +281,7 @@ $passroot
 EOF
 #
 #Создание пользователя.
-echo -e "\033[34mСоздание пользователя.\033[0m"
+echo -e "\033[36mСоздание пользователя.\033[0m"
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "$username"
 #
 #Пароль пользователя.
@@ -294,7 +294,7 @@ EOF
 echo ""$username" ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
 #
 #Установим загрузчик.
-echo -e "\033[34mУстановка загрузчика.\033[0m"
+echo -e "\033[36mУстановка загрузчика.\033[0m"
 if [ -z "$(efibootmgr | grep Boot)" ];
     then
         arch-chroot /mnt pacman -Sy grub --noconfirm
@@ -308,22 +308,22 @@ if [ -z "$(efibootmgr | grep Boot)" ];
 fi
 #
 #Установим микроинструкции для процессора.
-echo -e "\033[34mУстановка микроинструкций для процессора.\033[0m"
+echo -e "\033[36mУстановка микроинструкций для процессора.\033[0m"
 if [ "$microcode" = "\ninitrd /amd-ucode.img" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm
 elif [ "$microcode" = "\ninitrd /intel-ucode.img" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm
 fi
 #
 #Настройка установщика.
-echo -e "\033[34mНастройка установщика.\033[0m"
+echo -e "\033[36mНастройка установщика.\033[0m"
 arch-chroot /mnt sed -i "s/#Color/Color/" /etc/pacman.conf
 echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
 #
 #Настройка sysrq.
-echo -e "\033[34mНастройка sysrq.\033[0m"
+echo -e "\033[36mНастройка sysrq.\033[0m"
 echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установим видеодрайвер.
-echo -e "\033[34mУстановка видеодрайвера.\033[0m"
+echo -e "\033[36mУстановка видеодрайвера.\033[0m"
 if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then arch-chroot /mnt pacman -Sy vulkan-radeon xf86-video-amdgpu lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau --noconfirm
 elif [ -n "$(lspci | grep -i vga | grep -i ati)" ]; then arch-chroot /mnt pacman -Sy xf86-video-ati libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau --noconfirm
 elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
@@ -333,7 +333,7 @@ elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mn
 fi
 #
 #Установка программ.
-echo -e "\033[34mУстановка программ.\033[0m"
+echo -e "\033[36mУстановка программ.\033[0m"
 arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools clinfo --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
@@ -345,7 +345,7 @@ ${color #b2b2b2}Температура:$color$alignr${execi 10 smartctl -al sctt
 fi
 #
 #Поиск не смонтированных разделов, проверка наличия у них температурного датчика и метки.
-echo -e "\033[34mПоиск не смонтированных разделов.\033[0m"
+echo -e "\033[36mПоиск не смонтированных разделов.\033[0m"
 masslabel+='#Блок "Диски и разделы".'
 for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
     do
@@ -389,11 +389,11 @@ ${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"$(lsblk -no LA
     done
 #
 #Копирование файла автоматического монтирования разделов.
-echo -e "\033[34mПеренос genfstab.\033[0m"
+echo -e "\033[36mПеренос genfstab.\033[0m"
 genfstab -pU /mnt >> /mnt/etc/fstab
 #
 #Создание общего конфига загрузки оконного менеджера.
-echo -e "\033[34mСоздание xinit.\033[0m"
+echo -e "\033[36mСоздание xinit.\033[0m"
 echo '#Указание на конфигурационные файлы.
 userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
@@ -424,7 +424,7 @@ feh --bg-max --randomize --no-fehbg /usr/share/backgrounds/archlinux/ & #Авт�
 exec i3 #Автозапуск i3.' > /mnt/etc/X11/xinit/xinitrc
 #
 #Создание общего конфига клавиатуры.
-echo -e "\033[34mСоздание 00-keyboard.\033[0m"
+echo -e "\033[36mСоздание 00-keyboard.\033[0m"
 echo 'Section "InputClass"
 Identifier "system-keyboard"
 MatchIsKeyboard "on"
@@ -433,11 +433,11 @@ Option "XkbOptions" "grp:alt_shift_toggle,terminate:ctrl_alt_bksp"
 EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
 #
 #Создание общего конфига сканера.
-echo -e "\033[34mСоздание sane.d.\033[0m"
+echo -e "\033[36mСоздание sane.d.\033[0m"
 mkdir -p /mnt/etc/sane.d
 echo -e "localhost\n192.168.0.0/24" >> /mnt/etc/sane.d/net.conf
 #
-echo -e "\033[34mФормируется конфиг conky.\033[0m"
+echo -e "\033[36mФормируется конфиг conky.\033[0m"
 #
 #Температура ядер процессора.
 if [ -n "$(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs)" ]; then
@@ -552,11 +552,11 @@ $color(${fs_type /home})${fs_bar 4 /home}'"$sysdisktemp"''"${masslabel[@]}"'
 ]]' > /mnt/home/"$username"/.config/conky/conky.conf
 #
 #Создание bash_profile.
-echo -e "\033[34mСоздание bash_profile.\033[0m"
+echo -e "\033[36mСоздание bash_profile.\033[0m"
 echo '[[ -f ~/.profile ]] && . ~/.profile' > /mnt/home/"$username"/.bash_profile
 #
 #Создание bashrc.
-echo -e "\033[34mСоздание bashrc.\033[0m"
+echo -e "\033[36mСоздание bashrc.\033[0m"
 echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
 alias grep="grep --color=always" #Раскрашиваем grep.
 alias ip="ip --color=always" #Раскрашиваем ip.
@@ -606,12 +606,12 @@ export HISTCONTROL="ignoreboth"
 export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' > /mnt/home/"$username"/.bashrc
 #
 #Создание profile.
-echo -e "\033[34mСоздание profile.\033[0m"
+echo -e "\033[36mСоздание profile.\033[0m"
 echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
 export QT_QPA_PLATFORMTHEME="qt5ct" #Изменение внешнего вида приложений использующих qt.' > /mnt/home/"$username"/.profile
 #
 #Создание конфига сервера уведомлений.
-echo -e "\033[34mСоздание конфига сервера уведомлений.\033[0m"
+echo -e "\033[36mСоздание конфига сервера уведомлений.\033[0m"
 echo '[D-BUS Service]
 Name=org.freedesktop.Notifications
 Exec=/usr/lib/notification-daemon-1.0/notification-daemon' > /mnt/usr/share/dbus-1/services/org.freedesktop.Notifications.service
@@ -637,7 +637,7 @@ blur-background-exclude = [ "window_type = \047dock\047",
 fi
 #
 #Создание конфига picom.
-echo -e "\033[34mСоздание конфига picom.\033[0m"
+echo -e "\033[36mСоздание конфига picom.\033[0m"
 echo -e '# Прозрачность активных окон (0,1–1,0).
 active-opacity = 0.9;
 #
@@ -692,7 +692,7 @@ detect-client-leader = true;
 use-damage = true;'"$picomconf"'' > /mnt/home/"$username"/.config/picom.conf
 #
 #Создание xresources.
-echo -e "\033[34mСоздание xresources.\033[0m"
+echo -e "\033[36mСоздание xresources.\033[0m"
 echo '!Настройка внешнего вида xterm.
 !
 !Задает имя типа терминала, которое будет установлено в переменной среды TERM.
@@ -745,7 +745,7 @@ xscreensaver-auth.?.passwd.thermometer.foreground: #f92b2b
 xscreensaver-auth.?.passwd.thermometer.background: #b2f9b2' > /mnt/home/"$username"/.Xresources
 #
 #Создание директории и конфига i3.
-echo -e "\033[34mСоздание конфига i3.\033[0m"
+echo -e "\033[36mСоздание конфига i3.\033[0m"
 mkdir -p /mnt/home/"$username"/.config/i3
 echo -e '########### Основные настройки ###########
 #
@@ -996,7 +996,7 @@ bar {
 }' > /mnt/home/"$username"/.config/i3/config
 #
 #Создание конфига i3status.
-echo -e "\033[34mСоздание конфига i3status.\033[0m"
+echo -e "\033[36mСоздание конфига i3status.\033[0m"
 echo 'general { #Основные настройки.
     colors = true #Включение/выключение поддержки цветов.
     color_good = "#2bf92b" #Цвет OK.
@@ -1047,14 +1047,14 @@ tztime 0 { #Вывод разделителя.
     format = "|" } #Формат вывода.' > /mnt/home/"$username"/.i3status.conf
 #
 #Создание конфига redshift.
-echo -e "\033[34mСоздание конфига redshift.\033[0m"
+echo -e "\033[36mСоздание конфига redshift.\033[0m"
 echo '[redshift]
 allowed=true
 system=false
 users=' >> /mnt/etc/geoclue/geoclue.conf
 #
 #Отключение запроса пароля.
-echo -e "\033[34mОтключение запроса пароля.\033[0m"
+echo -e "\033[36mОтключение запроса пароля.\033[0m"
 echo 'polkit.addRule(function(action, subject) {
     if (subject.isInGroup("wheel")) {
         return polkit.Result.YES;
@@ -1062,7 +1062,7 @@ echo 'polkit.addRule(function(action, subject) {
 });' > /mnt/etc/polkit-1/rules.d/49-nopasswd_global.rules
 #
 #Создание директории и конфига qt5ct.
-echo -e "\033[34mСоздание конфига qt5ct.\033[0m"
+echo -e "\033[36mСоздание конфига qt5ct.\033[0m"
 if [ "$font" = "8" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@ \0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0K\x11)"
 elif [ "$font" = "10" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@$\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x11)"
 elif [ "$font" = "12" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@(\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x11)"
@@ -1098,7 +1098,7 @@ force_raster_widgets=1
 ignored_applications=@Invalid()' > /mnt/home/$username/.config/qt5ct/qt5ct.conf
 #
 #Создание директории и конфига gtk.
-echo -e "\033[34mСоздание конфига gtk.\033[0m"
+echo -e "\033[36mСоздание конфига gtk.\033[0m"
 mkdir -p /mnt/home/$username/.config/gtk-3.0/
 echo '[Settings]
 gtk-application-prefer-dark-theme=true
@@ -1123,7 +1123,7 @@ gtk-xft-hintstyle=hintmedium
 gtk-xft-rgba=rgb' > /mnt/home/"$username"/.config/gtk-3.0/settings.ini
 #
 #Создание директории и конфига lxqt-panel.
-echo -e "\033[34mСоздание конфига lxqt-panel.\033[0m"
+echo -e "\033[36mСоздание конфига lxqt-panel.\033[0m"
 mkdir -p /mnt/home/"$username"/.config/lxqt
 echo '[General]
 __userfile__=true
@@ -1185,7 +1185,7 @@ audioEngine=PulseAudio
 type=volume' > /mnt/home/"$username"/.config/lxqt/panel.conf
 #
 #Создание конфига kdeglobals.
-echo -e "\033[34mСоздание конфига kdeglobals.\033[0m"
+echo -e "\033[36mСоздание конфига kdeglobals.\033[0m"
 echo '[ColorEffects:Disabled]
 ChangeSelectionColor=
 Color=56,56,56
@@ -1286,7 +1286,7 @@ ForegroundPositive=38,171,98
 ForegroundVisited=130,130,129' > /mnt/home/"$username"/.config/kdeglobals
 #
 #Передача интернет настроек в установленную систему.
-echo -e "\033[34mПередача интернет настроек в установленную систему.\033[0m"
+echo -e "\033[36mПередача интернет настроек в установленную систему.\033[0m"
 if [ -z "$namewifi" ]; then arch-chroot /mnt ip link set "$netdev" up
     else
         arch-chroot /mnt pacman -Sy iwd --noconfirm
@@ -1297,16 +1297,16 @@ if [ -z "$namewifi" ]; then arch-chroot /mnt ip link set "$netdev" up
 fi
 #
 #Автозапуск служб.
-echo -e "\033[34mАвтозапуск служб.\033[0m"
+echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd avahi-daemon smartd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Передача прав созданному пользователю.
-echo -e "\033[34mПередача прав созданному пользователю.\033[0m"
+echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
 arch-chroot /mnt chown -R "$username" /home/"$username"/
 #
 #Установка помощника yay для работы с AUR.
-echo -e "\033[34mУстановка помощника yay для работы с AUR.\033[0m"
+echo -e "\033[36mУстановка помощника yay для работы с AUR.\033[0m"
 arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
 git clone https://aur.archlinux.org/yay.git
 cd /home/'"$username"'/yay
@@ -1314,10 +1314,10 @@ BUILDDIR=/tmp/makepkg makepkg -i --noconfirm'
 rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR.
-echo -e "\033[34mУстановка программ из AUR.\033[0m"
+echo -e "\033[36mУстановка программ из AUR.\033[0m"
 arch-chroot /mnt/ sudo -u "$username" yay -S debtap --noconfirm
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
-echo -e "\033[34mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
+echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
 #fdisk -l
 lsblk -l
