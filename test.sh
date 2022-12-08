@@ -137,7 +137,7 @@ echo -e "\033[47m\033[30mВведите имя компьютера:\033[0m\033[
 echo -e "\033[47m\033[30mВведите имя пользователя:\033[0m\033[32m";read -p ">" username
 echo -e "\033[47m\033[30mВведите пароль для "$username":\033[0m\033[32m";read -p ">" passuser
 echo -e "\033[47m\033[30mВведите пароль для root:\033[0m\033[32m";read -p ">" passroot
-echo -e "\033[36mВыберите разрешение монитора:\033[0m"
+echo -e "\033[36mВыберите разрешение монитора:\033[32m"
 PS3="$(echo -e "\033[47m\033[30mПункт №:\033[0m\033[32m
 >")"
 select resolution in "~480p." "~720p-1080p." "~4K."
@@ -1321,3 +1321,9 @@ arch-chroot /mnt/ sudo -u "$username" yay -S debtap --noconfirm
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
 #fdisk -l
 lsblk -l
+arch-chroot /mnt pacman -S xdotool
+startx <<EOF
+xdotool key Return
+xdotool key super+Return
+xdotool key ctrl+d
+EOF
