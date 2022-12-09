@@ -1325,20 +1325,20 @@ lsblk -l
 arch-chroot /mnt pacman -S xdotool
 arch-chroot /mnt xhost +local:
 arch-chroot /mnt startx
-sleep 20
-xdotool key Return
-sleep 20
-xdotool key super+Return
-sleep 10
-xdotool key e c h o space h i
-sleep 10
-xdotool key Return
-sleep 10
-xdotool key ctrl+d
-sleep 10
-xdotool key super+Return
-sleep 10
-xdotool key ctrl+d
-sleep 10
-xdotool key super+shift+e
-xdotool key Return
+arch-chroot /mnt sleep 20
+arch-chroot /mnt xdotool key Return
+arch-chroot /mnt sleep 20
+arch-chroot /mnt xdotool key super+Return
+arch-chroot /mnt sleep 10
+arch-chroot /mnt xdotool key e c h o space h i
+arch-chroot /mnt sleep 10
+arch-chroot /mnt xdotool key Return
+arch-chroot /mnt sleep 10
+arch-chroot /mnt xdotool key ctrl+d
+arch-chroot /mnt sleep 10
+arch-chroot /mnt xdotool key super+Return
+arch-chroot /mnt sleep 10
+arch-chroot /mnt xdotool key ctrl+d
+arch-chroot /mnt sleep 10
+arch-chroot /mnt xdotool key super+shift+e
+arch-chroot /mnt xdotool key Return
