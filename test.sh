@@ -1323,6 +1323,7 @@ echo -e "\033[36mУстановка завершена, после переза�
 #fdisk -l
 lsblk -l
 arch-chroot /mnt pacman -S xdotool
+arch-chroot /mnt xhost +local:
 arch-chroot /mnt startx
 sleep 20
 xdotool key Return
