@@ -1324,12 +1324,20 @@ echo -e "\033[36mУстановка завершена, после переза�
 lsblk -l
 arch-chroot /mnt pacman -S xdotool
 arch-chroot /mnt startx
+sleep 20
+xdotool key Return
+sleep 20
+xdotool key super+Return
+sleep 10
+xdotool key e c h o space h i
 sleep 10
 xdotool key Return
 sleep 10
-xdotool key Return
+xdotool key ctrl+d
 sleep 10
 xdotool key super+Return
 sleep 10
 xdotool key ctrl+d
 sleep 10
+xdotool key super+shift+e
+xdotool key Return
