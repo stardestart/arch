@@ -6,8 +6,11 @@ setfont ter-v18n
 #
 #Сброс переменных и размонтирование разделов, на случай повторного запуска скрипта.
 echo -e "\033[36mСброс переменных и размонтирование разделов, на случай повторного запуска скрипта.\033[0m"
+#Размонтирование swap раздела.
 swapoff -a
+#Размонтирование дисков.
 umount -R /mnt
+#Удаление ключей pacman.
 rm -rf /etc/pacman.d/gnupg/*
 #Переменная назначит образ микрокода ЦП для UEFI загрузчика.
 microcode=""
@@ -58,6 +61,10 @@ nvidiac=""
 fontqt=""
 #Переменная сохранит наличие glx для настройки picom.
 picomconf=""
+#Обратный отсчет.
+tic=3
+#Массив хранит наличие ssd, если такие имеются.
+massd=()
 #
 #Определяем процессор.
 echo -e "\033[36mОпределяем процессор.\033[0m"
@@ -118,7 +125,7 @@ fi
 echo -e "\033[36mФизический диск на который будет установлена ОС:"$sysdisk"\033[0m"
 #
 #Определяем есть ли nvme контролер системного диска.
-echo -e "\033[36mОпределяем есть ли nvme контролер системного диска.\033[0m"
+echo -e "\033[36mОпределяем, есть ли nvme контролер системного диска.\033[0m"
 if [ -z "$(echo "$sysdisk" | grep -i "nvme")" ];
     then
         p1="1"
@@ -133,7 +140,6 @@ if [ -z "$(echo "$sysdisk" | grep -i "nvme")" ];
 fi
 #
 #Сбор данных пользователя.
-echo -e "\033[36mСбор данных пользователя.\033[0m"
 echo -e "\033[47m\033[30mВведите имя компьютера:\033[0m\033[32m";read -p ">" hostname
 echo -e "\033[47m\033[30mВведите имя пользователя:\033[0m\033[32m";read -p ">" username
 echo -e "\033[47m\033[30mВведите пароль для "$username":\033[0m\033[32m";read -p ">" passuser
@@ -336,7 +342,7 @@ fi
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts audacity kdenlive cheese kate sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools clinfo autocutsel --noconfirm
+arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts audacity kdenlive cheese kate sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools clinfo autocutsel tesseract-data-eng tesseract-data-rus --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Проверка наличия температурного датчика у системного диска.
@@ -1320,10 +1326,22 @@ if [ -z "$namewifi" ]; then arch-chroot /mnt ip link set "$netdev" up
         mkdir -p /mnt/var/lib/iwd
         cp /var/lib/iwd/"$namewifi".psk /mnt/var/lib/iwd/"$namewifi".psk
 fi
+#Определяем, есть ли ssd.
+echo -e "\033[36mОпределяем, есть ли ssd.\033[0m"
+massd=($(lsblk -dno rota))
+for (( j=0, i=1; i<="${#massd[*]}"; i++, j++ ))
+    do
+        if [ "${massd[$j]}" = 0 ];
+            then
+                fstrim -v -a
+                arch-chroot /mnt systemctl enable fstrim.timer
+            break
+        fi
+    done
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
-arch-chroot /mnt systemctl enable saned.socket cups.socket cups-browsed fstrim.timer reflector.timer xdm-archlinux dhcpcd avahi-daemon smartd
+arch-chroot /mnt systemctl enable saned.socket cups.socket cups-browsed reflector.timer xdm-archlinux dhcpcd avahi-daemon smartd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Передача прав созданному пользователю.
@@ -1342,7 +1360,15 @@ rm -Rf /mnt/home/"$username"/yay
 echo -e "\033[36mУстановка программ из AUR.\033[0m"
 arch-chroot /mnt/ sudo -u "$username" yay -S hardinfo debtap libreoffice-extension-languagetool cups-xerox-b2xx --noconfirm
 #
+#Переключение wine в режим win32.
+arch-chroot /mnt/ sudo -u "$username" WINEARCH=win32 winecfg
+#
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
+while [[ 0 -ne $tic ]]; do
+    echo -e "\033[31m...\033[36m$tic\033[31m...\033[0m"
+    sleep 1
+    tic=$(($tic-1))
+done
 #umount -R /mnt
 #reboot

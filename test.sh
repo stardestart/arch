@@ -6,8 +6,12 @@ setfont ter-v18n
 #
 #Сброс переменных и размонтирование разделов, на случай повторного запуска скрипта.
 echo -e "\033[36mСброс переменных и размонтирование разделов, на случай повторного запуска скрипта.\033[0m"
+#Размонтирование swap раздела.
 swapoff -a
+#Размонтирование дисков.
 umount -R /mnt
+#Удаление ключей pacman.
+rm -rf /etc/pacman.d/gnupg/*
 #Переменная назначит образ микрокода ЦП для UEFI загрузчика.
 microcode=""
 #Переменная сохранит имя wi-fi сети для дальнейшей установки/настройки/расчета.
@@ -57,6 +61,10 @@ nvidiac=""
 fontqt=""
 #Переменная сохранит наличие glx для настройки picom.
 picomconf=""
+#Обратный отсчет.
+tic=3
+#Массив хранит наличие ssd, если такие имеются.
+massd=()
 #
 #Определяем процессор.
 echo -e "\033[36mОпределяем процессор.\033[0m"
@@ -88,7 +96,7 @@ echo -e "\033[36mЧасовой пояс:"$(curl https://ipapi.co/timezone)"\033
 #
 #Определяем физический диск на который будет установлена ОС.
 echo -e "\033[36mОпределяем физический диск на который будет установлена ОС.\033[0m"
-massdisks=($(lsblk -fno +TRAN,TYPE | grep -ivE "├─|└─|rom|usb|/|SWAP|part" | awk '{print $1}'))
+massdisks=($(lsblk -fno +tran,type | grep -ivE "├─|└─|rom|usb|/|SWAP|part" | awk '{print $1}'))
 if [ "${#massdisks[*]}" = 1 ]; then sysdisk="${massdisks[0]}"
 elif [ "${#massdisks[*]}" = 0 ];
     then
@@ -117,7 +125,7 @@ fi
 echo -e "\033[36mФизический диск на который будет установлена ОС:"$sysdisk"\033[0m"
 #
 #Определяем есть ли nvme контролер системного диска.
-echo -e "\033[36mОпределяем есть ли nvme контролер системного диска.\033[0m"
+echo -e "\033[36mОпределяем, есть ли nvme контролер системного диска.\033[0m"
 if [ -z "$(echo "$sysdisk" | grep -i "nvme")" ];
     then
         p1="1"
@@ -132,7 +140,6 @@ if [ -z "$(echo "$sysdisk" | grep -i "nvme")" ];
 fi
 #
 #Сбор данных пользователя.
-echo -e "\033[36mСбор данных пользователя.\033[0m"
 echo -e "\033[47m\033[30mВведите имя компьютера:\033[0m\033[32m";read -p ">" hostname
 echo -e "\033[47m\033[30mВведите имя пользователя:\033[0m\033[32m";read -p ">" username
 echo -e "\033[47m\033[30mВведите пароль для "$username":\033[0m\033[32m";read -p ">" passuser
@@ -1298,6 +1305,18 @@ if [ -z "$namewifi" ]; then arch-chroot /mnt ip link set "$netdev" up
         mkdir -p /mnt/var/lib/iwd
         cp /var/lib/iwd/"$namewifi".psk /mnt/var/lib/iwd/"$namewifi".psk
 fi
+#Определяем, есть ли ssd.
+echo -e "\033[36mОпределяем, есть ли ssd.\033[0m"
+massd=($(lsblk -dno rota))
+for (( j=0, i=1; i<="${#massd[*]}"; i++, j++ ))
+    do
+        if [ "${massd[$j]}" = 0 ];
+            then
+                fstrim -v -a
+                arch-chroot /mnt systemctl enable fstrim.timer
+            break
+        fi
+    done
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
@@ -1322,5 +1341,10 @@ arch-chroot /mnt/ sudo -u "$username" yay -S debtap --noconfirm
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
+while [[ 0 -ne $tic ]]; do
+    echo -e "\033[31m...\033[36m$tic\033[31m...\033[0m"
+    sleep 1
+    tic=$(($tic-1))
+done
 #fdisk -l
 lsblk -l
