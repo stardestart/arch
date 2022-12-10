@@ -1323,23 +1323,3 @@ arch-chroot /mnt/ sudo -u "$username" yay -S debtap --noconfirm
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
 #fdisk -l
 lsblk -l
-arch-chroot /mnt pacman -S xdotool
-arch-chroot /mnt xhost +local:
-arch-chroot /mnt startx
-arch-chroot /mnt sleep 20
-arch-chroot /mnt xdotool key Return
-arch-chroot /mnt sleep 20
-arch-chroot /mnt xdotool key super+Return
-arch-chroot /mnt sleep 10
-arch-chroot /mnt xdotool key e c h o space h i
-arch-chroot /mnt sleep 10
-arch-chroot /mnt xdotool key Return
-arch-chroot /mnt sleep 10
-arch-chroot /mnt xdotool key ctrl+d
-arch-chroot /mnt sleep 10
-arch-chroot /mnt xdotool key super+Return
-arch-chroot /mnt sleep 10
-arch-chroot /mnt xdotool key ctrl+d
-arch-chroot /mnt sleep 10
-arch-chroot /mnt xdotool key super+shift+e
-arch-chroot /mnt xdotool key Return
