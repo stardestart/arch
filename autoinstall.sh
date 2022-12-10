@@ -65,6 +65,7 @@ picomconf=""
 tic=3
 #Массив хранит наличие ssd, если такие имеются.
 massd=()
+pacman -Sc --noconfirm
 #
 #Определяем процессор.
 echo -e "\033[36mОпределяем процессор.\033[0m"
@@ -255,7 +256,6 @@ fi
 #
 #Установка и настройка программы для фильтрования зеркал и обновление ключей.
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
-pacman-key --init
 pacman-key --refresh-keys
 pacman -Sy archlinux-keyring  --noconfirm
 pacman -Sy reflector --noconfirm
