@@ -917,8 +917,9 @@ exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
 # Автозапуск flameshot.
 exec --no-startup-id flameshot
 #
-# Автозапуск copyq.
+# Автозапуск copyq и autocutsel.
 exec --no-startup-id copyq
+exec --no-startup-id autocutsel
 #
 # Автозапуск lxqt-panel.
 exec --no-startup-id lxqt-panel
