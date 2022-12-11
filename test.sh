@@ -12,6 +12,8 @@ swapoff -a
 umount -R /mnt
 #Удаление ключей pacman.
 rm -rf /etc/pacman.d/gnupg/*
+pacman -Sc --noconfirm
+killall gpg-agent dirmngr
 #Переменная назначит образ микрокода ЦП для UEFI загрузчика.
 microcode=""
 #Переменная сохранит имя wi-fi сети для дальнейшей установки/настройки/расчета.
@@ -66,7 +68,6 @@ tic=3
 #Массив хранит наличие ssd, если такие имеются.
 massd=()
 #
-pacman -Sc --noconfirm
 #Определяем процессор.
 echo -e "\033[36mОпределяем процессор.\033[0m"
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="\ninitrd /amd-ucode.img"
