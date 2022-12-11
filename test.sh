@@ -1140,14 +1140,16 @@ mkdir -p /mnt/home/"$username"/.config/lxqt
 echo '[General]
 __userfile__=true
 iconTheme=ePapirus-Dark
-[directorymenu]
-alignment=Left
-baseDirectory=/home/'"$username"'
-buttonStyle=IconText
-defaultTerminal=/usr/bin/xterm
-icon=
-label=
-type=directorymenu
+[customcommand]
+alignment=Right
+click=xterm -e /bin/bash -l -c \"sudo pacman -Suy --noconfirm\"
+command=echo \x41e\x431\x43d\x43e\x432\x438\x442\x44c ArchLinux
+icon=/usr/share/icons/Papirus-Dark/48x48/apps/x-system-software-sources.svg
+maxWidth=500
+repeat=false
+type=customcommand
+wheelDown=xterm -e /bin/bash -l -c \"sudo pacman -Rsn $(pacman -Qdtq) --noconfirm\"
+wheelUp=xterm -e /bin/bash -l -c \"sudo pacman -Sc --noconfirm\"
 [kbindicator]
 alignment=Right
 keeper_type=application
@@ -1159,7 +1161,8 @@ show_scroll_lock=true
 type=kbindicator
 [mainmenu]
 alignment=Left
-icon=/usr/share/icons/Papirus-Dark/128x128/apps/distributor-logo-archlinux.svg
+filterClear=true
+icon=/usr/share/icons/Papirus-Dark/48x48/apps/distributor-logo-archlinux.svg
 menu_file=/etc/xdg/menus/arch-applications.menu
 ownIcon=true
 showText=false
@@ -1178,7 +1181,7 @@ lineCount=1
 lockPanel=false
 opacity=80
 panelSize='"$(($font*4))"'
-plugins=mainmenu, spacer, directorymenu, quicklaunch, kbindicator, volume
+plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, customcommand
 position=Top
 reserve-space=true
 show-delay=0
