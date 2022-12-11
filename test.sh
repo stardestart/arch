@@ -13,7 +13,7 @@ umount -R /mnt
 #Удаление ключей pacman.
 rm -rf /etc/pacman.d/gnupg/*
 pacman -Sc --noconfirm
-killall gpg-agent dirmngr
+killall gpg-agent
 #Переменная назначит образ микрокода ЦП для UEFI загрузчика.
 microcode=""
 #Переменная сохранит имя wi-fi сети для дальнейшей установки/настройки/расчета.
