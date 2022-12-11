@@ -765,33 +765,20 @@ set $mod Mod4
 #
 # Закрыть окно в фокусе.
 bindsym $mod+Shift+q kill
-# Средняя кнопка мыши над заголовком закрывает окно.
+# Средняя кнопка мыши на заголовке закрывает окно.
 bindsym --release button2 kill
 #
-# Изменить фокус на другое окно (semicolon - это клавиша ;:жЖ).
-bindsym $mod+j focus left
-bindsym $mod+k focus down
-bindsym $mod+l focus up
-bindsym $mod+semicolon focus right
-# Альтернативные настройки смены фокуса на другое окно.
+# Изменить фокус на другое окно
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 #
 # Переместить окно.
-bindsym $mod+Shift+j move left
-bindsym $mod+Shift+k move down
-bindsym $mod+Shift+l move up
-bindsym $mod+Shift+semicolon move right
-# Альтернативные настройки перемешения окна.
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
-# Боковые кнопки мыши перемещают окно.
-bindsym button9 move left
-bindsym button8 move right
 #
 # Следующее открытое окно разделит экран по горизонтали (такое деление установленно по умолчанию). Легко запомнить по первой букве Horizontal.
 bindsym $mod+h split h
@@ -807,14 +794,8 @@ bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 #
-# Делаем окно плавающим.
-bindsym $mod+Shift+space floating toggle
 # Правая кнопка мыши делает окно плавающим.
 bindsym button3 floating toggle
-bindsym $mod+button3 floating toggle
-#
-# Изменить фокус между мозаичными / плавающими окнами.
-bindsym $mod+space focus mode_toggle
 #
 # Определяем имена для рабочих областей по умолчанию.
 set $ws1 "1"
@@ -867,20 +848,12 @@ bindsym $mod+r mode "resize"
 mode "resize" {
 #
         # Настройки смены размеров окон.
-        bindsym j resize shrink width 10 px or 10 ppt
-        bindsym k resize grow height 10 px or 10 ppt
-        bindsym l resize shrink height 10 px or 10 ppt
-        bindsym semicolon resize grow width 10 px or 10 ppt
-        #
-        # Альтернативные настройки смены размеров окон (мне показались более удобными).
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
+        bindsym Left resize shrink width 10 px or 5 ppt
+        bindsym Down resize grow height 10 px or 5 ppt
+        bindsym Up resize shrink height 10 px or 5 ppt
+        bindsym Right resize grow width 10 px or 5 ppt
         #
         # Выйти из режима изменения размеров окон.
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
         bindsym $mod+r mode "default"
 }
 #
@@ -956,7 +929,7 @@ exec --no-startup-id transmission-qt -m
 exec --no-startup-id blueman-applet
 #
 # Приветствие в течении 10 сек.
-exec --no-startup-id notify-send -t 10000 "✊Доброго времени суток✊"
+exec --no-startup-id notify-send -te 5000 "✊Доброго времени суток✊"
 #
 # Автозапуск xscreensaver.
 exec --no-startup-id xscreensaver --no-splash
@@ -972,6 +945,47 @@ exec --no-startup-id telegram-desktop -startintray -- %u
 #
 # Автоматическая разблокировка KWallet.
 exec --no-startup-id /usr/lib/pam_kwallet_init
+#
+# Шпаргалка по i3wm.
+exec --no-startup-id notify-send -t 10000 "Шпаргалка по i3wm." "Win+Enter -- Запустить терминал.
+Win+D -- Запуск dmenu (программа запуска).
+Win+F1 -- Запустить firefox.
+Win+Shift+Q -- Закрыть окно в фокусе.
+Print Screen -- Снимок экрана.
+ПКМ на нижней панели -- Снимок экрана.
+#
+ПКМ -- Делает окно плавающим.
+СКМ на заголовке -- Закрывает окно.
+#
+Win+Left -- Фокус на левое окно.
+Win+Down -- Фокус на нижнее окно.
+Win+Up -- Фокус на верхнее окно.
+Win+Right -- Фокус на правое окно.
+#
+Win+Shift+Left -- Переместить окно влево.
+Win+Shift+Down -- Переместить окно вниз.
+Win+Shift+Up -- Переместить окно вверх.
+Win+Shift+Right -- Переместить окно вправо.
+#
+Win+H -- Следующее открытое окно разделит экран по горизонтали.
+Win+V -- Следующее открытое окно разделит экран по вертикали.
+Win+F -- Развернуть окно во весь экран.
+Win+S Win+W Win+E -- Делаем из окон вкладки.
+#
+Win+1..0 -- Переключение между рабочими столами.
+Win+Shift+1..0 -- Переместить сфокусированное окно на заданный рабочий стол.
+#
+Win+Shift+R -- Перезапустить i3.
+Win+Shift+E -- Выход из i3 (выходит из сеанса X).
+#
+Win+R -- Войти/Выйти в режим изменения размеров окон.
+Left -- Сдвинуть границу влево.
+Down -- Сдвинуть границу вниз.
+Up -- Сдвинуть границу вверх.
+Right -- Сдвинуть границу вправо.
+#
+Win+Shift+Minus -- Сделать текущее окно черновиком/блокнотом.
+Win+Minus -- Показать первое окно черновика/блокнота."
 #
 ########### Горячие клавиши запуска программ ###########
 #
@@ -1366,6 +1380,7 @@ echo -e "\033[36mУстановка программ из AUR.\033[0m"
 arch-chroot /mnt/ sudo -u "$username" yay -S hardinfo debtap libreoffice-extension-languagetool cups-xerox-b2xx --noconfirm
 #
 #Переключение wine в режим win32.
+echo -e "\033[36mПереключение wine в режим win32.\033[0m"
 arch-chroot /mnt/ sudo -u "$username" WINEARCH=win32 winecfg
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
