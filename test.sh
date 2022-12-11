@@ -79,14 +79,14 @@ echo -e "\033[36mПроцессор:"$(lscpu | grep -i "model name")"\033[0m"
 echo -e "\033[36mОпределяем сетевое устройство.\033[0m"
 if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
     then
-        echo -e "\033[47m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m\033[37m";read -p ">" namewifi
+        echo -e "\033[47m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m\033[32m";read -p ">" namewifi
         netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
 fi
 if [ -z "$namewifi" ];
     then
         netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
     else
-        echo -e "\033[47m\033[30mПароль wifi:\033[0m\033[37m";read -p ">" passwifi
+        echo -e "\033[47m\033[30mПароль wifi:\033[0m\033[32m";read -p ">" passwifi
         iwctl --passphrase "$passwifi" station "$netdev" connect "$namewifi"
 fi
 echo -e "\033[36mСетевое устройство:"$netdev"\033[0m"
@@ -167,7 +167,7 @@ do
             xterm="2000 1000"
             break
             ;;
-        *) echo -e "\033[36mЧто значит - "$REPLY"? До трёх посчитать не можешь и Arch Linux ставишь?\033[32m";;
+        *) echo -e "\033[41m\033[30mЧто значит - "$REPLY"? До трёх посчитать не можешь и Arch Linux ставишь?\033[0m\033[32m";;
     esac
 done
 #
@@ -1340,6 +1340,9 @@ rm -Rf /mnt/home/"$username"/yay
 #Установка программ из AUR.
 echo -e "\033[36mУстановка программ из AUR.\033[0m"
 arch-chroot /mnt/ sudo -u "$username" yay -S debtap --noconfirm
+#
+#Переключение wine в режим win32.
+arch-chroot /mnt/ sudo -u "$username" WINEARCH=win32 winecfg
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
