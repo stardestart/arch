@@ -53,8 +53,8 @@ xterm=""
 ram=0
 #Переменная сохранит размер swap раздела для дальнейшей установки/настройки/расчета.
 swap=0
-#Переменная сохранит количество ядер ЦП для дальнейшей установки/настройки/расчета.
-core=""
+#Массив сохранит количество ядер ЦП для дальнейшей установки/настройки/расчета.
+coremass=()
 #Массив формирует данные для передачи их в конфиг приложения отслеживающему температуру ядер ЦП.
 coremassconf=()
 #Переменная сохранит наличие видеокарты nvidia для дальнейшей установки/настройки/расчета.
@@ -147,11 +147,10 @@ echo -e "\033[47m\033[30mВведите имя пользователя:\033[0m\
 echo -e "\033[47m\033[30mВведите пароль для "$username":\033[0m\033[32m";read -p ">" passuser
 echo -e "\033[47m\033[30mВведите пароль для root:\033[0m\033[32m";read -p ">" passroot
 echo -e "\033[36mВыберите разрешение монитора:\033[32m"
-PS3="$(echo -e "\033[47m\033[30mПункт №:\033[0m\033[32m
->")"
-select resolution in "~480p." "~720p-1080p." "~4K."
+PS3="$(echo -e "\033[47m\033[30mПункт №:\033[0m\033[32m")"
+select menuscreen in "~480p." "~720p-1080p." "~4K."
 do
-    case "$resolution" in
+    case "$menuscreen" in
         "~480p.")
             font=8
             xterm="700 350"
@@ -452,11 +451,11 @@ echo -e "\033[36mФормируется конфиг conky.\033[0m"
 #
 #Температура ядер процессора.
 if [ -n "$(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs)" ]; then
-core=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
+coremass=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 coremassconf+='
 #Температура ядер ЦП.
 ${color #b2b2b2}Температура ядер ЦП:$color'
-for (( i=0, j=1; j<="${#core[*]}"; i++, j++ ))
+for (( i=0, j=1; j<="${#coremass[*]}"; i++, j++ ))
     do
         coremassconf+='
 $alignr${execi 10 sensors | grep "Core '$i':" | awk \047{print $1, $2, $3}\047}'
