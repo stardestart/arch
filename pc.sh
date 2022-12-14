@@ -343,14 +343,14 @@ fi
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts audacity kdenlive cheese kate sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools clinfo autocutsel tesseract-data-eng tesseract-data-rus --noconfirm
+arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts audacity kdenlive cheese kate sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools clinfo autocutsel tesseract-data-eng tesseract-data-rus openssh meld --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Проверка наличия температурного датчика у системного диска.
 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"$sysdisk" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
     then
 sysdisktemp+='
-${color #b2b2b2}Температура:$color$alignr${execi 10 smartctl -al scttempsts /dev/'"$sysdisk"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047}°C'
+${color #b2b2b2}Температура:$color$alignr${execi 10 sudo smartctl -al scttempsts /dev/'"$sysdisk"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047}°C'
 fi
 #
 #Поиск не смонтированных разделов, проверка наличия у них температурного датчика и метки.
@@ -370,7 +370,7 @@ ${color #f92b2b}/home/'"$username"'/'"${massparts[$j]}"'${hr 3}'
                 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"${massparts[$j]}" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
                     then
 masslabel+='
-${color #b2b2b2}Температура:$color$alignr${execi 10 smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047}°C'
+${color #b2b2b2}Температура:$color$alignr${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047}°C'
                 fi
 masslabel+='
 ${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"${massparts[$j]}"'} / ${color #f92b2b}${fs_used /home/'"$username"'/'"${massparts[$j]}"'} / $color${fs_free /home/'"$username"'/'"${massparts[$j]}"'}
@@ -378,7 +378,7 @@ ${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"${massparts[$j
                 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"${massparts[$j]}" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
                     then
 masslabel+='
-${color #b2b2b2}Температура:$color$alignr${execi 10 smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047°C'
+${color #b2b2b2}Температура:$color$alignr${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047}°C'
                 fi
             else
                 if [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "vfat" ];
