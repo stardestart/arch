@@ -110,7 +110,7 @@ elif [ "${#massdisks[*]}" = 0 ];
             do
                 grepmassdisks+="${massdisks[$j]}|"
             done
-        lsscsi -s | grep -viE "rom|usb" | grep --color -iE "$grepmassdisks"
+        lsscsi -st | grep -viE "rom|usb" | grep --color -iE "$grepmassdisks"
         echo -e "\033[32m"
         read -p ">" sysdisk
         massdisks=( ${massdisks[@]/$sysdisk} )
