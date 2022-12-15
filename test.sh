@@ -334,7 +334,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #Установим видеодрайвер.
 echo -e "\033[36mУстановка видеодрайвера.\033[0m"
 if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then arch-chroot /mnt pacman -Sy vulkan-radeon xf86-video-amdgpu lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i ati)" ]; then arch-chroot /mnt pacman -Sy xf86-video-ati libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i ' ati ')" ]; then arch-chroot /mnt pacman -Sy xf86-video-ati libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau --noconfirm
 elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
 elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then arch-chroot /mnt pacman -Sy xf86-video-intel vulkan-intel --noconfirm
 elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then arch-chroot /mnt pacman -Sy virtualbox-guest-utils virtualbox-guest-iso virtualbox-guest-utils-nox --noconfirm
@@ -485,7 +485,7 @@ default_outline_color = "#2bf92b", --Цвет рамки по умолчанию
 double_buffer = true, --Включение двойной буферизации.
 draw_shades = false, --Оттенки.
 draw_borders = true, --Включение границ.
-font = "Fantasque Sans Mono:size='"$font"'", --Шрифт и размер шрифта.
+font = "Fantasque Sans Mono:bold:size='"$font"'", --Шрифт и размер шрифта.
 gap_y = '"$(($font*7))"', --Отступ сверху.
 gap_x = 40, --Отступ от края.
 own_window = true, --Собственное окно.
@@ -498,9 +498,9 @@ use_xft = true, } --Использование шрифтов X сервера.
 conky.text = [[ #Наполнение виджета.
 #Блок "Время".
 #Часы.
-${font Fantasque Sans Mono:italic:size='"$(($font*4))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
+${font Fantasque Sans Mono:bold:italic:size='"$(($font*4))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
 #Дата.
-${font Fantasque Sans Mono:italic:size='"$(($font*2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
+${font Fantasque Sans Mono:bold:italic:size='"$(($font*2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
 #Блок "Система".
 #Разделитель.
 ${color #f92b2b}SYS${hr 3}$color
@@ -628,14 +628,14 @@ Name=org.freedesktop.Notifications
 Exec=/usr/lib/notification-daemon-1.0/notification-daemon' > /mnt/usr/share/dbus-1/services/org.freedesktop.Notifications.service
 #
 #Проверка наличия glx.
-if [ -n "$(clinfo -l)" ];
+if [ -n "$(arch-chroot /mnt clinfo -l)" ];
     then picomconf='
 #Размытие.
 backend = "glx"
 glx-no-stencil = true;
 glx-no-rebind-pixmap = true;
 blur:{ method = "dual_kawase";
-       strength = 1;
+       strength = 5;
        background = false;
        background-frame = false;
        background-fixed = false; }
@@ -644,7 +644,8 @@ blur-background-exclude = [ "window_type = \047dock\047",
                             "window_type = \047tooltip\047",
                             "class_g = \047Conky\047",
                             "class_g = \047i3bar\047",
-                            "class_g = \047vlc\047" ];'
+                            "class_g = \047vlc\047",
+                            "_NET_WM_STATE@:a *= \047_NET_WM_STATE_FOCUSED\047" ];'
 fi
 #
 #Создание конфига picom.
@@ -737,13 +738,13 @@ Xcursor.theme: Adwaita
 !Настройка внешнего вида xscreensaver.
 !
 !Указывает шрифт.
-xscreensaver-auth.?.Dialog.headingFont: Fantasque Sans Mono Italic '"$font"'
-xscreensaver-auth.?.Dialog.bodyFont: Fantasque Sans Mono Italic '"$font"'
-xscreensaver-auth.?.Dialog.labelFont: Fantasque Sans Mono Italic '"$font"'
-xscreensaver-auth.?.Dialog.unameFont: Fantasque Sans Mono Italic '"$font"'
-xscreensaver-auth.?.Dialog.buttonFont: Fantasque Sans Mono Italic '"$font"'
-xscreensaver-auth.?.Dialog.dateFont: Fantasque Sans Mono Italic '"$font"'
-xscreensaver-auth.?.passwd.passwdFont: Fantasque Sans Mono Italic '"$font"'
+xscreensaver-auth.?.Dialog.headingFont: Fantasque Sans Mono Bold Italic '"$font"'
+xscreensaver-auth.?.Dialog.bodyFont: Fantasque Sans Mono Bold Italic '"$font"'
+xscreensaver-auth.?.Dialog.labelFont: Fantasque Sans Mono Bold Italic '"$font"'
+xscreensaver-auth.?.Dialog.unameFont: Fantasque Sans Mono Bold Italic '"$font"'
+xscreensaver-auth.?.Dialog.buttonFont: Fantasque Sans Mono Bold Italic '"$font"'
+xscreensaver-auth.?.Dialog.dateFont: Fantasque Sans Mono Bold Italic '"$font"'
+xscreensaver-auth.?.passwd.passwdFont: Fantasque Sans Mono Bold Italic '"$font"'
 !
 !Указывает цвета.
 xscreensaver-auth.?.Dialog.foreground: #b2f9b2
@@ -1052,8 +1053,8 @@ echo 'polkit.addRule(function(action, subject) {
 #Создание директории и конфига qt5ct.
 echo -e "\033[36mСоздание конфига qt5ct.\033[0m"
 if [ "$font" = "8" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@ \0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0K\x11)"
-elif [ "$font" = "10" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@$\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x11)"
-elif [ "$font" = "12" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@(\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x11)"
+elif [ "$font" = "10" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@$\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0K\x11)"
+elif [ "$font" = "14" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@,\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0K\x11)"
 fi
 mkdir -p /mnt/home/"$username"/.config/qt5ct
 echo '[Appearance]
@@ -1097,7 +1098,7 @@ gtk-decoration-layout=icon:minimize,maximize,close
 gtk-enable-animations=false
 gtk-enable-event-sounds=1
 gtk-enable-input-feedback-sounds=1
-gtk-font-name=Fantasque Sans Mono Italic '"$font"'
+gtk-font-name=Fantasque Sans Mono Bold Italic '"$font"'
 gtk-icon-theme-name=Papirus-Dark
 gtk-menu-images=1
 gtk-modules=colorreload-gtk-module:window-decorations-gtk-module
