@@ -537,7 +537,8 @@ ${color #b2b2b2}Скорость приёма:$color$alignr${upspeedf '"$netdev"
 #Скорость отдачи.
 ${color #b2b2b2}Скорость отдачи:$color$alignr${downspeedf '"$netdev"'}
 #IP адрес.
-${color #b2b2b2}IP адрес:$color$alignr${curl eth0.me}#Блок "Процессы".
+${color #b2b2b2}IP адрес:$color$alignr${curl eth0.me}
+#Блок "Процессы".
 #Разделитель.
 ${color #f92b2b}Процессы${hr 3}$color
 #Таблица процессов.
