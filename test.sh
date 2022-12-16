@@ -273,8 +273,8 @@ arch-chroot /mnt hwclock --systohc
 #
 #Настройка локали.
 echo -e "\033[36mНастройка локали.\033[0m"
-arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
-arch-chroot /mnt sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
+arch-chroot /mnt sed -n 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
+arch-chroot /mnt sed -n 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
 echo -e "LANG=\"ru_RU.UTF-8\"" > /mnt/etc/locale.conf
 echo -e "KEYMAP=ru\nFONT=ter-v18n\nUSECOLOR=yes" > /mnt/etc/vconsole.conf
 arch-chroot /mnt locale-gen
@@ -324,7 +324,7 @@ fi
 #
 #Настройка установщика.
 echo -e "\033[36mНастройка установщика.\033[0m"
-arch-chroot /mnt sed -i "s/#Color/Color/" /etc/pacman.conf
+arch-chroot /mnt sed -n "s/#Color/Color/" /etc/pacman.conf
 echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
 #
 #Настройка sysrq.
@@ -1324,6 +1324,18 @@ arch-chroot /mnt/ sudo -u "$username" yay -S debtap --noconfirm
 #Переключение wine в режим win32.
 echo -e "\033[36mПереключение wine в режим win32.\033[0m"
 arch-chroot /mnt/ sudo -u "$username" WINEARCH=win32 winecfg
+#
+#Настройка звука.
+echo -e "\033[36mНастройка звука.\033[0m"
+soundmass=($(arch-chroot /mnt aplay -l | grep "card" | awk '{print $2}' | sed 's/://' | sort -u))
+ for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
+do
+arch-chroot /mnt amixer -c "${soundmass[j]}" sset Master unmute
+arch-chroot /mnt amixer -c "${soundmass[j]}" sset Speaker unmute
+arch-chroot /mnt amixer -c "${soundmass[j]}" sset Headphone unmute
+arch-chroot /mnt amixer -c "${soundmass[j]}" sset "Auto-Mute Mode" Disabled
+done
+arch-chroot /mnt sed -n 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
