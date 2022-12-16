@@ -645,7 +645,7 @@ blur-background-exclude = [ "window_type = \047dock\047",
                             "class_g = \047Conky\047",
                             "class_g = \047i3bar\047",
                             "class_g = \047vlc\047",
-                            "_NET_WM_STATE@:a *= \047_NET_WM_STATE_FOCUSED\047" ];'
+                            "_NET_WM_STATE@:a != \047_NET_WM_STATE_FOCUSED\047" ];'
 fi
 #
 #Создание конфига picom.
