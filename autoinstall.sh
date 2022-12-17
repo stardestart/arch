@@ -65,6 +65,7 @@ fontqt=""
 tic=3
 #Массив хранит наличие ssd, если такие имеются.
 massd=()
+#
 #Определяем процессор.
 echo -e "\033[36mОпределяем процессор.\033[0m"
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="\ninitrd /amd-ucode.img"
