@@ -351,7 +351,7 @@ fi
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts audacity cheese kate sweeper pinta gimp vlc libreoffice-still-ru ktouch kalgebra avidemux-qt copyq telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools clinfo autocutsel --noconfirm
+arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts audacity cheese kate sweeper pinta gimp vlc libreoffice-still-ru ktouch kalgebra avidemux-qt copyq telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Проверка наличия температурного датчика у системного диска.
@@ -688,24 +688,25 @@ detect-transient = true;
 detect-client-leader = true;
 #
 #Отключить информацию о повреждениях, каждый раз перерисовывается весь экран, а не его часть.
-use-damage = true;'"$picomconf"'
+use-damage = true;
 #
 #Размытие.
-backend = "glx"
-glx-no-stencil = true;
-glx-no-rebind-pixmap = true;
-blur:{ method = "dual_kawase";
-       strength = 5;
-       background = false;
-       background-frame = false;
-       background-fixed = false; }
-blur-background-exclude = [ "window_type = \047dock\047",
-                            "window_type = \047notification\047",
-                            "window_type = \047tooltip\047",
-                            "class_g = \047Conky\047",
-                            "class_g = \047i3bar\047",
-                            "class_g = \047vlc\047",
-                            "_NET_WM_STATE@:a != \047_NET_WM_STATE_FOCUSED\047" ];' > /mnt/home/"$username"/.config/picom.conf
+#backend = "glx"
+#glx-no-stencil = true;
+#glx-no-rebind-pixmap = true;
+#blur:{ method = "dual_kawase";
+#       strength = 5;
+#       background = false;
+#       background-frame = false;
+#       background-fixed = false; }
+#blur-background-exclude = [ "window_type = \047dock\047",
+#                            "window_type = \047notification\047",
+#                            "window_type = \047tooltip\047",
+#                            "class_g = \047Conky\047",
+#                            "class_g = \047i3bar\047",
+#                            "class_g = \047vlc\047",
+#                            "_NET_WM_STATE@:a != \047_NET_WM_STATE_FOCUSED\047" ];
+' > /mnt/home/"$username"/.config/picom.conf
 #
 #Создание xresources.
 echo -e "\033[36mСоздание xresources.\033[0m"
