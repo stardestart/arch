@@ -1340,6 +1340,7 @@ arch-chroot /mnt amixer -c "${soundmass[j]}" sset Speaker unmute
 arch-chroot /mnt amixer -c "${soundmass[j]}" sset Headphone unmute
 arch-chroot /mnt amixer -c "${soundmass[j]}" sset "Auto-Mute Mode" Disabled
 mkdir -p /mnt/var/lib/alsa/
+cat > /mnt/var/lib/alsa/asound.state
 arch-chroot /mnt alsactl store
 done
 arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
