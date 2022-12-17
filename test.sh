@@ -107,14 +107,22 @@ elif [ "${#massdisks[*]}" = 0 ];
         echo -e "\033[41m\033[30mДоступных дисков не обнаружено!\033[0m"
         exit 0
     else
-        echo -e "\033[47m\033[30mВведите метку диска (выделено красным) на который будет установлена ОС:\033[0m"
+        PS3="$(echo -e "\033[47m\033[30mПункт №:\033[0m\n\033[32m")"
+        menu_from_array () {
+            select item; do
+                if [ 1 -le "$REPLY" ] && [ "$REPLY" -le $# ]; then
+                    echo -e "\033[36mДиск на который будет установлена ОС:\n\033[32m$item\033[0m"
+                    sysdisk="${massdisks[$(($REPLY - 1))]}"
+                    break;
+                else
+                    echo -e "\033[41m\033[30mЧто значит - "$REPLY"? До $# посчитать не можешь и Arch Linux ставишь?\033[0m\033[32m"
+                fi
+        done }
         for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
             do
-                grepmassdisks+="${massdisks[$j]}|"
+                grepmassdisks+=("$(lsscsi -st | grep -i "${massdisks[$j]}")")
             done
-        lsscsi -st | grep -viE "rom|usb" | grep --color -iE "$grepmassdisks"
-        echo -e "\033[32m"
-        read -p ">" sysdisk
+        menu_from_array "${grepmassdisks[@]}"
         massdisks=( ${massdisks[@]/$sysdisk} )
         for (( j=0, i=1; i<="${#massdisks[*]}"; i++, j++ ))
             do
