@@ -408,7 +408,7 @@ ${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"$(lsblk -no LA
 #
 #Копирование файла автоматического монтирования разделов.
 echo -e "\033[36mПеренос genfstab.\033[0m"
-genfstab -U /mnt >> /mnt/etc/fstab
+genfstab -U /mnt > /mnt/etc/fstab
 #
 #Создание общего конфига загрузки оконного менеджера.
 echo -e "\033[36mСоздание xinit.\033[0m"
