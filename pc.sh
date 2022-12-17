@@ -688,24 +688,24 @@ detect-transient = true;
 detect-client-leader = true;
 #
 #Отключить информацию о повреждениях, каждый раз перерисовывается весь экран, а не его часть.
-use-damage = true;'"$picomconf"'
+use-damage = true;
 #
 #Размытие.
-#backend = "glx"
-#glx-no-stencil = true;
-#glx-no-rebind-pixmap = true;
-#blur:{ method = "dual_kawase";
-#       strength = 5;
-#       background = false;
-#       background-frame = false;
-#       background-fixed = false; }
-#blur-background-exclude = [ "window_type = \047dock\047",
-#                            "window_type = \047notification\047",
-#                            "window_type = \047tooltip\047",
-#                            "class_g = \047Conky\047",
-#                            "class_g = \047i3bar\047",
-#                            "class_g = \047vlc\047",
-#                            "_NET_WM_STATE@:a != \047_NET_WM_STATE_FOCUSED\047" ];
+backend = "glx"
+glx-no-stencil = true;
+glx-no-rebind-pixmap = true;
+blur:{ method = "dual_kawase";
+       strength = 5;
+       background = false;
+       background-frame = false;
+       background-fixed = false; }
+blur-background-exclude = [ "window_type = \047dock\047",
+                            "window_type = \047notification\047",
+                            "window_type = \047tooltip\047",
+                            "class_g = \047Conky\047",
+                            "class_g = \047i3bar\047",
+                            "class_g = \047vlc\047",
+                            "_NET_WM_STATE@:a != \047_NET_WM_STATE_FOCUSED\047" ];
 ' > /mnt/home/"$username"/.config/picom.conf
 #
 #Создание xresources.
