@@ -1334,6 +1334,7 @@ echo -e "\033[36mПереключение wine в режим win32.\033[0m"
 arch-chroot /mnt/ sudo -u "$username" WINEARCH=win32 winecfg
 #
 #Настройка звука.
+echo -e "\033[36mНастройка звука.\033[0m"
 arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
