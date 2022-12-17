@@ -65,8 +65,6 @@ fontqt=""
 tic=3
 #Массив хранит наличие ssd, если такие имеются.
 massd=()
-#Массив хранит количество установленных звуковых карт.
-soundmass=()
 #
 #Определяем процессор.
 echo -e "\033[36mОпределяем процессор.\033[0m"
@@ -1353,14 +1351,6 @@ arch-chroot /mnt/ sudo -u "$username" WINEARCH=win32 winecfg
 #
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
-soundmass=($(arch-chroot /mnt aplay -l | grep "card" | awk '{print $2}' | sed 's/://' | sort -u))
- for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
-do
-arch-chroot /mnt amixer -c "${soundmass[j]}" sset Master unmute
-arch-chroot /mnt amixer -c "${soundmass[j]}" sset Speaker unmute
-arch-chroot /mnt amixer -c "${soundmass[j]}" sset Headphone unmute
-arch-chroot /mnt amixer -c "${soundmass[j]}" sset "Auto-Mute Mode" Disabled
-done
 arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
