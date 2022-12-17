@@ -99,7 +99,7 @@ timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
 echo -e "\033[36mЧасовой пояс:"$(curl https://ipapi.co/timezone)"\033[0m"
 #
 #Определяем физический диск на который будет установлена ОС.
-echo -e "\033[36mОпределяем физический диск на который будет установлена ОС.\033[0m"
+echo -e "\033[36mОпределяем физический диск на который будет установлена ОС.\033[32m"
 massdisks=($(lsblk -fno +tran,type | grep -ivE "├─|└─|rom|usb|/|SWAP|part" | awk '{print $1}'))
 if [ "${#massdisks[*]}" = 1 ]; then sysdisk="${massdisks[0]}"
 elif [ "${#massdisks[*]}" = 0 ];
