@@ -61,8 +61,6 @@ coremassconf=()
 nvidiac=""
 #Переменная сохранит размер шрифта qt приложений для дальнейшей установки/настройки/расчета.
 fontqt=""
-#Переменная сохранит наличие glx для настройки picom.
-picomconf=""
 #Обратный отсчет.
 tic=3
 #Массив хранит наличие ssd, если такие имеются.
@@ -283,8 +281,8 @@ arch-chroot /mnt hwclock --systohc
 #
 #Настройка локали.
 echo -e "\033[36mНастройка локали.\033[0m"
-arch-chroot /mnt sed -n 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
-arch-chroot /mnt sed -n 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
+arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
+arch-chroot /mnt sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
 echo -e "LANG=\"ru_RU.UTF-8\"" > /mnt/etc/locale.conf
 echo -e "KEYMAP=ru\nFONT=ter-v18n\nUSECOLOR=yes" > /mnt/etc/vconsole.conf
 arch-chroot /mnt locale-gen
@@ -334,7 +332,7 @@ fi
 #
 #Настройка установщика.
 echo -e "\033[36mНастройка установщика.\033[0m"
-arch-chroot /mnt sed -n "s/#Color/Color/" /etc/pacman.conf
+arch-chroot /mnt sed -i "s/#Color/Color/" /etc/pacman.conf
 echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
 #
 #Настройка sysrq.
@@ -637,27 +635,6 @@ echo '[D-BUS Service]
 Name=org.freedesktop.Notifications
 Exec=/usr/lib/notification-daemon-1.0/notification-daemon' > /mnt/usr/share/dbus-1/services/org.freedesktop.Notifications.service
 #
-#Проверка наличия glx.
-if [ -n "$(arch-chroot /mnt clinfo -l)" ];
-    then picomconf='
-#Размытие.
-backend = "glx"
-glx-no-stencil = true;
-glx-no-rebind-pixmap = true;
-blur:{ method = "dual_kawase";
-       strength = 5;
-       background = false;
-       background-frame = false;
-       background-fixed = false; }
-blur-background-exclude = [ "window_type = \047dock\047",
-                            "window_type = \047notification\047",
-                            "window_type = \047tooltip\047",
-                            "class_g = \047Conky\047",
-                            "class_g = \047i3bar\047",
-                            "class_g = \047vlc\047",
-                            "_NET_WM_STATE@:a != \047_NET_WM_STATE_FOCUSED\047" ];'
-fi
-#
 #Создание конфига picom.
 echo -e "\033[36mСоздание конфига picom.\033[0m"
 echo -e '# Прозрачность активных окон (0,1–1,0).
@@ -711,7 +688,24 @@ detect-transient = true;
 detect-client-leader = true;
 #
 #Отключить информацию о повреждениях, каждый раз перерисовывается весь экран, а не его часть.
-use-damage = true;'"$picomconf"'' > /mnt/home/"$username"/.config/picom.conf
+use-damage = true;'"$picomconf"'
+#
+#Размытие.
+backend = "glx"
+glx-no-stencil = true;
+glx-no-rebind-pixmap = true;
+blur:{ method = "dual_kawase";
+       strength = 5;
+       background = false;
+       background-frame = false;
+       background-fixed = false; }
+blur-background-exclude = [ "window_type = \047dock\047",
+                            "window_type = \047notification\047",
+                            "window_type = \047tooltip\047",
+                            "class_g = \047Conky\047",
+                            "class_g = \047i3bar\047",
+                            "class_g = \047vlc\047",
+                            "_NET_WM_STATE@:a != \047_NET_WM_STATE_FOCUSED\047" ];' > /mnt/home/"$username"/.config/picom.conf
 #
 #Создание xresources.
 echo -e "\033[36mСоздание xresources.\033[0m"
@@ -1351,7 +1345,7 @@ arch-chroot /mnt amixer -c "${soundmass[j]}" sset Speaker unmute
 arch-chroot /mnt amixer -c "${soundmass[j]}" sset Headphone unmute
 arch-chroot /mnt amixer -c "${soundmass[j]}" sset "Auto-Mute Mode" Disabled
 done
-arch-chroot /mnt sed -n 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
+arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
