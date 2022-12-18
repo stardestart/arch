@@ -1335,14 +1335,6 @@ echo -e "[BasicWindow]
 SysTrayWhenStarted=true
 SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.ini
 #
-#Создание общего конфига transmission.
-echo -e "\033[36mСоздание общего конфига transmission.\033[0m"
-mkdir -p /mnt/home/"$username"/.config/transmission/
-echo -e '{
-"start-minimized": true,
-"show-statusbar": true,
-}' > /mnt/home/"$username"/.config/transmission/settings.json
-#
 #Передача прав созданному пользователю.
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
 arch-chroot /mnt chown -R "$username" /home/"$username"/
