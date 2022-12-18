@@ -1332,6 +1332,29 @@ arch-chroot /mnt/ sudo -u "$username" WINEARCH=win32 winecfg
 echo -e "\033[36mНастройка звука.\033[0m"
 arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
 #
+#Создание общего конфига obs-studio.
+echo -e "\033[36mСоздание общего конфига obs-studio.\033[0m"
+mkdir -p /mnt/home/"$username"/.config/obs-studio/
+echo -e "[BasicWindow]
+SysTrayWhenStarted=true
+SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.ini
+#
+#Создание общего конфига transmission.
+echo -e "\033[36mСоздание общего конфига transmission.\033[0m"
+mkdir -p /mnt/home/"$username"/.config/transmission/
+echo -e '"start-minimized": true,
+"show-statusbar": true,' > /mnt/home/"$username"/.config/transmission/settings.json
+#
+#Создание конфига настроек firefox.
+echo -e "\033[36mСоздание конфига настроек firefox.\033[0m"
+arch-chroot /mnt firefox -CreateProfile "$username"
+echo -e 'user_pref("browser.sessionstore.resume session once", true);
+user_pref("layout.css.devPixelsPerPx", "1.5");
+user_pref("accessibility.typeaheadfind", true);
+user_pref("intl.regional_prefs.use_os_locales", true);
+user_pref("widget.gtk.overlay-scrollbars.enabled", false);
+user_pref("browser.startup.page", 3);' > /mnt/home/"$username"/.mozilla/firefox/*.default-release/user.js
+#
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
 while [[ 0 -ne $tic ]]; do
