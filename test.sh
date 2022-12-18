@@ -1308,10 +1308,6 @@ echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd avahi-daemon smartd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
-#Передача прав созданному пользователю.
-echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
-arch-chroot /mnt chown -R "$username" /home/"$username"/
-#
 #Установка помощника yay для работы с AUR.
 echo -e "\033[36mУстановка помощника yay для работы с AUR.\033[0m"
 arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
@@ -1342,18 +1338,14 @@ SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.in
 #Создание общего конфига transmission.
 echo -e "\033[36mСоздание общего конфига transmission.\033[0m"
 mkdir -p /mnt/home/"$username"/.config/transmission/
-echo -e '"start-minimized": true,
-"show-statusbar": true,' > /mnt/home/"$username"/.config/transmission/settings.json
+echo -e '{
+"start-minimized": true,
+"show-statusbar": true,
+}' > /mnt/home/"$username"/.config/transmission/settings.json
 #
-#Создание конфига настроек firefox.
-echo -e "\033[36mСоздание конфига настроек firefox.\033[0m"
-arch-chroot /mnt firefox -CreateProfile "$username"
-echo -e 'user_pref("browser.sessionstore.resume session once", true);
-user_pref("layout.css.devPixelsPerPx", "1.5");
-user_pref("accessibility.typeaheadfind", true);
-user_pref("intl.regional_prefs.use_os_locales", true);
-user_pref("widget.gtk.overlay-scrollbars.enabled", false);
-user_pref("browser.startup.page", 3);' > /mnt/home/"$username"/.mozilla/firefox/*.default-release/user.js
+#Передача прав созданному пользователю.
+echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
+arch-chroot /mnt chown -R "$username" /home/"$username"/
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
