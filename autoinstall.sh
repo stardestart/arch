@@ -938,7 +938,7 @@ exec --no-startup-id telegram-desktop -startintray -- %u
 # Автоматическая разблокировка KWallet.
 exec --no-startup-id /usr/lib/pam_kwallet_init
 #
-# Автоматическая разблокировка KWallet.
+# Автозапуск kshutdown.
 exec --no-startup-id kshutdown --init
 #
 # Шпаргалка по i3wm.
