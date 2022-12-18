@@ -1320,7 +1320,7 @@ Type=oneshot
 Environment=DISPLAY=:0
 ExecStart=/bin/bash -c "/home/'"$username"'/archinstall.sh"
 [Install]
-WantedBy=graphical.target' > /etc/systemd/system/archinstall.service
+WantedBy=graphical.target' > /mnt/etc/systemd/system/archinstall.service
 echo -e '#!/bin/bash
 xterm -e /bin/bash -l -c "sudo -u '"$username"' WINEARCH=win32 winecfg"
 xterm -e /bin/bash -l -c "sudo -u '"$username"' winetricks directx9"
