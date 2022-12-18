@@ -339,7 +339,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa mesa-utils lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel --noconfirm
+arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa mesa-utils lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel kshutdown --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Установим видеодрайвер.
@@ -910,6 +910,9 @@ exec --no-startup-id dolphin --daemon
 #
 # Автоматическая разблокировка KWallet.
 exec --no-startup-id /usr/lib/pam_kwallet_init
+#
+# Автоматическая разблокировка KWallet.
+exec --no-startup-id kshutdown --init
 #
 # Шпаргалка по i3wm.
 exec --no-startup-id notify-send -t 10000 "Шпаргалка по i3wm." "Win+Enter -- Запустить терминал.\\nWin+D -- Запуск dmenu (программа запуска).\\nWin+F1 -- Запустить firefox.\\nWin+Shift+Q -- Закрыть окно в фокусе.\\nPrint Screen -- Снимок экрана.\\nПКМ на нижней панели -- Снимок экрана.\\nЛКМ на верхней панели /Обновить ArchLinux/ -- Обновить ArchLinux.\\nScrollUp на верхней панели /Обновить ArchLinux/ -- Удалить кэш pacman.\\nScrollDown на верхней панели /Обновить ArchLinux/ -- Удалить пакеты сироты.\\n#\\nПКМ -- Делает окно плавающим.\\nСКМ на заголовке -- Закрывает окно.\\n#\\nWin+Left -- Фокус на левое окно.\\nWin+Down -- Фокус на нижнее окно.\\nWin+Up -- Фокус на верхнее окно.\\nWin+Right -- Фокус на правое окно.\\n#\\nWin+Shift+Left -- Переместить окно влево.\\nWin+Shift+Down -- Переместить окно вниз.\\nWin+Shift+Up -- Переместить окно вверх.\\nWin+Shift+Right -- Переместить окно вправо.\\n#\\nWin+H -- Следующее открытое окно разделит экран по горизонтали.\\nWin+V -- Следующее открытое окно разделит экран по вертикали.\\nWin+F -- Развернуть окно во весь экран.\\nWin+S Win+W Win+E -- Делаем из окон вкладки.\\n#\\nWin+1..0 -- Переключение между рабочими столами.\\nWin+Shift+1..0 -- Переместить сфокусированное окно на заданный рабочий стол.\\n#\\nWin+Shift+R -- Перезапустить i3.\\nWin+Shift+E -- Выход из i3 (выходит из сеанса X).\\n#\\nWin+R -- Войти/Выйти в режим изменения размеров окон.\\nLeft -- Сдвинуть границу влево.\\nDown -- Сдвинуть границу вниз.\\nUp -- Сдвинуть границу вверх.\\nRight -- Сдвинуть границу вправо.\\n#\\nWin+Shift+Minus -- Сделать текущее окно черновиком/блокнотом.\\nWin+Minus -- Показать первое окно черновика/блокнота."
