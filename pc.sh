@@ -1329,10 +1329,6 @@ echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl enable saned.socket cups.socket cups-browsed reflector.timer xdm-archlinux dhcpcd avahi-daemon smartd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
-#Передача прав созданному пользователю.
-echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
-arch-chroot /mnt chown -R "$username" /home/"$username"/
-#
 #Установка помощника yay для работы с AUR.
 echo -e "\033[36mУстановка помощника yay для работы с AUR.\033[0m"
 arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
@@ -1352,6 +1348,17 @@ arch-chroot /mnt/ sudo -u "$username" WINEARCH=win32 winecfg
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
 arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
+#
+#Создание общего конфига obs-studio.
+echo -e "\033[36mСоздание общего конфига obs-studio.\033[0m"
+mkdir -p /mnt/home/"$username"/.config/obs-studio/
+echo -e "[BasicWindow]
+SysTrayWhenStarted=true
+SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.ini
+#
+#Передача прав созданному пользователю.
+echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
+arch-chroot /mnt chown -R "$username" /home/"$username"/
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
