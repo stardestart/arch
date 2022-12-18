@@ -908,6 +908,9 @@ exec --no-startup-id flameshot
 exec --no-startup-id copyq
 exec --no-startup-id autocutsel
 #
+# Автозапуск obs.
+exec --no-startup-id obs
+#
 # Автозапуск lxqt-panel.
 exec --no-startup-id lxqt-panel
 #
