@@ -688,22 +688,22 @@ detect-client-leader = true;
 #Отключить информацию о повреждениях, каждый раз перерисовывается весь экран, а не его часть.
 use-damage = true;
 #
-#Размытие.
-#backend = "glx"
-#glx-no-stencil = true;
-#glx-no-rebind-pixmap = true;
-#blur:{ method = "dual_kawase";
-#       strength = 5;
-#       background = false;
-#       background-frame = false;
-#       background-fixed = false; }
-#blur-background-exclude = [ "window_type = \047dock\047",
-#                            "window_type = \047notification\047",
-#                            "window_type = \047tooltip\047",
-#                            "class_g = \047Conky\047",
-#                            "class_g = \047i3bar\047",
-#                            "class_g = \047vlc\047",
-#                            "_NET_WM_STATE@:a != \047_NET_WM_STATE_FOCUSED\047" ];
+#TechnicalSymbol #Размытие.
+#TechnicalSymbol backend = "glx"
+#TechnicalSymbol glx-no-stencil = true;
+#TechnicalSymbol glx-no-rebind-pixmap = true;
+#TechnicalSymbol blur:{ method = "dual_kawase";
+#TechnicalSymbol       strength = 5;
+#TechnicalSymbol       background = false;
+#TechnicalSymbol       background-frame = false;
+#TechnicalSymbol       background-fixed = false; }
+#TechnicalSymbol       blur-background-exclude = [ "window_type = \047dock\047",
+#TechnicalSymbol                            "window_type = \047notification\047",
+#TechnicalSymbol                            "window_type = \047tooltip\047",
+#TechnicalSymbol                            "class_g = \047Conky\047",
+#TechnicalSymbol                            "class_g = \047i3bar\047",
+#TechnicalSymbol                            "class_g = \047vlc\047",
+#TechnicalSymbol                            "_NET_WM_STATE@:a != \047_NET_WM_STATE_FOCUSED\047" ];
 ' > /mnt/home/"$username"/.config/picom.conf
 #
 #Создание xresources.
