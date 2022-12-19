@@ -1306,11 +1306,6 @@ rm -Rf /mnt/home/"$username"/yay
 #Установка программ из AUR.
 echo -e "\033[36mУстановка программ из AUR.\033[0m"
 arch-chroot /mnt/ sudo -u "$username" yay -S debtap --noconfirm
-#
-#Переключение wine в режим win32.
-echo -e "\033[36mПереключение wine в режим win32.\033[0m"
-arch-chroot /mnt/ sudo -u "$username" WINEARCH=win32 winecfg
-#
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
 arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
