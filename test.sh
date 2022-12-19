@@ -1315,50 +1315,12 @@ echo -e "[BasicWindow]
 SysTrayWhenStarted=true
 SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.ini
 #
-#Создание службы которая после перезагрузки продолжит установку.
-echo -e '[Unit]
-Description=ArchInstall
-[Service]
-Type=oneshot
-Environment=DISPLAY=:0
-ExecStart=/bin/bash -c "/home/'"$username"'/archinstall.sh"
-[Install]
-WantedBy=graphical.target' > /mnt/etc/systemd/system/archinstall.service
-echo -e '#!/bin/bash
-xterm -e /bin/bash -l -c "sudo -u '"$username"' WINEARCH=win32 winecfg"
-xterm -e /bin/bash -l -c "sudo -u '"$username"' winetricks directx9"
-sudo -u '"$username"' firefox
-sudo -u '"$username"' echo -e \047user_pref("layout.css.devPixelsPerPx", "0.0");
-user_pref("accessibility.typeaheadfind", true);
-user_pref("intl.regional_prefs.use_os_locales", true);
-user_pref("widget.gtk.overlay-scrollbars.enabled", false);
-user_pref("browser.startup.page", 3);\047 > /home/'"$username"'/.mozilla/firefox/*.default-release/user.js
-if [ "$(glxinfo -b)" -le 1340 ]; then
-sudo -u '"$username"' echo -e \047
-#Размытие.
-backend = "glx"
-glx-no-stencil = true;
-glx-no-rebind-pixmap = true;
-blur:{ method = "dual_kawase";
-       strength = 5;
-       background = false;
-       background-frame = false;
-       background-fixed = false; }
-blur-background-exclude = [ "window_type = \047dock\047",
-                            "window_type = \047notification\047",
-                            "window_type = \047tooltip\047",
-                            "class_g = \047Conky\047",
-                            "class_g = \047i3bar\047",
-                            "class_g = \047vlc\047",
-                            "_NET_WM_STATE@:a != \047_NET_WM_STATE_FOCUSED\047" ];\047 >> /home/'"$username"'/.config/picom.conf
-fi
-systemctl disable archinstall.service
-rm /home/'"$username"'/archinstall.sh
-rm /etc/systemd/system/archinstall.service' > /mnt/home/"$username"/archinstall.sh
+#Создание скрипта, который после перезагрузки продолжит установку.
+
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
-arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd avahi-daemon smartd archinstall
+arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd avahi-daemon smartd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Передача прав созданному пользователю.
