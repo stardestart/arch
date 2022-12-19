@@ -890,6 +890,9 @@ client.placeholder #000000 #000000 #b2b2b2 #000000 #000000
 # Включить значки окон для всех окон с дополнительным горизонтальным отступом.
 for_window [all] title_window_icon padding '"$font"'px
 #
+# Включить плавающий режим для окон kshutdown.
+for_window [class="kshutdown"] floating enable
+#
 # Внешний вид XTerm
 # Включить плавающий режим для всех окон XTerm.
 for_window [class="XTerm"] floating enable
