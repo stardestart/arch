@@ -1380,6 +1380,9 @@ fi
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
+#Делаем xinitrc и archinstall.sh исполняемыми.
+chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
+#
 #Передача прав созданному пользователю.
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
 arch-chroot /mnt chown -R "$username" /home/"$username"/
