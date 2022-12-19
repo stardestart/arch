@@ -348,8 +348,8 @@ if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then arch-chroot /mnt pacman -
 elif [ -n "$(lspci | grep -i vga | grep -i ' ati ')" ]; then arch-chroot /mnt pacman -Sy xf86-video-ati libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau --noconfirm
 elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
 elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then arch-chroot /mnt pacman -Sy xf86-video-intel vulkan-intel --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then arch-chroot /mnt pacman -Sy virtualbox-guest-utils virtualbox-guest-iso virtualbox-guest-utils-nox --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mnt pacman -Sy virtualbox-guest-utils virtualbox-guest-iso virtualbox-guest-utils-nox --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then arch-chroot /mnt pacman -Sy virtualbox-guest-utils --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mnt pacman -Sy virtualbox-guest-utils --noconfirm
 fi
 #
 #Проверка наличия температурного датчика у системного диска.
