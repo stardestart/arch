@@ -1351,10 +1351,6 @@ rm -Rf /mnt/home/"$username"/yay
 echo -e "\033[36mУстановка программ из AUR.\033[0m"
 arch-chroot /mnt/ sudo -u "$username" yay -S hardinfo debtap libreoffice-extension-languagetool cups-xerox-b2xx --noconfirm
 #
-#Переключение wine в режим win32.
-echo -e "\033[36mПереключение wine в режим win32.\033[0m"
-arch-chroot /mnt/ sudo -u "$username" WINEARCH=win32 winecfg
-#
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
 arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
@@ -1365,6 +1361,36 @@ mkdir -p /mnt/home/"$username"/.config/obs-studio/
 echo -e "[BasicWindow]
 SysTrayWhenStarted=true
 SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.ini
+#
+#Создание скрипта, который после перезагрузки продолжит установку.
+echo -e '#!/bin/bash
+WINEARCH=win32 winetricks directx9
+echo -e \047user_pref("layout.css.devPixelsPerPx", "1.5");
+user_pref("accessibility.typeaheadfind", true);
+user_pref("intl.regional_prefs.use_os_locales", true);
+user_pref("widget.gtk.overlay-scrollbars.enabled", false);
+user_pref("browser.startup.page", 3);\047 > ~/.mozilla/firefox/*.default-release/user.js
+if [ "$(glxinfo -b)" -le 1340 ]; then
+echo -e \047
+#Размытие.
+backend = "glx"
+glx-no-stencil = true;
+glx-no-rebind-pixmap = true;
+blur:{ method = "dual_kawase";
+       strength = 5;
+       background = false;
+       background-frame = false;
+       background-fixed = false; }
+blur-background-exclude = [ "window_type = \047\047dock\047\047",
+                            "window_type = \047\047notification\047\047",
+                            "window_type = \047\047tooltip\047\047",
+                            "class_g = \047\047Conky\047\047",
+                            "class_g = \047\047i3bar\047\047",
+                            "class_g = \047\047vlc\047\047",
+                            "_NET_WM_STATE@:a != \047\047_NET_WM_STATE_FOCUSED\047\047" ];\047 >> ~/.config/picom.conf
+fi
+sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
+rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #Передача прав созданному пользователю.
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
