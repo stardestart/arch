@@ -1352,6 +1352,9 @@ echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd avahi-daemon smartd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
+#Делаем xinitrc и archinstall.sh исполняемыми.
+chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
+#
 #Передача прав созданному пользователю.
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
 arch-chroot /mnt chown -R "$username" /home/"$username"/
