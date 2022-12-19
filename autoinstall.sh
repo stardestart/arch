@@ -66,6 +66,9 @@ tic=3
 #Массив хранит наличие ssd, если такие имеются.
 massd=()
 #
+#Переменная сохранит размер шрифта firefox.
+fox=""
+#
 #Определяем процессор.
 echo -e "\033[36mОпределяем процессор.\033[0m"
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="\ninitrd /amd-ucode.img"
@@ -160,16 +163,19 @@ do
         "~480p.")
             font=8
             xterm="700 350"
+            fox=0.0
             break
             ;;
         "~720p-1080p.")
             font=10
             xterm="1000 500"
+            fox=1.0
             break
             ;;
         "~4K.")
             font=14
             xterm="2000 1000"
+            fox=1.5
             break
             ;;
         *) echo -e "\033[41m\033[30mЧто значит - "$REPLY"? До трёх посчитать не можешь и Arch Linux ставишь?\033[0m\033[32m";;
@@ -1354,7 +1360,7 @@ SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.in
 echo -e '#!/bin/bash
 WINEARCH=win32 winetricks directx9
 ls ~/.mozilla/firefox/*.default-release
-echo -e \047user_pref("layout.css.devPixelsPerPx", "1.5");
+echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
 user_pref("accessibility.typeaheadfind", true);
 user_pref("intl.regional_prefs.use_os_locales", true);
 user_pref("widget.gtk.overlay-scrollbars.enabled", false);
