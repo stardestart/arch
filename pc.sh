@@ -1370,8 +1370,9 @@ user_pref("accessibility.typeaheadfind", true);
 user_pref("intl.regional_prefs.use_os_locales", true);
 user_pref("widget.gtk.overlay-scrollbars.enabled", false);
 user_pref("browser.startup.page", 3);\047 > ~/.mozilla/firefox/*.default-release/user.js
-if [ -n "$(clinfo -l)" ]; then
-sed -i \047s/#TechnicalSymbol //\047 ~/.config/picom.conf
+if [ -n "$(clinfo -l)" ];
+    then sed -i \047s/#TechnicalSymbol //\047 ~/.config/picom.conf
+    else sed -i \047/#TechnicalSymbol /d\047 ~/.config/picom.conf
 fi
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
