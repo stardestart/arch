@@ -1364,11 +1364,21 @@ echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
 user_pref("accessibility.typeaheadfind", true);
 user_pref("intl.regional_prefs.use_os_locales", true);
 user_pref("widget.gtk.overlay-scrollbars.enabled", false);
-user_pref("browser.startup.page", 3);\047 > $_/user.js
+user_pref("browser.startup.page", 3);
+user_pref("browser.download.useDownloadDir", false);\047 > $_/user.js
 if [ -n "$(clinfo -l)" ];
     then sed -i \047s/#TechnicalSymbol //\047 ~/.config/picom.conf
     else sed -i \047/#TechnicalSymbol /d\047 ~/.config/picom.conf
 fi
+soundmass=($(pacmd list-sinks | grep -i name: | awk \047{print $2}\047))
+for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
+            do
+amixer -c "$j" sset Master unmute
+amixer -c "$j" sset Speaker unmute
+amixer -c "$j" sset Headphone unmute
+amixer -c "$j" sset "Auto-Mute Mode" Disabled
+            done
+alsactl store
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
