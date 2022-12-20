@@ -1353,6 +1353,15 @@ if [ -n "$(clinfo -l)" ];
     then sed -i \047s/#TechnicalSymbol //\047 ~/.config/picom.conf
     else sed -i \047/#TechnicalSymbol /d\047 ~/.config/picom.conf
 fi
+soundmass=($(pacmd list-sinks | grep -i name: | awk \047{print $2}\047))
+for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
+            do
+amixer -c "$j" sset Master unmute
+amixer -c "$j" sset Speaker unmute
+amixer -c "$j" sset Headphone unmute
+amixer -c "$j" sset "Auto-Mute Mode" Disabled
+            done
+alsactl store
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
@@ -1375,14 +1384,5 @@ while [[ 0 -ne $tic ]]; do
     sleep 1
     tic=$(($tic-1))
 done
-soundmass=($(aplay -l | grep 'card *' | awk '{print $2}' | sort -u))
-for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
-            do
-arch-chroot /mnt amixer -c "$j" sset Master unmute
-arch-chroot /mnt amixer -c "$j" sset Speaker unmute
-arch-chroot /mnt amixer -c "$j" sset Headphone unmute
-arch-chroot /mnt amixer -c "$j" sset "Auto-Mute Mode" Disabled
-            done
-arch-chroot /mnt alsactl store
 #fdisk -l
 lsblk -l
