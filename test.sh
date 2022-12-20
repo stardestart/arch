@@ -1348,7 +1348,8 @@ echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
 user_pref("accessibility.typeaheadfind", true);
 user_pref("intl.regional_prefs.use_os_locales", true);
 user_pref("widget.gtk.overlay-scrollbars.enabled", false);
-user_pref("browser.startup.page", 3);\047 > $_/user.js
+user_pref("browser.startup.page", 3);
+user_pref("browser.download.useDownloadDir", false);\047 > $_/user.js
 if [ -n "$(clinfo -l)" ];
     then sed -i \047s/#TechnicalSymbol //\047 ~/.config/picom.conf
     else sed -i \047/#TechnicalSymbol /d\047 ~/.config/picom.conf
