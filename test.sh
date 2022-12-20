@@ -1375,5 +1375,14 @@ while [[ 0 -ne $tic ]]; do
     sleep 1
     tic=$(($tic-1))
 done
+soundmass=($(aplay -l | grep 'card *' | awk '{print $2}' | sort -u))
+for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
+            do
+arch-chroot /mnt amixer -c "$j" sset Master unmute
+arch-chroot /mnt amixer -c "$j" sset Speaker unmute
+arch-chroot /mnt amixer -c "$j" sset Headphone unmute
+arch-chroot /mnt amixer -c "$j" sset "Auto-Mute Mode" Disabled
+            done
+arch-chroot /mnt alsactl store
 #fdisk -l
 lsblk -l
