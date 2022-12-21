@@ -345,7 +345,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts audacity cheese kate sweeper pinta gimp vlc libreoffice-still-ru ktouch kalgebra avidemux-qt copyq telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf obs-studio wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel kshutdown clinfo unzip --noconfirm
+arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 ttf-fantasque-sans-mono audacity cheese kate sweeper pinta gimp vlc libreoffice-still-ru ktouch kalgebra avidemux-qt copyq telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf obs-studio wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel kshutdown clinfo unzip --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Установим видеодрайвер.
@@ -1382,6 +1382,58 @@ amixer -c "$j" sset "Auto-Mute Mode" Disabled
 alsactl store
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
+#
+#Установка шрифтов.
+echo -e "\033[36mУстановка шрифтов.\033[0m"
+mkdir -p /mnt/usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Emoji.zip https://fonts.google.com/download?family=Noto%20Emoji
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Emoji.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Symbols.zip https://fonts.google.com/download?family=Noto%20Sans%20Symbols
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Symbols.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Symbols2.zip https://fonts.google.com/download?family=Noto%20Sans%20Symbols%202
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Symbols2.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Duployan.zip https://fonts.google.com/download?family=Noto%20Sans%20Duployan
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Duployan.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Music.zip https://fonts.google.com/download?family=Noto%20Music
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Music.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Math.zip https://fonts.google.com/download?family=Noto%20Sans%20Math
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Math.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Sans.zip https://fonts.google.com/download?family=Noto%20Sans
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Sans.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Arabic.zip https://fonts.google.com/download?family=Noto%20Sans%20Arabic
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Arabic.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Serif.zip https://fonts.google.com/download?family=Noto%20Serif
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Serif.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/TC.zip https://fonts.google.com/download?family=Noto%20Serif%20TC
+arch-chroot /mnt unzip -o /usr/share/fonts/google/TC.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Armenian.zip https://fonts.google.com/download?family=Noto%20Serif%20Armenian
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Armenian.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Gurmukhi.zip https://fonts.google.com/download?family=Noto%20Serif%20Gurmukhi
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Gurmukhi.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Gujarati.zip https://fonts.google.com/download?family=Noto%20Serif%20Gujarati
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Gujarati.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Tamil.zip https://fonts.google.com/download?family=Noto%20Serif%20Tamil
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Tamil.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Hebrew.zip https://fonts.google.com/download?family=Noto%20Serif%20Hebrew
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Hebrew.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/JP.zip https://fonts.google.com/download?family=Noto%20Serif%20JP
+arch-chroot /mnt unzip -o /usr/share/fonts/google/JP.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/KR.zip https://fonts.google.com/download?family=Noto%20Serif%20KR
+arch-chroot /mnt unzip -o /usr/share/fonts/google/KR.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Khmer.zip https://fonts.google.com/download?family=Noto%20Serif%20Khmer
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Khmer.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Georgian.zip https://fonts.google.com/download?family=Noto%20Serif%20Georgian
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Georgian.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Kannada.zip https://fonts.google.com/download?family=Noto%20Serif%20Kannada
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Kannada.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Thai.zip https://fonts.google.com/download?family=Noto%20Serif%20Thai
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Thai.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Devanagari.zip https://fonts.google.com/download?family=Noto%20Serif%20Devanagari
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Devanagari.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/Bengali.zip https://fonts.google.com/download?family=Noto%20Serif%20Bengali
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Bengali.zip -d /usr/share/fonts/google
+rm /mnt/usr/share/fonts/google/*.zip
+rm /mnt/usr/share/fonts/google/*.txt
 #
 #Делаем xinitrc и archinstall.sh исполняемыми.
 chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
