@@ -345,7 +345,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 noto-fonts-cjk noto-fonts-extra ttf-fantasque-sans-mono ttf-font-awesome awesome-terminal-fonts cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel kshutdown clinfo --noconfirm
+arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 ttf-fantasque-sans-mono cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel kshutdown clinfo --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Установим видеодрайвер.
@@ -1365,6 +1365,35 @@ amixer -c "$j" sset "Auto-Mute Mode" Disabled
 alsactl store
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
+#
+#
+mkdir -p /mnt/usr/share/fonts/google/
+cd /mnt/usr/share/fonts/google/
+curl -OJ https://fonts.google.com/download?family=Noto%20Emoji
+curl -OJ https://fonts.google.com/download?family=Noto%20Sans%20Symbols
+curl -OJ https://fonts.google.com/download?family=Noto%20Sans%20Symbols%202
+curl -OJ https://fonts.google.com/download?family=Noto%20Sans%20Duployan
+curl -OJ https://fonts.google.com/download?family=Noto%20Music
+curl -OJ https://fonts.google.com/download?family=Noto%20Sans%20Math
+curl -OJ https://fonts.google.com/download?family=Noto%20Sans
+curl -OJ https://fonts.google.com/download?family=Noto%20Sans%20Arabic
+curl -OJ https://fonts.google.com/download?family=Noto%20Serif
+curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20TC
+curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Armenian
+curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Gurmukhi
+curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Gujarati
+curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Tamil
+curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Hebrew
+curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20JP
+curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20KR
+curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Khmer
+curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Georgian
+curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Kannada
+curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Thai
+curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Devanagari
+curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Bengali
+unzip *.zip -x *.txt
+rm *.zip
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
