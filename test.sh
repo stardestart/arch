@@ -1369,51 +1369,51 @@ rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 mkdir -p /mnt/usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Emoji https://fonts.google.com/download?family=Noto%20Emoji
-arch-chroot /mnt unzip /usr/share/fonts/google/Emoji -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Emoji -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Symbols https://fonts.google.com/download?family=Noto%20Sans%20Symbols
-arch-chroot /mnt unzip /usr/share/fonts/google/Symbols -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Symbols -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Symbols2 https://fonts.google.com/download?family=Noto%20Sans%20Symbols%202
-arch-chroot /mnt unzip /usr/share/fonts/google/Symbols2 -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Symbols2 -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Duployan https://fonts.google.com/download?family=Noto%20Sans%20Duployan
-arch-chroot /mnt unzip /usr/share/fonts/google/Duployan -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Duployan -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Music https://fonts.google.com/download?family=Noto%20Music
-arch-chroot /mnt unzip /usr/share/fonts/google/Music -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Music -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Math https://fonts.google.com/download?family=Noto%20Sans%20Math
-arch-chroot /mnt unzip /usr/share/fonts/google/Math -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Math -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Sans https://fonts.google.com/download?family=Noto%20Sans
-arch-chroot /mnt unzip /usr/share/fonts/google/Sans -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Sans -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Arabic https://fonts.google.com/download?family=Noto%20Sans%20Arabic
-arch-chroot /mnt unzip /usr/share/fonts/google/Arabic -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Arabic -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Serif https://fonts.google.com/download?family=Noto%20Serif
-arch-chroot /mnt unzip /usr/share/fonts/google/Serif -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Serif -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/TC https://fonts.google.com/download?family=Noto%20Serif%20TC
-arch-chroot /mnt unzip /usr/share/fonts/google/TC -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/TC -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Armenian https://fonts.google.com/download?family=Noto%20Serif%20Armenian
-arch-chroot /mnt unzip /usr/share/fonts/google/Armenian -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Armenian -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Gurmukhi https://fonts.google.com/download?family=Noto%20Serif%20Gurmukhi
-arch-chroot /mnt unzip /usr/share/fonts/google/Gurmukhi -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Gurmukhi -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Gujarati https://fonts.google.com/download?family=Noto%20Serif%20Gujarati
-arch-chroot /mnt unzip /usr/share/fonts/google/Gujarati -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Gujarati -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Tamil https://fonts.google.com/download?family=Noto%20Serif%20Tamil
-arch-chroot /mnt unzip /usr/share/fonts/google/Tamil -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Tamil -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Hebrew https://fonts.google.com/download?family=Noto%20Serif%20Hebrew
-arch-chroot /mnt unzip /usr/share/fonts/google/Hebrew -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Hebrew -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/JP https://fonts.google.com/download?family=Noto%20Serif%20JP
-arch-chroot /mnt unzip /usr/share/fonts/google/JP -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/JP -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/KR https://fonts.google.com/download?family=Noto%20Serif%20KR
-arch-chroot /mnt unzip /usr/share/fonts/google/KR -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/KR -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Khmer https://fonts.google.com/download?family=Noto%20Serif%20Khmer
-arch-chroot /mnt unzip /usr/share/fonts/google/Khmer -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Khmer -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Georgian https://fonts.google.com/download?family=Noto%20Serif%20Georgian
-arch-chroot /mnt unzip /usr/share/fonts/google/Georgian -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Georgian -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Kannada https://fonts.google.com/download?family=Noto%20Serif%20Kannada
-arch-chroot /mnt unzip /usr/share/fonts/google/Kannada -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Kannada -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Thai https://fonts.google.com/download?family=Noto%20Serif%20Thai
-arch-chroot /mnt unzip /usr/share/fonts/google/Thai -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Thai -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Devanagari https://fonts.google.com/download?family=Noto%20Serif%20Devanagari
-arch-chroot /mnt unzip /usr/share/fonts/google/Devanagari -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Devanagari -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Bengali https://fonts.google.com/download?family=Noto%20Serif%20Bengali
-arch-chroot /mnt unzip /usr/share/fonts/google/Bengali -d /usr/share/fonts/google -x "*.txt/*"
+arch-chroot /mnt unzip -o /usr/share/fonts/google/Bengali -d /usr/share/fonts/google
 rm /mnt/usr/share/fonts/google/*.zip
 rm /mnt/usr/share/fonts/google/*.txt
 #
