@@ -1367,33 +1367,32 @@ sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #
-mkdir -p /mnt/usr/share/fonts/google/
-cd /mnt/usr/share/fonts/google/
-curl -OJ https://fonts.google.com/download?family=Noto%20Emoji
-curl -OJ https://fonts.google.com/download?family=Noto%20Sans%20Symbols
-curl -OJ https://fonts.google.com/download?family=Noto%20Sans%20Symbols%202
-curl -OJ https://fonts.google.com/download?family=Noto%20Sans%20Duployan
-curl -OJ https://fonts.google.com/download?family=Noto%20Music
-curl -OJ https://fonts.google.com/download?family=Noto%20Sans%20Math
-curl -OJ https://fonts.google.com/download?family=Noto%20Sans
-curl -OJ https://fonts.google.com/download?family=Noto%20Sans%20Arabic
-curl -OJ https://fonts.google.com/download?family=Noto%20Serif
-curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20TC
-curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Armenian
-curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Gurmukhi
-curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Gujarati
-curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Tamil
-curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Hebrew
-curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20JP
-curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20KR
-curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Khmer
-curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Georgian
-curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Kannada
-curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Thai
-curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Devanagari
-curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Bengali
-unzip *.zip -x *.txt
-rm *.zip
+mkdir -p /mnt/usr/share/fonts/google
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Emoji
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Sans%20Symbols
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Sans%20Symbols%202
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Sans%20Duployan
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Music
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Sans%20Math
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Sans
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Sans%20Arabic
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Serif
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20TC
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Armenian
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Gurmukhi
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Gujarati
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Tamil
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Hebrew
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20JP
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20KR
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Khmer
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Georgian
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Kannada
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Thai
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Devanagari
+cd /mnt/usr/share/fonts/google && curl -OJ https://fonts.google.com/download?family=Noto%20Serif%20Bengali
+arch-chroot /mnt/usr/share/fonts/google unzip *.zip -x *.txt
+arch-chroot /mnt/usr/share/fonts/google rm *.zip
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
