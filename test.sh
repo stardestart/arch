@@ -270,8 +270,8 @@ fi
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
 pacman-key --init
 pacman-key --populate archlinux
-pacman -Sy gnupg archlinux-keyring --noconfirm
-pacman -Sy reflector --noconfirm
+pacman -Sy --color always gnupg archlinux-keyring --noconfirm
+pacman -Sy --color always reflector --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
@@ -318,11 +318,11 @@ echo ""$username" ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
 echo -e "\033[36mУстановка загрузчика.\033[0m"
 if [ -z "$(efibootmgr | grep Boot)" ];
     then
-        arch-chroot /mnt pacman -Sy grub --noconfirm
+        arch-chroot /mnt pacman -Sy --color always grub --noconfirm
         arch-chroot /mnt grub-install /dev/"$sysdisk"
         arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
     else
-        arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
+        arch-chroot /mnt pacman -Sy --color always efibootmgr --noconfirm
         arch-chroot /mnt bootctl install
         echo -e "default arch\ntimeout 2\neditor yes\nconsole-mode max" > /mnt/boot/loader/loader.conf
         echo -e "title  Arch Linux\nlinux  /vmlinuz-linux-zen"$microcode"\ninitrd  /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw" > /mnt/boot/loader/entries/arch.conf
@@ -330,8 +330,8 @@ fi
 #
 #Установим микроинструкции для процессора.
 echo -e "\033[36mУстановка микроинструкций для процессора.\033[0m"
-if [ "$microcode" = "\ninitrd /amd-ucode.img" ]; then arch-chroot /mnt pacman -Sy amd-ucode --noconfirm
-elif [ "$microcode" = "\ninitrd /intel-ucode.img" ]; then arch-chroot /mnt pacman -Sy intel-ucode iucode-tool --noconfirm
+if [ "$microcode" = "\ninitrd /amd-ucode.img" ]; then arch-chroot /mnt pacman -Sy --color always amd-ucode --noconfirm
+elif [ "$microcode" = "\ninitrd /intel-ucode.img" ]; then arch-chroot /mnt pacman -Sy --color always intel-ucode iucode-tool --noconfirm
 fi
 #
 #Настройка установщика.
@@ -345,17 +345,17 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 ttf-fantasque-sans-mono cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel kshutdown clinfo unzip --noconfirm
-arch-chroot /mnt pacman -Ss geoclue2
+arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 ttf-fantasque-sans-mono cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel kshutdown clinfo unzip --noconfirm
+arch-chroot /mnt pacman -Ss --color always geoclue2
 #
 #Установим видеодрайвер.
 echo -e "\033[36mУстановка видеодрайвера.\033[0m"
-if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then arch-chroot /mnt pacman -Sy vulkan-radeon xf86-video-amdgpu lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i ' ati ')" ]; then arch-chroot /mnt pacman -Sy xf86-video-ati libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then arch-chroot /mnt pacman -Sy xf86-video-intel vulkan-intel --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then arch-chroot /mnt pacman -Sy virtualbox-guest-utils --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mnt pacman -Sy virtualbox-guest-utils --noconfirm
+if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then arch-chroot /mnt pacman -Sy --color always vulkan-radeon xf86-video-amdgpu lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i ' ati ')" ]; then arch-chroot /mnt pacman -Sy --color always xf86-video-ati libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then arch-chroot /mnt pacman -Sy --color always nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then arch-chroot /mnt pacman -Sy --color always xf86-video-intel vulkan-intel --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then arch-chroot /mnt pacman -Sy --color always virtualbox-guest-utils --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mnt pacman -Sy --color always virtualbox-guest-utils --noconfirm
 fi
 #
 #Проверка наличия температурного датчика у системного диска.
