@@ -346,7 +346,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
 arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 ttf-fantasque-sans-mono cheese kate wine winetricks mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel kshutdown clinfo unzip --noconfirm
-arch-chroot /mnt pacman -Ss --color always geoclue2
+arch-chroot /mnt pacman -Ss always geoclue2
 #
 #Установим видеодрайвер.
 echo -e "\033[36mУстановка видеодрайвера.\033[0m"
