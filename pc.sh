@@ -1321,7 +1321,7 @@ ForegroundVisited=130,130,129' > /mnt/home/"$username"/.config/kdeglobals
 echo -e "\033[36mПередача интернет настроек в установленную систему.\033[0m"
 if [ -z "$namewifi" ]; then arch-chroot /mnt ip link set "$netdev" up
     else
-        arch-chroot /mnt pacman -Sy iwd --noconfirm
+        arch-chroot /mnt pacman --color always -Sy iwd --noconfirm
         arch-chroot /mnt systemctl enable iwd
         arch-chroot /mnt ip link set "$netdev" up
         mkdir -p /mnt/var/lib/iwd
