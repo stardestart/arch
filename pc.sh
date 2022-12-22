@@ -973,7 +973,7 @@ exec --no-startup-id notify-send -t 10000 "Шпаргалка по i3wm." "Win+E
 bindsym $mod+Return exec xterm
 #
 # Запуск dmenu (программа запуска) с параметрами шрифта, приглашения, цвета фона.
-bindsym $mod+d exec --no-startup-id dmenu_run -fn "Fantasque Sans Mono:style=bold:size='"$(($font*3))"'" -p "Поиск программы:" -nb "#2b2b2b" -sf "#2b2bf9" -nf "#2bf92b" -sb "#f92b2b"
+bindsym $mod+d exec --no-startup-id dmenu_run -fn "Fantasque Sans Mono:style=bold:size='"$(($font/2+$font))"'" -p "Поиск программы:" -nb "#2b2b2b" -sf "#2b2bf9" -nf "#2bf92b" -sb "#f92b2b"
 #
 # Используйте mod+f1, чтобы запустить firefox.
 bindsym $mod+F1 exec --no-startup-id firefox
