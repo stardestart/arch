@@ -1011,12 +1011,14 @@ bar {
         colors {
             # Цвет фона i3status.
             background #2b2b2b
-            #
             # Цвет текста в i3status.
-            statusline #b2b2b2
-            #
+            statusline #2bf92b
             # Цвет разделителя в i3status.
             separator #f92b2b
+            # Цвет границы, фона и текста для кнопки активного рабочего стола.
+            focused_workspace  #4c7899 #285577 #f92b2b
+            # Цвет границы, фона и текста для кнопки не активного рабочего стола.
+            inactive_workspace #333333 #222222 #2bf92b
             }
          # Сделайте снимок экрана, щелкнув правой кнопкой мыши на панели (--no-startup-id убирает курсор загрузки).
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
