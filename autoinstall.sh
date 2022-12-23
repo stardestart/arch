@@ -490,60 +490,57 @@ echo -e 'conky.config = { --Внешний вид.
 alignment = "top_right", --Располжение виджета.
 border_inner_margin = '"$font"', --Отступ от внутренних границ.
 border_outer_margin = '"$font"', --Отступ от края окна.
-border_width = 1, --Толщина рамки.
 cpu_avg_samples = 2, --Усреднение значений нагрузки.
 default_color = "#2bf92b", --Цвет по умолчанию.
-default_outline_color = "#2bf92b", --Цвет рамки по умолчанию.
 double_buffer = true, --Включение двойной буферизации.
 draw_shades = false, --Оттенки.
-draw_borders = true, --Включение границ.
 font = "Fantasque Sans Mono:bold:size='"$font"'", --Шрифт и размер шрифта.
 gap_y = '"$(($font*7))"', --Отступ сверху.
 gap_x = 40, --Отступ от края.
 own_window = true, --Собственное окно.
 own_window_class = "Conky", --Класс окна.
-own_window_type = "override", --Тип окна (возможные варианты: "normal", "desktop", "ock", "panel", "override" выбираем в зависимости от оконного менеджера и личных предпочтений).
+own_window_type = "override", --Тип окна (возможные варианты: "normal", "desktop", "dock", "panel", "override" выбираем в зависимости от оконного менеджера и личных предпочтений).
 own_window_hints = "undecorated, skip_taskbar", --Задаем эфекты отображения окна.
 own_window_argb_visual = true, --Прозрачность окна.
-own_window_argb_value = 200, --Уровень прозрачности.
+own_window_argb_value = 70, --Уровень прозрачности.
 use_xft = true, } --Использование шрифтов X сервера.
 conky.text = [[ #Наполнение виджета.
 #Блок "Время".
 #Часы.
-${font Fantasque Sans Mono:bold:italic:size='"$(($font*4))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
+${font Fantasque Sans Mono:bold:italic:size='"$(($font*3))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
 #Дата.
 ${font Fantasque Sans Mono:bold:italic:size='"$(($font*2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
 #Блок "Система".
 #Разделитель.
-${color #f92b2b}SYS${hr 3}$color
+${color #f92b2b}Система${hr 3}$color
 #Ядро.
 ${color #b2b2b2}Ядро:$color$alignr$kernel
 #Время в сети.
 ${color #b2b2b2}Время в сети:$color$alignr$uptime
 #Блок "ЦП".
 #Разделитель.
-${color #f92b2b}CPU${hr 3}$color
+${color #f92b2b}ЦП${hr 3}$color
 #Нагрузка ЦП.
 ${color #b2b2b2}Нагрузка ЦП:$color$alignr$cpu %
 #Частота ЦП.
 ${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz'"${coremassconf[@]}"''"$nvidiac"'
 #Блок "ОЗУ".
 #Разделитель.
-${color #f92b2b}RAM${hr 3}$color
+${color #f92b2b}ОЗУ${hr 3}$color
 #ОЗУ.
 ${color #b2b2b2}ОЗУ:$alignr$memmax / ${color #f92b2b}$mem / $color$memeasyfree
 #Полоса загрузки ОЗУ.
 $memperc%${membar 4}
-#Блок "Подкачка".
+#Блок "Раздел подкачки".
 #Разделитель.
-${color #f92b2b}SWAP${hr 3}$color
+${color #f92b2b}Раздел подкачки${hr 3}$color
 #Задействовано Подкачки.
 ${color #b2b2b2}Задействовано:$color$alignr$swap / $swapmax
 #Полоса загрузки Подкачки.
 $swapperc%${swapbar 4}
 #Блок "Сеть".
 #Разделитель.
-${color #f92b2b}NET${hr 3}$color
+${color #f92b2b}Сеть${hr 3}$color
 #Скорость приёма ('"$netdev"' определенно командой "ls /sys/class/net" в терминале).
 ${color #b2b2b2}Скорость приёма:$color$alignr${upspeedf '"$netdev"'}
 #Скорость отдачи.
