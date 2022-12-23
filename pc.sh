@@ -1064,11 +1064,11 @@ memory { #Индикатор ram
     threshold_critical = 5% #Красный порог.
     format_degraded = "RAM: %used / %total" } #Формат вывода желтого/красного порога.
 cpu_usage { #Использование ЦП.
-    format = "CPU: %usage" } #Формат вывода.
+    format = "↯(CPU): %usage" } #Формат вывода.
 cpu_temperature 0 { #Температура ЦП.
-    format = "Θ°CPU: %degrees°C" #Формат вывода.
+    format = "🌡(CPU): %degrees°C" #Формат вывода.
     max_threshold = "70" #Красный порог.
-    format_above_threshold = "Θ CPU: %degrees°C" #Формат вывода красного порога.
+    format_above_threshold = "🌡(CPU): %degrees°C" #Формат вывода красного порога.
     path = "/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp*_input" } #Путь данных.path: /sys/devices/platform/coretemp.0/temp1_input
 tztime 1 { #Вывод даты и времени.
     format = "📆 %a %d-%m-%Y(%W)" } #Формат вывода.
