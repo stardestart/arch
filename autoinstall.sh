@@ -1150,8 +1150,7 @@ iconTheme=ePapirus-Dark
 [customcommand]
 alignment=Right
 click=xterm -e /bin/bash -l -c \"sudo pacman -Suy --noconfirm\"
-command=echo \x41e\x431\x43d\x43e\x432\x438\x442\x44c ArchLinux
-icon=/usr/share/icons/Papirus-Dark/48x48/apps/x-system-software-sources.svg
+command=echo \xd83d\xdee0
 maxWidth=500
 repeat=false
 type=customcommand
