@@ -490,27 +490,24 @@ echo -e 'conky.config = { --Внешний вид.
 alignment = "top_right", --Располжение виджета.
 border_inner_margin = '"$font"', --Отступ от внутренних границ.
 border_outer_margin = '"$font"', --Отступ от края окна.
-border_width = 1, --Толщина рамки.
 cpu_avg_samples = 2, --Усреднение значений нагрузки.
 default_color = "#2bf92b", --Цвет по умолчанию.
-default_outline_color = "#2bf92b", --Цвет рамки по умолчанию.
 double_buffer = true, --Включение двойной буферизации.
 draw_shades = false, --Оттенки.
-draw_borders = true, --Включение границ.
 font = "Fantasque Sans Mono:bold:size='"$font"'", --Шрифт и размер шрифта.
 gap_y = '"$(($font*7))"', --Отступ сверху.
 gap_x = 40, --Отступ от края.
 own_window = true, --Собственное окно.
 own_window_class = "Conky", --Класс окна.
-own_window_type = "override", --Тип окна (возможные варианты: "normal", "desktop", "ock", "panel", "override" выбираем в зависимости от оконного менеджера и личных предпочтений).
+own_window_type = "override", --Тип окна (возможные варианты: "normal", "desktop", "dock", "panel", "override" выбираем в зависимости от оконного менеджера и личных предпочтений).
 own_window_hints = "undecorated, skip_taskbar", --Задаем эфекты отображения окна.
 own_window_argb_visual = true, --Прозрачность окна.
-own_window_argb_value = 200, --Уровень прозрачности.
+own_window_argb_value = 70, --Уровень прозрачности.
 use_xft = true, } --Использование шрифтов X сервера.
 conky.text = [[ #Наполнение виджета.
 #Блок "Время".
 #Часы.
-${font Fantasque Sans Mono:bold:italic:size='"$(($font*4))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
+${font Fantasque Sans Mono:bold:italic:size='"$(($font*3))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
 #Дата.
 ${font Fantasque Sans Mono:bold:italic:size='"$(($font*2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
 #Блок "Система".
