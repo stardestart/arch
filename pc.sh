@@ -1062,7 +1062,7 @@ memory { #Индикатор ram
     format = "RAM: %used / %total" #Формат вывода.
     threshold_degraded = 10% #Желтый порог.
     threshold_critical = 5% #Красный порог.
-    format_degraded = "RAM: %used /%total" } #Формат вывода желтого/красного порога.
+    format_degraded = "RAM: %used / %total" } #Формат вывода желтого/красного порога.
 cpu_usage { #Использование ЦП.
     format = "CPU: %usage" } #Формат вывода.
 cpu_temperature 0 { #Температура ЦП.
