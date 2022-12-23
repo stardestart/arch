@@ -1059,7 +1059,7 @@ battery all { #Индикатор батареи
     path = "/sys/class/power_supply/BAT%d/uevent" #Путь данных.
     low_threshold = 10 } #Нижний порог заряда.
 memory { #Индикатор ram
-    format = "RAM: %used /%total" #Формат вывода.
+    format = "RAM: %used / %total" #Формат вывода.
     threshold_degraded = 10% #Желтый порог.
     threshold_critical = 5% #Красный порог.
     format_degraded = "RAM: %used /%total" } #Формат вывода желтого/красного порога.
