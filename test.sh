@@ -1362,6 +1362,7 @@ amixer -c "$j" sset Headphone unmute
 amixer -c "$j" sset "Auto-Mute Mode" Disabled
             done
 alsactl store
+xscreensaver-settings &
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
