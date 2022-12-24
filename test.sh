@@ -996,6 +996,7 @@ bar {
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
 }
 exec --no-startup-id firefox #TechnicalString
+exec --no-startup-id xscreensaver-settings #TechnicalString
 exec --no-startup-id xterm -e /bin/bash -l -c ~/archinstall.sh #TechnicalString' > /mnt/home/"$username"/.config/i3/config
 #
 #Создание конфига i3status.
@@ -1362,7 +1363,6 @@ amixer -c "$j" sset Headphone unmute
 amixer -c "$j" sset "Auto-Mute Mode" Disabled
             done
 alsactl store
-xscreensaver-settings &
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
