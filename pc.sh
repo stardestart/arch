@@ -1379,7 +1379,6 @@ user_pref("widget.gtk.overlay-scrollbars.enabled", false);
 user_pref("browser.startup.page", 3);
 user_pref("browser.download.useDownloadDir", false);
 user_pref("browser.urlbar.placeholderName", "DuckDuckGo");\047 > $_/user.js
-sed -i \047s/Google/DuckDuckGo/\047 $_/user.js
 if [ -n "$(clinfo -l)" ];
     then sed -i \047s/#TechnicalSymbol //\047 ~/.config/picom.conf
     else sed -i \047/#TechnicalSymbol /d\047 ~/.config/picom.conf
