@@ -799,8 +799,10 @@ bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 #
-# Левая кнопка мыши на заголовке закрывает окно.
-bindsym button1 kill
+# ScrollDown на заголовке закрыть окно.
+bindsym button5 kill
+# ScrollUP на заголовке развернуть окно во весь экран.
+bindsym button4 fullscreen toggle
 # Правая кнопка мыши делает окно плавающим.
 bindsym button3 floating toggle
 # Средняя кнопка мыши сворачивает окно в черновик.
