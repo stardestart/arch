@@ -771,8 +771,6 @@ set $mod Mod4
 #
 # Закрыть окно в фокусе.
 bindsym $mod+Shift+q kill
-# Средняя кнопка мыши на заголовке закрывает окно.
-bindsym --release button2 kill
 #
 # Изменить фокус на другое окно
 bindsym $mod+Left focus left
@@ -800,8 +798,12 @@ bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 #
+# Левая кнопка мыши на заголовке закрывает окно.
+bindsym button1 kill
 # Правая кнопка мыши делает окно плавающим.
 bindsym button3 floating toggle
+# Средняя кнопка мыши сворачивает окно в черновик.
+bindsym button2 move scratchpad
 #
 # Определяем имена для рабочих областей по умолчанию.
 set $ws1 "1"
