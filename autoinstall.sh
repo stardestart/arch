@@ -345,7 +345,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 ttf-fantasque-sans-mono audacity cheese kate sweeper pinta gimp vlc libreoffice-still-ru ktouch kalgebra avidemux-qt copyq telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf obs-studio wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel clinfo unzip bleachbit --noconfirm
+arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 ttf-fantasque-sans-mono audacity cheese kate sweeper pinta gimp vlc libreoffice-still-ru ktouch kalgebra avidemux-qt copyq telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf obs-studio wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel clinfo unzip bleachbit haveged dbus-broker gamemode lib32-gamemode --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Установим видеодрайвер.
@@ -948,6 +948,9 @@ exec --no-startup-id dolphin --daemon
 # Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u
 #
+# Автозапуск steam.
+exec --no-startup-id ENABLE_VKBASALT=1 gamemoderun steam
+#
 # Автоматическая разблокировка KWallet.
 exec --no-startup-id /usr/lib/pam_kwallet_init
 #
@@ -1345,11 +1348,6 @@ for (( j=0, i=1; i<="${#massd[*]}"; i++, j++ ))
         fi
     done
 #
-#Автозапуск служб.
-echo -e "\033[36mАвтозапуск служб.\033[0m"
-arch-chroot /mnt systemctl enable saned.socket cups.socket cups-browsed reflector.timer xdm-archlinux dhcpcd avahi-daemon smartd
-arch-chroot /mnt systemctl --user --global enable redshift-gtk
-#
 #Установка помощника yay для работы с AUR.
 echo -e "\033[36mУстановка помощника yay для работы с AUR.\033[0m"
 arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
@@ -1360,7 +1358,13 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR.
 echo -e "\033[36mУстановка программ из AUR.\033[0m"
-arch-chroot /mnt/ sudo -u "$username" yay -S hardinfo debtap libreoffice-extension-languagetool --noconfirm
+arch-chroot /mnt/ sudo -u "$username" yay -S hardinfo debtap libreoffice-extension-languagetool minq-ananicy-git auto-cpufreq vkbasalt --noconfirm
+#
+#Автозапуск служб.
+echo -e "\033[36mАвтозапуск служб.\033[0m"
+arch-chroot /mnt systemctl disable dbus
+arch-chroot /mnt systemctl enable saned.socket cups.socket cups-browsed reflector.timer xdm-archlinux dhcpcd avahi-daemon smartd ananicy haveged dbus-broker auto-cpufreq
+arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
@@ -1376,7 +1380,7 @@ SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.in
 #Создание скрипта, который после перезагрузки продолжит установку.
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
-WINEARCH=win32 winetricks directx9
+WINEARCH=win32 winetricks directx9 vkd3d vcrun6 vb6run mfc140 faudio dxvk dotnet48 allcodecs
 ls ~/.mozilla/firefox/*.default-release
 echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
 user_pref("accessibility.typeaheadfind", true);
