@@ -666,7 +666,8 @@ opacity-rule = [ "70:class_g = \047i3bar\047",
                  "90:class_g = \047dmenu\047",
                  "70:class_g = \047XTerm\047",
                  "80:class_g = \047i3-frame\047",
-                 "100:class_g = \047vlc\047" ];
+                 "100:class_g = \047vlc\047",
+                 "100:fullscreen" ];
 #
 #Закругленные углы.
 corner-radius = 5;
