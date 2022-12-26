@@ -345,7 +345,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 ttf-fantasque-sans-mono audacity cheese kate sweeper pinta gimp vlc libreoffice-still-ru ktouch kalgebra avidemux-qt copyq telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf obs-studio wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel kshutdown clinfo unzip bleachbit --noconfirm
+arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 ttf-fantasque-sans-mono audacity cheese kate sweeper pinta gimp vlc libreoffice-still-ru ktouch kalgebra avidemux-qt copyq telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf obs-studio wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel clinfo unzip bleachbit --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Установим видеодрайвер.
@@ -950,9 +950,6 @@ exec --no-startup-id telegram-desktop -startintray -- %u
 # Автоматическая разблокировка KWallet.
 exec --no-startup-id /usr/lib/pam_kwallet_init
 #
-# Автозапуск kshutdown.
-exec --no-startup-id kshutdown --init
-#
 ########### Горячие клавиши запуска программ ###########
 #
 # Используйте mod+enter, чтобы запустить терминал ("i3-sensible-terminal" можно заменить "xterm", "terminator" или любым другим на выбор).
@@ -1169,6 +1166,13 @@ command=echo \xd83d\xde80
 type=customcommand
 wheelDown=bleachbit
 wheelUp="/bin/bash -c \"picom -b; conky\""
+[customcommand4]
+alignment=Right
+click=poweroff
+command=echo \x23fb
+type=customcommand
+wheelDown=i3-msg exit
+wheelUp=reboot
 [kbindicator]
 alignment=Right
 keeper_type=application
@@ -1198,7 +1202,7 @@ lineCount=1
 lockPanel=false
 opacity=50
 panelSize='"$(($font*4))"'
-plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, customcommand, customcommand2, customcommand3
+plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, customcommand, customcommand2, customcommand3, customcommand4
 position=Top
 reserve-space=true
 show-delay=0
