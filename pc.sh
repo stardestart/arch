@@ -962,9 +962,6 @@ exec --no-startup-id telegram-desktop -startintray -- %u
 # Автоматическая разблокировка KWallet.
 exec --no-startup-id /usr/lib/pam_kwallet_init
 #
-# Автозапуск kshutdown.
-exec --no-startup-id kshutdown --init
-#
 ########### Горячие клавиши запуска программ ###########
 #
 # Используйте mod+enter, чтобы запустить терминал ("i3-sensible-terminal" можно заменить "xterm", "terminator" или любым другим на выбор).
@@ -1181,6 +1178,13 @@ command=echo \xd83d\xde80
 type=customcommand
 wheelDown=bleachbit
 wheelUp="/bin/bash -c \"picom -b; conky\""
+[customcommand4]
+alignment=Right
+click=poweroff
+command=echo \x23fb
+type=customcommand
+wheelDown=i3-msg exit
+wheelUp=reboot
 [kbindicator]
 alignment=Right
 keeper_type=application
@@ -1210,7 +1214,7 @@ lineCount=1
 lockPanel=false
 opacity=50
 panelSize='"$(($font*4))"'
-plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, customcommand, customcommand2, customcommand3
+plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, customcommand, customcommand2, customcommand3, customcommand4
 position=Top
 reserve-space=true
 show-delay=0
