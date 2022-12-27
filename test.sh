@@ -1073,10 +1073,15 @@ if [ "$font" = "8" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q
 elif [ "$font" = "10" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@$\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0K\x11)"
 elif [ "$font" = "14" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@,\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0K\x11)"
 fi
-mkdir -p /mnt/home/"$username"/.config/qt5ct
+mkdir -p /mnt/home/"$username"/.config/qt5ct/colors
+echo '[ColorScheme]
+active_colors=#689268, #ff424245, #ff979797, #ff2e2e2e, #ff302f2e, #ff373737, #ff689268, #ff689268, #ff689268, #ff2d2d2d, #ff353535, #ff2f2f2f, #ff12608a, #fff9f9f9, #ff0986d3, #ffa70b06, #ff2e2e2e, #ff689268, #ff3f3f3f, #ff689268, #802b2b2b
+disabled_colors=#ff808080, #ff424245, #ff979797, #ff2e2e2e, #ff302f2e, #ff373737, #ff808080, #ff689268, #ff808080, #ff2d2d2d, #ff353535, #ff2f2f2f, #ff12608a, #ff808080, #ff0986d3, #ffa70b06, #ff2e2e2e, #ff689268, #ff3f3f3f, #ff689268, #802b2b2b
+inactive_colors=#ff689268, #ff424245, #ff979797, #ff2e2e2e, #ff302f2e, #ff373737, #ff689268, #ff689268, #ff689268, #ff2d2d2d, #ff353535, #ff2f2f2f, #ff12608a, #fff9f9f9, #ff0986d3, #ffa70b06, #ff2e2e2e, #ff689268, #ff3f3f3f, #ff689268, #802b2b2b
+' > /mnt/home/$username/.config/qt5ct/colors/adwaita.conf
 echo '[Appearance]
-color_scheme_path=/usr/share/qt5ct/colors/airy.conf
-custom_palette=false
+color_scheme_path=/home/'"$username"'/.config/qt5ct/colors/adwaita.conf
+custom_palette=true
 icon_theme=ePapirus-Dark
 standard_dialogs=default
 style=Adwaita-Dark
