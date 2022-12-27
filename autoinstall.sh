@@ -1088,8 +1088,8 @@ elif [ "$font" = "14" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s
 fi
 mkdir -p /mnt/home/"$username"/.config/qt5ct
 echo '[Appearance]
-color_scheme_path=/usr/share/qt5ct/colors/airy.conf
-custom_palette=false
+color_scheme_path=/home/'"$username"'/.config/qt5ct/colors/adwaita.conf
+custom_palette=true
 icon_theme=ePapirus-Dark
 standard_dialogs=default
 style=Adwaita-Dark
