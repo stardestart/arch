@@ -999,7 +999,7 @@ bar {
             # Цвет фона i3status.
             background #2b2b2b
             # Цвет текста в i3status.
-            statusline #b2f9b2
+            statusline #689268
             # Цвет разделителя в i3status.
             separator #f92b2b
             # Цвет границы, фона и текста для кнопки активного рабочего стола.
