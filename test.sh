@@ -1288,13 +1288,6 @@ arch-chroot /mnt systemctl --user --global enable redshift-gtk
 echo -e "\033[36mНастройка звука.\033[0m"
 arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
 #
-#Создание общего конфига obs-studio.
-echo -e "\033[36mСоздание общего конфига obs-studio.\033[0m"
-mkdir -p /mnt/home/"$username"/.config/obs-studio/
-echo -e "[BasicWindow]
-SysTrayWhenStarted=true
-SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.ini
-#
 #Создание скрипта, который после перезагрузки продолжит установку.
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
