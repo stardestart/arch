@@ -59,8 +59,6 @@ coremass=()
 coremassconf=()
 #Переменная сохранит наличие видеокарты nvidia для дальнейшей установки/настройки/расчета.
 nvidiac=""
-#Переменная сохранит размер шрифта qt приложений для дальнейшей установки/настройки/расчета.
-fontqt=""
 #Обратный отсчет.
 tic=3
 #Массив хранит наличие ssd, если такие имеются.
@@ -173,7 +171,7 @@ do
             break
             ;;
         "~4K.")
-            font=14
+            font=12
             xterm="2000 1000"
             fox=1.5
             break
@@ -345,7 +343,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 ttf-fantasque-sans-mono audacity cheese steam kate sweeper pinta gimp vlc libreoffice-still-ru ktouch kalgebra avidemux-qt copyq telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf obs-studio wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel clinfo unzip bleachbit haveged dbus-broker gamemode lib32-gamemode --noconfirm
+arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 ttf-fantasque-sans-mono audacity cheese steam kate sweeper pinta gimp vlc libreoffice-still-ru ktouch kalgebra avidemux-qt copyq telegram-desktop discord marble kamera gwenview imagemagick xreader sane skanlite cups cups-pdf wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel clinfo unzip haveged dbus-broker gamemode lib32-gamemode --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Установим видеодрайвер.
@@ -628,7 +626,8 @@ export COLORTERM=truecolor #Включаем все 16 миллионов цве
 #Создание profile.
 echo -e "\033[36mСоздание profile.\033[0m"
 echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
-export QT_QPA_PLATFORMTHEME="qt5ct" #Изменение внешнего вида приложений использующих qt.' > /mnt/home/"$username"/.profile
+export QT_QPA_PLATFORMTHEME=gnome #Изменение внешнего вида приложений использующих qt.
+export QT_STYLE_OVERRIDE=adwaita-dark #Использовать Adwaitа в качестве стиля Qt по умолчанию' > /mnt/home/"$username"/.profile
 #
 #Создание конфига сервера уведомлений.
 echo -e "\033[36mСоздание конфига сервера уведомлений.\033[0m"
@@ -921,9 +920,6 @@ exec --no-startup-id flameshot
 exec --no-startup-id copyq
 exec --no-startup-id autocutsel
 #
-# Автозапуск obs.
-exec --no-startup-id obs
-#
 # Автозапуск lxqt-panel.
 exec --no-startup-id lxqt-panel
 #
@@ -992,14 +988,14 @@ bar {
         separator_symbol "☭"
         #
         # Назначить шрифт.
-        font pango:Fantasque Sans Mono Bold Italic '"$(($font/2+$font))"'
+        font pango:Fantasque Sans Mono Bold Italic '"$font"'
         #
         # Назначить цвета.
         colors {
             # Цвет фона i3status.
             background #2b2b2b
             # Цвет текста в i3status.
-            statusline #689268
+            statusline #b2b2b2
             # Цвет разделителя в i3status.
             separator #f92b2b
             # Цвет границы, фона и текста для кнопки активного рабочего стола.
@@ -1080,71 +1076,25 @@ echo 'polkit.addRule(function(action, subject) {
     }
 });' > /mnt/etc/polkit-1/rules.d/49-nopasswd_global.rules
 #
-#Создание директории и конфига qt5ct.
-echo -e "\033[36mСоздание конфига qt5ct.\033[0m"
-if [ "$font" = "8" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@ \0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0K\x11)"
-elif [ "$font" = "10" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@$\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0K\x11)"
-elif [ "$font" = "14" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@,\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0K\x11)"
-fi
-mkdir -p /mnt/home/"$username"/.config/qt5ct/colors
-echo '[ColorScheme]
-active_colors=#689268, #ff424245, #ff979797, #ff2e2e2e, #ff302f2e, #ff373737, #ff689268, #ff689268, #ff689268, #ff2d2d2d, #ff353535, #ff2f2f2f, #ff12608a, #fff9f9f9, #ff0986d3, #ffa70b06, #ff2e2e2e, #ff689268, #ff3f3f3f, #ff689268, #802b2b2b
-disabled_colors=#ff808080, #ff424245, #ff979797, #ff2e2e2e, #ff302f2e, #ff373737, #ff808080, #ff689268, #ff808080, #ff2d2d2d, #ff353535, #ff2f2f2f, #ff12608a, #ff808080, #ff0986d3, #ffa70b06, #ff2e2e2e, #ff689268, #ff3f3f3f, #ff689268, #802b2b2b
-inactive_colors=#ff689268, #ff424245, #ff979797, #ff2e2e2e, #ff302f2e, #ff373737, #ff689268, #ff689268, #ff689268, #ff2d2d2d, #ff353535, #ff2f2f2f, #ff12608a, #fff9f9f9, #ff0986d3, #ffa70b06, #ff2e2e2e, #ff689268, #ff3f3f3f, #ff689268, #802b2b2b
-' > /mnt/home/$username/.config/qt5ct/colors/adwaita.conf
-echo '[Appearance]
-color_scheme_path=/home/'"$username"'/.config/qt5ct/colors/adwaita.conf
-custom_palette=true
-icon_theme=ePapirus-Dark
-standard_dialogs=default
-style=Adwaita-Dark
-[Fonts]
-fixed=@Variant'"$fontqt"'
-general=@Variant'"$fontqt"'
-[Interface]
-activate_item_on_single_click=1
-buttonbox_layout=0
-cursor_flash_time=1000
-dialog_buttons_have_icons=1
-double_click_interval=400
-gui_effects=@Invalid()
-keyboard_scheme=2
-menus_have_icons=true
-show_shortcuts_in_context_menus=true
-stylesheets=@Invalid()
-toolbutton_style=4
-underline_shortcut=1
-wheel_scroll_lines='"$(($font/2))"'
-[SettingsWindow]
-geometry=@ByteArray(\x1\xd9\xd0\xcb\0\x3\0\0\0\0\0\"\0\0\0\x88\0\0\xe\xdd\0\0\b\x1e\0\0\0+\0\0\0\x88\0\0\xe\xd4\0\0\b\x15\0\0\0\0\0\0\0\0\xf\0\0\0\0+\0\0\0\x88\0\0\xe\xd4\0\0\b\x15)
-[Troubleshooting]
-force_raster_widgets=1
-ignored_applications=@Invalid()' > /mnt/home/$username/.config/qt5ct/qt5ct.conf
-#
 #Создание директории и конфига gtk.
 echo -e "\033[36mСоздание конфига gtk.\033[0m"
 mkdir -p /mnt/home/$username/.config/gtk-3.0/
+mkdir -p /mnt/home/$username/.config/gtk-4.0/
 echo '[Settings]
 gtk-application-prefer-dark-theme=true
-gtk-button-images=1
 gtk-cursor-theme-name=Adwaita
-gtk-cursor-theme-size='"$(($font*3))"'
-gtk-decoration-layout=icon:minimize,maximize,close
-gtk-enable-animations=false
-gtk-enable-event-sounds=1
-gtk-enable-input-feedback-sounds=1
 gtk-font-name=Fantasque Sans Mono Bold Italic '"$font"'
-gtk-icon-theme-name=Papirus-Dark
-gtk-menu-images=1
-gtk-modules=colorreload-gtk-module:window-decorations-gtk-module
-gtk-primary-button-warps-slider=false
-gtk-theme-name=Adwaita-dark
-gtk-toolbar-icon-size=GTK_ICON_SIZE_LARGE_TOOLBAR
-gtk-toolbar-style=GTK_TOOLBAR_BOTH_HORIZ
-gtk-xft-antialias=1
-gtk-xft-hinting=1
-gtk-xft-hintstyle=hintmedium
-gtk-xft-rgba=rgb' > /mnt/home/"$username"/.config/gtk-3.0/settings.ini
+gtk-icon-theme-name=ePapirus-Dark
+gtk-theme-name=Adwaita-dark' > /mnt/home/"$username"/.config/gtk-3.0/settings.ini
+cp /mnt/home/"$username"/.config/gtk-3.0/settings.ini /mnt/home/"$username"/.config/gtk-4.0/settings.ini
+echo '[Settings]
+gtk-application-prefer-dark-theme=true
+gtk-cursor-theme-name=Adwaita
+gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'"
+gtk-icon-theme-name="ePapirus-Dark"
+gtk-theme-name="Adwaita-dark"' > /mnt/home/"$username"/.config/gtkrc-2.0
+echo 'ENABLE_VKBASALT=1
+GTK_USE_PORTAL=1' >> /etc/environment
 #
 #Создание директории и конфига lxqt-panel.
 echo -e "\033[36mСоздание конфига lxqt-panel.\033[0m"
@@ -1163,7 +1113,7 @@ wheelDown=xterm -e /bin/bash -l -c \"sudo pacman -Rsn $(pacman -Qdtq) --noconfir
 wheelUp=xterm -e /bin/bash -l -c \"sudo pacman -Sc --noconfirm\"
 [customcommand2]
 alignment=Right
-click=notify-send -te 10000 \"\x428\x43f\x430\x440\x433\x430\x43b\x43a\x430 \x43f\x43e i3wm.\" \"Win+Enter -- \x417\x430\x43f\x443\x441\x442\x438\x442\x44c \x442\x435\x440\x43c\x438\x43d\x430\x43b.\\nWin+D -- \x417\x430\x43f\x443\x441\x43a dmenu (\x43f\x440\x43e\x433\x440\x430\x43c\x43c\x430 \x437\x430\x43f\x443\x441\x43a\x430).\\nWin+F1 -- \x417\x430\x43f\x443\x441\x442\x438\x442\x44c firefox.\\nWin+Shift+Q -- \x417\x430\x43a\x440\x44b\x442\x44c \x43e\x43a\x43d\x43e \x432 \x444\x43e\x43a\x443\x441\x435.\\nPrint Screen -- \x421\x43d\x438\x43c\x43e\x43a \x44d\x43a\x440\x430\x43d\x430.\\n\x41f\x41a\x41c \x43d\x430 \x43d\x438\x436\x43d\x435\x439 \x43f\x430\x43d\x435\x43b\x438 -- \x421\x43d\x438\x43c\x43e\x43a \x44d\x43a\x440\x430\x43d\x430.\\n\x41b\x41a\x41c \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xdee0 -- \x41e\x431\x43d\x43e\x432\x438\x442\x44c ArchLinux.\\nScrollUp \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xdee0 -- \x423\x434\x430\x43b\x438\x442\x44c \x43a\x44d\x448 pacman.\\nScrollDown \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xdee0 -- \x423\x434\x430\x43b\x438\x442\x44c \x43f\x430\x43a\x435\x442\x44b \x441\x438\x440\x43e\x442\x44b.\\n\x41b\x41a\x41c \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xdec8 -- \x42d\x442\x43e \x43c\x435\x43d\x44e.\\nScrollUp \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xdec8 -- \x41e\x442\x43a\x440\x44b\x442\x44c \x441\x442\x440\x430\x43d\x438\x446\x443 Arch_wiki.\\nScrollDown \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xdec8 -- \x41e\x442\x43a\x440\x44b\x442\x44c XTerm.\\n\x41b\x41a\x41c \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xde80 -- \x41e\x442\x43a\x43b\x44e\x447\x438\x442\x44c \x432\x438\x437\x443\x430\x43b\x44c\x43d\x44b\x435 \x44d\x444\x444\x435\x43a\x442\x44b.\\nScrollUp \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xde80 -- \x412\x43a\x43b\x44e\x447\x438\x442\x44c \x432\x438\x437\x443\x430\x43b\x44c\x43d\x44b\x435 \x44d\x444\x444\x435\x43a\x442\x44b.\\nScrollDown \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xde80 -- \x41e\x442\x43a\x440\x44b\x442\x44c bleachbit.\\n\x41b\x41a\x41c \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \x23fb -- \x412\x44b\x43a\x43b\x44e\x447\x438\x442\x44c \x41f\x41a.\\nScrollUp \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \x23fb -- \x41f\x435\x440\x435\x437\x430\x433\x440\x443\x437\x438\x442\x44c \x41f\x41a.\\nScrollDown \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \x23fb -- \x412\x44b\x439\x442\x438 \x438\x437 \x441\x438\x441\x442\x435\x43c\x44b.\\n#\\nScrollUp \x43d\x430 \x437\x430\x433\x43e\x43b\x43e\x432\x43a\x435 -- \x420\x430\x437\x432\x435\x440\x43d\x443\x442\x44c \x43e\x43a\x43d\x43e \x432\x43e \x432\x435\x441\x44c \x44d\x43a\x440\x430\x43d.\\nScrollDown \x43d\x430 \x437\x430\x433\x43e\x43b\x43e\x432\x43a\x435 -- \x417\x430\x43a\x440\x44b\x432\x430\x435\x442 \x43e\x43a\x43d\x43e.\\n\x41f\x41a\x41c \x43d\x430 \x437\x430\x433\x43e\x43b\x43e\x432\x43a\x435 -- \x414\x435\x43b\x430\x435\x442 \x43e\x43a\x43d\x43e \x43f\x43b\x430\x432\x430\x44e\x449\x438\x43c.\\n\x421\x41a\x41c \x43d\x430 \x437\x430\x433\x43e\x43b\x43e\x432\x43a\x435 -- \x421\x432\x43e\x440\x430\x447\x438\x432\x430\x435\x442 \x43e\x43a\x43d\x43e \x432 \x447\x435\x440\x43d\x43e\x432\x438\x43a.\\n#\\nWin+Left -- \x424\x43e\x43a\x443\x441 \x43d\x430 \x43b\x435\x432\x43e\x435 \x43e\x43a\x43d\x43e.\\nWin+Down -- \x424\x43e\x43a\x443\x441 \x43d\x430 \x43d\x438\x436\x43d\x435\x435 \x43e\x43a\x43d\x43e.\\nWin+Up -- \x424\x43e\x43a\x443\x441 \x43d\x430 \x432\x435\x440\x445\x43d\x435\x435 \x43e\x43a\x43d\x43e.\\nWin+Right -- \x424\x43e\x43a\x443\x441 \x43d\x430 \x43f\x440\x430\x432\x43e\x435 \x43e\x43a\x43d\x43e.\\n#\\nWin+Shift+Left -- \x41f\x435\x440\x435\x43c\x435\x441\x442\x438\x442\x44c \x43e\x43a\x43d\x43e \x432\x43b\x435\x432\x43e.\\nWin+Shift+Down -- \x41f\x435\x440\x435\x43c\x435\x441\x442\x438\x442\x44c \x43e\x43a\x43d\x43e \x432\x43d\x438\x437.\\nWin+Shift+Up -- \x41f\x435\x440\x435\x43c\x435\x441\x442\x438\x442\x44c \x43e\x43a\x43d\x43e \x432\x432\x435\x440\x445.\\nWin+Shift+Right -- \x41f\x435\x440\x435\x43c\x435\x441\x442\x438\x442\x44c \x43e\x43a\x43d\x43e \x432\x43f\x440\x430\x432\x43e.\\n#\\nWin+H -- \x421\x43b\x435\x434\x443\x44e\x449\x435\x435 \x43e\x442\x43a\x440\x44b\x442\x43e\x435 \x43e\x43a\x43d\x43e \x440\x430\x437\x434\x435\x43b\x438\x442 \x44d\x43a\x440\x430\x43d \x43f\x43e \x433\x43e\x440\x438\x437\x43e\x43d\x442\x430\x43b\x438.\\nWin+V -- \x421\x43b\x435\x434\x443\x44e\x449\x435\x435 \x43e\x442\x43a\x440\x44b\x442\x43e\x435 \x43e\x43a\x43d\x43e \x440\x430\x437\x434\x435\x43b\x438\x442 \x44d\x43a\x440\x430\x43d \x43f\x43e \x432\x435\x440\x442\x438\x43a\x430\x43b\x438.\\nWin+F -- \x420\x430\x437\x432\x435\x440\x43d\x443\x442\x44c \x43e\x43a\x43d\x43e \x432\x43e \x432\x435\x441\x44c \x44d\x43a\x440\x430\x43d.\\nWin+S Win+W Win+E -- \x414\x435\x43b\x430\x435\x43c \x438\x437 \x43e\x43a\x43e\x43d \x432\x43a\x43b\x430\x434\x43a\x438.\\n#\\nWin+1..0 -- \x41f\x435\x440\x435\x43a\x43b\x44e\x447\x435\x43d\x438\x435 \x43c\x435\x436\x434\x443 \x440\x430\x431\x43e\x447\x438\x43c\x438 \x441\x442\x43e\x43b\x430\x43c\x438.\\nWin+Shift+1..0 -- \x41f\x435\x440\x435\x43c\x435\x441\x442\x438\x442\x44c \x441\x444\x43e\x43a\x443\x441\x438\x440\x43e\x432\x430\x43d\x43d\x43e\x435 \x43e\x43a\x43d\x43e \x43d\x430 \x437\x430\x434\x430\x43d\x43d\x44b\x439 \x440\x430\x431\x43e\x447\x438\x439 \x441\x442\x43e\x43b.\\n#\\nWin+Shift+R -- \x41f\x435\x440\x435\x437\x430\x43f\x443\x441\x442\x438\x442\x44c i3.\\nWin+Shift+E -- \x412\x44b\x445\x43e\x434 \x438\x437 i3 (\x432\x44b\x445\x43e\x434\x438\x442 \x438\x437 \x441\x435\x430\x43d\x441\x430 X).\\n#\\nWin+R -- \x412\x43e\x439\x442\x438/\x412\x44b\x439\x442\x438 \x432 \x440\x435\x436\x438\x43c \x438\x437\x43c\x435\x43d\x435\x43d\x438\x44f \x440\x430\x437\x43c\x435\x440\x43e\x432 \x43e\x43a\x43e\x43d.\\nLeft -- \x421\x434\x432\x438\x43d\x443\x442\x44c \x433\x440\x430\x43d\x438\x446\x443 \x432\x43b\x435\x432\x43e.\\nDown -- \x421\x434\x432\x438\x43d\x443\x442\x44c \x433\x440\x430\x43d\x438\x446\x443 \x432\x43d\x438\x437.\\nUp -- \x421\x434\x432\x438\x43d\x443\x442\x44c \x433\x440\x430\x43d\x438\x446\x443 \x432\x432\x435\x440\x445.\\nRight -- \x421\x434\x432\x438\x43d\x443\x442\x44c \x433\x440\x430\x43d\x438\x446\x443 \x432\x43f\x440\x430\x432\x43e.\\n#\\nWin+Shift+Minus -- \x421\x434\x435\x43b\x430\x442\x44c \x442\x435\x43a\x443\x449\x435\x435 \x43e\x43a\x43d\x43e \x447\x435\x440\x43d\x43e\x432\x438\x43a\x43e\x43c/\x431\x43b\x43e\x43a\x43d\x43e\x442\x43e\x43c.\\nWin+Minus -- \x41f\x43e\x43a\x430\x437\x430\x442\x44c \x43f\x435\x440\x432\x43e\x435 \x43e\x43a\x43d\x43e \x447\x435\x440\x43d\x43e\x432\x438\x43a\x430/\x431\x43b\x43e\x43a\x43d\x43e\x442\x430.\"
+click=notify-send -te 10000 \"\x428\x43f\x430\x440\x433\x430\x43b\x43a\x430 \x43f\x43e i3wm.\" \"Win+Enter -- \x417\x430\x43f\x443\x441\x442\x438\x442\x44c \x442\x435\x440\x43c\x438\x43d\x430\x43b.\\nWin+D -- \x417\x430\x43f\x443\x441\x43a dmenu (\x43f\x440\x43e\x433\x440\x430\x43c\x43c\x430 \x437\x430\x43f\x443\x441\x43a\x430).\\nWin+F1 -- \x417\x430\x43f\x443\x441\x442\x438\x442\x44c firefox.\\nWin+Shift+Q -- \x417\x430\x43a\x440\x44b\x442\x44c \x43e\x43a\x43d\x43e \x432 \x444\x43e\x43a\x443\x441\x435.\\nPrint Screen -- \x421\x43d\x438\x43c\x43e\x43a \x44d\x43a\x440\x430\x43d\x430.\\n\x41f\x41a\x41c \x43d\x430 \x43d\x438\x436\x43d\x435\x439 \x43f\x430\x43d\x435\x43b\x438 -- \x421\x43d\x438\x43c\x43e\x43a \x44d\x43a\x440\x430\x43d\x430.\\n\x41b\x41a\x41c \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xdee0 -- \x41e\x431\x43d\x43e\x432\x438\x442\x44c ArchLinux.\\nScrollUp \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xdee0 -- \x423\x434\x430\x43b\x438\x442\x44c \x43a\x44d\x448 pacman.\\nScrollDown \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xdee0 -- \x423\x434\x430\x43b\x438\x442\x44c \x43f\x430\x43a\x435\x442\x44b \x441\x438\x440\x43e\x442\x44b.\\n\x41b\x41a\x41c \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xdec8 -- \x42d\x442\x43e \x43c\x435\x43d\x44e.\\nScrollUp \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xdec8 -- \x41e\x442\x43a\x440\x44b\x442\x44c \x441\x442\x440\x430\x43d\x438\x446\x443 Arch_wiki.\\nScrollDown \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xdec8 -- \x41e\x442\x43a\x440\x44b\x442\x44c XTerm.\\n\x41b\x41a\x41c \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xde80 -- \x41e\x442\x43a\x43b\x44e\x447\x438\x442\x44c \x432\x438\x437\x443\x430\x43b\x44c\x43d\x44b\x435 \x44d\x444\x444\x435\x43a\x442\x44b.\\nScrollUp \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xde80 -- \x412\x43a\x43b\x44e\x447\x438\x442\x44c \x432\x438\x437\x443\x430\x43b\x44c\x43d\x44b\x435 \x44d\x444\x444\x435\x43a\x442\x44b.\\nScrollDown \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \xd83d\xde80 -- \x41e\x442\x43a\x440\x44b\x442\x44c sweeper.\\n\x41b\x41a\x41c \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \x23fb -- \x412\x44b\x43a\x43b\x44e\x447\x438\x442\x44c \x41f\x41a.\\nScrollUp \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \x23fb -- \x41f\x435\x440\x435\x437\x430\x433\x440\x443\x437\x438\x442\x44c \x41f\x41a.\\nScrollDown \x43d\x430 \x43a\x43d\x43e\x43f\x43a\x435 \x23fb -- \x412\x44b\x439\x442\x438 \x438\x437 \x441\x438\x441\x442\x435\x43c\x44b.\\n#\\nScrollUp \x43d\x430 \x437\x430\x433\x43e\x43b\x43e\x432\x43a\x435 -- \x420\x430\x437\x432\x435\x440\x43d\x443\x442\x44c \x43e\x43a\x43d\x43e \x432\x43e \x432\x435\x441\x44c \x44d\x43a\x440\x430\x43d.\\nScrollDown \x43d\x430 \x437\x430\x433\x43e\x43b\x43e\x432\x43a\x435 -- \x417\x430\x43a\x440\x44b\x432\x430\x435\x442 \x43e\x43a\x43d\x43e.\\n\x41f\x41a\x41c \x43d\x430 \x437\x430\x433\x43e\x43b\x43e\x432\x43a\x435 -- \x414\x435\x43b\x430\x435\x442 \x43e\x43a\x43d\x43e \x43f\x43b\x430\x432\x430\x44e\x449\x438\x43c.\\n\x421\x41a\x41c \x43d\x430 \x437\x430\x433\x43e\x43b\x43e\x432\x43a\x435 -- \x421\x432\x43e\x440\x430\x447\x438\x432\x430\x435\x442 \x43e\x43a\x43d\x43e \x432 \x447\x435\x440\x43d\x43e\x432\x438\x43a.\\n#\\nWin+Left -- \x424\x43e\x43a\x443\x441 \x43d\x430 \x43b\x435\x432\x43e\x435 \x43e\x43a\x43d\x43e.\\nWin+Down -- \x424\x43e\x43a\x443\x441 \x43d\x430 \x43d\x438\x436\x43d\x435\x435 \x43e\x43a\x43d\x43e.\\nWin+Up -- \x424\x43e\x43a\x443\x441 \x43d\x430 \x432\x435\x440\x445\x43d\x435\x435 \x43e\x43a\x43d\x43e.\\nWin+Right -- \x424\x43e\x43a\x443\x441 \x43d\x430 \x43f\x440\x430\x432\x43e\x435 \x43e\x43a\x43d\x43e.\\n#\\nWin+Shift+Left -- \x41f\x435\x440\x435\x43c\x435\x441\x442\x438\x442\x44c \x43e\x43a\x43d\x43e \x432\x43b\x435\x432\x43e.\\nWin+Shift+Down -- \x41f\x435\x440\x435\x43c\x435\x441\x442\x438\x442\x44c \x43e\x43a\x43d\x43e \x432\x43d\x438\x437.\\nWin+Shift+Up -- \x41f\x435\x440\x435\x43c\x435\x441\x442\x438\x442\x44c \x43e\x43a\x43d\x43e \x432\x432\x435\x440\x445.\\nWin+Shift+Right -- \x41f\x435\x440\x435\x43c\x435\x441\x442\x438\x442\x44c \x43e\x43a\x43d\x43e \x432\x43f\x440\x430\x432\x43e.\\n#\\nWin+H -- \x421\x43b\x435\x434\x443\x44e\x449\x435\x435 \x43e\x442\x43a\x440\x44b\x442\x43e\x435 \x43e\x43a\x43d\x43e \x440\x430\x437\x434\x435\x43b\x438\x442 \x44d\x43a\x440\x430\x43d \x43f\x43e \x433\x43e\x440\x438\x437\x43e\x43d\x442\x430\x43b\x438.\\nWin+V -- \x421\x43b\x435\x434\x443\x44e\x449\x435\x435 \x43e\x442\x43a\x440\x44b\x442\x43e\x435 \x43e\x43a\x43d\x43e \x440\x430\x437\x434\x435\x43b\x438\x442 \x44d\x43a\x440\x430\x43d \x43f\x43e \x432\x435\x440\x442\x438\x43a\x430\x43b\x438.\\nWin+F -- \x420\x430\x437\x432\x435\x440\x43d\x443\x442\x44c \x43e\x43a\x43d\x43e \x432\x43e \x432\x435\x441\x44c \x44d\x43a\x440\x430\x43d.\\nWin+S Win+W Win+E -- \x414\x435\x43b\x430\x435\x43c \x438\x437 \x43e\x43a\x43e\x43d \x432\x43a\x43b\x430\x434\x43a\x438.\\n#\\nWin+1..0 -- \x41f\x435\x440\x435\x43a\x43b\x44e\x447\x435\x43d\x438\x435 \x43c\x435\x436\x434\x443 \x440\x430\x431\x43e\x447\x438\x43c\x438 \x441\x442\x43e\x43b\x430\x43c\x438.\\nWin+Shift+1..0 -- \x41f\x435\x440\x435\x43c\x435\x441\x442\x438\x442\x44c \x441\x444\x43e\x43a\x443\x441\x438\x440\x43e\x432\x430\x43d\x43d\x43e\x435 \x43e\x43a\x43d\x43e \x43d\x430 \x437\x430\x434\x430\x43d\x43d\x44b\x439 \x440\x430\x431\x43e\x447\x438\x439 \x441\x442\x43e\x43b.\\n#\\nWin+Shift+R -- \x41f\x435\x440\x435\x437\x430\x43f\x443\x441\x442\x438\x442\x44c i3.\\nWin+Shift+E -- \x412\x44b\x445\x43e\x434 \x438\x437 i3 (\x432\x44b\x445\x43e\x434\x438\x442 \x438\x437 \x441\x435\x430\x43d\x441\x430 X).\\n#\\nWin+R -- \x412\x43e\x439\x442\x438/\x412\x44b\x439\x442\x438 \x432 \x440\x435\x436\x438\x43c \x438\x437\x43c\x435\x43d\x435\x43d\x438\x44f \x440\x430\x437\x43c\x435\x440\x43e\x432 \x43e\x43a\x43e\x43d.\\nLeft -- \x421\x434\x432\x438\x43d\x443\x442\x44c \x433\x440\x430\x43d\x438\x446\x443 \x432\x43b\x435\x432\x43e.\\nDown -- \x421\x434\x432\x438\x43d\x443\x442\x44c \x433\x440\x430\x43d\x438\x446\x443 \x432\x43d\x438\x437.\\nUp -- \x421\x434\x432\x438\x43d\x443\x442\x44c \x433\x440\x430\x43d\x438\x446\x443 \x432\x432\x435\x440\x445.\\nRight -- \x421\x434\x432\x438\x43d\x443\x442\x44c \x433\x440\x430\x43d\x438\x446\x443 \x432\x43f\x440\x430\x432\x43e.\\n#\\nWin+Shift+Minus -- \x421\x434\x435\x43b\x430\x442\x44c \x442\x435\x43a\x443\x449\x435\x435 \x43e\x43a\x43d\x43e \x447\x435\x440\x43d\x43e\x432\x438\x43a\x43e\x43c/\x431\x43b\x43e\x43a\x43d\x43e\x442\x43e\x43c.\\nWin+Minus -- \x41f\x43e\x43a\x430\x437\x430\x442\x44c \x43f\x435\x440\x432\x43e\x435 \x43e\x43a\x43d\x43e \x447\x435\x440\x43d\x43e\x432\x438\x43a\x430/\x431\x43b\x43e\x43a\x43d\x43e\x442\x430.\"
 command=echo \xd83d\xdec8
 type=customcommand
 wheelDown=xterm
@@ -1173,7 +1123,7 @@ alignment=Right
 click=killall picom conky
 command=echo \xd83d\xde80
 type=customcommand
-wheelDown=bleachbit
+wheelDown=sweeper
 wheelUp="/bin/bash -c \"picom -b; conky\""
 [customcommand4]
 alignment=Right
@@ -1203,7 +1153,7 @@ alignment=0
 animation-duration=0
 background-color=@Variant(\0\0\0\x43\x1\xff\xff++++++\0\0)
 desktop=0
-font-color=@Variant(\0\0\0\x43\x1\xff\xffhh\x92\x92hh\0\0)
+font-color=@Variant@Variant(\0\0\0\x43\0\xff\xff\0\0\0\0\0\0\0\0)
 hidable=false
 hide-on-overlap=false
 iconSize='"$(($font*4))"'
@@ -1231,104 +1181,26 @@ type=volume' > /mnt/home/"$username"/.config/lxqt/panel.conf
 #
 #Создание конфига kdeglobals.
 echo -e "\033[36mСоздание конфига kdeglobals.\033[0m"
-echo '[ColorEffects:Disabled]
-ChangeSelectionColor=
-Color=56,56,56
-ColorAmount=0
-ColorEffect=0
-ContrastAmount=0.65
-ContrastEffect=1
-Enable=
-IntensityAmount=0.1
-IntensityEffect=2
-[ColorEffects:Inactive]
-ChangeSelectionColor=true
-Color=112,111,110
-ColorAmount=0.025
-ColorEffect=2
-ContrastAmount=0.1
-ContrastEffect=2
-Enable=false
-IntensityAmount=0
-IntensityEffect=0
-[Colors:Button]
-BackgroundAlternate=76,76,76
+echo '[Colors:Button]
 BackgroundNormal=53,53,53
-DecorationFocus=62,138,229
-DecorationHover=80,149,232
-ForegroundActive=62,138,229
-ForegroundInactive=145,145,144
-ForegroundLink=39,124,226
-ForegroundNegative=230,51,59
-ForegroundNeutral=245,121,0
-ForegroundNormal=238,238,236
-ForegroundPositive=38,171,98
-ForegroundVisited=130,130,129
-[Colors:Complementary]
-BackgroundAlternate=45,45,45
-BackgroundNormal=53,53,53
-DecorationFocus=62,138,229
-DecorationHover=80,149,232
-ForegroundActive=245,121,0
-ForegroundInactive=178,178,177
-ForegroundLink=66,140,230
-ForegroundNegative=237,21,21
-ForegroundNeutral=201,206,59
-ForegroundNormal=238,238,236
-ForegroundPositive=17,209,22
-ForegroundVisited=66,140,230
-[Colors:Selection]
-BackgroundAlternate=48,129,228
-BackgroundNormal=62,138,229
-DecorationFocus=62,138,229
-DecorationHover=80,149,232
-ForegroundActive=252,252,252
-ForegroundInactive=238,238,236
-ForegroundLink=253,188,75
-ForegroundNegative=230,51,59
-ForegroundNeutral=245,121,0
-ForegroundNormal=255,255,255
-ForegroundPositive=38,171,98
-ForegroundVisited=193,193,193
+BackgroundAlternate=50,50,50
+ForegroundNormal=238,238,238
+ForegroundInactive=178,178,178
 [Colors:Tooltip]
-BackgroundAlternate=50,50,50
 BackgroundNormal=53,53,53
-DecorationFocus=62,138,229
-DecorationHover=80,149,232
-ForegroundActive=62,138,229
-ForegroundInactive=145,145,144
-ForegroundLink=39,124,226
-ForegroundNegative=230,51,59
-ForegroundNeutral=245,121,0
-ForegroundNormal=238,238,236
-ForegroundPositive=38,171,98
-ForegroundVisited=130,130,129
+BackgroundAlternate=50,50,50
+ForegroundNormal=238,238,238
+ForegroundInactive=178,178,178
 [Colors:View]
-BackgroundAlternate=45,45,45
-BackgroundNormal=45,45,45
-DecorationFocus=62,138,229
-DecorationHover=80,149,232
-ForegroundActive=62,138,229
-ForegroundInactive=145,145,144
-ForegroundLink=39,124,226
-ForegroundNegative=230,51,59
-ForegroundNeutral=245,121,0
-ForegroundNormal=238,238,236
-ForegroundPositive=38,171,98
-ForegroundVisited=130,130,129
-[Colors:Window]
+BackgroundNormal=43,43,43
 BackgroundAlternate=50,50,50
-BackgroundNormal=53,53,53
-DecorationFocus=62,138,229
-DecorationHover=80,149,232
-ForegroundActive=62,138,229
-ForegroundInactive=145,145,144
-ForegroundLink=39,124,226
-ForegroundNegative=230,51,59
-ForegroundNeutral=245,121,0
-ForegroundNormal=238,238,236
-ForegroundPositive=38,171,98
-ForegroundVisited=130,130,129' > /mnt/home/"$username"/.config/kdeglobals
+ForegroundNormal=238,238,238
+ForegroundInactive=178,178,178
+[Colors:Window]
+BackgroundNormal=56,56,56
+BackgroundAlternate=50,50,50
+ForegroundNormal=238,238,238
+ForegroundInactive=178,178,178' > /mnt/home/"$username"/.config/kdeglobals
 #
 #Передача интернет настроек в установленную систему.
 echo -e "\033[36mПередача интернет настроек в установленную систему.\033[0m"
@@ -1385,7 +1257,6 @@ SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.in
 #Создание скрипта, который после перезагрузки продолжит установку.
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
-WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs
 ls ~/.mozilla/firefox/*.default-release
 echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
 user_pref("accessibility.typeaheadfind", true);
@@ -1407,6 +1278,14 @@ amixer -c "$j" sset "Auto-Mute Mode" Disabled
             done
 alsactl store
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
+gsettings set org.gnome.desktop.interface icon-theme ePapirus-Dark
+gsettings set org.gnome.desktop.interface font-name \047Fantasque Sans Mono, '"$font"'\047
+gsettings set org.gnome.desktop.interface document-font-name \047Fantasque Sans Mono Bold Italic '"$font"'\047
+gsettings set org.gnome.desktop.interface monospace-font-name \047Fantasque Sans Mono '"$font"'\047
+gsettings set org.gnome.desktop.wm.preferences titlebar-font \047Fantasque Sans Mono Bold '"$font"'\047
+gsettings set org.gnome.libgnomekbd.indicator font-size '"$font"'
+gsettings set org.gnome.meld custom-font \047monospace, '"$font"'\047
+WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #Установка шрифтов.
