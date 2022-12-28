@@ -1304,7 +1304,6 @@ SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.in
 #Создание скрипта, который после перезагрузки продолжит установку.
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
-WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs
 ls ~/.mozilla/firefox/*.default-release
 echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
 user_pref("accessibility.typeaheadfind", true);
@@ -1326,7 +1325,15 @@ amixer -c "$j" sset "Auto-Mute Mode" Disabled
             done
 alsactl store
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
-rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
+gsettings set org.gnome.desktop.interface icon-theme ePapirus-Dark
+gsettings set org.gnome.desktop.interface font-name \047Fantasque Sans Mono, '"$font"'\047
+gsettings set org.gnome.desktop.interface document-font-name \047Fantasque Sans Mono Bold Italic '"$font"'\047
+gsettings set org.gnome.desktop.interface monospace-font-name \047Fantasque Sans Mono '"$font"'\047
+gsettings set org.gnome.desktop.wm.preferences titlebar-font \047Fantasque Sans Mono Bold '"$font"'\047
+gsettings set org.gnome.libgnomekbd.indicator font-size '"$font"'
+gsettings set org.gnome.meld custom-font \047monospace, '"$font"'\047
+WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs
+#rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #Делаем xinitrc и archinstall.sh исполняемыми.
 chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
@@ -1335,13 +1342,6 @@ chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
 arch-chroot /mnt chown -R "$username" /home/"$username"/
 #
-arch-chroot /mnt gsettings set org.gnome.desktop.interface icon-theme ePapirus-Dark
-arch-chroot /mnt gsettings set org.gnome.desktop.interface font-name 'Fantasque Sans Mono, '"$font"''
-arch-chroot /mnt gsettings set org.gnome.desktop.interface document-font-name 'Fantasque Sans Mono Bold Italic '"$font"''
-arch-chroot /mnt gsettings set org.gnome.desktop.interface monospace-font-name 'Fantasque Sans Mono '"$font"''
-arch-chroot /mnt gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Fantasque Sans Mono Bold '"$font"''
-arch-chroot /mnt gsettings set org.gnome.libgnomekbd.indicator font-size "$font"
-arch-chroot /mnt gsettings set org.gnome.meld custom-font 'monospace, '"$font"''
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
 while [[ 0 -ne $tic ]]; do
