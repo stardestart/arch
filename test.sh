@@ -1335,6 +1335,13 @@ chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
 arch-chroot /mnt chown -R "$username" /home/"$username"/
 #
+arch-chroot /mnt gsettings set org.gnome.desktop.interface icon-theme ePapirus-Dark
+arch-chroot /mnt gsettings set org.gnome.desktop.interface font-name 'Fantasque Sans Mono, '"$font"''
+arch-chroot /mnt gsettings set org.gnome.desktop.interface document-font-name 'Fantasque Sans Mono Bold Italic '"$font"''
+arch-chroot /mnt gsettings set org.gnome.desktop.interface monospace-font-name 'Fantasque Sans Mono '"$font"''
+arch-chroot /mnt gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Fantasque Sans Mono Bold '"$font"''
+arch-chroot /mnt gsettings set org.gnome.libgnomekbd.indicator font-size "$font"
+arch-chroot /mnt gsettings set org.gnome.meld custom-font 'monospace, '"$font"''
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
 while [[ 0 -ne $tic ]]; do
