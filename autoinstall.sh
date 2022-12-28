@@ -1202,92 +1202,6 @@ BackgroundAlternate=50,50,50
 ForegroundNormal=238,238,238
 ForegroundInactive=178,178,178' > /mnt/home/"$username"/.config/kdeglobals
 #
-#Передача интернет настроек в установленную систему.
-echo -e "\033[36mПередача интернет настроек в установленную систему.\033[0m"
-if [ -z "$namewifi" ]; then arch-chroot /mnt ip link set "$netdev" up
-    else
-        arch-chroot /mnt pacman -Sy --color always iwd --noconfirm
-        arch-chroot /mnt systemctl enable iwd
-        arch-chroot /mnt ip link set "$netdev" up
-        mkdir -p /mnt/var/lib/iwd
-        cp /var/lib/iwd/"$namewifi".psk /mnt/var/lib/iwd/"$namewifi".psk
-fi
-#Определяем, есть ли ssd.
-echo -e "\033[36mОпределяем, есть ли ssd.\033[0m"
-massd=($(lsblk -dno rota))
-for (( j=0, i=1; i<="${#massd[*]}"; i++, j++ ))
-    do
-        if [ "${massd[$j]}" = 0 ];
-            then
-                fstrim -v -a
-                arch-chroot /mnt systemctl enable fstrim.timer
-            break
-        fi
-    done
-#
-#Установка помощника yay для работы с AUR.
-echo -e "\033[36mУстановка помощника yay для работы с AUR.\033[0m"
-arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
-git clone https://aur.archlinux.org/yay.git
-cd /home/'"$username"'/yay
-BUILDDIR=/tmp/makepkg makepkg -i --noconfirm'
-rm -Rf /mnt/home/"$username"/yay
-#
-#Установка программ из AUR.
-echo -e "\033[36mУстановка программ из AUR.\033[0m"
-arch-chroot /mnt/ sudo -u "$username" yay -S hardinfo debtap libreoffice-extension-languagetool minq-ananicy-git auto-cpufreq vkbasalt --noconfirm
-#
-#Автозапуск служб.
-echo -e "\033[36mАвтозапуск служб.\033[0m"
-arch-chroot /mnt systemctl disable dbus
-arch-chroot /mnt systemctl enable saned.socket cups.socket cups-browsed reflector.timer xdm-archlinux dhcpcd avahi-daemon smartd ananicy haveged dbus-broker auto-cpufreq
-arch-chroot /mnt systemctl --user --global enable redshift-gtk
-#
-#Настройка звука.
-echo -e "\033[36mНастройка звука.\033[0m"
-arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
-#
-#Создание общего конфига obs-studio.
-echo -e "\033[36mСоздание общего конфига obs-studio.\033[0m"
-mkdir -p /mnt/home/"$username"/.config/obs-studio/
-echo -e "[BasicWindow]
-SysTrayWhenStarted=true
-SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.ini
-#
-#Создание скрипта, который после перезагрузки продолжит установку.
-echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
-echo -e '#!/bin/bash
-ls ~/.mozilla/firefox/*.default-release
-echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
-user_pref("accessibility.typeaheadfind", true);
-user_pref("intl.regional_prefs.use_os_locales", true);
-user_pref("widget.gtk.overlay-scrollbars.enabled", false);
-user_pref("browser.startup.page", 3);
-user_pref("browser.download.useDownloadDir", false);\047 > $_/user.js
-if [ -n "$(clinfo -l)" ];
-    then sed -i \047s/#TechnicalSymbol //\047 ~/.config/picom.conf
-    else sed -i \047/#TechnicalSymbol /d\047 ~/.config/picom.conf
-fi
-soundmass=($(pacmd list-sinks | grep -i name: | awk \047{print $2}\047))
-for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
-            do
-amixer -c "$j" sset Master unmute
-amixer -c "$j" sset Speaker unmute
-amixer -c "$j" sset Headphone unmute
-amixer -c "$j" sset "Auto-Mute Mode" Disabled
-            done
-alsactl store
-sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
-gsettings set org.gnome.desktop.interface icon-theme ePapirus-Dark
-gsettings set org.gnome.desktop.interface font-name \047Fantasque Sans Mono, '"$font"'\047
-gsettings set org.gnome.desktop.interface document-font-name \047Fantasque Sans Mono Bold Italic '"$font"'\047
-gsettings set org.gnome.desktop.interface monospace-font-name \047Fantasque Sans Mono '"$font"'\047
-gsettings set org.gnome.desktop.wm.preferences titlebar-font \047Fantasque Sans Mono Bold '"$font"'\047
-gsettings set org.gnome.libgnomekbd.indicator font-size '"$font"'
-gsettings set org.gnome.meld custom-font \047monospace, '"$font"'\047
-WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs
-rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
-#
 #Установка шрифтов.
 echo -e "\033[36mУстановка шрифтов.\033[0m"
 mkdir -p /mnt/usr/share/fonts/google
@@ -1339,6 +1253,85 @@ curl -o /mnt/usr/share/fonts/google/Bengali.zip https://fonts.google.com/downloa
 arch-chroot /mnt unzip -o /usr/share/fonts/google/Bengali.zip -d /usr/share/fonts/google
 rm /mnt/usr/share/fonts/google/*.zip
 rm /mnt/usr/share/fonts/google/*.txt
+#
+#Передача интернет настроек в установленную систему.
+echo -e "\033[36mПередача интернет настроек в установленную систему.\033[0m"
+if [ -z "$namewifi" ]; then arch-chroot /mnt ip link set "$netdev" up
+    else
+        arch-chroot /mnt pacman -Sy --color always iwd --noconfirm
+        arch-chroot /mnt systemctl enable iwd
+        arch-chroot /mnt ip link set "$netdev" up
+        mkdir -p /mnt/var/lib/iwd
+        cp /var/lib/iwd/"$namewifi".psk /mnt/var/lib/iwd/"$namewifi".psk
+fi
+#Определяем, есть ли ssd.
+echo -e "\033[36mОпределяем, есть ли ssd.\033[0m"
+massd=($(lsblk -dno rota))
+for (( j=0, i=1; i<="${#massd[*]}"; i++, j++ ))
+    do
+        if [ "${massd[$j]}" = 0 ];
+            then
+                fstrim -v -a
+                arch-chroot /mnt systemctl enable fstrim.timer
+            break
+        fi
+    done
+#
+#Установка помощника yay для работы с AUR.
+echo -e "\033[36mУстановка помощника yay для работы с AUR.\033[0m"
+arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
+git clone https://aur.archlinux.org/yay.git
+cd /home/'"$username"'/yay
+BUILDDIR=/tmp/makepkg makepkg -i --noconfirm'
+rm -Rf /mnt/home/"$username"/yay
+#
+#Установка программ из AUR.
+echo -e "\033[36mУстановка программ из AUR.\033[0m"
+arch-chroot /mnt/ sudo -u "$username" yay -S hardinfo debtap libreoffice-extension-languagetool minq-ananicy-git auto-cpufreq vkbasalt --noconfirm
+#
+#Автозапуск служб.
+echo -e "\033[36mАвтозапуск служб.\033[0m"
+arch-chroot /mnt systemctl disable dbus
+arch-chroot /mnt systemctl enable saned.socket cups.socket cups-browsed reflector.timer xdm-archlinux dhcpcd avahi-daemon smartd ananicy haveged dbus-broker auto-cpufreq
+arch-chroot /mnt systemctl --user --global enable redshift-gtk
+#
+#Настройка звука.
+echo -e "\033[36mНастройка звука.\033[0m"
+arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
+#
+#Создание скрипта, который после перезагрузки продолжит установку.
+echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
+echo -e '#!/bin/bash
+ls ~/.mozilla/firefox/*.default-release
+echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
+user_pref("accessibility.typeaheadfind", true);
+user_pref("intl.regional_prefs.use_os_locales", true);
+user_pref("widget.gtk.overlay-scrollbars.enabled", false);
+user_pref("browser.startup.page", 3);
+user_pref("browser.download.useDownloadDir", false);\047 > $_/user.js
+if [ -n "$(clinfo -l)" ];
+    then sed -i \047s/#TechnicalSymbol //\047 ~/.config/picom.conf
+    else sed -i \047/#TechnicalSymbol /d\047 ~/.config/picom.conf
+fi
+soundmass=($(pacmd list-sinks | grep -i name: | awk \047{print $2}\047))
+for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
+            do
+amixer -c "$j" sset Master unmute
+amixer -c "$j" sset Speaker unmute
+amixer -c "$j" sset Headphone unmute
+amixer -c "$j" sset "Auto-Mute Mode" Disabled
+            done
+alsactl store
+sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
+gsettings set org.gnome.desktop.interface icon-theme ePapirus-Dark
+gsettings set org.gnome.desktop.interface font-name \047Fantasque Sans Mono, '"$font"'\047
+gsettings set org.gnome.desktop.interface document-font-name \047Fantasque Sans Mono Bold Italic '"$font"'\047
+gsettings set org.gnome.desktop.interface monospace-font-name \047Fantasque Sans Mono '"$font"'\047
+gsettings set org.gnome.desktop.wm.preferences titlebar-font \047Fantasque Sans Mono Bold '"$font"'\047
+gsettings set org.gnome.libgnomekbd.indicator font-size '"$font"'
+gsettings set org.gnome.meld custom-font \047monospace, '"$font"'\047
+WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs
+rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #Делаем xinitrc и archinstall.sh исполняемыми.
 chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
