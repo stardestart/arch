@@ -59,8 +59,6 @@ coremass=()
 coremassconf=()
 #Переменная сохранит наличие видеокарты nvidia для дальнейшей установки/настройки/расчета.
 nvidiac=""
-#Переменная сохранит размер шрифта qt приложений для дальнейшей установки/настройки/расчета.
-fontqt=""
 #Обратный отсчет.
 tic=3
 #Массив хранит наличие ssd, если такие имеются.
@@ -345,7 +343,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 ttf-fantasque-sans-mono cheese kate wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel clinfo unzip bleachbit --noconfirm
+arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools qgnomeplatform-qt5 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 ttf-fantasque-sans-mono cheese kate wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel clinfo unzip bleachbit haveged dbus-broker gamemode lib32-gamemode --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Установим видеодрайвер.
@@ -628,7 +626,8 @@ export COLORTERM=truecolor #Включаем все 16 миллионов цве
 #Создание profile.
 echo -e "\033[36mСоздание profile.\033[0m"
 echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
-export QT_QPA_PLATFORMTHEME="qt5ct" #Изменение внешнего вида приложений использующих qt.' > /mnt/home/"$username"/.profile
+export QT_QPA_PLATFORMTHEME=gnome #Изменение внешнего вида приложений использующих qt.
+export QT_STYLE_OVERRIDE=adwaita-dark #Использовать Adwaitа в качестве стиля Qt по умолчанию' > /mnt/home/"$username"/.profile
 #
 #Создание конфига сервера уведомлений.
 echo -e "\033[36mСоздание конфига сервера уведомлений.\033[0m"
@@ -979,14 +978,14 @@ bar {
         separator_symbol "☭"
         #
         # Назначить шрифт.
-        font pango:Fantasque Sans Mono Bold Italic '"$(($font/2+$font))"'
+        font pango:Fantasque Sans Mono Bold Italic '"$font"'
         #
         # Назначить цвета.
         colors {
             # Цвет фона i3status.
             background #2b2b2b
             # Цвет текста в i3status.
-            statusline #689268
+            statusline #b2b2b2
             # Цвет разделителя в i3status.
             separator #f92b2b
             # Цвет границы, фона и текста для кнопки активного рабочего стола.
@@ -1073,66 +1072,25 @@ if [ "$font" = "8" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q
 elif [ "$font" = "10" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@$\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0K\x11)"
 elif [ "$font" = "14" ]; then fontqt="(\0\0\0@\0\0\0&\0\x46\0\x61\0n\0t\0\x61\0s\0q\0u\0\x65\0 \0S\0\x61\0n\0s\0 \0M\0o\0n\0o@,\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0K\x11)"
 fi
-mkdir -p /mnt/home/"$username"/.config/qt5ct/colors
-echo '[ColorScheme]
-active_colors=#689268, #ff424245, #ff979797, #ff2e2e2e, #ff302f2e, #ff373737, #ff689268, #ff689268, #ff689268, #ff2d2d2d, #ff353535, #ff2f2f2f, #ff12608a, #fff9f9f9, #ff0986d3, #ffa70b06, #ff2e2e2e, #ff689268, #ff3f3f3f, #ff689268, #802b2b2b
-disabled_colors=#ff808080, #ff424245, #ff979797, #ff2e2e2e, #ff302f2e, #ff373737, #ff808080, #ff689268, #ff808080, #ff2d2d2d, #ff353535, #ff2f2f2f, #ff12608a, #ff808080, #ff0986d3, #ffa70b06, #ff2e2e2e, #ff689268, #ff3f3f3f, #ff689268, #802b2b2b
-inactive_colors=#ff689268, #ff424245, #ff979797, #ff2e2e2e, #ff302f2e, #ff373737, #ff689268, #ff689268, #ff689268, #ff2d2d2d, #ff353535, #ff2f2f2f, #ff12608a, #fff9f9f9, #ff0986d3, #ffa70b06, #ff2e2e2e, #ff689268, #ff3f3f3f, #ff689268, #802b2b2b
-' > /mnt/home/$username/.config/qt5ct/colors/adwaita.conf
-echo '[Appearance]
-color_scheme_path=/home/'"$username"'/.config/qt5ct/colors/adwaita.conf
-custom_palette=true
-icon_theme=ePapirus-Dark
-standard_dialogs=default
-style=Adwaita-Dark
-[Fonts]
-fixed=@Variant'"$fontqt"'
-general=@Variant'"$fontqt"'
-[Interface]
-activate_item_on_single_click=1
-buttonbox_layout=0
-cursor_flash_time=1000
-dialog_buttons_have_icons=1
-double_click_interval=400
-gui_effects=@Invalid()
-keyboard_scheme=2
-menus_have_icons=true
-show_shortcuts_in_context_menus=true
-stylesheets=@Invalid()
-toolbutton_style=4
-underline_shortcut=1
-wheel_scroll_lines='"$(($font/2))"'
-[SettingsWindow]
-geometry=@ByteArray(\x1\xd9\xd0\xcb\0\x3\0\0\0\0\0\"\0\0\0\x88\0\0\xe\xdd\0\0\b\x1e\0\0\0+\0\0\0\x88\0\0\xe\xd4\0\0\b\x15\0\0\0\0\0\0\0\0\xf\0\0\0\0+\0\0\0\x88\0\0\xe\xd4\0\0\b\x15)
-[Troubleshooting]
-force_raster_widgets=1
-ignored_applications=@Invalid()' > /mnt/home/$username/.config/qt5ct/qt5ct.conf
-#
 #Создание директории и конфига gtk.
 echo -e "\033[36mСоздание конфига gtk.\033[0m"
 mkdir -p /mnt/home/$username/.config/gtk-3.0/
+mkdir -p /mnt/home/$username/.config/gtk-4.0/
 echo '[Settings]
 gtk-application-prefer-dark-theme=true
-gtk-button-images=1
 gtk-cursor-theme-name=Adwaita
-gtk-cursor-theme-size='"$(($font*3))"'
-gtk-decoration-layout=icon:minimize,maximize,close
-gtk-enable-animations=false
-gtk-enable-event-sounds=1
-gtk-enable-input-feedback-sounds=1
 gtk-font-name=Fantasque Sans Mono Bold Italic '"$font"'
-gtk-icon-theme-name=Papirus-Dark
-gtk-menu-images=1
-gtk-modules=colorreload-gtk-module:window-decorations-gtk-module
-gtk-primary-button-warps-slider=false
-gtk-theme-name=Adwaita-dark
-gtk-toolbar-icon-size=GTK_ICON_SIZE_LARGE_TOOLBAR
-gtk-toolbar-style=GTK_TOOLBAR_BOTH_HORIZ
-gtk-xft-antialias=1
-gtk-xft-hinting=1
-gtk-xft-hintstyle=hintmedium
-gtk-xft-rgba=rgb' > /mnt/home/"$username"/.config/gtk-3.0/settings.ini
-#
+gtk-icon-theme-name=ePapirus-Dark
+gtk-theme-name=Adwaita-dark' > /mnt/home/"$username"/.config/gtk-3.0/settings.ini
+cp /mnt/home/"$username"/.config/gtk-3.0/settings.ini /mnt/home/"$username"/.config/gtk-4.0/settings.ini
+echo '[Settings]
+gtk-application-prefer-dark-theme=true
+gtk-cursor-theme-name=Adwaita
+gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'"
+gtk-icon-theme-name="ePapirus-Dark"
+gtk-theme-name="Adwaita-dark"' > /mnt/home/"$username"/.config/gtkrc-2.0
+echo 'ENABLE_VKBASALT=1
+GTK_USE_PORTAL=1' >> /etc/environment
 #Создание директории и конфига lxqt-panel.
 echo -e "\033[36mСоздание конфига lxqt-panel.\033[0m"
 mkdir -p /mnt/home/"$username"/.config/lxqt
@@ -1190,7 +1148,7 @@ alignment=0
 animation-duration=0
 background-color=@Variant(\0\0\0\x43\x1\xff\xff++++++\0\0)
 desktop=0
-font-color=@Variant(\0\0\0\x43\x1\xff\xffhh\x92\x92hh\0\0)
+font-color=@Variant(\0\0\0\x43\0\xff\xff\0\0\0\0\0\0\0\0)
 hidable=false
 hide-on-overlap=false
 iconSize='"$(($font*4))"'
@@ -1218,176 +1176,27 @@ type=volume' > /mnt/home/"$username"/.config/lxqt/panel.conf
 #
 #Создание конфига kdeglobals.
 echo -e "\033[36mСоздание конфига kdeglobals.\033[0m"
-echo '[ColorEffects:Disabled]
-ChangeSelectionColor=
-Color=56,56,56
-ColorAmount=0
-ColorEffect=0
-ContrastAmount=0.65
-ContrastEffect=1
-Enable=
-IntensityAmount=0.1
-IntensityEffect=2
-[ColorEffects:Inactive]
-ChangeSelectionColor=true
-Color=112,111,110
-ColorAmount=0.025
-ColorEffect=2
-ContrastAmount=0.1
-ContrastEffect=2
-Enable=false
-IntensityAmount=0
-IntensityEffect=0
-[Colors:Button]
-BackgroundAlternate=76,76,76
+echo '[Colors:Button]
 BackgroundNormal=53,53,53
-DecorationFocus=62,138,229
-DecorationHover=80,149,232
-ForegroundActive=62,138,229
-ForegroundInactive=145,145,144
-ForegroundLink=39,124,226
-ForegroundNegative=230,51,59
-ForegroundNeutral=245,121,0
-ForegroundNormal=238,238,236
-ForegroundPositive=38,171,98
-ForegroundVisited=130,130,129
-[Colors:Complementary]
-BackgroundAlternate=45,45,45
-BackgroundNormal=53,53,53
-DecorationFocus=62,138,229
-DecorationHover=80,149,232
-ForegroundActive=245,121,0
-ForegroundInactive=178,178,177
-ForegroundLink=66,140,230
-ForegroundNegative=237,21,21
-ForegroundNeutral=201,206,59
-ForegroundNormal=238,238,236
-ForegroundPositive=17,209,22
-ForegroundVisited=66,140,230
-[Colors:Selection]
-BackgroundAlternate=48,129,228
-BackgroundNormal=62,138,229
-DecorationFocus=62,138,229
-DecorationHover=80,149,232
-ForegroundActive=252,252,252
-ForegroundInactive=238,238,236
-ForegroundLink=253,188,75
-ForegroundNegative=230,51,59
-ForegroundNeutral=245,121,0
-ForegroundNormal=255,255,255
-ForegroundPositive=38,171,98
-ForegroundVisited=193,193,193
+BackgroundAlternate=50,50,50
+ForegroundNormal=238,238,238
+ForegroundInactive=178,178,178
 [Colors:Tooltip]
-BackgroundAlternate=50,50,50
 BackgroundNormal=53,53,53
-DecorationFocus=62,138,229
-DecorationHover=80,149,232
-ForegroundActive=62,138,229
-ForegroundInactive=145,145,144
-ForegroundLink=39,124,226
-ForegroundNegative=230,51,59
-ForegroundNeutral=245,121,0
-ForegroundNormal=238,238,236
-ForegroundPositive=38,171,98
-ForegroundVisited=130,130,129
+BackgroundAlternate=50,50,50
+ForegroundNormal=238,238,238
+ForegroundInactive=178,178,178
 [Colors:View]
-BackgroundAlternate=45,45,45
-BackgroundNormal=45,45,45
-DecorationFocus=62,138,229
-DecorationHover=80,149,232
-ForegroundActive=62,138,229
-ForegroundInactive=145,145,144
-ForegroundLink=39,124,226
-ForegroundNegative=230,51,59
-ForegroundNeutral=245,121,0
-ForegroundNormal=238,238,236
-ForegroundPositive=38,171,98
-ForegroundVisited=130,130,129
-[Colors:Window]
+BackgroundNormal=43,43,43
 BackgroundAlternate=50,50,50
-BackgroundNormal=53,53,53
-DecorationFocus=62,138,229
-DecorationHover=80,149,232
-ForegroundActive=62,138,229
-ForegroundInactive=145,145,144
-ForegroundLink=39,124,226
-ForegroundNegative=230,51,59
-ForegroundNeutral=245,121,0
-ForegroundNormal=238,238,236
-ForegroundPositive=38,171,98
-ForegroundVisited=130,130,129' > /mnt/home/"$username"/.config/kdeglobals
+ForegroundNormal=238,238,238
+ForegroundInactive=178,178,178
+[Colors:Window]
+BackgroundNormal=56,56,56
+BackgroundAlternate=50,50,50
+ForegroundNormal=238,238,238
+ForegroundInactive=178,178,178' > /mnt/home/"$username"/.config/kdeglobals
 #
-#Передача интернет настроек в установленную систему.
-echo -e "\033[36mПередача интернет настроек в установленную систему.\033[0m"
-if [ -z "$namewifi" ]; then arch-chroot /mnt ip link set "$netdev" up
-    else
-        arch-chroot /mnt pacman -Sy --color always iwd --noconfirm
-        arch-chroot /mnt systemctl enable iwd
-        arch-chroot /mnt ip link set "$netdev" up
-        mkdir -p /mnt/var/lib/iwd
-        cp /var/lib/iwd/"$namewifi".psk /mnt/var/lib/iwd/"$namewifi".psk
-fi
-#Определяем, есть ли ssd.
-echo -e "\033[36mОпределяем, есть ли ssd.\033[0m"
-massd=($(lsblk -dno rota))
-for (( j=0, i=1; i<="${#massd[*]}"; i++, j++ ))
-    do
-        if [ "${massd[$j]}" = 0 ];
-            then
-                fstrim -v -a
-                arch-chroot /mnt systemctl enable fstrim.timer
-            break
-        fi
-    done
-#
-#Установка помощника yay для работы с AUR.
-echo -e "\033[36mУстановка помощника yay для работы с AUR.\033[0m"
-arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
-git clone https://aur.archlinux.org/yay.git
-cd /home/'"$username"'/yay
-BUILDDIR=/tmp/makepkg makepkg -i --noconfirm'
-rm -Rf /mnt/home/"$username"/yay
-#
-#Установка программ из AUR.
-echo -e "\033[36mУстановка программ из AUR.\033[0m"
-arch-chroot /mnt/ sudo -u "$username" yay -S debtap --noconfirm
-#Настройка звука.
-echo -e "\033[36mНастройка звука.\033[0m"
-arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
-#
-#Создание общего конфига obs-studio.
-echo -e "\033[36mСоздание общего конфига obs-studio.\033[0m"
-mkdir -p /mnt/home/"$username"/.config/obs-studio/
-echo -e "[BasicWindow]
-SysTrayWhenStarted=true
-SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.ini
-#
-#Создание скрипта, который после перезагрузки продолжит установку.
-echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
-echo -e '#!/bin/bash
-WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs
-ls ~/.mozilla/firefox/*.default-release
-echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
-user_pref("accessibility.typeaheadfind", true);
-user_pref("intl.regional_prefs.use_os_locales", true);
-user_pref("widget.gtk.overlay-scrollbars.enabled", false);
-user_pref("browser.startup.page", 3);
-user_pref("browser.download.useDownloadDir", false);\047 > $_/user.js
-if [ -n "$(clinfo -l)" ];
-    then sed -i \047s/#TechnicalSymbol //\047 ~/.config/picom.conf
-    else sed -i \047/#TechnicalSymbol /d\047 ~/.config/picom.conf
-fi
-soundmass=($(pacmd list-sinks | grep -i name: | awk \047{print $2}\047))
-for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
-            do
-amixer -c "$j" sset Master unmute
-amixer -c "$j" sset Speaker unmute
-amixer -c "$j" sset Headphone unmute
-amixer -c "$j" sset "Auto-Mute Mode" Disabled
-            done
-alsactl store
-sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
-rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #Установка шрифтов.
 echo -e "\033[36mУстановка шрифтов.\033[0m"
@@ -1440,11 +1249,84 @@ curl -o /mnt/usr/share/fonts/google/Bengali.zip https://fonts.google.com/downloa
 arch-chroot /mnt unzip -o /usr/share/fonts/google/Bengali.zip -d /usr/share/fonts/google
 rm /mnt/usr/share/fonts/google/*.zip
 rm /mnt/usr/share/fonts/google/*.txt
+#Передача интернет настроек в установленную систему.
+echo -e "\033[36mПередача интернет настроек в установленную систему.\033[0m"
+if [ -z "$namewifi" ]; then arch-chroot /mnt ip link set "$netdev" up
+    else
+        arch-chroot /mnt pacman -Sy --color always iwd --noconfirm
+        arch-chroot /mnt systemctl enable iwd
+        arch-chroot /mnt ip link set "$netdev" up
+        mkdir -p /mnt/var/lib/iwd
+        cp /var/lib/iwd/"$namewifi".psk /mnt/var/lib/iwd/"$namewifi".psk
+fi
+#Определяем, есть ли ssd.
+echo -e "\033[36mОпределяем, есть ли ssd.\033[0m"
+massd=($(lsblk -dno rota))
+for (( j=0, i=1; i<="${#massd[*]}"; i++, j++ ))
+    do
+        if [ "${massd[$j]}" = 0 ];
+            then
+                fstrim -v -a
+                arch-chroot /mnt systemctl enable fstrim.timer
+            break
+        fi
+    done
+#
+#Установка помощника yay для работы с AUR.
+echo -e "\033[36mУстановка помощника yay для работы с AUR.\033[0m"
+arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
+git clone https://aur.archlinux.org/yay.git
+cd /home/'"$username"'/yay
+BUILDDIR=/tmp/makepkg makepkg -i --noconfirm'
+rm -Rf /mnt/home/"$username"/yay
+#
+#Установка программ из AUR.
+echo -e "\033[36mУстановка программ из AUR.\033[0m"
+arch-chroot /mnt/ sudo -u "$username" yay -S hardinfo debtap libreoffice-extension-languagetool cups-xerox-b2xx minq-ananicy-git auto-cpufreq vkbasalt --noconfirm
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
-arch-chroot /mnt systemctl enable reflector.timer xdm-archlinux dhcpcd avahi-daemon smartd
+arch-chroot /mnt systemctl disable dbus
+arch-chroot /mnt systemctl enable saned.socket cups.socket cups-browsed reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
+#
+#Настройка звука.
+echo -e "\033[36mНастройка звука.\033[0m"
+arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
+#
+#Создание общего конфига obs-studio.
+echo -e "\033[36mСоздание общего конфига obs-studio.\033[0m"
+mkdir -p /mnt/home/"$username"/.config/obs-studio/
+echo -e "[BasicWindow]
+SysTrayWhenStarted=true
+SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.ini
+#
+#Создание скрипта, который после перезагрузки продолжит установку.
+echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
+echo -e '#!/bin/bash
+WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs
+ls ~/.mozilla/firefox/*.default-release
+echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
+user_pref("accessibility.typeaheadfind", true);
+user_pref("intl.regional_prefs.use_os_locales", true);
+user_pref("widget.gtk.overlay-scrollbars.enabled", false);
+user_pref("browser.startup.page", 3);
+user_pref("browser.download.useDownloadDir", false);\047 > $_/user.js
+if [ -n "$(clinfo -l)" ];
+    then sed -i \047s/#TechnicalSymbol //\047 ~/.config/picom.conf
+    else sed -i \047/#TechnicalSymbol /d\047 ~/.config/picom.conf
+fi
+soundmass=($(pacmd list-sinks | grep -i name: | awk \047{print $2}\047))
+for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
+            do
+amixer -c "$j" sset Master unmute
+amixer -c "$j" sset Speaker unmute
+amixer -c "$j" sset Headphone unmute
+amixer -c "$j" sset "Auto-Mute Mode" Disabled
+            done
+alsactl store
+sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
+rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #Делаем xinitrc и archinstall.sh исполняемыми.
 chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
