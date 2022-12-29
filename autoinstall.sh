@@ -343,7 +343,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 ttf-fantasque-sans-mono audacity cheese steam kate sweeper pinta gimp vlc libreoffice-still-ru ktouch kalgebra avidemux-qt copyq telegram-desktop discord marble kamera gwenview imagemagick xreader sane skanlite cups cups-pdf wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel clinfo unzip haveged dbus-broker gamemode lib32-gamemode --noconfirm
+arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 ttf-fantasque-sans-mono audacity cheese steam kate sweeper pinta gimp vlc libreoffice-still-ru ktouch kalgebra avidemux-qt copyq telegram-desktop discord marble kamera gwenview imagemagick xreader sane skanlite cups cups-pdf wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Установим видеодрайвер.
@@ -950,7 +950,13 @@ exec --no-startup-id ENABLE_VKBASALT=1 gamemoderun steam -silent %U
 # Автоматическая разблокировка KWallet.
 exec --no-startup-id /usr/lib/pam_kwallet_init
 #
+#Автозагрузка рабочего стола №1.
+exec --no-startup-id ~/.config/i3/workspace.sh
+#
 ########### Горячие клавиши запуска программ ###########
+#
+#Восстановление рабочего стола №1.
+bindsym $mod+mod1+1 exec --no-startup-id ~/.config/i3/workspace.sh
 #
 # Используйте mod+enter, чтобы запустить терминал ("i3-sensible-terminal" можно заменить "xterm", "terminator" или любым другим на выбор).
 bindsym $mod+Return exec xterm
@@ -1075,6 +1081,110 @@ echo 'polkit.addRule(function(action, subject) {
         return polkit.Result.YES;
     }
 });' > /mnt/etc/polkit-1/rules.d/49-nopasswd_global.rules
+#
+#Создание конфига рабочего стола №1.
+echo -e "\033[36mСоздание конфига рабочего стола №1.\033[0m"
+echo '{
+    "border": "normal",
+    "floating": "auto_off",
+    "layout": "splitv",
+    "percent": 0.5,
+    "type": "con",
+    "nodes": [
+        {
+            "border": "normal",
+            "current_border_width": 2,
+            "floating": "auto_off",
+            "percent": 0.7,
+            "swallows": [
+               {
+                "class": "^kate$",
+                "window_role": "^MainWindow\\#1$"
+               }
+            ],
+            "type": "con"
+        },
+        {
+            "border": "normal",
+            "floating": "auto_off",
+            "layout": "splith",
+            "percent": 0.3,
+            "type": "con",
+            "nodes": [
+                {
+                    "border": "normal",
+                    "current_border_width": 2,
+                    "floating": "user_off",
+                    "percent": 0.5,
+                    "swallows": [
+                       {
+                        "title": "^'"$username"'\\@'"$hostname"'\\:\\~$"
+                       }
+                    ],
+                    "type": "con"
+                },
+                {
+                    "border": "normal",
+                    "current_border_width": 2,
+                    "floating": "user_off",
+                    "percent": 0.5,
+                    "swallows": [
+                       {
+                        "title": "^'"$username"'\\@'"$hostname"'\\:\\~$"
+                       }
+                    ],
+                    "type": "con"
+                }
+            ]
+        }
+    ]
+}
+
+{
+    "border": "normal",
+    "floating": "auto_off",
+    "layout": "splitv",
+    "percent": 0.5,
+    "type": "con",
+    "nodes": [
+        {
+            "border": "normal",
+            "current_border_width": 2,
+            "floating": "auto_off",
+            "percent": 0.5,
+            "swallows": [
+               {
+                "class": "^dolphin$",
+                "window_role": "^Dolphin\\#1$"
+               }
+            ],
+            "type": "con"
+        },
+        {
+            "border": "none",
+            "current_border_width": 2,
+            "floating": "auto_off",
+            "name": "Telegram",
+            "percent": 0.5,
+            "swallows": [
+               {
+                "class": "^TelegramDesktop$"
+               }
+            ],
+            "type": "con"
+        }
+    ]
+}' > /mnt/home/"$username"/.config/i3/workspace_1.json
+#
+#Создание скрипта загрузки рабочего стола №1.
+echo -e "\033[36mСоздание скрипта загрузки рабочего стола №1.\033[0m"
+echo '#!/bin/sh
+i3-msg "workspace 1; append_layout ~/.config/i3/workspace_1.json"
+(kate &)
+(xterm &)
+(xterm &)
+(dolphin &)
+(telegram-desktop &)' > /mnt/home/"$username"/.config/i3/workspace.sh
 #
 #Создание директории и конфига gtk.
 echo -e "\033[36mСоздание конфига gtk.\033[0m"
@@ -1334,7 +1444,7 @@ WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #Делаем xinitrc и archinstall.sh исполняемыми.
-chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
+chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh /mnt/home/"$username"/.config/i3/workspace.sh
 #
 #Передача прав созданному пользователю.
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
