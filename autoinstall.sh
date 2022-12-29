@@ -343,7 +343,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu archlinux-xdg-menu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 ttf-fantasque-sans-mono audacity cheese steam kate sweeper pinta gimp vlc libreoffice-still-ru ktouch kalgebra avidemux-qt copyq telegram-desktop discord marble kamera gwenview imagemagick xreader sane skanlite cups cups-pdf wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs --noconfirm
+arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 ttf-fantasque-sans-mono audacity cheese steam kate sweeper pinta gimp vlc libreoffice-still-ru ktouch kalgebra avidemux-qt copyq telegram-desktop discord marble kamera gwenview imagemagick xreader sane skanlite cups cups-pdf wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Установим видеодрайвер.
@@ -1254,7 +1254,7 @@ type=kbindicator
 alignment=Left
 filterClear=true
 icon=/usr/share/icons/Papirus-Dark/48x48/apps/distributor-logo-archlinux.svg
-menu_file=/etc/xdg/menus/arch-applications.menu
+menu_file=/etc/xdg/menus/applications.menu
 ownIcon=true
 showText=false
 type=mainmenu
