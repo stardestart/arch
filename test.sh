@@ -1072,6 +1072,8 @@ echo 'polkit.addRule(function(action, subject) {
     }
 });' > /mnt/etc/polkit-1/rules.d/49-nopasswd_global.rules
 #
+#Создание конфига рабочего стола №1.
+echo -e "\033[36mСоздание конфига рабочего стола №1.\033[0m"
 echo '{
     "border": "normal",
     "floating": "auto_off",
@@ -1164,6 +1166,8 @@ echo '{
     ]
 }' > /mnt/home/"$username"/.config/i3/workspace_1.json
 #
+#Создание скрипта загрузки рабочего стола №1.
+echo -e "\033[36mСоздание скрипта загрузки рабочего стола №1.\033[0m"
 echo '#!/bin/sh
 i3-msg "workspace 1; append_layout ~/.config/i3/workspace_1.json"
 (kate &)
