@@ -808,7 +808,7 @@ bindsym button3 floating toggle
 bindsym button2 move scratchpad
 #
 # Определяем имена для рабочих областей по умолчанию.
-set $ws1 "1"
+set $ws1 "1: ⛏️"
 set $ws2 "2: 🌍"
 set $ws3 "3: 🎮"
 set $ws4 "4"
