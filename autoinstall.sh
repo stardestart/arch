@@ -479,7 +479,7 @@ if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
 ${color #f92b2b}GPU${hr 3}
 ${color #b2b2b2}Частота ГП:$color$alignr${nvidia gpufreq} Mhz
 ${color #b2b2b2}Видео ОЗУ:$color$alignr${nvidia mem} / ${nvidia memmax} MiB
-${color #b2b2b2}Температура ГП:$color$alignr${nvidia temp} °C'
+${color #b2b2b2}Температура ГП:$color$alignr${nvidia temp} °C / ${nvidia fanspeed} RPM'
 fi
 #
 #Создание директории и конфига.
