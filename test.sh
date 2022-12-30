@@ -521,7 +521,10 @@ ${color #f92b2b}ЦП${hr 3}$color
 #Нагрузка ЦП.
 ${color #b2b2b2}Нагрузка ЦП:$color$alignr$cpu %
 #Частота ЦП.
-${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz'"${coremassconf[@]}"''"$nvidiac"'
+${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz'"${coremassconf[@]}"'
+#Блок "Cкорость вращения кулеров (вентиляторов)".
+${color #f92b2b}FAN${hr 3}
+$color${execi 10 sensors | grep -i fan}'"$nvidiac"'
 #Блок "ОЗУ".
 #Разделитель.
 ${color #f92b2b}ОЗУ${hr 3}$color
@@ -560,9 +563,6 @@ ${top name 3} $alignr ${top pid 3}|${top cpu 3}|${top mem 3}
 ${top name 4} $alignr ${top pid 4}|${top cpu 4}|${top mem 4}
 #Информация о процессе 5.
 ${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}
-#Блок "Cкорость вращения кулеров (вентиляторов)".
-${color #f92b2b}FAN${hr 3}
-$color${execi 10 sensors | grep -i fan}
 #Блок "Системный диск".
 #Разделитель.
 ${color #f92b2b}/home${hr 3}$color
