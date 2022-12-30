@@ -1454,7 +1454,7 @@ arch-chroot /mnt/ sudo -u "$username" yay -S hardinfo debtap libreoffice-extensi
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus
-arch-chroot /mnt systemctl enable NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd
+arch-chroot /mnt systemctl enable fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Настройка звука.
