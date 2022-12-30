@@ -938,9 +938,6 @@ exec --no-startup-id numlockx
 # Автозапуск transmission.
 exec --no-startup-id transmission-qt -m
 #
-# Автозапуск blueman-applet.
-exec --no-startup-id blueman-applet
-#
 # Приветствие в течении 10 сек.
 exec --no-startup-id notify-send -te 10000 "✊Доброго времени суток✊" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm."
 #
