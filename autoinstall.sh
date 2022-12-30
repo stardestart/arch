@@ -521,7 +521,10 @@ ${color #f92b2b}ЦП${hr 3}$color
 #Нагрузка ЦП.
 ${color #b2b2b2}Нагрузка ЦП:$color$alignr$cpu %
 #Частота ЦП.
-${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz'"${coremassconf[@]}"''"$nvidiac"'
+${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz'"${coremassconf[@]}"'
+#Блок "Cкорость вращения кулеров (вентиляторов)".
+${color #f92b2b}FAN${hr 3}
+$color${execi 10 sensors | grep -i fan}'"$nvidiac"'
 #Блок "ОЗУ".
 #Разделитель.
 ${color #f92b2b}ОЗУ${hr 3}$color
