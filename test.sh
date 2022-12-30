@@ -909,6 +909,9 @@ for_window [class="XTerm"] resize set '"$xterm"'
 #
 ########### Автозапуск программ ###########
 #
+# Запуск графического интерфейса системного трея NetworkManager (--no-startup-id убирает курсор загрузки).
+exec --no-startup-id nm-applet
+#
 # Запуск геолокации (--no-startup-id убирает курсор загрузки).
 exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
 #
