@@ -1009,7 +1009,6 @@ bar {
          # Сделайте снимок экрана, щелкнув правой кнопкой мыши на панели (--no-startup-id убирает курсор загрузки).
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
 }
-exec --no-startup-id firefox #TechnicalString
 exec --no-startup-id xscreensaver-settings #TechnicalString
 exec --no-startup-id xterm -e /bin/bash -l -c ~/archinstall.sh #TechnicalString' > /mnt/home/"$username"/.config/i3/config
 #
@@ -1472,6 +1471,7 @@ arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = s
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
 echo -e "\033[36mЗавершение установки.\033[0m"
+firefox &
 ls ~/.mozilla/firefox/*.default-release
 echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
 user_pref("accessibility.typeaheadfind", true);
