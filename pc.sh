@@ -78,8 +78,12 @@ echo -e "\033[36mПроцессор:"$(lscpu | grep -i "model name")"\033[0m"
 echo -e "\033[36mОпределяем сетевое устройство.\033[0m"
 if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
     then
-        echo -e "\033[47m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m\033[32m";read -p ">" namewifi
-        netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
+        if [ -z $(ls /var/lib/iwd/*.psk) ]; then
+            echo -e "\033[47m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m\033[32m";read -p ">" namewifi
+            netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
+        else
+            netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
+        fi
 fi
 if [ -z "$namewifi" ];
     then
