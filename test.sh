@@ -1505,7 +1505,7 @@ gsettings set org.gnome.desktop.interface monospace-font-name \047Fantasque Sans
 gsettings set org.gnome.desktop.wm.preferences titlebar-font \047Fantasque Sans Mono Bold '"$font"'\047
 gsettings set org.gnome.libgnomekbd.indicator font-size '"$font"'
 gsettings set org.gnome.meld custom-font \047monospace, '"$font"'\047
-if [ -n "$(xinput list | grep -i synaptics)" ]; then
+if [ -n "$(xinput list | grep -i touchpad)" ]; then
 sudo pacman -S xf86-input-synaptics --noconfirm
 sudo echo \047Section "InputClass"
     Identifier "touchpad"
