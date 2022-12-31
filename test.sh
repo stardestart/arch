@@ -444,13 +444,23 @@ feh --bg-max --randomize --no-fehbg /usr/share/backgrounds/archlinux/ & #Авт�
 exec i3 #Автозапуск i3.' > /mnt/home/"$username"/.xinitrc
 #
 #Создание общего конфига клавиатуры.
-echo -e "\033[36mСоздание 00-keyboard.\033[0m"
+echo -e "\033[36mСоздание общего конфига клавиатуры.\033[0m"
 echo 'Section "InputClass"
 Identifier "system-keyboard"
 MatchIsKeyboard "on"
 Option "XkbLayout" "us,ru"
 Option "XkbOptions" "grp:alt_shift_toggle,terminate:ctrl_alt_bksp"
 EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
+#Создание конфига монитора.
+echo -e "\033[36mСоздание конфига монитора.\033[0m"
+echo 'Section "Monitor"
+    Option "DPMS" "true"
+EndSection
+Section "ServerLayout"
+    Option "StandbyTime" "10"
+    Option "SuspendTime" "20"
+    Option "OffTime" "30"
+EndSection' > /mnt/etc/X11/xorg.conf
 #
 #Создание общего конфига сканера.
 echo -e "\033[36mСоздание sane.d.\033[0m"
@@ -1495,6 +1505,29 @@ gsettings set org.gnome.desktop.interface monospace-font-name \047Fantasque Sans
 gsettings set org.gnome.desktop.wm.preferences titlebar-font \047Fantasque Sans Mono Bold '"$font"'\047
 gsettings set org.gnome.libgnomekbd.indicator font-size '"$font"'
 gsettings set org.gnome.meld custom-font \047monospace, '"$font"'\047
+if [ -n "$(xinput list | grep -i synaptics)" ]; then
+sudo pacman -S xf86-input-synaptics --noconfirm
+sudo echo \047Section "InputClass"
+    Identifier "touchpad"
+    Driver "synaptics"
+    MatchIsTouchpad "on"
+        Option "TapButton1" "1"
+        Option "TapButton2" "3"
+        Option "TapButton3" "2"
+        Option "VertEdgeScroll" "on"
+        Option "VertTwoFingerScroll" "on"
+        Option "HorizEdgeScroll" "on"
+        Option "HorizTwoFingerScroll" "on"
+        Option "CircularScrolling" "on"
+        Option "CircScrollTrigger" "2"
+        Option "EmulateTwoFingerMinZ" "40"
+        Option "EmulateTwoFingerMinW" "8"
+        Option "CoastingSpeed" "0"
+        Option "FingerLow" "30"
+        Option "FingerHigh" "50"
+        Option "MaxTapTime" "125"
+EndSection\047 > /etc/X11/xorg.conf.d/70-synaptics.conf
+fi
 WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs
 #rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
