@@ -347,7 +347,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools gnome-themes-extra qgnomeplatform-qt5 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 ttf-fantasque-sans-mono cheese kate wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs system-config-printer network-manager-applet bluedevil telegram-desktop archlinux-xdg-menu --noconfirm
+arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools gnome-themes-extra qgnomeplatform-qt5 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 ttf-fantasque-sans-mono cheese kate wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs system-config-printer network-manager-applet bluedevil telegram-desktop --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Установим видеодрайвер.
@@ -1314,7 +1314,7 @@ type=kbindicator
 alignment=Left
 filterClear=true
 icon=/usr/share/icons/Papirus-Dark/48x48/apps/distributor-logo-archlinux.svg
-menu_file=/etc/xdg/menus/applications.menu
+menu_file=/etc/xdg/menus/lxde-applications.menu
 ownIcon=true
 showText=false
 type=mainmenu
