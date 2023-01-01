@@ -504,7 +504,7 @@ own_window_class = "Conky", --Класс окна.
 own_window_type = "override", --Тип окна (возможные варианты: "normal", "desktop", "dock", "panel", "override" выбираем в зависимости от оконного менеджера и личных предпочтений).
 own_window_hints = "undecorated, skip_taskbar", --Задаем эфекты отображения окна.
 own_window_argb_visual = true, --Прозрачность окна.
-own_window_argb_value = 70, --Уровень прозрачности.
+own_window_argb_value = 150, --Уровень прозрачности.
 use_xft = true, } --Использование шрифтов X сервера.
 conky.text = [[ #Наполнение виджета.
 #Блок "Время".
@@ -1339,7 +1339,7 @@ hide-on-overlap=false
 iconSize='"$(($font*3))"'
 lineCount=1
 lockPanel=false
-opacity=50
+opacity=70
 panelSize='"$(($font*3))"'
 plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, customcommand, customcommand2, customcommand3, customcommand4
 position=Top
