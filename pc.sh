@@ -914,57 +914,57 @@ for_window [class="XTerm"] resize set '"$xterm"'
 #
 ########### Автозапуск программ ###########
 #
-# Запуск графического интерфейса системного трея NetworkManager (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id nm-applet
-#
-# Запуск геолокации (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
-#
-# Автозапуск flameshot.
-exec --no-startup-id flameshot
-#
-# Автозапуск copyq и autocutsel.
-exec --no-startup-id copyq
-exec --no-startup-id autocutsel
-#
-# Автозапуск obs.
-exec --no-startup-id obs
-#
-# Автозапуск lxqt-panel.
-exec --no-startup-id lxqt-panel
-#
-# Автозапуск picom.
-exec --no-startup-id picom -b
+# Приветствие в течении 10 сек.
+exec --no-startup-id notify-send -te 10000 "✊Доброго времени суток✊" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm.";
 #
 # Автозапуск conky.
-exec --no-startup-id conky
+exec --no-startup-id conky;
+#
+# Автозапуск lxqt-panel.
+exec --no-startup-id lxqt-panel;
+#
+# Автозапуск picom.
+exec --no-startup-id picom -b;
+#
+# Запуск графического интерфейса системного трея NetworkManager (--no-startup-id убирает курсор загрузки).
+exec --no-startup-id nm-applet;
+#
+# Запуск геолокации (--no-startup-id убирает курсор загрузки).
+exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent;
+#
+# Автозапуск flameshot.
+exec --no-startup-id flameshot;
+#
+# Автозапуск copyq и autocutsel.
+exec --no-startup-id copyq;
+exec --no-startup-id autocutsel;
 #
 # Автозапуск numlockx.
-exec --no-startup-id numlockx
-#
-# Автозапуск transmission.
-exec --no-startup-id transmission-qt -m
-#
-# Приветствие в течении 10 сек.
-exec --no-startup-id notify-send -te 10000 "✊Доброго времени суток✊" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm."
-#
-# Автозапуск xscreensaver.
-exec --no-startup-id xscreensaver --no-splash
+exec --no-startup-id numlockx;
 #
 # Автозапуск dolphin.
-exec --no-startup-id dolphin --daemon
-#
-# Автозапуск steam.
-exec --no-startup-id ENABLE_VKBASALT=1 gamemoderun steam -silent %U
-#
-# Автозапуск telegram.
-exec --no-startup-id telegram-desktop -startintray -- %u
+exec --no-startup-id dolphin --daemon;
 #
 # Автоматическая разблокировка KWallet.
-exec --no-startup-id /usr/lib/pam_kwallet_init
+exec --no-startup-id /usr/lib/pam_kwallet_init;
 #
 #Автозагрузка рабочего стола №1.
-exec --no-startup-id ~/.config/i3/workspace.sh
+exec --no-startup-id ~/.config/i3/workspace.sh;
+#
+# Автозапуск transmission.
+exec --no-startup-id transmission-qt -m;
+#
+# Автозапуск xscreensaver.
+exec --no-startup-id xscreensaver --no-splash;
+#
+# Автозапуск steam.
+exec --no-startup-id ENABLE_VKBASALT=1 gamemoderun steam -silent %U;
+#
+# Автозапуск telegram.
+exec --no-startup-id telegram-desktop -startintray -- %u;
+#
+# Автозапуск obs.
+exec --no-startup-id obs;
 #
 ########### Горячие клавиши запуска программ ###########
 #
@@ -1025,9 +1025,9 @@ bar {
          # Сделайте снимок экрана, щелкнув правой кнопкой мыши на панели (--no-startup-id убирает курсор загрузки).
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
 }
-exec --no-startup-id firefox #TechnicalString
-exec --no-startup-id xscreensaver-settings #TechnicalString
-exec --no-startup-id xterm -e /bin/bash -l -c ~/archinstall.sh #TechnicalString' > /mnt/home/"$username"/.config/i3/config
+exec --no-startup-id firefox; #TechnicalString
+exec --no-startup-id xscreensaver-settings; #TechnicalString
+exec --no-startup-id xterm -e /bin/bash -l -c ~/archinstall.sh; #TechnicalString' > /mnt/home/"$username"/.config/i3/config
 #
 #Создание конфига i3status.
 echo -e "\033[36mСоздание конфига i3status.\033[0m"
