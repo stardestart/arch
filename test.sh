@@ -1471,7 +1471,8 @@ arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = s
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
 echo -e "\033[36mЗавершение установки.\033[0m"
-firefox &
+firefox -CreateProfile default-release
+wait $!
 ls ~/.mozilla/firefox/*.default-release
 echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
 user_pref("accessibility.typeaheadfind", true);
