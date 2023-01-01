@@ -1476,8 +1476,8 @@ echo -e "\033[36mСоздание скрипта, который после пе
 echo -e '#!/bin/bash
 echo -e "\033[36mЗавершение установки.\033[0m"
 while [[ $(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1) -lt 20 ]]; do
-    sleep 5
     echo "Ожидание освобождения ЦП"
+    sleep 5
 done
 firefox -CreateProfile default-release
 ls ~/.mozilla/firefox/*.default-release
