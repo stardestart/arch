@@ -1496,7 +1496,8 @@ SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.in
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
 echo -e "\033[36mЗавершение установки.\033[0m"
-while [[ $(sar 1 1 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1) -lt 20 ]]; do
+while [[ $(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1) -lt 20 ]]; do
+    echo "Ожидание освобождения ЦП"
     sleep 5
 done
 firefox -CreateProfile default-release
