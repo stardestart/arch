@@ -83,6 +83,7 @@ if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
             netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
         else
             netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
+            namewifi="$(ls ~/1/*.psk | awk -F '/' '{print $NF}' | awk -F '.' '{print $1}')"
         fi
 fi
 if [ -z "$namewifi" ];
