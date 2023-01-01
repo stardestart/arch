@@ -944,9 +944,6 @@ exec --no-startup-id dolphin --daemon;
 # Автоматическая разблокировка KWallet.
 exec --no-startup-id /usr/lib/pam_kwallet_init;
 #
-#Автозагрузка рабочего стола №1.
-exec --no-startup-id ~/.config/i3/workspace.sh;
-#
 # Автозапуск xscreensaver.
 exec --no-startup-id xscreensaver --no-splash;
 #
@@ -1012,9 +1009,7 @@ bar {
          # Сделайте снимок экрана, щелкнув правой кнопкой мыши на панели (--no-startup-id убирает курсор загрузки).
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
 }
-exec --no-startup-id xscreensaver-settings; #TechnicalString
-exec --no-startup-id firefox; #TechnicalString
-exec --no-startup-id xterm -e /bin/bash -l -c ~/archinstall.sh; #TechnicalString' > /mnt/home/"$username"/.config/i3/config
+exec --no-startup-id ~/archinstall.sh; #TechnicalString' > /mnt/home/"$username"/.config/i3/config
 #
 #Создание конфига i3status.
 echo -e "\033[36mСоздание конфига i3status.\033[0m"
@@ -1528,6 +1523,7 @@ sudo echo \047Section "InputClass"
         Option "MaxTapTime" "125"
 EndSection\047 > /etc/X11/xorg.conf.d/70-synaptics.conf
 fi
+xscreensaver-settings &
 WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs
 #rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
