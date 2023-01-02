@@ -347,7 +347,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools gnome-themes-extra qgnomeplatform-qt5 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 ttf-fantasque-sans-mono cheese kate wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs system-config-printer network-manager-applet bluedevil telegram-desktop sysstat --noconfirm
+arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools gnome-themes-extra qgnomeplatform-qt5 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 ttf-fantasque-sans-mono cheese kate wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs system-config-printer network-manager-applet bluedevil telegram-desktop sysstat neofetch --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Установим видеодрайвер.
@@ -1473,10 +1473,10 @@ arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = s
 #Создание скрипта, который после перезагрузки продолжит установку.
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
-neofetch > /dev/pts/2
-echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/1
+neofetch > /dev/pts/1
+echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/0
 while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1)" -lt 20 ]]; do
-    echo "\033[31mОжидание освобождения ЦП\033[0m" > /dev/pts/1
+    echo "\033[31mОжидание освобождения ЦП\033[0m" > /dev/pts/0
     sleep 5
 done
 firefox -CreateProfile default-release
