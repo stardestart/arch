@@ -83,7 +83,6 @@ if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
             netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
         else
             netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
-            namewifi="$(ls ~/1/*.psk | awk -F '/' '{print $NF}' | awk -F '.' '{print $1}')"
         fi
 fi
 if [ -z "$namewifi" ];
@@ -1475,7 +1474,7 @@ arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = s
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
 echo -e "\033[36mЗавершение установки.\033[0m"
-while [[ $"(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1)" -lt 20 ]]; do
+while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1)" -lt 20 ]]; do
     echo "\033[31mОжидание освобождения ЦП\033[0m"
     sleep 5
 done
