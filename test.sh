@@ -1473,13 +1473,13 @@ arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = s
 #Создание скрипта, который после перезагрузки продолжит установку.
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
-neofetch > /dev/pts/1
 echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/0
 while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1)" -lt 20 ]]; do
     echo "\033[31mОжидание освобождения ЦП\033[0m" > /dev/pts/0
     sleep 5
 done
-firefox -CreateProfile default-release
+neofetch > /dev/pts/1
+firefox -CreateProfile default-release > /dev/pts/0
 ls ~/.mozilla/firefox/*.default-release
 echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
 user_pref("accessibility.typeaheadfind", true);
@@ -1494,10 +1494,10 @@ fi
 soundmass=($(pacmd list-sinks | grep -i name: | awk \047{print $2}\047))
 for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
             do
-amixer -c "$j" sset Master unmute
-amixer -c "$j" sset Speaker unmute
-amixer -c "$j" sset Headphone unmute
-amixer -c "$j" sset "Auto-Mute Mode" Disabled
+amixer -c "$j" sset Master unmute > /dev/pts/0
+amixer -c "$j" sset Speaker unmute > /dev/pts/0
+amixer -c "$j" sset Headphone unmute > /dev/pts/0
+amixer -c "$j" sset "Auto-Mute Mode" Disabled > /dev/pts/0
             done
 alsactl store
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
@@ -1509,7 +1509,7 @@ gsettings set org.gnome.desktop.wm.preferences titlebar-font \047Fantasque Sans 
 gsettings set org.gnome.libgnomekbd.indicator font-size '"$font"'
 gsettings set org.gnome.meld custom-font \047monospace, '"$font"'\047
 if [ -n "$(xinput list | grep -i touchpad)" ]; then
-sudo pacman -S xf86-input-synaptics --noconfirm
+sudo pacman -S xf86-input-synaptics --noconfirm > /dev/pts/0
 sudo echo \047Section "InputClass"
     Identifier "touchpad"
     Driver "synaptics"
