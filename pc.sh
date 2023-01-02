@@ -83,7 +83,6 @@ if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
             netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
         else
             netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
-            namewifi="$(ls ~/1/*.psk | awk -F '/' '{print $NF}' | awk -F '.' '{print $1}')"
         fi
 fi
 if [ -z "$namewifi" ];
@@ -1442,13 +1441,13 @@ rm /mnt/usr/share/fonts/google/*.txt
 #
 #Передача интернет настроек в установленную систему.
 echo -e "\033[36mПередача интернет настроек в установленную систему.\033[0m"
-if [ -z "$namewifi" ]; then arch-chroot /mnt ip link set "$netdev" up
+if [ -z "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ]; then arch-chroot /mnt ip link set "$netdev" up
     else
         arch-chroot /mnt pacman --color always -Sy iwd --noconfirm
         arch-chroot /mnt systemctl enable iwd
         arch-chroot /mnt ip link set "$netdev" up
         mkdir -p /mnt/var/lib/iwd
-        cp /var/lib/iwd/"$namewifi".psk /mnt/var/lib/iwd/"$namewifi".psk
+        cp /var/lib/iwd/*.psk /mnt/var/lib/iwd/
 fi
 #Определяем, есть ли ssd.
 echo -e "\033[36mОпределяем, есть ли ssd.\033[0m"
