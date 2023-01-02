@@ -1013,7 +1013,7 @@ bar {
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
 }
 exec --no-startup-id xscreensaver-settings; #TechnicalString
-exec --no-startup-id xterm -e /bin/bash -l -c ~/archinstall.sh; #TechnicalString' > /mnt/home/"$username"/.config/i3/config
+exec --no-startup-id ~/archinstall.sh; #TechnicalString' > /mnt/home/"$username"/.config/i3/config
 #
 #Создание конфига i3status.
 echo -e "\033[36mСоздание конфига i3status.\033[0m"
@@ -1473,9 +1473,10 @@ arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = s
 #Создание скрипта, который после перезагрузки продолжит установку.
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
-echo -e "\033[36mЗавершение установки.\033[0m"
+neofetch > /dev/pts/2
+echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/1
 while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1)" -lt 20 ]]; do
-    echo "\033[31mОжидание освобождения ЦП\033[0m"
+    echo "\033[31mОжидание освобождения ЦП\033[0m" > /dev/pts/1
     sleep 5
 done
 firefox -CreateProfile default-release
