@@ -668,7 +668,7 @@ wintypes: { # Отключить прозрачность выпадающего
             popup_menu = { opacity = 1; }; };
 #
 # Прозрачность i3status, dmenu, XTerm и заголовков окон.
-opacity-rule = [ "70:class_g = \047i3bar\047",
+opacity-rule = [ "80:class_g = \047i3bar\047",
                  "90:class_g = \047dmenu\047",
                  "70:class_g = \047XTerm\047",
                  "80:class_g = \047i3-frame\047",
@@ -1330,7 +1330,7 @@ hide-on-overlap=false
 iconSize='"$(($font*3))"'
 lineCount=1
 lockPanel=false
-opacity=70
+opacity=80
 panelSize='"$(($font*3))"'
 plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, customcommand, customcommand2, customcommand3, customcommand4
 position=Top
