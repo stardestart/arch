@@ -1428,13 +1428,13 @@ rm /mnt/usr/share/fonts/google/*.txt
 #
 #Передача интернет настроек в установленную систему.
 echo -e "\033[36mПередача интернет настроек в установленную систему.\033[0m"
-if [ -z "$namewifi" ]; then arch-chroot /mnt ip link set "$netdev" up
+if [ -z "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ]; then arch-chroot /mnt ip link set "$netdev" up
     else
         arch-chroot /mnt pacman -Sy --color always iwd --noconfirm
         arch-chroot /mnt systemctl enable iwd
         arch-chroot /mnt ip link set "$netdev" up
         mkdir -p /mnt/var/lib/iwd
-        cp /var/lib/iwd/"$namewifi".psk /mnt/var/lib/iwd/"$namewifi".psk
+        cp /var/lib/iwd/*.psk /mnt/var/lib/iwd/
 fi
 #Определяем, есть ли ssd.
 echo -e "\033[36mОпределяем, есть ли ssd.\033[0m"
@@ -1475,8 +1475,8 @@ arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = s
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
 echo -e "\033[36mЗавершение установки.\033[0m"
-while [[ $(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1) -lt 20 ]]; do
-    echo "Ожидание освобождения ЦП"
+while [[ $"(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1)" -lt 20 ]]; do
+    echo "\033[31mОжидание освобождения ЦП\033[0m"
     sleep 5
 done
 firefox -CreateProfile default-release
