@@ -1384,6 +1384,8 @@ curl -o /mnt/usr/share/fonts/google/Devanagari.zip https://fonts.google.com/down
 arch-chroot /mnt unzip -o /usr/share/fonts/google/Devanagari.zip -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Bengali.zip https://fonts.google.com/download?family=Noto%20Serif%20Bengali
 arch-chroot /mnt unzip -o /usr/share/fonts/google/Bengali.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/SC.zip https://fonts.google.com/download?family=Noto%20Serif%20SC
+arch-chroot /mnt unzip -o /usr/share/fonts/google/SC.zip -d /usr/share/fonts/google
 rm /mnt/usr/share/fonts/google/*.zip
 rm /mnt/usr/share/fonts/google/*.txt
 #
@@ -1504,6 +1506,7 @@ chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
 arch-chroot /mnt chown -R "$username" /home/"$username"/
 #
+sed '/NoDisplay=true/d' /mnt/usr/share/applications/org.kde.bluedevilwizard.desktop
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
 while [[ 0 -ne $tic ]]; do
