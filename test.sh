@@ -1240,7 +1240,7 @@ wheelDown=xterm -e /bin/bash -l -c \"sudo pacman -Rsn $(pacman -Qdtq) --noconfir
 wheelUp=xterm -e /bin/bash -l -c \"sudo pacman -Sc --noconfirm\"
 [customcommand2]
 alignment=Right
-click=kate /help.txt
+click=xed /help.txt
 command=echo \xd83d\xdec8
 type=customcommand
 wheelDown=xterm
