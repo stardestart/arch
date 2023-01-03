@@ -948,6 +948,9 @@ exec --no-startup-id dolphin --daemon;
 # Автоматическая разблокировка KWallet.
 exec --no-startup-id /usr/lib/pam_kwallet_init;
 #
+# Автозапуск quodlibet.
+exec --no-startup-id quodlibet --start-hidden;
+#
 # Автозапуск transmission.
 exec --no-startup-id transmission-qt -m;
 #
