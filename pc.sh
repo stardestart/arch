@@ -1027,7 +1027,7 @@ bar {
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
 }
 exec --no-startup-id xscreensaver-settings; #TechnicalString
-exec --no-startup-id xterm -e /bin/bash -l -c ~/archinstall.sh; #TechnicalString' > /mnt/home/"$username"/.config/i3/config
+exec --no-startup-id ~/archinstall.sh; #TechnicalString' > /mnt/home/"$username"/.config/i3/config
 #
 #Создание конфига i3status.
 echo -e "\033[36mСоздание конфига i3status.\033[0m"
