@@ -456,17 +456,6 @@ Option "XkbLayout" "us,ru"
 Option "XkbOptions" "grp:alt_shift_toggle,terminate:ctrl_alt_bksp"
 EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
 #
-#Создание общего конфига монитора.
-echo -e "\033[36mСоздание общего конфига монитора.\033[0m"
-echo 'Section "Monitor"
-    Option "DPMS" "true"
-EndSection
-Section "ServerFlags"
-    Option "StandbyTime" "1"
-    Option "SuspendTime" "2"
-    Option "OffTime" "3"
-EndSection' > /mnt/etc/X11/xorg.conf.d/10-monitor.conf
-#
 #Создание общего конфига сканера.
 echo -e "\033[36mСоздание sane.d.\033[0m"
 mkdir -p /mnt/etc/sane.d
