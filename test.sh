@@ -1013,7 +1013,7 @@ bar {
          # Сделайте снимок экрана, щелкнув правой кнопкой мыши на панели (--no-startup-id убирает курсор загрузки).
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
 }
-exec --no-startup-id xscreensaver-demo; #TechnicalString
+exec --no-startup-id xscreensaver-settings; #TechnicalString
 exec --no-startup-id ~/archinstall.sh; #TechnicalString' > /mnt/home/"$username"/.config/i3/config
 #
 #Создание конфига i3status.
@@ -1447,7 +1447,6 @@ user_pref("intl.regional_prefs.use_os_locales", true);
 user_pref("widget.gtk.overlay-scrollbars.enabled", false);
 user_pref("browser.startup.page", 3);
 user_pref("browser.download.useDownloadDir", false);\047 > $_/user.js
-xterm xscreensaver-settings &
 if [ -n "$(clinfo -l)" ];
     then sed -i \047s/#TechnicalSymbol //\047 ~/.config/picom.conf
     else sed -i \047/#TechnicalSymbol /d\047 ~/.config/picom.conf
