@@ -948,9 +948,6 @@ exec --no-startup-id dolphin --daemon;
 # Автоматическая разблокировка KWallet.
 exec --no-startup-id /usr/lib/pam_kwallet_init;
 #
-#Автозагрузка рабочего стола №1.
-exec --no-startup-id ~/.config/i3/workspace.sh;
-#
 # Автозапуск transmission.
 exec --no-startup-id transmission-qt -m;
 #
@@ -969,7 +966,8 @@ exec --no-startup-id obs;
 ########### Горячие клавиши запуска программ ###########
 #
 #Восстановление рабочего стола №1.
-bindsym $mod+mod1+1 exec --no-startup-id ~/.config/i3/workspace.sh
+bindsym $mod+mod1+1 exec --no-startup-id "i3-msg \047workspace 1; append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; exec dolphin; exec xed\047"
+exec --no-startup-id "i3-msg \047workspace 1; append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; exec dolphin; exec xed\047"
 #
 # Используйте mod+enter, чтобы запустить терминал ("i3-sensible-terminal" можно заменить "xterm", "terminator" или любым другим на выбор).
 bindsym $mod+Return exec xterm
@@ -1098,105 +1096,63 @@ echo 'polkit.addRule(function(action, subject) {
 echo -e "\033[36mСоздание конфига рабочего стола №1.\033[0m"
 echo '{
     "border": "normal",
+    "current_border_width": 1,
     "floating": "auto_off",
+    "percent": 0.5,
+    "swallows": [
+       { "class": "^Xed$" }
+    ]
+}
+{
+    "border": "normal",
     "layout": "splitv",
     "percent": 0.5,
     "type": "con",
     "nodes": [
         {
             "border": "normal",
-            "current_border_width": 2,
+            "current_border_width": 1,
             "floating": "auto_off",
-            "percent": 0.7,
+            "percent": 0.6,
             "swallows": [
-               {
-                "class": "^kate$",
-                "window_role": "^MainWindow\\#1$"
-               }
-            ],
-            "type": "con"
+               { "class": "^dolphin$" }
+            ]
         },
         {
             "border": "normal",
             "floating": "auto_off",
             "layout": "splith",
-            "percent": 0.3,
+            "percent": 0.4,
             "type": "con",
             "nodes": [
                 {
                     "border": "normal",
-                    "current_border_width": 2,
+                    "current_border_width": 1,
                     "floating": "user_off",
                     "percent": 0.5,
                     "swallows": [
                        {
-                        "title": "^'"$username"'\\@'"$hostname"'\\:\\~$"
+                        "class": "^XTerm$",
+                        "title": "'"$username"'\\@'"$hostname"'\\:\\~$"
                        }
-                    ],
-                    "type": "con"
+                    ]
                 },
                 {
                     "border": "normal",
-                    "current_border_width": 2,
+                    "current_border_width": 1,
                     "floating": "user_off",
                     "percent": 0.5,
                     "swallows": [
                        {
-                        "title": "^'"$username"'\\@'"$hostname"'\\:\\~$"
+                        "class": "^XTerm$",
+                        "title": "'"$username"'\\@'"$hostname"'\\:\\~$"
                        }
-                    ],
-                    "type": "con"
+                    ]
                 }
             ]
         }
     ]
-}
-
-{
-    "border": "normal",
-    "floating": "auto_off",
-    "layout": "splitv",
-    "percent": 0.5,
-    "type": "con",
-    "nodes": [
-        {
-            "border": "normal",
-            "current_border_width": 2,
-            "floating": "auto_off",
-            "percent": 0.5,
-            "swallows": [
-               {
-                "class": "^dolphin$",
-                "window_role": "^Dolphin\\#1$"
-               }
-            ],
-            "type": "con"
-        },
-        {
-            "border": "none",
-            "current_border_width": 2,
-            "floating": "auto_off",
-            "name": "Telegram",
-            "percent": 0.5,
-            "swallows": [
-               {
-                "class": "^TelegramDesktop$"
-               }
-            ],
-            "type": "con"
-        }
-    ]
 }' > /mnt/home/"$username"/.config/i3/workspace_1.json
-#
-#Создание скрипта загрузки рабочего стола №1.
-echo -e "\033[36mСоздание скрипта загрузки рабочего стола №1.\033[0m"
-echo '#!/bin/sh
-i3-msg "workspace 1; append_layout ~/.config/i3/workspace_1.json"
-(kate &)
-(xterm &)
-(xterm &)
-(dolphin &)
-(telegram-desktop &)' > /mnt/home/"$username"/.config/i3/workspace.sh
 #
 #Создание подсказки.
 echo -e "\033[36mСоздание подсказки.\033[0m"
@@ -1556,7 +1512,7 @@ WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /d
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #Делаем xinitrc и archinstall.sh исполняемыми.
-chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh /mnt/home/"$username"/.config/i3/workspace.sh
+chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
 #
 #Передача прав созданному пользователю.
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
