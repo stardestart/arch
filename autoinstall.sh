@@ -1392,6 +1392,8 @@ curl -o /mnt/usr/share/fonts/google/Devanagari.zip https://fonts.google.com/down
 arch-chroot /mnt unzip -o /usr/share/fonts/google/Devanagari.zip -d /usr/share/fonts/google
 curl -o /mnt/usr/share/fonts/google/Bengali.zip https://fonts.google.com/download?family=Noto%20Serif%20Bengali
 arch-chroot /mnt unzip -o /usr/share/fonts/google/Bengali.zip -d /usr/share/fonts/google
+curl -o /mnt/usr/share/fonts/google/SC.zip https://fonts.google.com/download?family=Noto%20Serif%20SC
+arch-chroot /mnt unzip -o /usr/share/fonts/google/SC.zip -d /usr/share/fonts/google
 rm /mnt/usr/share/fonts/google/*.zip
 rm /mnt/usr/share/fonts/google/*.txt
 #
