@@ -347,7 +347,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman --color always -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 ttf-fantasque-sans-mono audacity kdenlive cheese hspell libvoikko aspell nuspell xed sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel tesseract-data-eng tesseract-data-rus openssh meld clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs system-config-printer network-manager-applet bluedevil sysstat neofetch quodlibet --noconfirm
+arch-chroot /mnt pacman --color always -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 ttf-fantasque-sans-mono audacity kdenlive cheese hspell libvoikko aspell nuspell xed sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel tesseract-data-eng tesseract-data-rus openssh meld clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs system-config-printer network-manager-applet bluedevil sysstat neofetch gogglesmm --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Установим видеодрайвер.
@@ -912,6 +912,9 @@ for_window [class="XTerm"] sticky enable
 # Задаем размеры окна XTerm.
 for_window [class="XTerm"] resize set '"$xterm"'
 #
+# Включить плавающий режим для всех окон gogglesmm.
+for_window [class="gogglesmm"] floating enable
+#
 ########### Автозапуск программ ###########
 #
 # Приветствие в течении 10 сек.
@@ -948,8 +951,8 @@ exec --no-startup-id dolphin --daemon;
 # Автоматическая разблокировка KWallet.
 exec --no-startup-id /usr/lib/pam_kwallet_init;
 #
-# Автозапуск quodlibet.
-exec --no-startup-id quodlibet --start-hidden;
+# Автозапуск gogglesmm.
+exec --no-startup-id gogglesmm --tray;
 #
 # Автозапуск transmission.
 exec --no-startup-id transmission-qt -m;
