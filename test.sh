@@ -347,7 +347,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools gnome-themes-extra qgnomeplatform-qt5 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 ttf-fantasque-sans-mono cheese hspell libvoikko aspell nuspell xed wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs system-config-printer network-manager-applet bluedevil telegram-desktop sysstat neofetch gogglesmm bluez --noconfirm
+arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools gnome-themes-extra qgnomeplatform-qt5 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 ttf-fantasque-sans-mono cheese hspell libvoikko aspell nuspell xed wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs system-config-printer network-manager-applet blueman telegram-desktop sysstat neofetch gogglesmm bluez --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Установим видеодрайвер.
@@ -1506,7 +1506,6 @@ chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
 arch-chroot /mnt chown -R "$username" /home/"$username"/
 #
-sed -i '/NoDisplay=true/d' /mnt/usr/share/applications/org.kde.bluedevilwizard.desktop
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
 while [[ 0 -ne $tic ]]; do
