@@ -954,6 +954,9 @@ exec --no-startup-id /usr/lib/pam_kwallet_init;
 # Автозапуск gogglesmm.
 exec --no-startup-id gogglesmm --tray;
 #
+# Автозапуск blueman.
+exec --no-startup-id blueman-applet;
+#
 # Автозапуск transmission.
 exec --no-startup-id transmission-qt -m;
 #
