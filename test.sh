@@ -950,6 +950,9 @@ exec --no-startup-id /usr/lib/pam_kwallet_init;
 # Автозапуск gogglesmm.
 exec --no-startup-id gogglesmm --tray;
 #
+# Автозапуск blueman.
+exec --no-startup-id blueman-applet;
+#
 # Автозапуск xscreensaver.
 exec --no-startup-id xscreensaver --no-splash;
 #
@@ -1084,6 +1087,19 @@ echo 'polkit.addRule(function(action, subject) {
         return polkit.Result.YES;
     }
 });' > /mnt/etc/polkit-1/rules.d/49-nopasswd_global.rules
+#
+#Настройка bluetooth polkit.
+echo -e "\033[36mНастройка bluetooth polkit.\033[0m"
+echo 'polkit.addRule(function(action, subject) {
+    if ((action.id == "org.blueman.network.setup" ||
+         action.id == "org.blueman.dhcp.client" ||
+         action.id == "org.blueman.rfkill.setstate" ||
+         action.id == "org.blueman.pppd.pppconnect") &&
+        subject.isInGroup("wheel")) {
+
+        return polkit.Result.YES;
+    }
+});' > /mnt/etc/polkit-1/rules.d/51-blueman.rules
 #
 #Создание конфига рабочего стола №1.
 echo -e "\033[36mСоздание конфига рабочего стола №1.\033[0m"
@@ -1427,7 +1443,7 @@ arch-chroot /mnt/ sudo -u "$username" yay -S hardinfo debtap libreoffice-extensi
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus
-arch-chroot /mnt systemctl enable sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd
+arch-chroot /mnt systemctl enable bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Настройка звука.
