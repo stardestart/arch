@@ -1095,6 +1095,19 @@ echo 'polkit.addRule(function(action, subject) {
     }
 });' > /mnt/etc/polkit-1/rules.d/49-nopasswd_global.rules
 #
+#Настройка bluetooth polkit.
+echo -e "\033[36mНастройка bluetooth polkit.\033[0m"
+echo 'polkit.addRule(function(action, subject) {
+    if ((action.id == "org.blueman.network.setup" ||
+         action.id == "org.blueman.dhcp.client" ||
+         action.id == "org.blueman.rfkill.setstate" ||
+         action.id == "org.blueman.pppd.pppconnect") &&
+        subject.isInGroup("wheel")) {
+
+        return polkit.Result.YES;
+    }
+});' > /mnt/etc/polkit-1/rules.d/51-blueman.rules
+#
 #Создание конфига рабочего стола №1.
 echo -e "\033[36mСоздание конфига рабочего стола №1.\033[0m"
 echo '{
