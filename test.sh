@@ -347,7 +347,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools gnome-themes-extra qgnomeplatform-qt5 papirus-icon-theme picom redshift lxqt-panel grc flameshot xlockmore xautolock notification-daemon alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 ttf-fantasque-sans-mono cheese hspell libvoikko aspell nuspell xed wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs system-config-printer network-manager-applet blueman telegram-desktop sysstat neofetch gogglesmm bluez --noconfirm
+arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools gnome-themes-extra qgnomeplatform-qt5 papirus-icon-theme picom redshift lxqt-panel grc flameshot xlockmore xautolock notification-daemon alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 ttf-fantasque-sans-mono cheese hspell libvoikko aspell nuspell xed wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs system-config-printer network-manager-applet blueman telegram-desktop sysstat neofetch gogglesmm bluez acpid --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Установим видеодрайвер.
@@ -445,7 +445,7 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
 fi
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
 feh --bg-max --randomize --no-fehbg /usr/share/backgrounds/archlinux/ & #Автозапуск обоев рабочего стола.
-xautolock -time 10 -locker "systemctl suspend" -notify 900 -notifier "xlock -mode matrix -delay 10000" & #Автозапуск заставки.
+xautolock -time 50 -locker "systemctl hibernate" -notify 1800 -notifier "xlock -mode matrix -delay 10000" & #Автозапуск заставки.
 exec i3 #Автозапуск i3.' > /mnt/home/"$username"/.xinitrc
 #
 #Создание общего конфига клавиатуры.
@@ -1418,7 +1418,7 @@ arch-chroot /mnt/ sudo -u "$username" yay -S hardinfo debtap libreoffice-extensi
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus
-arch-chroot /mnt systemctl enable bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd
+arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Настройка звука.
