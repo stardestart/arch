@@ -445,7 +445,7 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
 fi
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
 feh --bg-max --randomize --no-fehbg /usr/share/backgrounds/archlinux/ & #Автозапуск обоев рабочего стола.
-xautolock -time 10 -locker "systemctl suspend" -notify 900 -notifier "xlock -mode matrix -delay 10000" & #Автозапуск заставки.
+xautolock -time 50 -locker "systemctl hibernate" -notify 1800 -notifier "xlock -mode matrix -delay 10000" & #Автозапуск заставки
 exec i3 #Автозапуск i3.' > /mnt/home/"$username"/.xinitrc
 #
 #Создание общего конфига клавиатуры.
