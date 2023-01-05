@@ -1443,7 +1443,7 @@ while [[ $(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\0
     sleep 5
 done
 neofetch > /dev/pts/1
-firefox -CreateProfile default-release > /dev/pts/0
+firefox -CreateProfile default > /dev/pts/0
 ls ~/.mozilla/firefox/*.default-release
 echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
 user_pref("accessibility.typeaheadfind", true);
