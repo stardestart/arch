@@ -347,7 +347,7 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка программ.
 echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools gnome-themes-extra qgnomeplatform-qt5 papirus-icon-theme picom redshift lxqt-panel grc flameshot xscreensaver notification-daemon alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 ttf-fantasque-sans-mono cheese hspell libvoikko aspell nuspell xed wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs system-config-printer network-manager-applet blueman telegram-desktop sysstat neofetch gogglesmm bluez --noconfirm
+arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox ark mc htop conky polkit dolphin ntfs-3g dosfstools gnome-themes-extra qgnomeplatform-qt5 papirus-icon-theme picom redshift lxqt-panel grc flameshot xlockmore xautolock notification-daemon alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt archlinux-wallpaper feh freetype2 ttf-fantasque-sans-mono cheese hspell libvoikko aspell nuspell xed wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify thunar reflector smartmontools autocutsel clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs system-config-printer network-manager-applet blueman telegram-desktop sysstat neofetch gogglesmm bluez --noconfirm
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Установим видеодрайвер.
@@ -745,29 +745,7 @@ xterm*scrollKey: true
 !
 !Размер курсора.
 Xcursor.size: '"$(($font*3))"'
-Xcursor.theme: Adwaita
-!
-!
-!Настройка внешнего вида xscreensaver.
-!
-!Указывает шрифт.
-xscreensaver-auth.?.Dialog.headingFont: Fantasque Sans Mono Bold Italic '"$font"'
-xscreensaver-auth.?.Dialog.bodyFont: Fantasque Sans Mono Bold Italic '"$font"'
-xscreensaver-auth.?.Dialog.labelFont: Fantasque Sans Mono Bold Italic '"$font"'
-xscreensaver-auth.?.Dialog.unameFont: Fantasque Sans Mono Bold Italic '"$font"'
-xscreensaver-auth.?.Dialog.buttonFont: Fantasque Sans Mono Bold Italic '"$font"'
-xscreensaver-auth.?.Dialog.dateFont: Fantasque Sans Mono Bold Italic '"$font"'
-xscreensaver-auth.?.passwd.passwdFont: Fantasque Sans Mono Bold Italic '"$font"'
-!
-!Указывает цвета.
-xscreensaver-auth.?.Dialog.foreground: #b2f9b2
-xscreensaver-auth.?.Dialog.background: #2b2b2b
-xscreensaver-auth.?.Dialog.Button.foreground: #2b2b2b
-xscreensaver-auth.?.Dialog.Button.background: #b2f9b2
-xscreensaver-auth.?.Dialog.text.foreground: #2b2b2b
-xscreensaver-auth.?.Dialog.text.background: #b2f9b2
-xscreensaver-auth.?.passwd.thermometer.foreground: #f92b2b
-xscreensaver-auth.?.passwd.thermometer.background: #b2f9b2' > /mnt/home/"$username"/.Xresources
+Xcursor.theme: Adwaita' > /mnt/home/"$username"/.Xresources
 #
 #Создание директории и конфига i3.
 echo -e "\033[36mСоздание конфига i3.\033[0m"
@@ -953,9 +931,6 @@ exec --no-startup-id gogglesmm --tray;
 #
 # Автозапуск blueman.
 exec --no-startup-id blueman-applet;
-#
-# Автозапуск xscreensaver.
-exec --no-startup-id xscreensaver --no-splash;
 #
 # Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u;
