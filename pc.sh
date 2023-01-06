@@ -354,10 +354,47 @@ elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then arch-chroot /mnt pacm
 elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then arch-chroot /mnt pacman --color always -Sy virtualbox-guest-utils --noconfirm
 elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mnt pacman --color always -Sy virtualbox-guest-utils --noconfirm
 fi
-#
-#Установка программ.
-echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman --color always -Sy nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools papirus-icon-theme picom redshift lxqt-panel grc flameshot xlockmore xautolock notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 ttf-fantasque-sans-mono audacity kdenlive cheese hspell libvoikko aspell nuspell xed sweeper pinta gimp transmission-qt vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq blender telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview imagemagick xreader sane skanlite cups cups-pdf steam wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel tesseract-data-eng tesseract-data-rus openssh meld clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs system-config-printer network-manager-applet blueman sysstat neofetch gogglesmm acpid --noconfirm
+#Установка оконного менеджера и графического сервера.
+echo -e "\033[36mУстановка оконного менеджера и графического сервера.\033[0m"
+arch-chroot /mnt pacman -Sy --color always xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux --noconfirm
+#Установка интернет программ.
+echo -e "\033[36mУстановка интернет программ.\033[0m"
+arch-chroot /mnt pacman -Sy --color always firefox network-manager-applet wireless_tools transmission-qt telegram-desktop --noconfirm
+#Установка bluetooth программ.
+echo -e "\033[36mУстановка bluetooth программ.\033[0m"
+arch-chroot /mnt pacman -Sy --color always blueman bluez bluez-utils --noconfirm
+#Установка нужных консольных программ.
+echo -e "\033[36mУстановка нужных консольных программ.\033[0m"
+arch-chroot /mnt pacman -Sy --color always git numlockx mc htop nano dhcpcd imagemagick tesseract-data-eng tesseract-data-rus sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker --noconfirm
+#Установка программ безопасности.
+echo -e "\033[36mУстановка программ безопасности.\033[0m"
+arch-chroot /mnt pacman -Sy --color always polkit kwalletmanager kdesu xlockmore xautolock --noconfirm
+#Установка архиваторов и программ работы с файловыми системами.
+echo -e "\033[36mУстановка архиваторов и программ работы с файловыми системами.\033[0m"
+arch-chroot /mnt pacman -Sy --color always dmg2img gparted ark ntfs-3g dosfstools unzip smartmontools --noconfirm
+#Установка файлового менеджера и дополнений.
+echo -e "\033[36mУстановка файлового менеджера и дополнений.\033[0m"
+arch-chroot /mnt pacman -Sy --color always dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs --noconfirm
+#Установка программ внешнего вида.
+echo -e "\033[36mУстановка программ внешнего вида.\033[0m"
+arch-chroot /mnt pacman -Sy --color always papirus-icon-theme picom redshift lxqt-panel grc flameshot notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch --noconfirm
+#Установка программ звука.
+echo -e "\033[36mУстановка программ звука.\033[0m"
+arch-chroot /mnt pacman -Sy --color always alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt --noconfirm
+#Установка мультимедийных программ.
+echo -e "\033[36mУстановка мультимедийных программ.\033[0m"
+arch-chroot /mnt pacman -Sy --color always hspell libvoikko aspell nuspell xed audacity kdenlive cheese sweeper pinta gimp vlc libreoffice-still-ru obs-studio kalgebra avidemux-qt copyq blender kontrast kamera kcolorchooser gwenview xreader gogglesmm meld --noconfirm
+#Установка программ принтера/сканера.
+echo -e "\033[36mУстановка программ принтера/сканера.\033[0m"
+arch-chroot /mnt pacman -Sy --color always sane skanlite cups cups-pdf system-config-printer --noconfirm
+#Установка игр.
+echo -e "\033[36mУстановка игр.\033[0m"
+arch-chroot /mnt pacman -Sy --color always steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode discord ktouch marble step --noconfirm
+#Установка свободных видео-драйверов.
+echo -e "\033[36mУстановка свободных видео-драйверов.\033[0m"
+arch-chroot /mnt pacman -Sy --color always mesa lib32-mesa libva-mesa-driver mesa-vdpau --noconfirm
+#Установка геолокации.
+echo -e "\033[36mУстановка геолокации.\033[0m"
 arch-chroot /mnt pacman -Ss geoclue2
 #
 #Проверка наличия температурного датчика у системного диска.
