@@ -345,11 +345,6 @@ echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
 echo -e "\033[36mНастройка sysrq.\033[0m"
 echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
-#Установка программ.
-echo -e "\033[36mУстановка программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always nano dhcpcd xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git firefox numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools papirus-icon-theme picom redshift lxqt-panel grc flameshot xlockmore xautolock notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt freetype2 ttf-fantasque-sans-mono audacity cheese steam hspell libvoikko aspell nuspell xed sweeper pinta gimp vlc libreoffice-still-ru ktouch kalgebra avidemux-qt copyq telegram-desktop discord marble kamera gwenview imagemagick xreader sane skanlite cups cups-pdf wine winetricks wine-mono wine-gecko mesa lib32-mesa go wireless_tools avahi libnotify reflector smartmontools autocutsel clinfo unzip haveged dbus-broker gamemode lib32-gamemode perl-anyevent-i3 perl-json-xs system-config-printer network-manager-applet blueman sysstat neofetch gogglesmm acpid --noconfirm
-arch-chroot /mnt pacman -Ss geoclue2
-#
 #Установим видеодрайвер.
 echo -e "\033[36mУстановка видеодрайвера.\033[0m"
 if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then arch-chroot /mnt pacman -Sy --color always vulkan-radeon xf86-video-amdgpu lib32-vulkan-radeon --noconfirm
@@ -359,6 +354,48 @@ elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then arch-chroot /mnt pacm
 elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then arch-chroot /mnt pacman -Sy --color always virtualbox-guest-utils --noconfirm
 elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mnt pacman -Sy --color always virtualbox-guest-utils --noconfirm
 fi
+#Установка оконного менеджера и графического сервера.
+echo -e "\033[36mУстановка оконного менеджера и графического сервера.\033[0m"
+arch-chroot /mnt pacman -Sy --color always xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux --noconfirm
+#Установка интернет программ.
+echo -e "\033[36mУстановка интернет программ.\033[0m"
+arch-chroot /mnt pacman -Sy --color always firefox network-manager-applet wireless_tools --noconfirm
+#Установка bluetooth программ.
+echo -e "\033[36mУстановка bluetooth программ.\033[0m"
+arch-chroot /mnt pacman -Sy --color always blueman bluez bluez-utils --noconfirm
+#Установка нужных консольных программ.
+echo -e "\033[36mУстановка нужных консольных программ.\033[0m"
+arch-chroot /mnt pacman -Sy --color always git numlockx mc htop nano dhcpcd imagemagick tesseract-data-eng tesseract-data-rus sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker --noconfirm
+#Установка программ безопасности.
+echo -e "\033[36mУстановка программ безопасности.\033[0m"
+arch-chroot /mnt pacman -Sy --color always polkit kwalletmanager kdesu xlockmore xautolock --noconfirm
+#Установка архиваторов и программ работы с файловыми системами.
+echo -e "\033[36mУстановка архиваторов и программ работы с файловыми системами.\033[0m"
+arch-chroot /mnt pacman -Sy --color always dmg2img gparted ark ntfs-3g dosfstools unzip smartmontools --noconfirm
+#Установка файлового менеджера и дополнений.
+echo -e "\033[36mУстановка файлового менеджера и дополнений.\033[0m"
+arch-chroot /mnt pacman -Sy --color always dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs --noconfirm
+#Установка программ внешнего вида.
+echo -e "\033[36mУстановка программ внешнего вида.\033[0m"
+arch-chroot /mnt pacman -Sy --color always papirus-icon-theme picom redshift lxqt-panel grc flameshot notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch --noconfirm
+#Установка программ звука.
+echo -e "\033[36mУстановка программ звука.\033[0m"
+arch-chroot /mnt pacman -Sy --color always alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt --noconfirm
+#Установка мультимедийных программ.
+echo -e "\033[36mУстановка мультимедийных программ.\033[0m"
+arch-chroot /mnt pacman -Sy --color always hspell libvoikko aspell nuspell xed audacity kdenlive cheese sweeper pinta gimp vlc libreoffice-still-ru kalgebra avidemux-qt copyq kamera gwenview xreader gogglesmm --noconfirm
+#Установка программ принтера/сканера.
+echo -e "\033[36mУстановка программ принтера/сканера.\033[0m"
+arch-chroot /mnt pacman -Sy --color always sane skanlite cups cups-pdf system-config-printer --noconfirm
+#Установка игр.
+echo -e "\033[36mУстановка игр.\033[0m"
+arch-chroot /mnt pacman -Sy --color always steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode --noconfirm
+#Установка свободных видео-драйверов.
+echo -e "\033[36mУстановка свободных видео-драйверов.\033[0m"
+arch-chroot /mnt pacman -Sy --color always mesa lib32-mesa libva-mesa-driver mesa-vdpau --noconfirm
+#Установка геолокации.
+echo -e "\033[36mУстановка геолокации.\033[0m"
+arch-chroot /mnt pacman -Ss geoclue2
 #
 #Проверка наличия температурного датчика у системного диска.
 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"$sysdisk" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
@@ -938,9 +975,6 @@ exec --no-startup-id blueman-applet;
 #
 # Автозапуск steam.
 exec --no-startup-id ENABLE_VKBASALT=1 gamemoderun steam -silent %U;
-#
-# Автозапуск telegram.
-exec --no-startup-id telegram-desktop -startintray -- %u;
 #
 ########### Горячие клавиши запуска программ ###########
 #
