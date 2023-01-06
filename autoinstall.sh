@@ -984,7 +984,7 @@ bar {
         separator_symbol "☭"
         #
         # Назначить шрифт.
-        font pango:Fantasque Sans Mono Bold Italic '"$(($font*2))"'
+        font pango:Fantasque Sans Mono Bold Italic '"$$font"'
         #
         # Назначить цвета.
         colors {
