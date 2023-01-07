@@ -350,9 +350,15 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установим видеодрайвер.
 echo -e "\033[36mУстановка видеодрайвера.\033[0m"
-if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then arch-chroot /mnt pacman -Sy --color always vulkan-radeon xf86-video-amdgpu lib32-vulkan-radeon --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i ' ati ')" ]; then arch-chroot /mnt pacman -Sy --color always xf86-video-ati --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then arch-chroot /mnt pacman -Sy --color always nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
+if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then 
+    arch-chroot /mnt pacman -Sy --color always vulkan-radeon xf86-video-amdgpu lib32-vulkan-radeon --noconfirm
+    arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(amdgpu)/' /etc/mkinitcpio.conf
+elif [ -n "$(lspci | grep -i vga | grep -i ' ati ')" ]; then 
+    arch-chroot /mnt pacman -Sy --color always xf86-video-ati --noconfirm
+    arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(radeon)/' /etc/mkinitcpio.conf
+elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then 
+    arch-chroot /mnt pacman -Sy --color always nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
+    arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
 elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then arch-chroot /mnt pacman -Sy --color always xf86-video-intel vulkan-intel intel-media-driver libva-intel-driver --noconfirm
 elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then arch-chroot /mnt pacman -Sy --color always virtualbox-guest-utils --noconfirm
 elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mnt pacman -Sy --color always virtualbox-guest-utils --noconfirm
