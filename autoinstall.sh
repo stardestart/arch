@@ -365,7 +365,7 @@ echo -e "\033[36mУстановка bluetooth программ.\033[0m"
 arch-chroot /mnt pacman -Sy --color always blueman bluez bluez-utils --noconfirm
 #Установка нужных консольных программ.
 echo -e "\033[36mУстановка нужных консольных программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always git numlockx mc htop nano dhcpcd imagemagick tesseract-data-eng tesseract-data-rus sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker --noconfirm
+arch-chroot /mnt pacman -Sy --color always git numlockx mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker --noconfirm
 #Установка программ безопасности.
 echo -e "\033[36mУстановка программ безопасности.\033[0m"
 arch-chroot /mnt pacman -Sy --color always polkit kwalletmanager kdesu xlockmore xautolock --noconfirm
