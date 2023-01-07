@@ -280,6 +280,9 @@ reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorli
 echo -e "\033[36mУстановка ОС.\033[0m"
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware
 #
+#Добавление модулей в mkinitcpio.
+arch-chroot /mnt sed -i 's/HOOKS=(base udev/HOOKS=(base udev resume/' /etc/mkinitcpio.conf
+#
 #Установка часового пояса.
 echo -e "\033[36mУстановка часового пояса.\033[0m"
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$(curl https://ipapi.co/timezone)" /etc/localtime
