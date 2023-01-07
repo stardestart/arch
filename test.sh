@@ -327,7 +327,7 @@ if [ -z "$(efibootmgr | grep Boot)" ];
         arch-chroot /mnt pacman -Sy --color always efibootmgr --noconfirm
         arch-chroot /mnt bootctl install
         echo -e "default arch\ntimeout 2\neditor yes\nconsole-mode max" > /mnt/boot/loader/loader.conf
-        echo -e "title  Arch Linux\nlinux  /vmlinuz-linux-zen"$microcode"\ninitrd  /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw" > /mnt/boot/loader/entries/arch.conf
+        echo -e "title  Arch Linux\nlinux  /vmlinuz-linux-zen"$microcode"\ninitrd  /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw\noptions resume=/dev/"$(lsblk -s | grep -i swap | awk '{print $1}')"" > /mnt/boot/loader/entries/arch.conf
 fi
 #
 #Установим микроинструкции для процессора.
