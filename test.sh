@@ -1032,6 +1032,7 @@ bar {
          # Сделайте снимок экрана, щелкнув правой кнопкой мыши на панели (--no-startup-id убирает курсор загрузки).
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
 }
+exec --no-startup-id firefox; #TechnicalString
 exec --no-startup-id ~/archinstall.sh; #TechnicalString' > /mnt/home/"$username"/.config/i3/config
 #
 #Создание конфига i3status.
