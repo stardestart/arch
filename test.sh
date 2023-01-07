@@ -406,6 +406,9 @@ arch-chroot /mnt pacman -Sy --color always mesa lib32-mesa libva-mesa-driver mes
 echo -e "\033[36mУстановка геолокации.\033[0m"
 arch-chroot /mnt pacman -Ss geoclue2
 #
+#Обнаружение кулеров.
+arch-chroot /mnt sensors-detect --auto
+#
 #Проверка наличия температурного датчика у системного диска.
 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"$sysdisk" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
     then
