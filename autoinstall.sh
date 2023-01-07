@@ -371,7 +371,7 @@ echo -e "\033[36mУстановка программ безопасности.\0
 arch-chroot /mnt pacman -Sy --color always polkit kwalletmanager kdesu xlockmore xautolock --noconfirm
 #Установка архиваторов и программ работы с файловыми системами.
 echo -e "\033[36mУстановка архиваторов и программ работы с файловыми системами.\033[0m"
-arch-chroot /mnt pacman -Sy --color always dmg2img gparted ark ntfs-3g dosfstools unzip smartmontools --noconfirm
+arch-chroot /mnt pacman -Sy --color always gparted ark ntfs-3g dosfstools unzip smartmontools --noconfirm
 #Установка файлового менеджера и дополнений.
 echo -e "\033[36mУстановка файлового менеджера и дополнений.\033[0m"
 arch-chroot /mnt pacman -Sy --color always dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs --noconfirm
