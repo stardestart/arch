@@ -187,14 +187,14 @@ done
 #Вычисление swap.
 echo -e "\033[36mВычисление swap.\033[0m"
 ram="$(free -g | grep -i mem | awk '{print $2}')"
-if [ "$ram" -ge 128 ]; then swap="11G"
-elif [ "$ram" -ge 64 ]; then swap="8G"
-elif [ "$ram" -ge 32 ]; then swap="6G"
-elif [ "$ram" -ge 24 ]; then swap="5G"
-elif [ "$ram" -ge 16 ]; then swap="4G"
-elif [ "$ram" -ge 12 ]; then swap="3G"
-elif [ "$ram" -ge 6 ]; then swap="2G"
-elif [ "$ram" -lt 6 ]; then swap="1G"
+if [ "$ram" -ge 120 ]; then swap="11G"
+elif [ "$ram" -ge 60 ]; then swap="8G"
+elif [ "$ram" -ge 30 ]; then swap="6G"
+elif [ "$ram" -ge 20 ]; then swap="5G"
+elif [ "$ram" -ge 10 ]; then swap="4G"
+elif [ "$ram" -ge 8 ]; then swap="3G"
+elif [ "$ram" -ge 4 ]; then swap="2G"
+elif [ "$ram" -lt 4 ]; then swap="1G"
 fi
 echo -e "\033[36mРазмер SWAP раздела: $swap\033[0m"
 #
