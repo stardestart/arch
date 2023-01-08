@@ -108,7 +108,7 @@ elif [ "${#massdisks[*]}" = 0 ];
         echo -e "\033[41m\033[30mДоступных дисков не обнаружено!\033[0m"
         exit 0
     else
-        PS3="$(echo -e "\033[47m\033[30mПункт №:\033[0m\n\033[32m")"
+        PS3="$(echo -e "\033[47m\033[30mПункт №:\033[0m\n\033[32m>")"
         menu_from_array () {
             select item; do
                 if [ 1 -le "$REPLY" ] && [ "$REPLY" -le $# ]; then
