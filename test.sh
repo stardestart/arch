@@ -407,9 +407,6 @@ arch-chroot /mnt pacman --color always -Sy mesa lib32-mesa libva-mesa-driver mes
 echo -e "\033[36mУстановка геолокации.\033[0m"
 arch-chroot /mnt pacman -Ss geoclue2
 #
-#Обнаружение кулеров.
-arch-chroot /mnt sensors-detect --auto
-#
 #Проверка наличия температурного датчика у системного диска.
 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"$sysdisk" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
     then
@@ -620,11 +617,11 @@ ${top name 4} $alignr ${top pid 4}|${top cpu 4}|${top mem 4}
 ${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}
 #Блок "Системный диск".
 #Разделитель.
-${color #f92b2b}/home${hr 3}$color
+${color #f92b2b}/home${hr 3}$color'"$sysdisktemp"'
 #Общее/Занято/Свободно.
 ${color #b2b2b2}Объём:$alignr${fs_size /home} / ${color #f92b2b}${fs_used /home} / $color${fs_free /home}
 #Полоса загрузки.
-$color(${fs_type /home})${fs_bar 4 /home}'"$sysdisktemp"''"${masslabel[@]}"'
+$color(${fs_type /home})${fs_bar 4 /home}'"${masslabel[@]}"'
 ]]' > /mnt/home/"$username"/.config/conky/conky.conf
 #
 #Создание bash_profile.
@@ -1488,6 +1485,10 @@ while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\
     sleep 5
 done
 neofetch > /dev/pts/1
+#
+#Обнаружение кулеров.
+sudo sensors-detect --auto > /dev/pts/0
+#
 ls ~/.mozilla/firefox/*.default-release
 echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
 user_pref("accessibility.typeaheadfind", true);
