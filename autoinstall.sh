@@ -318,6 +318,12 @@ EOF
 #Убираем sudo пароль для пользователя.
 echo ""$username" ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
 #
+#Обновление ключей на установленной ОС.
+echo -e "\033[36mОбновление ключей на установленной ОС.\033[0m"
+arch-chroot /mnt pacman-key --init
+arch-chroot /mnt pacman-key --populate archlinux
+arch-chroot /mnt pacman --color always -Sy archlinux-keyring gnupg --noconfirm
+#
 #Установим загрузчик.
 echo -e "\033[36mУстановка загрузчика.\033[0m"
 if [ -z "$(efibootmgr | grep Boot)" ];
@@ -1469,7 +1475,7 @@ arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap libreoffice-extensio
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus
 arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager saned.socket cups.socket cups-browsed reflector.timer xdm-archlinux dhcpcd avahi-daemon smartd ananicy haveged dbus-broker auto-cpufreq
-arch-chroot /mnt sudo -u "$username" systemctl --user enable redshift-gtk
+arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
