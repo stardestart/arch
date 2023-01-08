@@ -274,6 +274,7 @@ pacman-key --init
 pacman-key --populate archlinux
 pacman --color always -Sy archlinux-keyring gnupg reflector --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+pacman-key --refresh-keys
 #
 #Установка ОС.
 echo -e "\033[36mУстановка ОС.\033[0m"
