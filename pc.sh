@@ -617,11 +617,11 @@ ${top name 4} $alignr ${top pid 4}|${top cpu 4}|${top mem 4}
 ${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}
 #Блок "Системный диск".
 #Разделитель.
-${color #f92b2b}/home${hr 3}$color
+${color #f92b2b}/home${hr 3}$color'"$sysdisktemp"'
 #Общее/Занято/Свободно.
 ${color #b2b2b2}Объём:$alignr${fs_size /home} / ${color #f92b2b}${fs_used /home} / $color${fs_free /home}
 #Полоса загрузки.
-$color(${fs_type /home})${fs_bar 4 /home}'"$sysdisktemp"''"${masslabel[@]}"'
+$color(${fs_type /home})${fs_bar 4 /home}'"${masslabel[@]}"'
 ]]' > /mnt/home/"$username"/.config/conky/conky.conf
 #
 #Создание bash_profile.
