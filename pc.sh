@@ -273,13 +273,16 @@ echo -e "\033[36mУстановка и настройка программы д�
 pacman --color always -Sy archlinux-keyring --noconfirm
 pacman-key --init
 pacman-key --populate archlinux
-pacman --color always -Sy gnupg archlinux-keyring --noconfirm
+pacman --color always -Sy gnupg --noconfirm
 pacman --color always -Sy reflector --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
 echo -e "\033[36mУстановка ОС.\033[0m"
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware
+#
+#Добавление модулей в mkinitcpio.
+arch-chroot /mnt sed -i 's/HOOKS=(base udev/HOOKS=(base udev resume/' /etc/mkinitcpio.conf
 #
 #Установка часового пояса.
 echo -e "\033[36mУстановка часового пояса.\033[0m"
@@ -328,7 +331,7 @@ if [ -z "$(efibootmgr | grep Boot)" ];
         arch-chroot /mnt pacman --color always -Sy efibootmgr --noconfirm
         arch-chroot /mnt bootctl install
         echo -e "default arch\ntimeout 2\neditor yes\nconsole-mode max" > /mnt/boot/loader/loader.conf
-        echo -e "title  Arch Linux\nlinux  /vmlinuz-linux-zen"$microcode"\ninitrd  /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw" > /mnt/boot/loader/entries/arch.conf
+        echo -e "title  Arch Linux\nlinux  /vmlinuz-linux-zen"$microcode"\ninitrd  /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw\noptions resume=/dev/"$(lsblk -s | grep -i swap | awk '{print $1}')"" > /mnt/boot/loader/entries/arch.conf
 fi
 #
 #Установим микроинструкции для процессора.
@@ -348,12 +351,18 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установим видеодрайвер.
 echo -e "\033[36mУстановка видеодрайвера.\033[0m"
-if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then arch-chroot /mnt pacman --color always -Sy vulkan-radeon xf86-video-amdgpu lib32-vulkan-radeon --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i ' ati ')" ]; then arch-chroot /mnt pacman --color always -Sy xf86-video-ati --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then arch-chroot /mnt pacman --color always -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then arch-chroot /mnt pacman --color always -Sy xf86-video-intel vulkan-intel intel-media-driver libva-intel-driver --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then arch-chroot /mnt pacman --color always -Sy virtualbox-guest-utils --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mnt pacman --color always -Sy virtualbox-guest-utils --noconfirm
+if [ -n "$(lspci | grep -i vga | grep -i amd)" ]; then 
+    arch-chroot /mnt pacman -Sy --color always vulkan-radeon xf86-video-amdgpu lib32-vulkan-radeon --noconfirm
+    arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(amdgpu)/' /etc/mkinitcpio.conf
+elif [ -n "$(lspci | grep -i vga | grep -i ' ati ')" ]; then 
+    arch-chroot /mnt pacman -Sy --color always xf86-video-ati --noconfirm
+    arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(radeon)/' /etc/mkinitcpio.conf
+elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then 
+    arch-chroot /mnt pacman -Sy --color always nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
+    arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
+elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then arch-chroot /mnt pacman -Sy --color always xf86-video-intel vulkan-intel intel-media-driver libva-intel-driver --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then arch-chroot /mnt pacman -Sy --color always virtualbox-guest-utils --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mnt pacman -Sy --color always virtualbox-guest-utils --noconfirm
 fi
 #Установка оконного менеджера и графического сервера.
 echo -e "\033[36mУстановка оконного менеджера и графического сервера.\033[0m"
@@ -397,6 +406,9 @@ arch-chroot /mnt pacman --color always -Sy mesa lib32-mesa libva-mesa-driver mes
 #Установка геолокации.
 echo -e "\033[36mУстановка геолокации.\033[0m"
 arch-chroot /mnt pacman -Ss geoclue2
+#
+#Обнаружение кулеров.
+arch-chroot /mnt sensors-detect --auto
 #
 #Проверка наличия температурного датчика у системного диска.
 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"$sysdisk" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
@@ -487,7 +499,7 @@ xautolock -time 50 -locker "systemctl hibernate" -notify 1800 -notifier "xlock -
 exec i3 #Автозапуск i3.' > /mnt/home/"$username"/.xinitrc
 #
 #Создание общего конфига клавиатуры.
-echo -e "\033[36mСоздание 00-keyboard.\033[0m"
+echo -e "\033[36mСоздание общего конфига клавиатуры.\033[0m"
 echo 'Section "InputClass"
 Identifier "system-keyboard"
 MatchIsKeyboard "on"
@@ -1081,7 +1093,7 @@ battery all { #Индикатор батареи
     status_bat = "🔋" #Режим работы от батареи.
     path = "/sys/class/power_supply/BAT%d/uevent" #Путь данных.
     low_threshold = 10 } #Нижний порог заряда.
-memory { #Индикатор ОЗУ
+memory { #Индикатор ОЗУ.
     format = "📥: %used / %total" #Формат вывода.
     threshold_degraded = 10% #Желтый порог.
     threshold_critical = 5% #Красный порог.
@@ -1490,11 +1502,11 @@ echo -e "\033[36mСоздание скрипта, который после пе
 echo -e '#!/bin/bash
 sleep 10
 echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/0
-while [[ $(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1) -lt 20 ]]; do
+while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1)" -lt 20 ]]; do
     echo "\033[31mОжидание освобождения ЦП\033[0m" > /dev/pts/0
     sleep 5
 done
-neofetch  > /dev/pts/1
+neofetch > /dev/pts/1
 ls ~/.mozilla/firefox/*.default-release
 echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
 user_pref("accessibility.typeaheadfind", true);

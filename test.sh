@@ -270,10 +270,11 @@ fi
 #
 #Установка и настройка программы для фильтрования зеркал и обновление ключей.
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
+pacman --color always -Sy archlinux-keyring --noconfirm
 pacman-key --init
 pacman-key --populate archlinux
-pacman -Sy --color always gnupg archlinux-keyring --noconfirm
-pacman -Sy --color always reflector --noconfirm
+pacman --color always -Sy gnupg --noconfirm
+pacman --color always -Sy reflector --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
@@ -323,11 +324,11 @@ echo ""$username" ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
 echo -e "\033[36mУстановка загрузчика.\033[0m"
 if [ -z "$(efibootmgr | grep Boot)" ];
     then
-        arch-chroot /mnt pacman -Sy --color always grub --noconfirm
+        arch-chroot /mnt pacman --color always -Sy grub --noconfirm
         arch-chroot /mnt grub-install /dev/"$sysdisk"
         arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
     else
-        arch-chroot /mnt pacman -Sy --color always efibootmgr --noconfirm
+        arch-chroot /mnt pacman --color always -Sy efibootmgr --noconfirm
         arch-chroot /mnt bootctl install
         echo -e "default arch\ntimeout 2\neditor yes\nconsole-mode max" > /mnt/boot/loader/loader.conf
         echo -e "title  Arch Linux\nlinux  /vmlinuz-linux-zen"$microcode"\ninitrd  /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw\noptions resume=/dev/"$(lsblk -s | grep -i swap | awk '{print $1}')"" > /mnt/boot/loader/entries/arch.conf
@@ -365,43 +366,43 @@ elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mn
 fi
 #Установка оконного менеджера и графического сервера.
 echo -e "\033[36mУстановка оконного менеджера и графического сервера.\033[0m"
-arch-chroot /mnt pacman -Sy --color always xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux --noconfirm
+arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux --noconfirm
 #Установка интернет программ.
 echo -e "\033[36mУстановка интернет программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always firefox network-manager-applet wireless_tools telegram-desktop --noconfirm
+arch-chroot /mnt pacman --color always -Sy firefox network-manager-applet wireless_tools telegram-desktop --noconfirm
 #Установка bluetooth программ.
 echo -e "\033[36mУстановка bluetooth программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always blueman bluez bluez-utils --noconfirm
+arch-chroot /mnt pacman --color always -Sy blueman bluez bluez-utils --noconfirm
 #Установка нужных консольных программ.
 echo -e "\033[36mУстановка нужных консольных программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always git mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker --noconfirm
+arch-chroot /mnt pacman --color always -Sy git mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker --noconfirm
 #Установка программ безопасности.
 echo -e "\033[36mУстановка программ безопасности.\033[0m"
-arch-chroot /mnt pacman -Sy --color always polkit kwalletmanager kdesu xlockmore xautolock --noconfirm
+arch-chroot /mnt pacman --color always -Sy polkit kwalletmanager kdesu xlockmore xautolock --noconfirm
 #Установка архиваторов и программ работы с файловыми системами.
 echo -e "\033[36mУстановка архиваторов и программ работы с файловыми системами.\033[0m"
-arch-chroot /mnt pacman -Sy --color always dmg2img gparted ark ntfs-3g dosfstools unzip smartmontools --noconfirm
+arch-chroot /mnt pacman --color always -Sy dmg2img gparted ark ntfs-3g dosfstools unzip smartmontools --noconfirm
 #Установка файлового менеджера и дополнений.
 echo -e "\033[36mУстановка файлового менеджера и дополнений.\033[0m"
-arch-chroot /mnt pacman -Sy --color always dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs --noconfirm
+arch-chroot /mnt pacman --color always -Sy dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs --noconfirm
 #Установка программ внешнего вида.
 echo -e "\033[36mУстановка программ внешнего вида.\033[0m"
-arch-chroot /mnt pacman -Sy --color always papirus-icon-theme picom redshift lxqt-panel grc flameshot notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch --noconfirm
+arch-chroot /mnt pacman --color always -Sy papirus-icon-theme picom redshift lxqt-panel grc flameshot notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch --noconfirm
 #Установка программ звука.
 echo -e "\033[36mУстановка программ звука.\033[0m"
-arch-chroot /mnt pacman -Sy --color always alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt --noconfirm
+arch-chroot /mnt pacman --color always -Sy alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt --noconfirm
 #Установка мультимедийных программ.
 echo -e "\033[36mУстановка мультимедийных программ.\033[0m"
-arch-chroot /mnt pacman -Sy --color always hspell libvoikko aspell nuspell xed audacity cheese sweeper pinta vlc libreoffice-still-ru kalgebra copyq kontrast kamera kcolorchooser gwenview xreader gogglesmm meld --noconfirm
+arch-chroot /mnt pacman --color always -Sy hspell libvoikko aspell nuspell xed audacity cheese sweeper pinta vlc libreoffice-still-ru kalgebra copyq kontrast kamera kcolorchooser gwenview xreader gogglesmm meld --noconfirm
 #Установка программ принтера/сканера.
 echo -e "\033[36mУстановка программ принтера/сканера.\033[0m"
-arch-chroot /mnt pacman -Sy --color always sane skanlite cups cups-pdf system-config-printer --noconfirm
+arch-chroot /mnt pacman --color always -Sy sane skanlite cups cups-pdf system-config-printer --noconfirm
 #Установка игр.
 echo -e "\033[36mУстановка игр.\033[0m"
-arch-chroot /mnt pacman -Sy --color always steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode discord ktouch --noconfirm
+arch-chroot /mnt pacman --color always -Sy steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode discord ktouch --noconfirm
 #Установка свободных видео-драйверов.
 echo -e "\033[36mУстановка свободных видео-драйверов.\033[0m"
-arch-chroot /mnt pacman -Sy --color always mesa lib32-mesa libva-mesa-driver mesa-vdpau --noconfirm
+arch-chroot /mnt pacman --color always -Sy mesa lib32-mesa libva-mesa-driver mesa-vdpau --noconfirm
 #Установка геолокации.
 echo -e "\033[36mУстановка геолокации.\033[0m"
 arch-chroot /mnt pacman -Ss geoclue2
@@ -747,6 +748,7 @@ detect-client-leader = true;
 #
 #Отключить информацию о повреждениях, каждый раз перерисовывается весь экран, а не его часть.
 use-damage = true;
+#
 #TechnicalSymbol #Размытие.
 #TechnicalSymbol backend = "glx"
 #TechnicalSymbol glx-no-stencil = true;
@@ -1089,7 +1091,7 @@ cpu_usage { #Использование ЦП.
 cpu_temperature 0 { #Температура ЦП.
     format = "🌡🧠: %degrees°C" #Формат вывода.
     max_threshold = "70" #Красный порог.
-    format_above_threshold = "🧠: %degrees°C" #Формат вывода красного порога.
+    format_above_threshold = "🌡🧠: %degrees°C" #Формат вывода красного порога.
     path = "/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp*_input" } #Путь данных.path: /sys/devices/platform/coretemp.0/temp1_input
 tztime 1 { #Вывод даты и времени.
     format = "📆 %a %d-%m-%Y(%W)" } #Формат вывода.
@@ -1270,6 +1272,7 @@ gtk-icon-theme-name="ePapirus-Dark"
 gtk-theme-name="Adwaita-dark"' > /mnt/home/"$username"/.config/gtkrc-2.0
 echo 'ENABLE_VKBASALT=1
 GTK_USE_PORTAL=1' >> /etc/environment
+#
 #Создание директории и конфига lxqt-panel.
 echo -e "\033[36mСоздание конфига lxqt-panel.\033[0m"
 mkdir -p /mnt/home/"$username"/.config/lxqt
@@ -1434,7 +1437,7 @@ rm /mnt/usr/share/fonts/google/*.txt
 echo -e "\033[36mПередача интернет настроек в установленную систему.\033[0m"
 if [ -z "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ]; then arch-chroot /mnt ip link set "$netdev" up
     else
-        arch-chroot /mnt pacman -Sy --color always iwd --noconfirm
+        arch-chroot /mnt pacman --color always -Sy iwd --noconfirm
         arch-chroot /mnt systemctl enable iwd
         arch-chroot /mnt ip link set "$netdev" up
         mkdir -p /mnt/var/lib/iwd
@@ -1536,7 +1539,7 @@ sudo echo \047Section "InputClass"
         Option "MaxTapTime" "125"
 EndSection\047 > /etc/X11/xorg.conf.d/70-synaptics.conf
 fi
-WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs
+WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/0
 #rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #Делаем xinitrc и archinstall.sh исполняемыми.
