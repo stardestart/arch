@@ -274,7 +274,6 @@ pacman-key --init
 pacman-key --populate archlinux
 pacman --color always -Sy archlinux-keyring gnupg reflector --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
-pacman-key --refresh-keys
 #
 #Установка ОС.
 echo -e "\033[36mУстановка ОС.\033[0m"
@@ -319,15 +318,18 @@ EOF
 #Убираем sudo пароль для пользователя.
 echo ""$username" ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
 #
+arch-chroot /mnt pacman-key --init
+arch-chroot /mnt pacman-key --populate archlinux
+arch-chroot /mnt pacman --color always -Sy archlinux-keyring gnupg --noconfirm
 #Установим загрузчик.
 echo -e "\033[36mУстановка загрузчика.\033[0m"
 if [ -z "$(efibootmgr | grep Boot)" ];
     then
-        arch-chroot /mnt pacman --color always -Sy grub --noconfirm
+        arch-chroot /mnt pacman --color always -S grub --noconfirm
         arch-chroot /mnt grub-install /dev/"$sysdisk"
         arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
     else
-        arch-chroot /mnt pacman --color always -Sy efibootmgr --noconfirm
+        arch-chroot /mnt pacman --color always -S efibootmgr --noconfirm
         arch-chroot /mnt bootctl install
         echo -e "default arch\ntimeout 2\neditor yes\nconsole-mode max" > /mnt/boot/loader/loader.conf
         echo -e "title  Arch Linux\nlinux  /vmlinuz-linux-zen"$microcode"\ninitrd  /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw\noptions resume=/dev/"$(lsblk -s | grep -i swap | awk '{print $1}')"" > /mnt/boot/loader/entries/arch.conf
@@ -335,8 +337,8 @@ fi
 #
 #Установим микроинструкции для процессора.
 echo -e "\033[36mУстановка микроинструкций для процессора.\033[0m"
-if [ "$microcode" = "\ninitrd /amd-ucode.img" ]; then arch-chroot /mnt pacman -Sy --color always amd-ucode --noconfirm
-elif [ "$microcode" = "\ninitrd /intel-ucode.img" ]; then arch-chroot /mnt pacman -Sy --color always intel-ucode iucode-tool --noconfirm
+if [ "$microcode" = "\ninitrd /amd-ucode.img" ]; then arch-chroot /mnt pacman --color always -S amd-ucode --noconfirm
+elif [ "$microcode" = "\ninitrd /intel-ucode.img" ]; then arch-chroot /mnt pacman --color always -Sy intel-ucode iucode-tool --noconfirm
 fi
 #
 #Настройка установщика.
@@ -351,53 +353,53 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #Установим видеодрайвер.
 echo -e "\033[36mУстановка видеодрайвера.\033[0m"
 if [ -n "$(lspci | grep -i vga | grep AMD)" ]; then
-    arch-chroot /mnt pacman -Sy --color always xf86-video-ati xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon --noconfirm
+    arch-chroot /mnt pacman --color always -S xf86-video-ati xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon --noconfirm
 elif [ -n "$(lspci | grep -i vga | grep -i nvidia | grep -E 'TU1|GA1|GV1|GP10|GM20|GM10')" ]; then
-    arch-chroot /mnt pacman -Sy --color always nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
+    arch-chroot /mnt pacman --color always -S nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
     arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
-elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then arch-chroot /mnt pacman -Sy --color always vulkan-intel intel-media-driver libva-intel-driver --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then arch-chroot /mnt pacman -Sy --color always virtualbox-guest-utils --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mnt pacman -Sy --color always virtualbox-guest-utils --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then arch-chroot /mnt pacman --color always -S vulkan-intel intel-media-driver libva-intel-driver --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then arch-chroot /mnt pacman --color always -S virtualbox-guest-utils --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mnt pacman --color always -S virtualbox-guest-utils --noconfirm
 fi
 #Установка оконного менеджера и графического сервера.
 echo -e "\033[36mУстановка оконного менеджера и графического сервера.\033[0m"
-arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux --noconfirm
+arch-chroot /mnt pacman --color always -S xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux --noconfirm
 #Установка интернет программ.
 echo -e "\033[36mУстановка интернет программ.\033[0m"
-arch-chroot /mnt pacman --color always -Sy firefox network-manager-applet wireless_tools transmission-qt telegram-desktop --noconfirm
+arch-chroot /mnt pacman --color always -S firefox network-manager-applet wireless_tools transmission-qt telegram-desktop --noconfirm
 #Установка bluetooth программ.
 echo -e "\033[36mУстановка bluetooth программ.\033[0m"
-arch-chroot /mnt pacman --color always -Sy blueman bluez bluez-utils --noconfirm
+arch-chroot /mnt pacman --color always -S blueman bluez bluez-utils --noconfirm
 #Установка нужных консольных программ.
 echo -e "\033[36mУстановка нужных консольных программ.\033[0m"
-arch-chroot /mnt pacman --color always -Sy git numlockx mc htop nano dhcpcd imagemagick tesseract-data-eng tesseract-data-rus sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker --noconfirm
+arch-chroot /mnt pacman --color always -S git numlockx mc htop nano dhcpcd imagemagick tesseract-data-eng tesseract-data-rus sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker --noconfirm
 #Установка программ безопасности.
 echo -e "\033[36mУстановка программ безопасности.\033[0m"
-arch-chroot /mnt pacman --color always -Sy polkit kwalletmanager kdesu xlockmore xautolock --noconfirm
+arch-chroot /mnt pacman --color always -S polkit kwalletmanager kdesu xlockmore xautolock --noconfirm
 #Установка архиваторов и программ работы с файловыми системами.
 echo -e "\033[36mУстановка архиваторов и программ работы с файловыми системами.\033[0m"
-arch-chroot /mnt pacman --color always -Sy dmg2img gparted ark ntfs-3g dosfstools unzip smartmontools --noconfirm
+arch-chroot /mnt pacman --color always -S dmg2img gparted ark ntfs-3g dosfstools unzip smartmontools --noconfirm
 #Установка файлового менеджера и дополнений.
 echo -e "\033[36mУстановка файлового менеджера и дополнений.\033[0m"
-arch-chroot /mnt pacman --color always -Sy dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs --noconfirm
+arch-chroot /mnt pacman --color always -S dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs --noconfirm
 #Установка программ внешнего вида.
 echo -e "\033[36mУстановка программ внешнего вида.\033[0m"
-arch-chroot /mnt pacman --color always -Sy papirus-icon-theme picom redshift lxqt-panel grc flameshot notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch --noconfirm
+arch-chroot /mnt pacman --color always -S papirus-icon-theme picom redshift lxqt-panel grc flameshot notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch --noconfirm
 #Установка программ звука.
 echo -e "\033[36mУстановка программ звука.\033[0m"
-arch-chroot /mnt pacman --color always -Sy alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt --noconfirm
+arch-chroot /mnt pacman --color always -S alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt --noconfirm
 #Установка мультимедийных программ.
 echo -e "\033[36mУстановка мультимедийных программ.\033[0m"
-arch-chroot /mnt pacman --color always -Sy hspell libvoikko aspell nuspell xed audacity kdenlive cheese sweeper pinta gimp vlc libreoffice-still-ru obs-studio kalgebra avidemux-qt copyq blender kontrast kamera kcolorchooser gwenview xreader gogglesmm meld --noconfirm
+arch-chroot /mnt pacman --color always -S hspell libvoikko aspell nuspell xed audacity kdenlive cheese sweeper pinta gimp vlc libreoffice-still-ru obs-studio kalgebra avidemux-qt copyq blender kontrast kamera kcolorchooser gwenview xreader gogglesmm meld --noconfirm
 #Установка программ принтера/сканера.
 echo -e "\033[36mУстановка программ принтера/сканера.\033[0m"
-arch-chroot /mnt pacman --color always -Sy sane skanlite cups cups-pdf system-config-printer --noconfirm
+arch-chroot /mnt pacman --color always -S sane skanlite cups cups-pdf system-config-printer --noconfirm
 #Установка игр.
 echo -e "\033[36mУстановка игр.\033[0m"
-arch-chroot /mnt pacman --color always -Sy steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode discord ktouch marble step --noconfirm
+arch-chroot /mnt pacman --color always -S steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode discord ktouch marble step --noconfirm
 #Установка свободных видео-драйверов.
 echo -e "\033[36mУстановка свободных видео-драйверов.\033[0m"
-arch-chroot /mnt pacman --color always -Sy mesa lib32-mesa libva-mesa-driver mesa-vdpau --noconfirm
+arch-chroot /mnt pacman --color always -S mesa lib32-mesa libva-mesa-driver mesa-vdpau --noconfirm
 #Установка геолокации.
 echo -e "\033[36mУстановка геолокации.\033[0m"
 arch-chroot /mnt pacman -Ss geoclue2
@@ -1444,7 +1446,7 @@ rm /mnt/usr/share/fonts/google/*.txt
 echo -e "\033[36mПередача интернет настроек в установленную систему.\033[0m"
 if [ -z "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ]; then arch-chroot /mnt ip link set "$netdev" up
     else
-        arch-chroot /mnt pacman --color always -Sy iwd --noconfirm
+        arch-chroot /mnt pacman --color always -S iwd --noconfirm
         arch-chroot /mnt systemctl enable iwd
         arch-chroot /mnt ip link set "$netdev" up
         mkdir -p /mnt/var/lib/iwd
