@@ -270,11 +270,9 @@ fi
 #
 #Установка и настройка программы для фильтрования зеркал и обновление ключей.
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
-pacman --color always -Sy archlinux-keyring --noconfirm
 pacman-key --init
 pacman-key --populate archlinux
-pacman --color always -Sy gnupg --noconfirm
-pacman --color always -Sy reflector --noconfirm
+pacman --color always -Sy archlinux-keyring gnupg reflector --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
