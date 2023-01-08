@@ -325,11 +325,11 @@ arch-chroot /mnt pacman --color always -Sy archlinux-keyring gnupg --noconfirm
 echo -e "\033[36mУстановка загрузчика.\033[0m"
 if [ -z "$(efibootmgr | grep Boot)" ];
     then
-        arch-chroot /mnt pacman --color always -S grub --noconfirm
+        arch-chroot /mnt pacman --color always -Sy grub --noconfirm
         arch-chroot /mnt grub-install /dev/"$sysdisk"
         arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
     else
-        arch-chroot /mnt pacman --color always -S efibootmgr --noconfirm
+        arch-chroot /mnt pacman --color always -Sy efibootmgr --noconfirm
         arch-chroot /mnt bootctl install
         echo -e "default arch\ntimeout 2\neditor yes\nconsole-mode max" > /mnt/boot/loader/loader.conf
         echo -e "title  Arch Linux\nlinux  /vmlinuz-linux-zen"$microcode"\ninitrd  /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw\noptions resume=/dev/"$(lsblk -s | grep -i swap | awk '{print $1}')"" > /mnt/boot/loader/entries/arch.conf
