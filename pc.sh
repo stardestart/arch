@@ -318,9 +318,12 @@ EOF
 #Убираем sudo пароль для пользователя.
 echo ""$username" ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
 #
+#Установка и настройка программы для фильтрования зеркал и обновление ключей на установленной ОС.
+echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей на установленной ОС.\033[0m"
 arch-chroot /mnt pacman-key --init
 arch-chroot /mnt pacman-key --populate archlinux
 arch-chroot /mnt pacman --color always -Sy archlinux-keyring gnupg --noconfirm
+#
 #Установим загрузчик.
 echo -e "\033[36mУстановка загрузчика.\033[0m"
 if [ -z "$(efibootmgr | grep Boot)" ];
