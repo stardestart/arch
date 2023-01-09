@@ -340,8 +340,8 @@ fi
 #
 #Установим микроинструкции для процессора.
 echo -e "\033[36mУстановка микроинструкций для процессора.\033[0m"
-if [ "$microcode" = "\ninitrd /amd-ucode.img" ]; then arch-chroot /mnt pacman -Sy --color always amd-ucode --noconfirm
-elif [ "$microcode" = "\ninitrd /intel-ucode.img" ]; then arch-chroot /mnt pacman -Sy --color always intel-ucode iucode-tool --noconfirm
+if [ "$microcode" = "\ninitrd /amd-ucode.img" ]; then arch-chroot /mnt pacman --color always -Sy amd-ucode --noconfirm
+elif [ "$microcode" = "\ninitrd /intel-ucode.img" ]; then arch-chroot /mnt pacman --color always -Sy intel-ucode iucode-tool --noconfirm
 fi
 #
 #Настройка установщика.
@@ -356,13 +356,13 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #Установим видеодрайвер.
 echo -e "\033[36mУстановка видеодрайвера.\033[0m"
 if [ -n "$(lspci | grep -i vga | grep AMD)" ]; then
-    arch-chroot /mnt pacman -Sy --color always xf86-video-ati xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon --noconfirm
+    arch-chroot /mnt pacman --color always -Sy xf86-video-ati xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon --noconfirm
 elif [ -n "$(lspci | grep -i vga | grep -i nvidia | grep -E 'TU1|GA1|GV1|GP10|GM20|GM10')" ]; then
-    arch-chroot /mnt pacman -Sy --color always nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
+    arch-chroot /mnt pacman --color always -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
     arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
-elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then arch-chroot /mnt pacman -Sy --color always vulkan-intel intel-media-driver libva-intel-driver --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then arch-chroot /mnt pacman -Sy --color always virtualbox-guest-utils --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mnt pacman -Sy --color always virtualbox-guest-utils --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then arch-chroot /mnt pacman --color always -Sy vulkan-intel intel-media-driver libva-intel-driver --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then arch-chroot /mnt pacman --color always -Sy virtualbox-guest-utils --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mnt pacman --color always -Sy virtualbox-guest-utils --noconfirm
 fi
 #Установка оконного менеджера и графического сервера.
 echo -e "\033[36mУстановка оконного менеджера и графического сервера.\033[0m"
