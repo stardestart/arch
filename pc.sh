@@ -1526,6 +1526,7 @@ amixer -c "$j" sset Master unmute > /dev/pts/0
 amixer -c "$j" sset Speaker unmute > /dev/pts/0
 amixer -c "$j" sset Headphone unmute > /dev/pts/0
 amixer -c "$j" sset "Auto-Mute Mode" Disabled > /dev/pts/0
+amixer -c "$j" sset "HP/Speaker Auto Detect" unmute > /dev/pts/0
             done
 alsactl store
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
