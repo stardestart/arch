@@ -409,7 +409,7 @@ echo -e "\033[36mУстановка программ звука.\033[0m"
 arch-chroot /mnt pacman --color always -Sy alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt --noconfirm
 #Установка мультимедийных программ.
 echo -e "\033[36mУстановка мультимедийных программ.\033[0m"
-arch-chroot /mnt pacman --color always -Sy hspell libvoikko aspell nuspell xed audacity kdenlive cheese sweeper pinta gimp vlc libreoffice-still-ru obs-studio kalgebra avidemux-qt copyq blender kontrast kamera kcolorchooser gwenview xreader gogglesmm meld --noconfirm
+arch-chroot /mnt pacman --color always -Sy hspell libvoikko aspell nuspell xed audacity kdenlive cheese sweeper pinta gimp vlc libreoffice-still-ru obs-studio kalgebra avidemux-qt copyq blender kontrast kamera kcolorchooser gwenview xreader gogglesmm meld virtualbox-host-dkms --noconfirm
 #Установка программ принтера/сканера.
 echo -e "\033[36mУстановка программ принтера/сканера.\033[0m"
 arch-chroot /mnt pacman --color always -Sy sane skanlite cups cups-pdf system-config-printer --noconfirm
