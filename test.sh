@@ -339,7 +339,7 @@ if [ -z "$(efibootmgr | grep Boot)" ];
         arch-chroot /mnt pacman --color always -Sy efibootmgr --noconfirm
         arch-chroot /mnt bootctl install
         echo -e "default arch\ntimeout 2\neditor yes\nconsole-mode max" > /mnt/boot/loader/loader.conf
-        echo -e "title  Arch Linux\nlinux  /vmlinuz-linux-zen"$microcode"\ninitrd  /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw\noptions resume=/dev/"$(lsblk -s | grep -i swap | awk '{print $1}')"" > /mnt/boot/loader/entries/arch.conf
+        echo -e "title  Arch Linux\nlinux  /vmlinuz-linux-zen"$microcode"\ninitrd  /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw\noptions resume=/dev/"$sysdisk""$p2"" > /mnt/boot/loader/entries/arch.conf
 fi
 #
 #Установим микроинструкции для процессора.
@@ -361,17 +361,25 @@ echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 echo -e "\033[36mУстановка видеодрайвера.\033[0m"
 if [ -n "$(lspci | grep -i vga | grep AMD)" ]; then
     arch-chroot /mnt pacman --color always -Sy xf86-video-ati xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon --noconfirm
+    arch-chroot /mnt sed -i 's/MODULES=(/MODULES=(amdgpu radeon/' /etc/mkinitcpio.conf
 elif [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
     if [ -n "$(lspci | grep -i vga | grep -i nvidia | grep -E 'TU1|GA1|GV1|GP10|GM20|GM10')" ]; then
         arch-chroot /mnt pacman --color always -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
-        arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
+        arch-chroot /mnt sed -i 's/MODULES=(/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm/' /etc/mkinitcpio.conf
     else
         arch-chroot /mnt pacman --color always -Sy xf86-video-nouveau --noconfirm
-        arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(nouveau)/' /etc/mkinitcpio.conf
+        arch-chroot /mnt sed -i 's/MODULES=(/MODULES=(nouveau/' /etc/mkinitcpio.conf
     fi
-elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then arch-chroot /mnt pacman --color always -Sy vulkan-intel intel-media-driver libva-intel-driver --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then arch-chroot /mnt pacman --color always -Sy virtualbox-guest-utils --noconfirm
-elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then arch-chroot /mnt pacman --color always -Sy virtualbox-guest-utils --noconfirm
+elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then
+    arch-chroot /mnt pacman --color always -Sy vulkan-intel intel-media-driver libva-intel-driver --noconfirm
+    arch-chroot /mnt sed -i 's/MODULES=(/MODULES=(i915/' /etc/mkinitcpio.conf
+elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then
+    arch-chroot /mnt pacman --color always -Sy virtualbox-guest-utils --noconfirm
+    arch-chroot /mnt sed -i 's/MODULES=(/MODULES=(vmwgfx/' /etc/mkinitcpio.conf
+
+elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then
+    arch-chroot /mnt pacman --color always -Sy virtualbox-guest-utils --noconfirm
+    arch-chroot /mnt sed -i 's/MODULES=(/MODULES=(vboxvideo/' /etc/mkinitcpio.conf
 fi
 #Установка оконного менеджера и графического сервера.
 echo -e "\033[36mУстановка оконного менеджера и графического сервера.\033[0m"
