@@ -333,7 +333,7 @@ if [ -z "$(efibootmgr | grep Boot)" ];
         arch-chroot /mnt sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=2/' /etc/default/grub
         arch-chroot /mnt sed -i 's/#GRUB_DISABLE_RECOVERY=true/GRUB_DISABLE_RECOVERY=true/' /etc/default/grub
         arch-chroot /mnt sed -i 's/GRUB_DISABLE_LINUX_UUID=true/#GRUB_DISABLE_LINUX_UUID=true/' /etc/default/grub
-        arch-chroot /mnt sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="resume=\/dev\/'"$sysdisk"''"$p2"' /' /etc/default/grub
+        arch-chroot /mnt sed -i 's/GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX="resume=\/dev\/'"$sysdisk"''"$p2"' /' /etc/default/grub
         arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
     else
         arch-chroot /mnt pacman --color always -Sy efibootmgr --noconfirm
@@ -501,7 +501,7 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
 fi
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
 feh --bg-max --randomize --no-fehbg /usr/share/backgrounds/archlinux/ & #Автозапуск обоев рабочего стола.
-xautolock -time 50 -locker "systemctl hibernate" -notify 1800 -notifier "xlock -mode matrix -delay 10000" & #Автозапуск заставки.
+xautolock -time 50 -locker "systemctl hibernate" -notify 1800 -notifier "xlock -mode matrix -delay 10000" -detectsleep & #Автозапуск заставки.
 exec i3 #Автозапуск i3.' > /mnt/home/"$username"/.xinitrc
 #
 #Создание общего конфига клавиатуры.
