@@ -272,6 +272,7 @@ fi
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
 pacman-key --init
 pacman-key --populate archlinux
+pacman-key --refresh-keys
 pacman --color always -Sy archlinux-keyring gnupg reflector --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
@@ -322,6 +323,7 @@ echo ""$username" ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
 echo -e "\033[36mОбновление ключей на установленной ОС.\033[0m"
 arch-chroot /mnt pacman-key --init
 arch-chroot /mnt pacman-key --populate archlinux
+arch-chroot /mnt pacman-key --refresh-keys
 arch-chroot /mnt pacman --color always -Sy archlinux-keyring gnupg --noconfirm
 #
 #Установим загрузчик.
