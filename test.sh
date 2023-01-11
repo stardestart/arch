@@ -1557,20 +1557,20 @@ sudo echo \047Section "InputClass"
         Option "MaxTapTime" "125"
 EndSection\047 > /etc/X11/xorg.conf.d/70-synaptics.conf
 fi
+if [ -n "$(lspci | grep -i vga | grep -iE \047vmware svga|virtualbox\047)" ]; then
+echo "vboxguest
+vboxsf
+vboxvideo" > /etc/modules-load.d/virtualbox.config
+sudo systemctl enable vboxservice
+VBoxClient --clipboard --draganddrop --seamless --display --checkhostversion
+sed -i \047s/exec i3 #Автозапуск i3./\/usr\/bin\/VBoxClient-all &\nexec i3 #Автозапуск i3./\047 /home/'"$username"'/.xinitrc
+sudo gpasswd -a $USER vboxsf
+fi
 WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/0
 #rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #Делаем xinitrc и archinstall.sh исполняемыми.
 chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
-if [ -n "$(lspci | grep -i vga | grep -iE 'vmware svga|virtualbox')" ]; then
-echo "vboxguest
-vboxsf
-vboxvideo" > /mnt/etc/modules-load.d/virtualbox.config
-arch-chroot /mnt systemctl enable vboxservice
-arch-chroot /mnt VBoxClient --clipboard --draganddrop --seamless --display --checkhostversion
-arch-chroot /mnt sed -i 's/exec i3 #Автозапуск i3./\/usr\/bin\/VBoxClient-all &\nexec i3 #Автозапуск i3./' /home/"$username"/.xinitrc
-arch-chroot /mnt gpasswd -a "$username" vboxsf
-fi
 #
 #Передача прав созданному пользователю.
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
