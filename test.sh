@@ -1562,7 +1562,7 @@ WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /d
 #
 #Делаем xinitrc и archinstall.sh исполняемыми.
 chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
-if [ -n "$(lspci | grep -i vga | grep -E 'vmware svga|virtualbox')" ]; then
+if [ -n "$(lspci | grep -i vga | grep -iE 'vmware svga|virtualbox')" ]; then
 echo "vboxguest
 vboxsf
 vboxvideo" > /mnt/etc/modules-load.d/virtualbox.config
