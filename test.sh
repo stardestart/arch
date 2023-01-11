@@ -1562,6 +1562,15 @@ WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /d
 #
 #Делаем xinitrc и archinstall.sh исполняемыми.
 chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
+if [ -n "$(lspci | grep -i vga | grep -E 'vmware svga|virtualbox')" ]; then
+echo "vboxguest
+vboxsf
+vboxvideo" > /mnt/etc/modules-load.d/virtualbox.config
+arch-chroot /mnt systemctl enable vboxservice
+arch-chroot /mnt VBoxClient --clipboard --draganddrop --seamless --display --checkhostversion
+arch-chroot /mnt sed -i 's/exec i3 #Автозапуск i3./\/usr\/bin\/VBoxClient-all &\nexec i3 #Автозапуск i3./' /home/"$username"/.xinitrc
+arch-chroot /mnt gpasswd -a "$username" vboxsf
+fi
 #
 #Передача прав созданному пользователю.
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
