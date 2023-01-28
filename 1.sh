@@ -1,3 +1,10 @@
+pacman -S openvpn strongswan ufw --noconfirm
+rm /etc/ipsec.conf
+mkdir -p ~/pki/{cacerts,certs,private}
+chmod 700 ~/pki
+pki --gen --type rsa --size 4096 --outform pem > ~/pki/private/ca-key.pem
+pki --self --ca --lifetime 3650 --in ~/pki/private/ca-key.pem \
+    --type rsa --dn "CN=VPN root CA" --outform pem > ~/pki/cacerts/ca-cert.pem
 pki --gen --type rsa --size 4096 --outform pem > ~/pki/private/server-key.pem
 pki --pub --in ~/pki/private/server-key.pem --type rsa \
     | pki --issue --lifetime 1825 \
@@ -6,12 +13,13 @@ pki --pub --in ~/pki/private/server-key.pem --type rsa \
         --dn "CN=1217581-cn58105.tw1.ru" --san 1217581-cn58105.tw1.ru \
         --flag serverAuth --flag ikeIntermediate --outform pem \
     >  ~/pki/certs/server-cert.pem
-    cp -r ~/pki/* /etc/ipsec.d/
-    mv /etc/ipsec.conf{,.original}
-    echo 'config setup
+cp -r ~/pki/* /etc/ipsec.d/
+mv /etc/ipsec.conf{,.original}
+echo 'config setup
     charondebug="ike 1, knl 1, cfg 0"
     uniqueids=no
-    conn ikev2-vpn
+
+conn ikev2-vpn
     auto=add
     compress=no
     type=tunnel
@@ -35,11 +43,11 @@ pki --pub --in ~/pki/private/server-key.pem --type rsa \
     eap_identity=%identity
     ike=chacha20poly1305-sha512-curve25519-prfsha512,aes256gcm16-sha384-prfsha384-ecp384,aes256-sha1-modp1024,aes128-sha1-modp1024,3des-sha1-modp1024!
     esp=chacha20poly1305-sha512,aes256gcm16-ecp384,aes256-sha256,aes256-sha1,3des-sha1!' > /etc/ipsec.conf
-    echo ': RSA "server-key.pem"
-    stardestart : EAP "@DeFeNdEr1410@"
-    alisa : EAP "@DeFeNdEr1410@"
-    misha : EAP "mishavpn2023"
-    ruslan : EAP "ruslan2023"' >> /etc/ipsec.secrets
+echo ': RSA "server-key.pem"
+stardestart : EAP "@DeFeNdEr1410@"
+alisa : EAP "@DeFeNdEr1410@"
+misha : EAP "mishavpn2023"
+ruslan : EAP "ruslan2023"' > /etc/ipsec.secrets
 systemctl start strongswan-starter
 systemctl enable strongswan-starter
 ufw allow OpenSSH
@@ -64,7 +72,6 @@ COMMIT
 echo 'net/ipv4/ip_forward=1
 net/ipv4/conf/all/accept_redirects=0
 net/ipv4/conf/all/send_redirects=0
-net/ipv4/ip_no_pmtu_disc=1' >> /etc/ufw/sysctl.conf
+net/ipv4/ip_no_pmtu_disc=1' > /etc/ufw/sysctl.conf
 ufw disable
 ufw enable
-
