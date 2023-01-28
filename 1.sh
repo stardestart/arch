@@ -44,8 +44,6 @@ pki --pub --in ~/pki/private/server-key.pem --type rsa \
     ufw allow OpenSSH
     ufw enable
     ufw allow 500,4500/udp
-    ip route show default
-    default via 185.166.196.105 dev eth0 proto static
 echo '*nat
 -A POSTROUTING -s 10.10.10.0/24 -o eth0 -m policy --pol ipsec --dir out -j ACCEPT
 -A POSTROUTING -s 10.10.10.0/24 -o eth0 -j MASQUERADE
