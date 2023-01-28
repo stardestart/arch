@@ -40,10 +40,11 @@ pki --pub --in ~/pki/private/server-key.pem --type rsa \
     alisa : EAP "@DeFeNdEr1410@"
     misha : EAP "mishavpn2023"
     ruslan : EAP "ruslan2023"' >> /etc/ipsec.secrets
-    systemctl restart strongswan-starter
-    ufw allow OpenSSH
-    ufw enable
-    ufw allow 500,4500/udp
+systemctl start strongswan-starter
+systemctl enable strongswan-starter
+ufw allow OpenSSH
+ufw enable
+ufw allow 500,4500/udp
 echo '*nat
 -A POSTROUTING -s 10.10.10.0/24 -o eth0 -m policy --pol ipsec --dir out -j ACCEPT
 -A POSTROUTING -s 10.10.10.0/24 -o eth0 -j MASQUERADE
