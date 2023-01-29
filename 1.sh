@@ -1,6 +1,5 @@
 pacman -S openvpn strongswan --noconfirm
-pacman -Rs ufw --noconfirm
-rm /etc/ipsec.conf /etc/ufw/sysctl.conf /etc/ufw/before.rules
+rm /etc/ipsec.conf
 mkdir -p ~/pki/{cacerts,certs,private}
 chmod 700 ~/pki
 pki --gen --type rsa --size 4096 --outform pem > ~/pki/private/ca-key.pem
