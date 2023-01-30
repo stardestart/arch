@@ -35,11 +35,6 @@ conn ikev2-vpn
     eap_identity=%identity
     ike=chacha20poly1305-sha512-curve25519-prfsha512,aes256gcm16-sha384-prfsha384-ecp384,aes256-sha1-modp1024,aes128-sha1-modp1024,3des-sha1-modp1024!
     esp=chacha20poly1305-sha512,aes256gcm16-ecp384,aes256-sha256,aes256-sha1,3des-sha1!' > /etc/ipsec.conf
-echo ': RSA "/etc/ipsec.d/private/server-key.pem"
-stardestart : EAP "@DeFeNdEr1410@"
-alisa : EAP "@DeFeNdEr1410@"
-misha : EAP "mishavpn2023"
-ruslan : EAP "ruslan2023"' > /etc/ipsec.secrets
 systemctl start strongswan-starter
 systemctl enable strongswan-starter
 systemctl restart strongswan-starter
