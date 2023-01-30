@@ -47,7 +47,7 @@ rm -rf ~/cert
 echo 'net.ipv4.ip_forward = 1
 net.ipv4.conf.all.accept_redirects = 0
 net.ipv4.conf.all.send_redirects = 0
-net.ipv4.ip_no_pmtu_disc = 1' > /etc/sysctl.conf
+net.ipv4.ip_no_pmtu_disc = 1' > /etc/sysctl.d/99-sysctl.conf
 sysctl -p
 iptables -A INPUT -m state --state ESTABLISHED,RELATED -j sudo ACCEPT iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 iptables -A INPUT -i lo -j ACCEPT
