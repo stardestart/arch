@@ -58,5 +58,6 @@ iptables -t mangle -A FORWARD --match policy --pol ipsec --dir in -s 10.10.10.0/
 netfilter-persistent save 
 netfilter-persistent reload
 systemctl stop iptables
+systemctl enable iptables
 systemctl start iptables
 iptables -S
