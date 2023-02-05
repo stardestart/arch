@@ -394,7 +394,7 @@ echo -e "\033[36mУстановка нужных консольных прогр
 arch-chroot /mnt pacman --color always -Sy git mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker --noconfirm
 #Установка программ безопасности.
 echo -e "\033[36mУстановка программ безопасности.\033[0m"
-arch-chroot /mnt pacman --color always -Sy polkit kwalletmanager kde-cli-tools xlockmore xautolock --noconfirm
+arch-chroot /mnt pacman --color always -Sy polkit kwalletmanager kwallet-pam kde-cli-tools xlockmore xautolock --noconfirm
 #Установка архиваторов и программ работы с файловыми системами.
 echo -e "\033[36mУстановка архиваторов и программ работы с файловыми системами.\033[0m"
 arch-chroot /mnt pacman --color always -Sy dmg2img gparted ark ntfs-3g dosfstools unzip smartmontools --noconfirm
