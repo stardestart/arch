@@ -415,7 +415,7 @@ echo -e "\033[36mУстановка программ принтера/скане
 arch-chroot /mnt pacman --color always -Sy sane skanlite cups cups-pdf system-config-printer --noconfirm
 #Установка игр.
 echo -e "\033[36mУстановка игр.\033[0m"
-arch-chroot /mnt pacman --color always -Sy steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode discord ktouch marble step --noconfirm
+arch-chroot /mnt pacman --color always -Sy steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel discord ktouch marble step --noconfirm
 #Установка свободных видео-драйверов.
 echo -e "\033[36mУстановка свободных видео-драйверов.\033[0m"
 arch-chroot /mnt pacman --color always -Sy mesa lib32-mesa libva-mesa-driver mesa-vdpau --noconfirm
