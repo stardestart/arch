@@ -996,6 +996,9 @@ exec --no-startup-id gogglesmm --tray;
 # Автозапуск blueman.
 exec --no-startup-id blueman-applet;
 #
+# Автозапуск smb4k.
+exec --no-startup-id smb4k;
+#
 # Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u;
 #
