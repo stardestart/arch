@@ -1412,6 +1412,19 @@ BackgroundAlternate=50,50,50
 ForegroundNormal=238,238,238
 ForegroundInactive=178,178,178' > /mnt/home/"$username"/.config/kdeglobals
 #
+#Создание конфига smb4krc.
+echo -e "\033[36mСоздание конфига smb4krc.\033[0m"
+echo '[Mounting]
+DetectAllShares=true
+RemountShares=true
+UnmountSharesOnExit=true
+[Network]
+EnableWakeOnLAN=true
+ForceSmb1Protocol=true
+PreviewHiddenItems=true
+[UserInterface]
+StartMainWindowDocked=true' >> /mnt/home/"$username"/.config/smb4krc
+#
 #Установка шрифтов.
 echo -e "\033[36mУстановка шрифтов.\033[0m"
 mkdir -p /mnt/usr/share/fonts/google
