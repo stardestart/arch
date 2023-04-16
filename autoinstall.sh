@@ -999,6 +999,9 @@ exec --no-startup-id gogglesmm --tray;
 # Автозапуск blueman.
 exec --no-startup-id blueman-applet;
 #
+# Автозапуск smb4k.
+exec --no-startup-id smb4k;
+#
 # Автозапуск steam.
 exec --no-startup-id ENABLE_VKBASALT=1 gamemoderun steam -silent %U;
 #
