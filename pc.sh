@@ -1153,6 +1153,11 @@ echo 'polkit.addRule(function(action, subject) {
     }
 });' > /mnt/etc/polkit-1/rules.d/51-blueman.rules
 #
+#Загрузка PAM.
+echo -e "\033[36mЗагрузка PAM.\033[0m"
+echo 'auth optional pam_kwallet5.so
+session optional pam_kwallet5.so auto_start' >> /mnt/etc/pam.d/xdm
+#
 #Создание конфига рабочего стола №1.
 echo -e "\033[36mСоздание конфига рабочего стола №1.\033[0m"
 echo '{
