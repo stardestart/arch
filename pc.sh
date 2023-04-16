@@ -1518,6 +1518,7 @@ SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.in
 #Создание скрипта, который после перезагрузки продолжит установку.
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
+xdg-user-dirs-update
 sleep 10
 echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/0
 while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1)" -lt 20 ]]; do
