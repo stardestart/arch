@@ -400,7 +400,7 @@ echo -e "\033[36mУстановка архиваторов и программ �
 arch-chroot /mnt pacman --color always -Sy gparted ark ntfs-3g dosfstools unzip smartmontools --noconfirm
 #Установка файлового менеджера и дополнений.
 echo -e "\033[36mУстановка файлового менеджера и дополнений.\033[0m"
-arch-chroot /mnt pacman --color always -Sy dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k --noconfirm
+arch-chroot /mnt pacman --color always -Sy dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k xdg-user-dirs --noconfirm
 #Установка программ внешнего вида.
 echo -e "\033[36mУстановка программ внешнего вида.\033[0m"
 arch-chroot /mnt pacman --color always -Sy papirus-icon-theme picom redshift lxqt-panel grc flameshot notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch --noconfirm
@@ -1403,6 +1403,16 @@ BackgroundAlternate=50,50,50
 ForegroundNormal=238,238,238
 ForegroundInactive=178,178,178' > /mnt/home/"$username"/.config/kdeglobals
 #
+#Создание конфига xdg-user-dirs.
+echo -e "\033[36mСоздание конфига xdg-user-dirs.\033[0m"
+echo 'DOCUMENTS=Documents
+MUSIC=Documents/Music
+PICTURES=Documents/Pictures
+VIDEOS=Documents/Videos
+DOWNLOAD=Documents/Downloads
+DESKTOP=Documents/Desktop
+PUBLICSHARE=Documents/Public' > /mnt/etc/xdg/user-dirs.defaults
+#
 #Создание конфига samba.
 echo -e "\033[36mСоздание конфига samba.\033[0m"
 echo '[global]
@@ -1426,6 +1436,7 @@ writable = yes' > /mnt/etc/samba/smb.conf
 echo -e "\033[36mСоздание конфига smb4krc.\033[0m"
 echo '[Mounting]
 DetectAllShares=true
+MountPrefix=file:///home/'"$username"'/Documents/Public/In
 RemountShares=true
 UnmountSharesOnExit=true
 [Network]
@@ -1543,6 +1554,7 @@ while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\
     echo "\033[31mОжидание освобождения ЦП\033[0m" > /dev/pts/0
     sleep 5
 done
+LC_ALL=C xdg-user-dirs-update --force
 neofetch > /dev/pts/1
 #
 #Обнаружение кулеров.
