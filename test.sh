@@ -400,7 +400,7 @@ echo -e "\033[36mУстановка архиваторов и программ �
 arch-chroot /mnt pacman --color always -Sy dmg2img gparted ark ntfs-3g dosfstools unzip smartmontools --noconfirm
 #Установка файлового менеджера и дополнений.
 echo -e "\033[36mУстановка файлового менеджера и дополнений.\033[0m"
-arch-chroot /mnt pacman --color always -Sy dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k xdg-user-dirs --noconfirm
+arch-chroot /mnt pacman --color always -Sy dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k --noconfirm
 #Установка программ внешнего вида.
 echo -e "\033[36mУстановка программ внешнего вида.\033[0m"
 arch-chroot /mnt pacman --color always -Sy papirus-icon-theme picom redshift lxqt-panel grc flameshot notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch --noconfirm
@@ -1400,16 +1400,6 @@ BackgroundAlternate=50,50,50
 ForegroundNormal=238,238,238
 ForegroundInactive=178,178,178' > /mnt/home/"$username"/.config/kdeglobals
 #
-#Создание конфига xdg-user-dirs.
-echo -e "\033[36mСоздание конфига xdg-user-dirs.\033[0m"
-echo 'DOCUMENTS=Documents
-MUSIC=Documents/Music
-PICTURES=Documents/Pictures
-VIDEOS=Documents/Videos
-DOWNLOAD=Documents/Downloads
-DESKTOP=Documents/Desktop
-PUBLICSHARE=Documents/Public' > /mnt/etc/xdg/user-dirs.defaults
-#
 #Создание конфига samba.
 mkdir -p /mnt/home/'"$username"'/Documents/Public/Out/
 echo -e "\033[36mСоздание конфига samba.\033[0m"
@@ -1630,7 +1620,6 @@ arch-chroot /mnt chown -R "$username" /home/"$username"/
 mkdir /mnt/var/lib/samba/usershares
 arch-chroot /mnt groupadd -r sambashare
 arch-chroot /mnt chown root:sambashare /var/lib/samba/usershares
-arch-chroot /mnt LC_ALL=C xdg-user-dirs-update --force
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
