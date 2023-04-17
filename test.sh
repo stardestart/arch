@@ -1552,7 +1552,6 @@ while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\
     echo "\033[31mОжидание освобождения ЦП\033[0m" > /dev/pts/0
     sleep 5
 done
-LC_ALL=C xdg-user-dirs-update --force
 neofetch > /dev/pts/1
 #
 #Обнаружение кулеров.
@@ -1628,6 +1627,10 @@ chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
 #Передача прав созданному пользователю.
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
 arch-chroot /mnt chown -R "$username" /home/"$username"/
+mkdir /mnt/var/lib/samba/usershares
+arch-chroot /mnt groupadd -r sambashare
+arch-chroot /mnt chown root:sambashare /var/lib/samba/usershares
+arch-chroot /mnt LC_ALL=C xdg-user-dirs-update --force
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
