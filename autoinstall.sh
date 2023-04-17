@@ -1426,7 +1426,7 @@ usershare max shares = 100
 usershare allow guests = yes
 usershare owner only = yes
 [private]
-path = /home/stardestart/Public/out/
+path = /home/'"$username"'/Documents/Public/Out/
 valid users = @wheel
 guest ok = no
 browsable = yes
