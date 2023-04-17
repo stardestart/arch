@@ -1413,7 +1413,7 @@ ForegroundNormal=238,238,238
 ForegroundInactive=178,178,178' > /mnt/home/"$username"/.config/kdeglobals
 #
 #Создание конфига samba.
-mkdir -p /mnt/home/'"$username"'/Documents/Public/Out/
+mkdir -p /mnt/home/'"$username"'/Documents/Public/{Out,In}
 echo -e "\033[36mСоздание конфига samba.\033[0m"
 echo '[global]
 workgroup = WORKGROUP
@@ -1561,7 +1561,6 @@ while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\
     echo "\033[31mОжидание освобождения ЦП\033[0m" > /dev/pts/0
     sleep 5
 done
-LC_ALL=C xdg-user-dirs-update --force
 neofetch > /dev/pts/1
 #
 #Обнаружение кулеров.
