@@ -1599,14 +1599,14 @@ sudo echo \047Section "InputClass"
         Option "MaxTapTime" "125"
 EndSection\047 > /etc/X11/xorg.conf.d/70-synaptics.conf
 fi
-if [ -n "$(lspci | grep -i vga | grep -iE 'vmware svga|virtualbox')" ]; then
+if [ -n "$(lspci | grep -i vga | grep -iE \047vmware svga|virtualbox\047)" ]; then
 sudo echo "vboxguest
 vboxsf
 vboxvideo" > /mnt/etc/modules-load.d/virtualbox.config
 arch-chroot /mnt systemctl enable vboxservice
 arch-chroot /mnt VBoxClient --clipboard --draganddrop --seamless --display --checkhostversion
-arch-chroot /mnt sed -i 's/exec i3 #Автозапуск i3./\/usr\/bin\/VBoxClient-all &\nexec i3 #Автозапуск i3./' /home/"$username"/.xinitrc
-arch-chroot /mnt gpasswd -a "$username" vboxsf
+arch-chroot /mnt sed -i \047s/exec i3 #Автозапуск i3./\/usr\/bin\/VBoxClient-all &\nexec i3 #Автозапуск i3./\047 /home/"$username"/.xinitrc
+arch-chroot /mnt gpasswd -a '"$username"' vboxsf
 else
 sudo modprobe vboxdrv vboxnetflt vboxnetadp vboxnetadp
 sudo gpasswd -a '"$username"' vboxusers

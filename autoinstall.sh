@@ -409,7 +409,7 @@ echo -e "\033[36mУстановка программ звука.\033[0m"
 arch-chroot /mnt pacman --color always -Sy alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt --noconfirm
 #Установка мультимедийных программ.
 echo -e "\033[36mУстановка мультимедийных программ.\033[0m"
-arch-chroot /mnt pacman --color always -Sy hspell libvoikko aspell nuspell xed audacity kdenlive cheese sweeper pinta gimp vlc libreoffice-still-ru kalgebra avidemux-qt copyq kamera gwenview xreader gogglesmm --noconfirm
+arch-chroot /mnt pacman --color always -Sy hspell libvoikko aspell nuspell xed audacity kdenlive cheese sweeper pinta gimp vlc libreoffice-still-ru kalgebra avidemux-qt copyq kamera gwenview xreader gogglesmm virtualbox-host-dkms --noconfirm
 #Установка программ принтера/сканера.
 echo -e "\033[36mУстановка программ принтера/сканера.\033[0m"
 arch-chroot /mnt pacman --color always -Sy sane skanlite cups cups-pdf system-config-printer --noconfirm
@@ -1602,14 +1602,14 @@ sudo echo \047Section "InputClass"
         Option "MaxTapTime" "125"
 EndSection\047 > /etc/X11/xorg.conf.d/70-synaptics.conf
 fi
-if [ -n "$(lspci | grep -i vga | grep -iE 'vmware svga|virtualbox')" ]; then
+if [ -n "$(lspci | grep -i vga | grep -iE \047vmware svga|virtualbox\047)" ]; then
 sudo echo "vboxguest
 vboxsf
 vboxvideo" > /mnt/etc/modules-load.d/virtualbox.config
 arch-chroot /mnt systemctl enable vboxservice
 arch-chroot /mnt VBoxClient --clipboard --draganddrop --seamless --display --checkhostversion
-arch-chroot /mnt sed -i 's/exec i3 #Автозапуск i3./\/usr\/bin\/VBoxClient-all &\nexec i3 #Автозапуск i3./' /home/"$username"/.xinitrc
-arch-chroot /mnt gpasswd -a "$username" vboxsf
+arch-chroot /mnt sed -i \047s/exec i3 #Автозапуск i3./\/usr\/bin\/VBoxClient-all &\nexec i3 #Автозапуск i3./\047 /home/"$username"/.xinitrc
+arch-chroot /mnt gpasswd -a '"$username"' vboxsf
 else
 sudo modprobe vboxdrv vboxnetflt vboxnetadp vboxnetadp
 sudo gpasswd -a '"$username"' vboxusers
