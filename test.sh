@@ -1412,7 +1412,7 @@ PUBLICSHARE=Documents/Public' > /mnt/etc/xdg/user-dirs.defaults
 arch-chroot /mnt xdg-user-dirs-update
 #
 #Создание конфига samba.
-mkdir -p /mnt"$(arch-chroot /mnt xdg-user-dir PUBLICSHARE)"/Out/
+mkdir -p /mnt"$(arch-chroot /mnt xdg-user-dir PUBLICSHARE)"/{Out,In}
 echo -e "\033[36mСоздание конфига samba.\033[0m"
 echo '[global]
 workgroup = WORKGROUP
