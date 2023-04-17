@@ -1411,6 +1411,7 @@ DESKTOP=Documents/Desktop
 PUBLICSHARE=Documents/Public' > /mnt/etc/xdg/user-dirs.defaults
 #
 #Создание конфига samba.
+mkdir -p /mnt/home/'"$username"'/Documents/Public/Out/
 echo -e "\033[36mСоздание конфига samba.\033[0m"
 echo '[global]
 workgroup = WORKGROUP
