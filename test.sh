@@ -1401,7 +1401,7 @@ ForegroundNormal=238,238,238
 ForegroundInactive=178,178,178' > /mnt/home/"$username"/.config/kdeglobals
 #
 #Создание конфига samba.
-mkdir -p /mnt/home/'"$username"'/Documents/Public/{Out,In}
+mkdir -p /mnt/home/"$username"/Documents/Public/{Out,In}
 echo -e "\033[36mСоздание конфига samba.\033[0m"
 echo '[global]
 workgroup = WORKGROUP
@@ -1615,12 +1615,12 @@ arch-chroot /mnt chown root:sambashare /var/lib/samba/usershares
 arch-chroot /mnt chmod 1770 /var/lib/samba/usershares
 arch-chroot /mnt gpasswd sambashare -a "$username"
 #
-if [ -n "$(lspci | grep -i vga | grep -iE 'vmware svga|virtualbox')" ]; then
+if [ -n $(lspci | grep -i vga | grep -iE 'vmware svga|virtualbox') ]; then
 echo "vboxguest
 vboxsf
 vboxvideo" > /mnt/etc/modules-load.d/virtualboxguest.config
 arch-chroot /mnt systemctl enable vboxservice
-arch-chroot /mnt VBoxClient --clipboard --draganddrop --seamless --display --checkhostversion
+#arch-chroot /mnt VBoxClient --clipboard --draganddrop --seamless --display --checkhostversion
 arch-chroot /mnt sed -i 's/exec i3 #Автозапуск i3./\/usr\/bin\/VBoxClient-all \&\nexec i3 #Автозапуск i3./' /home/"$username"/.xinitrc
 arch-chroot /mnt gpasswd -a "$username" vboxsf
 else
