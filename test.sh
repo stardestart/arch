@@ -68,7 +68,7 @@ massd=()
 fox=""
 #
 #Переменная сохранит timezone.
-timezone="$timezone"
+timezone="$(curl https://ipapi.co/timezone)"
 #
 #Определяем процессор.
 echo -e "\033[36mОпределяем процессор.\033[0m"
