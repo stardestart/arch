@@ -67,6 +67,9 @@ massd=()
 #Переменная сохранит размер шрифта firefox.
 fox=""
 #
+#Переменная сохранит timezone.
+timezone="$timezone"
+#
 #Определяем процессор.
 echo -e "\033[36mОпределяем процессор.\033[0m"
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="\ninitrd /amd-ucode.img"
@@ -96,8 +99,8 @@ echo -e "\033[36mСетевое устройство:"$netdev"\033[0m"
 #
 #Определяем часовой пояс.
 echo -e "\033[36mОпределяем часовой пояс.\033[0m"
-timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
-echo -e "\033[36mЧасовой пояс:"$(curl https://ipapi.co/timezone)"\033[0m"
+timedatectl set-timezone "$timezone"
+echo -e "\033[36mЧасовой пояс:"$timezone"\033[0m"
 #
 #Определяем физический диск на который будет установлена ОС.
 echo -e "\033[36mОпределяем физический диск на который будет установлена ОС.\033[32m"
@@ -284,7 +287,7 @@ arch-chroot /mnt sed -i 's/HOOKS=(base udev/HOOKS=(base udev resume/' /etc/mkini
 #
 #Установка часового пояса.
 echo -e "\033[36mУстановка часового пояса.\033[0m"
-arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$(curl https://ipapi.co/timezone)" /etc/localtime
+arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$timezone" /etc/localtime
 arch-chroot /mnt hwclock --systohc
 #
 #Настройка локали.
@@ -1409,10 +1412,10 @@ VIDEOS=Documents/Videos
 DOWNLOAD=Documents/Downloads
 DESKTOP=Documents/Desktop
 PUBLICSHARE=Documents/Public' > /mnt/etc/xdg/user-dirs.defaults
-arch-chroot /mnt xdg-user-dirs-update
+arch-chroot /mnt sudo -u "$username" xdg-user-dirs-update
 #
 #Создание конфига samba.
-mkdir -p /mnt"$(arch-chroot /mnt xdg-user-dir PUBLICSHARE)"/{Out,In}
+mkdir -p /mnt"$(arch-chroot /mnt sudo -u "$username" xdg-user-dir PUBLICSHARE)"/{Out,In}
 echo -e "\033[36mСоздание конфига samba.\033[0m"
 echo '[global]
 workgroup = WORKGROUP
