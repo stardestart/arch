@@ -1425,7 +1425,7 @@ usershare max shares = 100
 usershare allow guests = yes
 usershare owner only = yes
 [private]
-path = '"$(arch-chroot /mnt xdg-user-dir PUBLICSHARE)"'/Out/
+path = '"$(arch-chroot /mnt sudo -u "$username" xdg-user-dir PUBLICSHARE)"'/Out/
 valid users = @wheel
 guest ok = no
 browsable = yes
@@ -1435,7 +1435,7 @@ writable = yes' > /mnt/etc/samba/smb.conf
 echo -e "\033[36mСоздание конфига smb4krc.\033[0m"
 echo '[Mounting]
 DetectAllShares=true
-MountPrefix=file://'"$(arch-chroot /mnt xdg-user-dir PUBLICSHARE)"'/In
+MountPrefix=file://'"$(arch-chroot /mnt sudo -u "$username" xdg-user-dir PUBLICSHARE)"'/In
 RemountShares=true
 UnmountSharesOnExit=true
 [Network]
