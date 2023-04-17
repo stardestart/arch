@@ -1400,6 +1400,25 @@ BackgroundAlternate=50,50,50
 ForegroundNormal=238,238,238
 ForegroundInactive=178,178,178' > /mnt/home/"$username"/.config/kdeglobals
 #
+#Создание конфига samba.
+echo -e "\033[36mСоздание конфига samba.\033[0m"
+echo '[global]
+workgroup = WORKGROUP
+security = user
+map to guest = bad user
+wins support = no
+dns proxy = no
+usershare path = /var/lib/samba/usershares
+usershare max shares = 100
+usershare allow guests = yes
+usershare owner only = yes
+[private]
+path = /home/stardestart/Public/out/
+valid users = @wheel
+guest ok = no
+browsable = yes
+writable = yes' > /mnt/etc/samba/smb.conf
+#
 #Создание конфига smb4krc.
 echo -e "\033[36mСоздание конфига smb4krc.\033[0m"
 echo '[Mounting]
@@ -1505,7 +1524,7 @@ arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap libreoffice-extensio
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus
-arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd
+arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Настройка звука.
