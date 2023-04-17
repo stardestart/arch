@@ -1602,6 +1602,18 @@ sudo echo \047Section "InputClass"
         Option "MaxTapTime" "125"
 EndSection\047 > /etc/X11/xorg.conf.d/70-synaptics.conf
 fi
+if [ -n "$(lspci | grep -i vga | grep -iE 'vmware svga|virtualbox')" ]; then
+sudo echo "vboxguest
+vboxsf
+vboxvideo" > /mnt/etc/modules-load.d/virtualbox.config
+arch-chroot /mnt systemctl enable vboxservice
+arch-chroot /mnt VBoxClient --clipboard --draganddrop --seamless --display --checkhostversion
+arch-chroot /mnt sed -i 's/exec i3 #Автозапуск i3./\/usr\/bin\/VBoxClient-all &\nexec i3 #Автозапуск i3./' /home/"$username"/.xinitrc
+arch-chroot /mnt gpasswd -a "$username" vboxsf
+else
+sudo modprobe vboxdrv vboxnetflt vboxnetadp vboxnetadp
+sudo gpasswd -a '"$username"' vboxusers
+fi
 WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/0
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
@@ -1614,6 +1626,7 @@ arch-chroot /mnt chown -R "$username" /home/"$username"/
 mkdir /mnt/var/lib/samba/usershares
 arch-chroot /mnt groupadd -r sambashare
 arch-chroot /mnt chown root:sambashare /var/lib/samba/usershares
+arch-chroot /mnt chmod 1770 /var/lib/samba/usershares
 arch-chroot /mnt gpasswd sambashare -a "$username"
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
