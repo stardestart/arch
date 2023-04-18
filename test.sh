@@ -999,6 +999,9 @@ exec --no-startup-id blueman-applet;
 # Автозапуск smb4k.
 exec --no-startup-id smb4k;
 #
+# Автозапуск обновления.
+exec --no-startup-id xterm -e sh -c \047sudo pacman -Suy --noconfirm; sudo pacman -Sc --noconfirm; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm\047;
+#
 # Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u;
 #
@@ -1109,10 +1112,6 @@ cpu_temperature 0 { #Температура ЦП.
     max_threshold = "70" #Красный порог.
     format_above_threshold = "🌡🧠: %degrees°C" #Формат вывода красного порога.
     path = "/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp*_input" } #Путь данных.path: /sys/devices/platform/coretemp.0/temp1_input
-tztime 1 { #Вывод даты и времени.
-    format = "📆 %a %d-%m-%Y(%W)" } #Формат вывода.
-tztime 2 { #Вывод даты и времени.
-    format = "🕓 %H:%M:%S %Z" } #Формат вывода.
 tztime 0 { #Вывод разделителя.
     format = "|" } #Формат вывода.' > /mnt/home/"$username"/.i3status.conf
 #
@@ -1221,20 +1220,9 @@ Win+Shift+Q -- Закрыть окно в фокусе.
 Print Screen -- Снимок экрана.
 ПКМ на нижней панели -- Снимок экрана.
 #
-ЛКМ на кнопке 🛠 -- Обновить ArchLinux.
-ScrollUp на кнопке 🛠 -- Удалить кэш pacman.
-ScrollDown на кнопке 🛠 -- Удалить пакеты сироты.
+⭯ -- Перезагрузить ПК.
 #
-ScrollUp на кнопке 🛈 -- Открыть страницу Arch_wiki.
-ScrollDown на кнопке 🛈 -- Открыть XTerm.
-#
-ЛКМ на кнопке 🚀 -- Отключить визуальные эффекты.
-ScrollUp на кнопке 🚀 -- Включить визуальные эффекты.
-ScrollDown на кнопке 🚀 -- Открыть sweeper.
-#
-ЛКМ на кнопке ⏻ -- Выключить ПК.
-ScrollUp на кнопке ⏻ -- Перезагрузить ПК.
-ScrollDown на кнопке ⏻ -- Выйти из системы.
+⏻ -- Выключить ПК.
 #
 ScrollUp на заголовке -- Развернуть окно во весь экран.
 ScrollDown на заголовке -- Закрывает окно.
@@ -1302,34 +1290,19 @@ __userfile__=true
 iconTheme=ePapirus-Dark
 [customcommand]
 alignment=Right
-click=xterm -e /bin/bash -l -c \"sudo pacman -Suy --noconfirm\"
-command=echo \xd83d\xdee0
-maxWidth=500
-repeat=false
+click=xed /help.txt
+command=echo \x2753
 type=customcommand
-wheelDown=xterm -e /bin/bash -l -c \"sudo pacman -Rsn $(pacman -Qdtq) --noconfirm\"
-wheelUp=xterm -e /bin/bash -l -c \"sudo pacman -Sc --noconfirm\"
 [customcommand2]
 alignment=Right
-click=xed /help.txt
-command=echo \xd83d\xdec8
+click=reboot
+command=echo \x2b6f
 type=customcommand
-wheelDown=xterm
-wheelUp=firefox https://wiki.archlinux.org/title/Main_page
 [customcommand3]
-alignment=Right
-click=killall picom conky
-command=echo \xd83d\xde80
-type=customcommand
-wheelDown=sweeper
-wheelUp="/bin/bash -c \"picom -b; conky\""
-[customcommand4]
 alignment=Right
 click=poweroff
 command=echo \x23fb
 type=customcommand
-wheelDown=i3-msg exit
-wheelUp=reboot
 [kbindicator]
 alignment=Right
 keeper_type=application
@@ -1359,7 +1332,7 @@ lineCount=1
 lockPanel=false
 opacity=80
 panelSize='"$(($font*3))"'
-plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, customcommand, customcommand2, customcommand3, customcommand4
+plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, worldclock, customcommand, customcommand2, customcommand3
 position=Top
 reserve-space=true
 show-delay=0
@@ -1375,7 +1348,31 @@ type=spacer
 [volume]
 alignment=Right
 audioEngine=PulseAudio
-type=volume' > /mnt/home/"$username"/.config/lxqt/panel.conf
+type=volume
+[worldclock]
+alignment=Right
+autoRotate=true
+customFormat="\047<b>\047HH:mm:ss\047</b><br/><font size=\\"-2\\">\047ddd, d MMM yyyy\047<br/>\047TT\047</font>\047"
+dateFormatType=custom
+dateLongNames=true
+datePadDay=true
+datePosition=after
+dateShowDoW=true
+dateShowYear=true
+defaultTimeZone=
+formatType=custom-timeonly
+showDate=true
+showTimezone=false
+showTooltip=false
+showWeekNumber=true
+timeAMPM=false
+timePadHour=true
+timeShowSeconds=true
+timeZones\size=0
+timezoneFormatType=iana
+timezonePosition=below
+type=worldclock
+useAdvancedManualFormat=false' > /mnt/home/"$username"/.config/lxqt/panel.conf
 #
 #Создание конфига kdeglobals.
 echo -e "\033[36mСоздание конфига kdeglobals.\033[0m"
