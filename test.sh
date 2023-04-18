@@ -400,7 +400,7 @@ echo -e "\033[36mУстановка архиваторов и программ �
 arch-chroot /mnt pacman --color always -Sy dmg2img gparted ark ntfs-3g dosfstools unzip smartmontools --noconfirm
 #Установка файлового менеджера и дополнений.
 echo -e "\033[36mУстановка файлового менеджера и дополнений.\033[0m"
-arch-chroot /mnt pacman --color always -Sy dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k xdg-user-dirs --noconfirm
+arch-chroot /mnt pacman --color always -Sy dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k --noconfirm
 #Установка программ внешнего вида.
 echo -e "\033[36mУстановка программ внешнего вида.\033[0m"
 arch-chroot /mnt pacman --color always -Sy papirus-icon-theme picom redshift lxqt-panel grc flameshot notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch --noconfirm
@@ -439,8 +439,8 @@ for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
         if [ -z "$(lsblk -no LABEL /dev/"${massparts[$j]}")" ];
             then
                 if [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "vfat" ];
-                    then arch-chroot /mnt mount -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /home/"$username"/"${massparts[$j]}"
-                    else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/"${massparts[$j]}"
+                    then arch-chroot /mnt mount -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /home/"$username"/Documents/Devices/"${massparts[$j]}"
+                    else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/Documents/Devices/"${massparts[$j]}"
                 fi
 masslabel+='
 ${color #f92b2b}/home/'"$username"'/'"${massparts[$j]}"'${hr 3}'
@@ -459,8 +459,8 @@ ${color #b2b2b2}Температура:$color$alignr${execi 10 sudo smartctl -al
                 fi
             else
                 if [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "vfat" ];
-                    then arch-chroot /mnt mount -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
-                    else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
+                    then arch-chroot /mnt mount -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
+                    else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
                 fi
 masslabel+='
 ${color #f92b2b}/home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'${hr 3}'
@@ -1400,14 +1400,6 @@ BackgroundAlternate=50,50,50
 ForegroundNormal=238,238,238
 ForegroundInactive=178,178,178' > /mnt/home/"$username"/.config/kdeglobals
 #
-#Создание конфига xdg-user-dirs.
-echo -e "\033[36mСоздание конфига xdg-user-dirs.\033[0m"
-mkdir -p /mnt/home/"$username"/Documents/{Downloads,Desktop,Public}
-echo 'DOCUMENTS=Documents
-DOWNLOAD=Documents/Downloads
-DESKTOP=Documents/Desktop
-PUBLICSHARE=Documents/Public' > /mnt/etc/xdg/user-dirs.defaults
-#
 #Создание конфига samba.
 mkdir -p /mnt/home/"$username"/Documents/Public/{Out,In}
 echo -e "\033[36mСоздание конфига samba.\033[0m"
@@ -1551,6 +1543,15 @@ while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\
     sleep 5
 done
 neofetch > /dev/pts/1
+#
+#Создание конфига xdg-user-dirs.
+echo -e "\033[36mСоздание конфига xdg-user-dirs.\033[0m"
+sudo echo \047DOCUMENTS=Documents
+DOWNLOAD=Documents/Downloads
+DESKTOP=Documents/Desktop
+PUBLICSHARE=Documents/Public\047 > /etc/xdg/user-dirs.defaults
+sudo pacman -Sy xdg-user-dirs --noconfirm
+LC_ALL=C xdg-user-dirs-update --force
 #
 #Обнаружение кулеров.
 sudo sensors-detect --auto > /dev/pts/0
