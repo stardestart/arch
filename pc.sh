@@ -391,13 +391,13 @@ echo -e "\033[36mУстановка bluetooth программ.\033[0m"
 arch-chroot /mnt pacman --color always -Sy blueman bluez bluez-utils --noconfirm
 #Установка нужных консольных программ.
 echo -e "\033[36mУстановка нужных консольных программ.\033[0m"
-arch-chroot /mnt pacman --color always -Sy git numlockx mc htop nano dhcpcd imagemagick tesseract-data-eng tesseract-data-rus sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker --noconfirm
+arch-chroot /mnt pacman --color always -Sy git mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker numlockx tesseract-data-eng tesseract-data-rus --noconfirm
 #Установка программ безопасности.
 echo -e "\033[36mУстановка программ безопасности.\033[0m"
 arch-chroot /mnt pacman --color always -Sy polkit kwalletmanager kwallet-pam kde-cli-tools xlockmore xautolock --noconfirm
 #Установка архиваторов и программ работы с файловыми системами.
 echo -e "\033[36mУстановка архиваторов и программ работы с файловыми системами.\033[0m"
-arch-chroot /mnt pacman --color always -Sy dmg2img gparted ark ntfs-3g dosfstools unzip smartmontools --noconfirm
+arch-chroot /mnt pacman --color always -Sy gparted ark ntfs-3g dosfstools unzip smartmontools dmg2img --noconfirm
 #Установка файлового менеджера и дополнений.
 echo -e "\033[36mУстановка файлового менеджера и дополнений.\033[0m"
 arch-chroot /mnt pacman --color always -Sy dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k --noconfirm
@@ -409,13 +409,13 @@ echo -e "\033[36mУстановка программ звука.\033[0m"
 arch-chroot /mnt pacman --color always -Sy alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt --noconfirm
 #Установка мультимедийных программ.
 echo -e "\033[36mУстановка мультимедийных программ.\033[0m"
-arch-chroot /mnt pacman --color always -Sy hspell libvoikko aspell nuspell xed audacity kdenlive cheese sweeper pinta gimp vlc libreoffice-still-ru obs-studio kalgebra avidemux-qt copyq blender kontrast kamera kcolorchooser gwenview xreader gogglesmm meld virtualbox-host-dkms --noconfirm
+arch-chroot /mnt pacman --color always -Sy hspell libvoikko aspell nuspell xed audacity cheese sweeper pinta vlc libreoffice-still-ru kalgebra copyq gwenview xreader gogglesmm gimp avidemux-qt kdenlive virtualbox-host-dkms obs-studio blender kontrast kamera kcolorchooser meld --noconfirm
 #Установка программ принтера/сканера.
 echo -e "\033[36mУстановка программ принтера/сканера.\033[0m"
 arch-chroot /mnt pacman --color always -Sy sane skanlite cups cups-pdf system-config-printer --noconfirm
 #Установка игр.
 echo -e "\033[36mУстановка игр.\033[0m"
-arch-chroot /mnt pacman --color always -Sy steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel discord ktouch marble step lib32-giflib lib32-v4l-utils lib32-libxslt lib32-libva lib32-gst-plugins-base-libs --noconfirm
+arch-chroot /mnt pacman --color always -Sy steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel lib32-giflib lib32-v4l-utils lib32-libxslt lib32-libva lib32-gst-plugins-base-libs discord ktouch marble step --noconfirm
 #Установка свободных видео-драйверов.
 echo -e "\033[36mУстановка свободных видео-драйверов.\033[0m"
 arch-chroot /mnt pacman --color always -Sy mesa lib32-mesa libva-mesa-driver mesa-vdpau --noconfirm
@@ -984,9 +984,6 @@ exec --no-startup-id flameshot;
 exec --no-startup-id copyq;
 exec --no-startup-id autocutsel;
 #
-# Автозапуск numlockx.
-exec --no-startup-id numlockx;
-#
 # Автозапуск dolphin.
 exec --no-startup-id dolphin --daemon;
 #
@@ -1002,11 +999,17 @@ exec --no-startup-id blueman-applet;
 # Автозапуск smb4k.
 exec --no-startup-id smb4k;
 #
-# Автозапуск transmission.
-exec --no-startup-id transmission-qt -m;
+# Автозапуск обновления.
+#exec --no-startup-id xterm -e sh -c \047sudo pacman -Suy --noconfirm; sudo pacman -Sc --noconfirm; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm\047;
+#
+# Автозапуск numlockx.
+exec --no-startup-id numlockx;
 #
 # Автозапуск steam.
 exec --no-startup-id ENABLE_VKBASALT=1 gamemoderun steam -silent %U;
+#
+# Автозапуск transmission.
+exec --no-startup-id transmission-qt -m;
 #
 # Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u;
@@ -1121,10 +1124,6 @@ cpu_temperature 0 { #Температура ЦП.
     max_threshold = "70" #Красный порог.
     format_above_threshold = "🌡🧠: %degrees°C" #Формат вывода красного порога.
     path = "/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp*_input" } #Путь данных.path: /sys/devices/platform/coretemp.0/temp1_input
-tztime 1 { #Вывод даты и времени.
-    format = "📆 %a %d-%m-%Y(%W)" } #Формат вывода.
-tztime 2 { #Вывод даты и времени.
-    format = "🕓 %H:%M:%S %Z" } #Формат вывода.
 tztime 0 { #Вывод разделителя.
     format = "|" } #Формат вывода.' > /mnt/home/"$username"/.i3status.conf
 #
@@ -1233,20 +1232,9 @@ Win+Shift+Q -- Закрыть окно в фокусе.
 Print Screen -- Снимок экрана.
 ПКМ на нижней панели -- Снимок экрана.
 #
-ЛКМ на кнопке 🛠 -- Обновить ArchLinux.
-ScrollUp на кнопке 🛠 -- Удалить кэш pacman.
-ScrollDown на кнопке 🛠 -- Удалить пакеты сироты.
+⭯ -- Перезагрузить ПК.
 #
-ScrollUp на кнопке 🛈 -- Открыть страницу Arch_wiki.
-ScrollDown на кнопке 🛈 -- Открыть XTerm.
-#
-ЛКМ на кнопке 🚀 -- Отключить визуальные эффекты.
-ScrollUp на кнопке 🚀 -- Включить визуальные эффекты.
-ScrollDown на кнопке 🚀 -- Открыть sweeper.
-#
-ЛКМ на кнопке ⏻ -- Выключить ПК.
-ScrollUp на кнопке ⏻ -- Перезагрузить ПК.
-ScrollDown на кнопке ⏻ -- Выйти из системы.
+⏻ -- Выключить ПК.
 #
 ScrollUp на заголовке -- Развернуть окно во весь экран.
 ScrollDown на заголовке -- Закрывает окно.
@@ -1314,34 +1302,19 @@ __userfile__=true
 iconTheme=ePapirus-Dark
 [customcommand]
 alignment=Right
-click=xterm -e /bin/bash -l -c \"sudo pacman -Suy --noconfirm\"
-command=echo \xd83d\xdee0
-maxWidth=500
-repeat=false
+click=xed /help.txt
+command=echo \x2753
 type=customcommand
-wheelDown=xterm -e /bin/bash -l -c \"sudo pacman -Rsn $(pacman -Qdtq) --noconfirm\"
-wheelUp=xterm -e /bin/bash -l -c \"sudo pacman -Sc --noconfirm\"
 [customcommand2]
 alignment=Right
-click=xed /help.txt
-command=echo \xd83d\xdec8
+click=reboot
+command=echo \x2b6f
 type=customcommand
-wheelDown=xterm
-wheelUp=firefox https://wiki.archlinux.org/title/Main_page
 [customcommand3]
-alignment=Right
-click=killall picom conky
-command=echo \xd83d\xde80
-type=customcommand
-wheelDown=sweeper
-wheelUp="/bin/bash -c \"picom -b; conky\""
-[customcommand4]
 alignment=Right
 click=poweroff
 command=echo \x23fb
 type=customcommand
-wheelDown=i3-msg exit
-wheelUp=reboot
 [kbindicator]
 alignment=Right
 keeper_type=application
@@ -1371,7 +1344,7 @@ lineCount=1
 lockPanel=false
 opacity=80
 panelSize='"$(($font*3))"'
-plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, customcommand, customcommand2, customcommand3, customcommand4
+plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, worldclock, customcommand, customcommand2, customcommand3
 position=Top
 reserve-space=true
 show-delay=0
@@ -1387,7 +1360,31 @@ type=spacer
 [volume]
 alignment=Right
 audioEngine=PulseAudio
-type=volume' > /mnt/home/"$username"/.config/lxqt/panel.conf
+type=volume
+[worldclock]
+alignment=Right
+autoRotate=true
+customFormat="\047<b>\047HH:mm:ss\047</b><br/><font size=\\"-2\\">\047ddd, d MMM yyyy\047<br/>\047TT\047</font>\047"
+dateFormatType=custom
+dateLongNames=true
+datePadDay=true
+datePosition=after
+dateShowDoW=true
+dateShowYear=true
+defaultTimeZone=
+formatType=custom-timeonly
+showDate=true
+showTimezone=false
+showTooltip=false
+showWeekNumber=true
+timeAMPM=false
+timePadHour=true
+timeShowSeconds=true
+timeZones\size=0
+timezoneFormatType=iana
+timezonePosition=below
+type=worldclock
+useAdvancedManualFormat=false' > /mnt/home/"$username"/.config/lxqt/panel.conf
 #
 #Создание конфига kdeglobals.
 echo -e "\033[36mСоздание конфига kdeglobals.\033[0m"
@@ -1533,12 +1530,12 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR.
 echo -e "\033[36mУстановка программ из AUR.\033[0m"
-arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap libreoffice-extension-languagetool cups-xerox-b2xx minq-ananicy-git auto-cpufreq vkbasalt kde-cdemu-manager --noconfirm
+arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap libreoffice-extension-languagetool minq-ananicy-git auto-cpufreq kde-cdemu-manager vkbasalt cups-xerox-b2xx --noconfirm
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus
-arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager saned.socket cups.socket cups-browsed reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb
+arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb saned.socket cups.socket cups-browsed
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Настройка звука.
@@ -1626,6 +1623,7 @@ sudo echo \047Section "InputClass"
         Option "MaxTapTime" "125"
 EndSection\047 > /etc/X11/xorg.conf.d/70-synaptics.conf
 fi
+sed -i \047s/#exec --no-startup-id xterm/exec --no-startup-id xterm/\047 ~/.config/i3/config
 WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/0
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #

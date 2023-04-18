@@ -397,7 +397,7 @@ echo -e "\033[36mУстановка программ безопасности.\0
 arch-chroot /mnt pacman --color always -Sy polkit kwalletmanager kwallet-pam kde-cli-tools xlockmore xautolock --noconfirm
 #Установка архиваторов и программ работы с файловыми системами.
 echo -e "\033[36mУстановка архиваторов и программ работы с файловыми системами.\033[0m"
-arch-chroot /mnt pacman --color always -Sy dmg2img gparted ark ntfs-3g dosfstools unzip smartmontools --noconfirm
+arch-chroot /mnt pacman --color always -Sy gparted ark ntfs-3g dosfstools unzip smartmontools dmg2img --noconfirm
 #Установка файлового менеджера и дополнений.
 echo -e "\033[36mУстановка файлового менеджера и дополнений.\033[0m"
 arch-chroot /mnt pacman --color always -Sy dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k --noconfirm
@@ -409,7 +409,7 @@ echo -e "\033[36mУстановка программ звука.\033[0m"
 arch-chroot /mnt pacman --color always -Sy alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt --noconfirm
 #Установка мультимедийных программ.
 echo -e "\033[36mУстановка мультимедийных программ.\033[0m"
-arch-chroot /mnt pacman --color always -Sy hspell libvoikko aspell nuspell xed audacity cheese sweeper pinta vlc libreoffice-still-ru kalgebra copyq kontrast kamera kcolorchooser gwenview xreader gogglesmm meld --noconfirm
+arch-chroot /mnt pacman --color always -Sy hspell libvoikko aspell nuspell xed audacity cheese sweeper pinta vlc libreoffice-still-ru kalgebra copyq kamera gwenview xreader gogglesmm meld kcolorchooser kontrast --noconfirm
 #Установка программ принтера/сканера.
 echo -e "\033[36mУстановка программ принтера/сканера.\033[0m"
 arch-chroot /mnt pacman --color always -Sy sane skanlite cups cups-pdf system-config-printer --noconfirm
@@ -1000,7 +1000,7 @@ exec --no-startup-id blueman-applet;
 exec --no-startup-id smb4k;
 #
 # Автозапуск обновления.
-exec --no-startup-id xterm -e sh -c \047sudo pacman -Suy --noconfirm; sudo pacman -Sc --noconfirm; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm\047;
+#exec --no-startup-id xterm -e sh -c \047sudo pacman -Suy --noconfirm; sudo pacman -Sc --noconfirm; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm\047;
 #
 # Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u;
@@ -1518,12 +1518,12 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR.
 echo -e "\033[36mУстановка программ из AUR.\033[0m"
-arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap libreoffice-extension-languagetool cups-xerox-b2xx minq-ananicy-git auto-cpufreq kde-cdemu-manager --noconfirm
+arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap libreoffice-extension-languagetool minq-ananicy-git auto-cpufreq kde-cdemu-manager cups-xerox-b2xx --noconfirm
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus
-arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb
+arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb saned.socket cups.socket cups-browsed
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Настройка звука.
@@ -1604,6 +1604,7 @@ sudo echo \047Section "InputClass"
         Option "MaxTapTime" "125"
 EndSection\047 > /etc/X11/xorg.conf.d/70-synaptics.conf
 fi
+sed -i \047s/#exec --no-startup-id xterm/exec --no-startup-id xterm/\047 ~/.config/i3/config
 WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/0
 #rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
