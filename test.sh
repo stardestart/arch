@@ -1549,7 +1549,6 @@ echo -e "\033[36mСоздание конфига xdg-user-dirs.\033[0m"
 sudo pacman -Sy xdg-user-dirs --noconfirm
 sudo sh -c \047echo "DOCUMENTS=Documents
 DOWNLOAD=Documents/Downloads
-DESKTOP=Documents/Desktop
 PUBLICSHARE=Documents/Public" > /etc/xdg/user-dirs.defaults\047
 LC_ALL=C xdg-user-dirs-update --force
 #

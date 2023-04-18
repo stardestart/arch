@@ -439,8 +439,8 @@ for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
         if [ -z "$(lsblk -no LABEL /dev/"${massparts[$j]}")" ];
             then
                 if [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "vfat" ];
-                    then arch-chroot /mnt mount -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /home/"$username"/"${massparts[$j]}"
-                    else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/"${massparts[$j]}"
+                    then arch-chroot /mnt mount -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /home/"$username"/Documents/Devices/"${massparts[$j]}"
+                    else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/Documents/Devices/"${massparts[$j]}"
                 fi
 masslabel+='
 ${color #f92b2b}/home/'"$username"'/'"${massparts[$j]}"'${hr 3}'
@@ -459,8 +459,8 @@ ${color #b2b2b2}Температура:$color$alignr${execi 10 sudo smartctl -al
                 fi
             else
                 if [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "vfat" ];
-                    then arch-chroot /mnt mount -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
-                    else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
+                    then arch-chroot /mnt mount -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
+                    else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
                 fi
 masslabel+='
 ${color #f92b2b}/home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'${hr 3}'
@@ -1562,6 +1562,14 @@ while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\
     sleep 5
 done
 neofetch > /dev/pts/1
+#
+#Создание конфига xdg-user-dirs.
+echo -e "\033[36mСоздание конфига xdg-user-dirs.\033[0m"
+sudo pacman -Sy xdg-user-dirs --noconfirm
+sudo sh -c \047echo "DOCUMENTS=Documents
+DOWNLOAD=Documents/Downloads
+PUBLICSHARE=Documents/Public" > /etc/xdg/user-dirs.defaults\047
+LC_ALL=C xdg-user-dirs-update --force
 #
 #Обнаружение кулеров.
 sudo sensors-detect --auto > /dev/pts/0
