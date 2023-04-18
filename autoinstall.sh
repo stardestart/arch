@@ -1542,7 +1542,7 @@ echo -e '#!/bin/bash
 sleep 10
 echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/0
 while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1)" -lt 20 ]]; do
-    echo "\033[31mОжидание освобождения ЦП\033[0m" > /dev/pts/0
+    echo "\033[31mЦП занят!\033[0m" > /dev/pts/0
     sleep 5
 done
 neofetch > /dev/pts/1
@@ -1618,18 +1618,16 @@ arch-chroot /mnt chown root:sambashare /var/lib/samba/usershares
 arch-chroot /mnt chmod 1770 /var/lib/samba/usershares
 arch-chroot /mnt gpasswd sambashare -a "$username"
 #
-if [ -n $(lspci | grep -i vga | grep -iE 'vmware svga|virtualbox') ]; then
+if [ -n "$(lspci | grep -i vga | grep -iE 'vmware svga|virtualbox')" ]; then
 echo "vboxguest
 vboxsf
 vboxvideo" > /mnt/etc/modules-load.d/virtualboxguest.config
 arch-chroot /mnt systemctl enable vboxservice
-arch-chroot /mnt VBoxClient --clipboard --draganddrop --seamless --display --checkhostversion
-arch-chroot /mnt sed -i 's/exec i3 #Автозапуск i3./\/usr\/bin\/VBoxClient-all \&\nexec i3 #Автозапуск i3./' /home/"$username"/.xinitrc
+arch-chroot /mnt sed -i 's/exec i3 #Автозапуск i3./\/usr\/sbin\/VBoxClient-all \&\nexec i3 #Автозапуск i3./' /home/"$username"/.xinitrc
 arch-chroot /mnt gpasswd -a "$username" vboxsf
 else
 echo "vboxdrv
 vboxnetflt
-vboxnetadp
 vboxnetadp" > /mnt/etc/modules-load.d/virtualboxhosts.config
 arch-chroot /mnt gpasswd -a "$username" vboxusers
 fi

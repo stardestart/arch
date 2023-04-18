@@ -1539,7 +1539,7 @@ echo -e '#!/bin/bash
 sleep 10
 echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/0
 while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1)" -lt 20 ]]; do
-    echo "\033[31mОжидание освобождения ЦП\033[0m" > /dev/pts/0
+    echo "\033[31mЦП занят!\033[0m" > /dev/pts/0
     sleep 5
 done
 neofetch > /dev/pts/1
