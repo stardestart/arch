@@ -1615,18 +1615,16 @@ arch-chroot /mnt chown root:sambashare /var/lib/samba/usershares
 arch-chroot /mnt chmod 1770 /var/lib/samba/usershares
 arch-chroot /mnt gpasswd sambashare -a "$username"
 #
-if [ -n $(lspci | grep -i vga | grep -iE 'vmware svga|virtualbox') ]; then
+if [ -n "$(lspci | grep -i vga | grep -iE 'vmware svga|virtualbox')" ]; then
 echo "vboxguest
 vboxsf
 vboxvideo" > /mnt/etc/modules-load.d/virtualboxguest.config
 arch-chroot /mnt systemctl enable vboxservice
-#arch-chroot /mnt VBoxClient --clipboard --draganddrop --seamless --display --checkhostversion
-arch-chroot /mnt sed -i 's/exec i3 #Автозапуск i3./\/usr\/bin\/VBoxClient-all \&\nexec i3 #Автозапуск i3./' /home/"$username"/.xinitrc
+arch-chroot /mnt sed -i 's/exec i3 #Автозапуск i3./\/usr\/sbin\/VBoxClient-all \&\nexec i3 #Автозапуск i3./' /home/"$username"/.xinitrc
 arch-chroot /mnt gpasswd -a "$username" vboxsf
 else
 echo "vboxdrv
 vboxnetflt
-vboxnetadp
 vboxnetadp" > /mnt/etc/modules-load.d/virtualboxhosts.config
 arch-chroot /mnt gpasswd -a "$username" vboxusers
 fi
