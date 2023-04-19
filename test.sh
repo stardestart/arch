@@ -1629,6 +1629,7 @@ arch-chroot /mnt systemctl enable vboxservice
 arch-chroot /mnt sed -i 's/exec i3 #Автозапуск i3./\/usr\/sbin\/VBoxClient-all \&\nexec i3 #Автозапуск i3./' /home/"$username"/.xinitrc
 arch-chroot /mnt gpasswd -a "$username" vboxsf
 else
+arch-chroot /mnt pacman --color always -Sy virtualbox-host-dkms --noconfirm
 echo "vboxdrv
 vboxnetflt
 vboxnetadp" > /mnt/etc/modules-load.d/virtualboxhosts.config

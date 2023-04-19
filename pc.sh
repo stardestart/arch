@@ -409,7 +409,7 @@ echo -e "\033[36mУстановка программ звука.\033[0m"
 arch-chroot /mnt pacman --color always -Sy alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt --noconfirm
 #Установка мультимедийных программ.
 echo -e "\033[36mУстановка мультимедийных программ.\033[0m"
-arch-chroot /mnt pacman --color always -Sy hspell libvoikko aspell nuspell xed audacity cheese sweeper pinta vlc libreoffice-still-ru kalgebra copyq gwenview xreader gogglesmm gimp avidemux-qt kdenlive virtualbox-host-dkms obs-studio blender kontrast kamera kcolorchooser meld --noconfirm
+arch-chroot /mnt pacman --color always -Sy hspell libvoikko aspell nuspell xed audacity cheese sweeper pinta vlc libreoffice-still-ru kalgebra copyq gwenview xreader gogglesmm gimp avidemux-qt kdenlive obs-studio blender kontrast kamera kcolorchooser meld --noconfirm
 #Установка программ принтера/сканера.
 echo -e "\033[36mУстановка программ принтера/сканера.\033[0m"
 arch-chroot /mnt pacman --color always -Sy sane skanlite cups cups-pdf system-config-printer --noconfirm
@@ -1648,6 +1648,7 @@ arch-chroot /mnt systemctl enable vboxservice
 arch-chroot /mnt sed -i 's/exec i3 #Автозапуск i3./\/usr\/sbin\/VBoxClient-all \&\nexec i3 #Автозапуск i3./' /home/"$username"/.xinitrc
 arch-chroot /mnt gpasswd -a "$username" vboxsf
 else
+arch-chroot /mnt pacman --color always -Sy virtualbox-host-dkms --noconfirm
 echo "vboxdrv
 vboxnetflt
 vboxnetadp" > /mnt/etc/modules-load.d/virtualboxhosts.config
