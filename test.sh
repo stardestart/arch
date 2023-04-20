@@ -1508,6 +1508,19 @@ for (( j=0, i=1; i<="${#massd[*]}"; i++, j++ ))
         fi
     done
 #
+#
+arch-chroot /mnt x11vnc -storepasswd @Defender1410@ /etc/x11vnc.pass
+chmod ugo+r /mnt/etc/x11vnc.pass
+echo '[Unit]
+Description="x11vnc"
+Requires=display-manager.service
+After=display-manager.service
+[Service]
+ExecStart=
+ExecStart=x11vnc -many -rfbauth /etc/x11vnc.pass -env FD_XDM=1 -auth guess
+[Install]
+WantedBy=graphical.target' > /mnt/etc/systemd/system/x11vnc.service
+#
 #Установка помощника yay для работы с AUR.
 echo -e "\033[36mУстановка помощника yay для работы с AUR.\033[0m"
 arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
@@ -1523,7 +1536,7 @@ arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap libreoffice-extensio
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus
-arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb saned.socket cups.socket cups-browsed
+arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb saned.socket cups.socket cups-browsed x11vnc
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Настройка звука.
