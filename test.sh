@@ -1510,7 +1510,7 @@ for (( j=0, i=1; i<="${#massd[*]}"; i++, j++ ))
     done
 #
 #
-arch-chroot /mnt sudo -u "$username" x11vnc -storepasswd $passuser /etc/x11vnc.pass
+arch-chroot /mnt x11vnc -storepasswd $passuser /etc/x11vnc.pass
 chmod ugo+r /mnt/etc/x11vnc.pass
 echo '[Unit]
 Description="x11vnc"
