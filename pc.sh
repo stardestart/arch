@@ -272,7 +272,8 @@ fi
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
 pacman-key --init
 pacman-key --populate archlinux
-pacman --color always -Sy archlinux-keyring gnupg reflector --noconfirm
+pacman-key --refresh-keys
+pacman --color always -Syy archlinux-keyring gnupg reflector --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
@@ -317,12 +318,6 @@ EOF
 #
 #Убираем sudo пароль для пользователя.
 echo ""$username" ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
-#
-#Обновление ключей на установленной ОС.
-echo -e "\033[36mОбновление ключей на установленной ОС.\033[0m"
-arch-chroot /mnt pacman-key --init
-arch-chroot /mnt pacman-key --populate archlinux
-arch-chroot /mnt pacman --color always -Sy archlinux-keyring gnupg --noconfirm
 #
 #Установим загрузчик.
 echo -e "\033[36mУстановка загрузчика.\033[0m"
@@ -380,45 +375,9 @@ elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then
     arch-chroot /mnt pacman --color always -Sy vulkan-intel intel-media-driver libva-intel-driver --noconfirm
     arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(i915)/' /etc/mkinitcpio.conf
 fi
-#Установка оконного менеджера и графического сервера.
-echo -e "\033[36mУстановка оконного менеджера и графического сервера.\033[0m"
-arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux --noconfirm
-#Установка интернет программ.
-echo -e "\033[36mУстановка интернет программ.\033[0m"
-arch-chroot /mnt pacman --color always -Sy firefox network-manager-applet wireless_tools transmission-qt telegram-desktop --noconfirm
-#Установка bluetooth программ.
-echo -e "\033[36mУстановка bluetooth программ.\033[0m"
-arch-chroot /mnt pacman --color always -Sy blueman bluez bluez-utils bluez-qt --noconfirm
-#Установка нужных консольных программ.
-echo -e "\033[36mУстановка нужных консольных программ.\033[0m"
-arch-chroot /mnt pacman --color always -Sy git mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc numlockx tesseract-data-eng tesseract-data-rus --noconfirm
-#Установка программ безопасности.
-echo -e "\033[36mУстановка программ безопасности.\033[0m"
-arch-chroot /mnt pacman --color always -Sy polkit kwalletmanager kwallet-pam kde-cli-tools xlockmore xautolock --noconfirm
-#Установка архиваторов и программ работы с файловыми системами.
-echo -e "\033[36mУстановка архиваторов и программ работы с файловыми системами.\033[0m"
-arch-chroot /mnt pacman --color always -Sy gparted ark ntfs-3g dosfstools unzip smartmontools dmg2img --noconfirm
-#Установка файлового менеджера и дополнений.
-echo -e "\033[36mУстановка файлового менеджера и дополнений.\033[0m"
-arch-chroot /mnt pacman --color always -Sy dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k --noconfirm
-#Установка программ внешнего вида.
-echo -e "\033[36mУстановка программ внешнего вида.\033[0m"
-arch-chroot /mnt pacman --color always -Sy papirus-icon-theme picom redshift lxqt-panel grc flameshot notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch --noconfirm
-#Установка программ звука.
-echo -e "\033[36mУстановка программ звука.\033[0m"
-arch-chroot /mnt pacman --color always -Sy alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt --noconfirm
-#Установка мультимедийных программ.
-echo -e "\033[36mУстановка мультимедийных программ.\033[0m"
-arch-chroot /mnt pacman --color always -Sy hspell libvoikko aspell nuspell xed audacity cheese sweeper pinta vlc libreoffice-still-ru kalgebra copyq gwenview xreader gogglesmm gimp avidemux-qt kdenlive obs-studio blender kontrast kamera kcolorchooser meld --noconfirm
-#Установка программ принтера/сканера.
-echo -e "\033[36mУстановка программ принтера/сканера.\033[0m"
-arch-chroot /mnt pacman --color always -Sy sane skanlite cups cups-pdf system-config-printer --noconfirm
-#Установка игр.
-echo -e "\033[36mУстановка игр.\033[0m"
-arch-chroot /mnt pacman --color always -Sy steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel lib32-giflib lib32-v4l-utils lib32-libxslt lib32-libva lib32-gst-plugins-base-libs discord ktouch marble step --noconfirm
-#Установка свободных видео-драйверов.
-echo -e "\033[36mУстановка свободных видео-драйверов.\033[0m"
-arch-chroot /mnt pacman --color always -Sy mesa lib32-mesa libva-mesa-driver mesa-vdpau --noconfirm
+#Установка ОС.
+echo -e "\033[36mУстановка ОС.\033[0m"
+arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux firefox network-manager-applet wireless_tools vinagre blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam kde-cli-tools xlockmore xautolock gparted ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot notification-daemon qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt hspell libvoikko aspell nuspell xed audacity cheese sweeper pinta vlc libreoffice-still-ru kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau discord ktouch meld kcolorchooser kontrast dmg2img telegram-desktop lib32-giflib lib32-v4l-utils lib32-libxslt lib32-libva lib32-gst-plugins-base-libs marble step gimp avidemux-qt kdenlive obs-studio blender numlockx tesseract-data-eng tesseract-data-rus transmission-qt --noconfirm
 #Установка геолокации.
 echo -e "\033[36mУстановка геолокации.\033[0m"
 arch-chroot /mnt pacman -Ss geoclue2
@@ -1002,6 +961,9 @@ exec --no-startup-id smb4k;
 # Автозапуск обновления.
 #exec --no-startup-id xterm -e sh -c \047sudo pacman -Suy --noconfirm; sudo pacman -Sc --noconfirm; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm\047;
 #
+# Автозапуск telegram.
+exec --no-startup-id telegram-desktop -startintray -- %u;
+#
 # Автозапуск numlockx.
 exec --no-startup-id numlockx;
 #
@@ -1011,9 +973,7 @@ exec --no-startup-id ENABLE_VKBASALT=1 gamemoderun steam -silent %U;
 # Автозапуск transmission.
 exec --no-startup-id transmission-qt -m;
 #
-# Автозапуск telegram.
-exec --no-startup-id telegram-desktop -startintray -- %u;
-#
+
 # Автозапуск obs.
 exec --no-startup-id obs;
 #
@@ -1520,6 +1480,19 @@ for (( j=0, i=1; i<="${#massd[*]}"; i++, j++ ))
         fi
     done
 #
+#
+arch-chroot /mnt x11vnc -storepasswd $passuser /etc/x11vnc.pass
+chmod ugo+r /mnt/etc/x11vnc.pass
+echo '[Unit]
+Description="x11vnc"
+Requires=display-manager.service
+After=display-manager.service
+[Service]
+ExecStart=
+ExecStart=x11vnc -many -rfbauth /etc/x11vnc.pass -env FD_XDM=1 -auth guess
+[Install]
+WantedBy=graphical.target' > /mnt/etc/systemd/system/x11vnc.service
+#
 #Установка помощника yay для работы с AUR.
 echo -e "\033[36mУстановка помощника yay для работы с AUR.\033[0m"
 arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
@@ -1535,7 +1508,7 @@ arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap libreoffice-extensio
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus
-arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb saned.socket cups.socket cups-browsed
+arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb saned.socket cups.socket cups-browsed x11vnc
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Настройка звука.
