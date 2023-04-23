@@ -665,7 +665,7 @@ export QT_STYLE_OVERRIDE=adwaita-dark #Использовать Adwaitа в ка
 echo -e "\033[36mСоздание конфига сервера уведомлений.\033[0m"
 echo '[global]
     gap_size = '"$font"'
-    format = "<b>%s</b>\n%b"
+    enable_posix_regex = true
     enable_recursive_icon_lookup = true
     icon_theme = Papirus
 [urgency_low]
