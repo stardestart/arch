@@ -1663,6 +1663,18 @@ fi
 echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"
 arch-chroot /mnt ethtool -s "$netdev" wol g
 #
+#Настройка брандмауэра.
+echo -e "\033[36mНастройка брандмауэра.\033[0m"
+arch-chroot /mnt ufw default deny
+arch-chroot /mnt ufw allow from 192.168.0.0/24
+arch-chroot /mnt ufw allow Deluge
+arch-chroot /mnt ufw limit ssh
+arch-chroot /mnt ufw enable
+arch-chroot /mnt sed -i 's/# End required lines/# End required lines\n-A ufw-before-forward -i wg0 -j ACCEPT\n-A ufw-before-forward -o wg0 -j ACCEPT\n/' /etc/ufw/before.rules
+echo "net/ipv4/ip_forward=1
+net/ipv6/conf/default/forwarding=1
+net/ipv6/conf/all/forwarding=1" > /mnt/etc/ufw/sysctl.conf
+#
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
 while [[ 0 -ne $tic ]]; do
