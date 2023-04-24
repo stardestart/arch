@@ -1636,10 +1636,10 @@ sudo ufw allow Deluge
 sudo ufw limit ssh
 sudo ufw allow 5900
 sudo ufw enable
-sudo sed -i 's/# End required lines/# End required lines\n-A ufw-before-forward -i wg0 -j ACCEPT\n-A ufw-before-forward -o wg0 -j ACCEPT\n/' /etc/ufw/before.rules
-sudo echo "net/ipv4/ip_forward=1
+sudo sed -i \047s/# End required lines/# End required lines\n-A ufw-before-forward -i wg0 -j ACCEPT\n-A ufw-before-forward -o wg0 -j ACCEPT/\047 /etc/ufw/before.rules
+sudo sh -c \047echo "net/ipv4/ip_forward=1
 net/ipv6/conf/default/forwarding=1
-net/ipv6/conf/all/forwarding=1" > /etc/ufw/sysctl.conf
+net/ipv6/conf/all/forwarding=1" >> /etc/ufw/sysctl.conf\047
 #
 sed -i \047s/#exec --no-startup-id xterm/exec --no-startup-id xterm/\047 ~/.config/i3/config
 WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/0

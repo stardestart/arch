@@ -1630,6 +1630,20 @@ sudo echo \047Section "InputClass"
         Option "MaxTapTime" "125"
 EndSection\047 > /etc/X11/xorg.conf.d/70-synaptics.conf
 fi
+#
+#Настройка брандмауэра.
+echo -e "\033[36mНастройка брандмауэра.\033[0m"
+sudo ufw default deny
+sudo ufw allow from 192.168.0.0/24
+sudo ufw allow Deluge
+sudo ufw limit ssh
+sudo ufw allow 5900
+sudo ufw enable
+sudo sed -i \047s/# End required lines/# End required lines\n-A ufw-before-forward -i wg0 -j ACCEPT\n-A ufw-before-forward -o wg0 -j ACCEPT/\047 /etc/ufw/before.rules
+sudo sh -c \047echo "net/ipv4/ip_forward=1
+net/ipv6/conf/default/forwarding=1
+net/ipv6/conf/all/forwarding=1" >> /etc/ufw/sysctl.conf\047
+#
 sed -i \047s/#exec --no-startup-id xterm/exec --no-startup-id xterm/\047 ~/.config/i3/config
 WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/0
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
