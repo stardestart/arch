@@ -350,7 +350,43 @@ echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
 #
 #Настройка sysrq.
 echo -e "\033[36mНастройка sysrq.\033[0m"
-echo "kernel.sysrq=1" > /mnt/etc/sysctl.d/99-sysctl.conf
+echo "kernel.sysrq=1
+dev.tty.ldisc_autoload=0
+fs.protected_fifos=2
+fs.protected_hardlinks=1
+fs.protected_regular=2
+fs.protected_symlinks=1
+fs.suid_dumpable=0
+kernel.core_uses_pid=1
+kernel.ctrl-alt-del=0
+kernel.dmesg_restrict=1
+kernel.kptr_restrict=2
+kernel.perf_event_paranoid=3
+kernel.randomize_va_space=2
+kernel.unprivileged_bpf_disabled=1
+net.core.bpf_jit_harden=2
+net.ipv4.conf.all.accept_redirects=0
+net.ipv4.conf.all.log_martians=1
+net.ipv4.conf.all.rp_filter=1
+net.ipv4.conf.all.send_redirects=0
+net.ipv4.conf.all.accept_source_route=0
+net.ipv4.conf.all.bootp_relay=0
+net.ipv4.conf.all.forwarding=0
+net.ipv4.conf.all.log_martians=1
+net.ipv4.conf.all.mc_forwarding=0
+net.ipv4.conf.all.proxy_arp=0
+net.ipv4.conf.all.rp_filter=1
+net.ipv4.conf.all.send_redirects=0
+net.ipv4.conf.default.accept_redirects=0
+net.ipv4.conf.default.accept_source_route=0
+net.ipv4.conf.default.log_martians=1
+net.ipv4.icmp_echo_ignore_broadcasts=1
+net.ipv4.icmp_ignore_bogus_error_responses=1
+net.ipv4.tcp_syncookies=1
+net.ipv6.conf.all.accept_redirects=0
+net.ipv6.conf.all.accept_source_route=0
+net.ipv6.conf.default.accept_redirects=0
+net.ipv6.conf.default.accept_source_route=0" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установим видеодрайвер.
 echo -e "\033[36mУстановка видеодрайвера.\033[0m"
@@ -377,7 +413,7 @@ elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then
 fi
 #Установка компонентов и программ ОС.
 echo -e "\033[36mУстановка компонентов и программ ОС.\033[0m"
-arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux firefox network-manager-applet wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam kde-cli-tools xlockmore xautolock gparted ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt hspell libvoikko aspell nuspell xed audacity cheese aspell-en aspell-ru pinta vlc libreoffice-still-ru kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau clamav ufw discord meld kcolorchooser kontrast dmg2img telegram-desktop lib32-giflib lib32-v4l-utils lib32-libxslt lib32-libva lib32-gst-plugins-base-libs marble gimp avidemux-qt kdenlive obs-studio blender numlockx tesseract-data-eng tesseract-data-rus transmission-qt --noconfirm
+arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux firefox network-manager-applet wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam kde-cli-tools xlockmore xautolock gparted ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt hspell libvoikko aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau clamav ufw discord meld kcolorchooser kontrast dmg2img telegram-desktop lib32-giflib lib32-v4l-utils lib32-libxslt lib32-libva lib32-gst-plugins-base-libs marble gimp avidemux-qt kdenlive obs-studio blender numlockx tesseract-data-eng tesseract-data-rus transmission-qt --noconfirm
 #Установка геолокации.
 echo -e "\033[36mУстановка геолокации.\033[0m"
 arch-chroot /mnt pacman -Ss geoclue2
@@ -536,7 +572,7 @@ ${font Fantasque Sans Mono:bold:italic:size='"$(($font*3))"'}$alignc${color #f92
 #Дата.
 ${font Fantasque Sans Mono:bold:italic:size='"$(($font*2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
 #Погода.
-${execi 3600 curl wttr.in/?format=\047%l,+%t+(%f)\n%h+(%p),+%w,+%P\047}
+${execi 3600 curl wttr.in/?format=\047%l,+%t+(%f)\\n%h+(%p),+%w,+%P\047}
 #Блок "Система".
 #Разделитель.
 ${color #f92b2b}Система${hr 3}$color
@@ -1642,6 +1678,10 @@ vboxnetflt
 vboxnetadp" > /mnt/etc/modules-load.d/virtualboxhosts.config
 arch-chroot /mnt gpasswd -a "$username" vboxusers
 fi
+#
+#Удаленное включение компьютера с помощью Wake-on-LAN (WOL).
+echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"
+arch-chroot /mnt ethtool -s "$netdev" wol g
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
