@@ -1634,6 +1634,7 @@ sudo ufw default deny
 sudo ufw allow from 192.168.0.0/24
 sudo ufw allow Deluge
 sudo ufw limit ssh
+sudo ufw allow 5900
 sudo ufw enable
 sudo sed -i 's/# End required lines/# End required lines\n-A ufw-before-forward -i wg0 -j ACCEPT\n-A ufw-before-forward -o wg0 -j ACCEPT\n/' /etc/ufw/before.rules
 sudo echo "net/ipv4/ip_forward=1
