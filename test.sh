@@ -1627,6 +1627,19 @@ sudo echo \047Section "InputClass"
         Option "MaxTapTime" "125"
 EndSection\047 > /etc/X11/xorg.conf.d/70-synaptics.conf
 fi
+#
+#Настройка брандмауэра.
+echo -e "\033[36mНастройка брандмауэра.\033[0m"
+sudo ufw default deny
+sudo ufw allow from 192.168.0.0/24
+sudo ufw allow Deluge
+sudo ufw limit ssh
+sudo ufw enable
+sudo sed -i 's/# End required lines/# End required lines\n-A ufw-before-forward -i wg0 -j ACCEPT\n-A ufw-before-forward -o wg0 -j ACCEPT\n/' /etc/ufw/before.rules
+sudo echo "net/ipv4/ip_forward=1
+net/ipv6/conf/default/forwarding=1
+net/ipv6/conf/all/forwarding=1" > /etc/ufw/sysctl.conf
+#
 sed -i \047s/#exec --no-startup-id xterm/exec --no-startup-id xterm/\047 ~/.config/i3/config
 WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/0
 #rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
@@ -1662,18 +1675,6 @@ fi
 #Удаленное включение компьютера с помощью Wake-on-LAN (WOL).
 echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"
 arch-chroot /mnt ethtool -s "$netdev" wol g
-#
-#Настройка брандмауэра.
-echo -e "\033[36mНастройка брандмауэра.\033[0m"
-arch-chroot /mnt ufw default deny
-arch-chroot /mnt ufw allow from 192.168.0.0/24
-arch-chroot /mnt ufw allow Deluge
-arch-chroot /mnt ufw limit ssh
-arch-chroot /mnt ufw enable
-arch-chroot /mnt sed -i 's/# End required lines/# End required lines\n-A ufw-before-forward -i wg0 -j ACCEPT\n-A ufw-before-forward -o wg0 -j ACCEPT\n/' /etc/ufw/before.rules
-echo "net/ipv4/ip_forward=1
-net/ipv6/conf/default/forwarding=1
-net/ipv6/conf/all/forwarding=1" > /mnt/etc/ufw/sysctl.conf
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
