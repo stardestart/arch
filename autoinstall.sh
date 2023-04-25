@@ -1529,6 +1529,11 @@ Description="x11vnc"
 Requires=display-manager.service
 After=display-manager.service
 [Service]
+ProtectSystem=full
+ProtectHome=true
+PrivateDevices=true
+NoNewPrivileges=true
+PrivateTmp=true
 ExecStart=
 ExecStart=x11vnc -many -rfbauth /etc/x11vnc.pass -env FD_XDM=1 -auth guess
 [Install]
@@ -1549,7 +1554,7 @@ arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap libreoffice-extensio
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus
-arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb saned.socket cups.socket cups-browsed x11vnc clamav-freshclam ufw
+arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb saned.socket cups.socket cups-browsed x11vnc clamav-freshclam clamav-daemon ufw auditd
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Настройка звука.
