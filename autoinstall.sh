@@ -273,7 +273,7 @@ echo -e "\033[36mУстановка и настройка программы д�
 pacman-key --init
 pacman-key --populate archlinux
 pacman-key --refresh-keys
-pacman --color always -Syy archlinux-keyring gnupg reflector --noconfirm
+pacman --color always -Syy archlinux-keyring gnupg reflector usbguard --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
@@ -309,6 +309,10 @@ EOF
 #Создание пользователя.
 echo -e "\033[36mСоздание пользователя.\033[0m"
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "$username"
+#
+arch-chroot /mnt sed -i 's/nullok/nullok rounds=80000/' /etc/pam.d/passwd
+#
+echo "SHA_CRYPT_MIN_ROUNDS 80000" >> /mnt/etc/login.defs
 #
 #Пароль пользователя.
 arch-chroot /mnt passwd "$username"<<EOF
@@ -413,7 +417,7 @@ elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then
 fi
 #Установка компонентов и программ ОС.
 echo -e "\033[36mУстановка компонентов и программ ОС.\033[0m"
-arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux firefox network-manager-applet wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam kde-cli-tools xlockmore xautolock gparted ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt hspell libvoikko aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau clamav ufw usbguard lib32-giflib lib32-v4l-utils lib32-libxslt lib32-libva lib32-gst-plugins-base-libs gimp avidemux-qt kdenlive numlockx --noconfirm
+arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux firefox network-manager-applet wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt hspell libvoikko aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau clamav ufw usbguard lib32-giflib lib32-v4l-utils lib32-libxslt lib32-libva lib32-gst-plugins-base-libs gimp avidemux-qt kdenlive numlockx --noconfirm
 #Установка геолокации.
 echo -e "\033[36mУстановка геолокации.\033[0m"
 arch-chroot /mnt pacman -Ss geoclue2
@@ -1550,7 +1554,7 @@ arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap libreoffice-extensio
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus
-arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb saned.socket cups.socket cups-browsed x11vnc clamav-freshclam clamav-daemon ufw auditd
+arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb saned.socket cups.socket cups-browsed x11vnc clamav-freshclam clamav-daemon ufw auditd usbguard
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Настройка звука.
@@ -1676,6 +1680,12 @@ vboxnetflt
 vboxnetadp" > /mnt/etc/modules-load.d/virtualboxhosts.config
 arch-chroot /mnt gpasswd -a "$username" vboxusers
 fi
+#
+usbguard generate-policy > /mnt/etc/usbguard/rules.conf
+#
+echo "* hard core 0" >> /mnt/etc/security/limits.conf
+#
+arch-chroot /mnt sed -i 's/umask 022/umask 027/' /etc/profile
 #
 #Удаленное включение компьютера с помощью Wake-on-LAN (WOL).
 echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"

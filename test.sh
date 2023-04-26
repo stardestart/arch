@@ -273,7 +273,7 @@ echo -e "\033[36mУстановка и настройка программы д�
 pacman-key --init
 pacman-key --populate archlinux
 pacman-key --refresh-keys
-pacman --color always -Syy archlinux-keyring gnupg reflector --noconfirm
+pacman --color always -Syy archlinux-keyring gnupg reflector usbguard --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
@@ -312,7 +312,7 @@ arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "$username"
 #
 arch-chroot /mnt sed -i 's/nullok/nullok rounds=80000/' /etc/pam.d/passwd
 #
-arch-chroot /mnt sed -i 's/#SHA_CRYPT_MIN_ROUNDS/SHA_CRYPT_MIN_ROUNDS 80000/' /etc/login.defs
+echo "SHA_CRYPT_MIN_ROUNDS 80000" >> /mnt/etc/login.defs
 #
 #Пароль пользователя.
 arch-chroot /mnt passwd "$username"<<EOF
@@ -1551,7 +1551,7 @@ arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap libreoffice-extensio
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus
-arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb saned.socket cups.socket cups-browsed x11vnc clamav-freshclam clamav-daemon ufw auditd
+arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb saned.socket cups.socket cups-browsed x11vnc clamav-freshclam clamav-daemon ufw auditd usbguard
 arch-chroot /mnt systemctl --user --global enable redshift-gtk
 #
 #Настройка звука.
@@ -1678,7 +1678,7 @@ vboxnetadp" > /mnt/etc/modules-load.d/virtualboxhosts.config
 arch-chroot /mnt gpasswd -a "$username" vboxusers
 fi
 #
-arch-chroot /mnt ausbguard generate-policy > /etc/usbguard/rules.conf
+usbguard generate-policy > /mnt/etc/usbguard/rules.conf
 #
 echo "* hard core 0" >> /mnt/etc/security/limits.conf
 #
