@@ -1230,6 +1230,8 @@ Win+Shift+Q -- Закрыть окно в фокусе.
 Print Screen -- Снимок экрана.
 ПКМ на нижней панели -- Снимок экрана.
 #
+🚀 --
+#
 ⭯ -- Перезагрузить ПК.
 #
 ⏻ -- Выключить ПК.
@@ -1300,15 +1302,22 @@ __userfile__=true
 iconTheme=ePapirus-Dark
 [customcommand]
 alignment=Right
+click="sh -c \"x=pidof picom; if [ -n x ]; then killall picom; else picom -b; fi\""
+command=echo \xd83d\xde80
+icon=
+runWithBash=true
+type=customcommand
+[customcommand2]
+alignment=Right
 click=xed /help.txt
 command=echo \x2753
 type=customcommand
-[customcommand2]
+[customcommand3]
 alignment=Right
 click=reboot
 command=echo \x2b6f
 type=customcommand
-[customcommand3]
+[customcommand4]
 alignment=Right
 click=poweroff
 command=echo \x23fb
@@ -1342,7 +1351,7 @@ lineCount=1
 lockPanel=false
 opacity=80
 panelSize='"$(($font*3))"'
-plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, worldclock, customcommand, customcommand2, customcommand3
+plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, worldclock, customcommand, customcommand2, customcommand3, customcommand4
 position=Top
 reserve-space=true
 show-delay=0
