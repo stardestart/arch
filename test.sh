@@ -1230,7 +1230,7 @@ Win+Shift+Q -- Закрыть окно в фокусе.
 Print Screen -- Снимок экрана.
 ПКМ на нижней панели -- Снимок экрана.
 #
-🚀 --
+🚀 -- Включить/Выключить визуальные эффекты.
 #
 ⭯ -- Перезагрузить ПК.
 #
@@ -1304,7 +1304,6 @@ iconTheme=ePapirus-Dark
 alignment=Right
 click="sh -c \"x=pidof picom; if [ -n x ]; then killall picom; else picom -b; fi\""
 command=echo \xd83d\xde80
-icon=
 runWithBash=true
 type=customcommand
 [customcommand2]
