@@ -232,10 +232,10 @@ n
 n
 4
 
-+"$rootsize"b
++"$rootsize"G
 n
 5
-+$(( $rootsize/2 ))b
++$(( $rootsize/2 ))G
 n
 6
 
