@@ -145,11 +145,15 @@ if [ -z "$(echo "$sysdisk" | grep -i "nvme")" ];
         p2="2"
         p3="3"
         p4="4"
+        p5="5"
+        p6="6"
     else
         p1="p1"
         p2="p2"
         p3="p3"
         p4="p4"
+        p5="p5"
+        p6="p6"
 fi
 #
 #Сбор данных пользователя.
@@ -198,6 +202,8 @@ elif [ "$ram" -lt 4 ]; then swap="1G"
 fi
 echo -e "\033[36mРазмер SWAP раздела: $swap\033[0m"
 #
+rootsize=$(( "$(fdisk -l /dev/"$sysdisk" | head -n1 | awk '{print $5}')"/3 ))
+#
 #Разметка системного диска.
 echo -e "\033[36mРазметка системного диска.\033[0m"
 if [ -z "$(efibootmgr | grep Boot)" ];
@@ -223,6 +229,13 @@ n
 n
 4
 
++$rootsize
+n
+5
++$(( $rootsize/2 ))
+n
+6
+
 
 w
 EOF
@@ -233,8 +246,16 @@ mkswap /dev/"$sysdisk""$p3" -L swap
 mkfs.ext4 /dev/"$sysdisk""$p4" -L root<<EOF
 y
 EOF
+mkfs.ext4 /dev/"$sysdisk""$p5" -L var<<EOF
+y
+EOF
+mkfs.ext4 /dev/"$sysdisk""$p6" -L home<<EOF
+y
+EOF
 mount /dev/"$sysdisk""$p4" /mnt
 mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
+mount --mkdir /dev/"$sysdisk""$p5" /mnt/var
+mount --mkdir /dev/"$sysdisk""$p6" /mnt/home
 swapon /dev/"$sysdisk""$p3"
     else
         echo -e "\033[36mUEFI boot.\033[0m"
@@ -253,6 +274,13 @@ n
 n
 3
 
++$rootsize
+n
+4
++$(( $rootsize/2 ))
+n
+5
+
 
 w
 EOF
@@ -263,8 +291,16 @@ mkswap /dev/"$sysdisk""$p2" -L swap
 mkfs.ext4 /dev/"$sysdisk""$p3" -L root<<EOF
 y
 EOF
+mkfs.ext4 /dev/"$sysdisk""$p4" -L var<<EOF
+y
+EOF
+mkfs.ext4 /dev/"$sysdisk""$p5" -L home<<EOF
+y
+EOF
 mount /dev/"$sysdisk""$p3" /mnt
 mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
+mount --mkdir /dev/"$sysdisk""$p4" /mnt/var
+mount --mkdir /dev/"$sysdisk""$p5" /mnt/home
 swapon /dev/"$sysdisk""$p2"
 fi
 #
