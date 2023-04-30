@@ -167,7 +167,7 @@ select menuscreen in "~480p." "~720p-1080p." "~4K."
 do
     case "$menuscreen" in
         "~480p.")
-            font=8
+            font=10
             xterm="700 350"
             fox=0.0
             break
@@ -1100,7 +1100,7 @@ bar {
         separator_symbol "☭"
         #
         # Назначить шрифт.
-        font pango:Fantasque Sans Mono Bold Italic '"$(($font/2+$font))"'
+        font pango:Fantasque Sans Mono Bold Italic '"$font"'
         #
         # Назначить цвета.
         colors {
