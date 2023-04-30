@@ -202,11 +202,21 @@ elif [ "$ram" -lt 4 ]; then swap="1G"
 fi
 echo -e "\033[36mРазмер SWAP раздела: $swap\033[0m"
 #
+rootsize="$(fdisk -l /dev/"$sysdisk" | head -n1 | awk '{print $3}')"
+echo $rootsize
 rootsize=$(bc << EOF
-"$(fdisk -l /dev/"$sysdisk" | head -n1 | awk '{print $3}')"/3
+$rootsize/3
 EOF
 )
 echo $rootsize
+varsize=$(bc << EOF
+$rootsize/2
+EOF
+)
+echo $rootsize $varsize
+$rootsize="$rootsize"G
+$varsize="$varsize"G
+echo $rootsize $varsize
 #
 #Разметка системного диска.
 echo -e "\033[36mРазметка системного диска.\033[0m"
@@ -233,10 +243,10 @@ n
 n
 4
 
-+"$rootsize"G
++$rootsize
 n
 5
-+$(( $rootsize/2 ))G
++$varsize
 n
 6
 
