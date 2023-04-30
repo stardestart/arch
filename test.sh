@@ -246,6 +246,7 @@ n
 +$rootsize
 n
 5
+
 +$varsize
 n
 6
@@ -288,10 +289,11 @@ n
 n
 3
 
-+"$rootsize"b
++$rootsize
 n
 4
-+$(( $rootsize/2 ))b
+
++$varsize
 n
 5
 
