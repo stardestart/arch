@@ -214,8 +214,8 @@ $rootsize/2
 EOF
 )
 echo $rootsize $varsize
-$rootsize="$rootsize"G
-$varsize="$varsize"G
+rootsize="$rootsize"G
+varsize="$varsize"G
 echo $rootsize $varsize
 #
 #Разметка системного диска.
