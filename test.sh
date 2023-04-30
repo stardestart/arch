@@ -206,6 +206,7 @@ rootsize=$(bc << EOF
 "$(fdisk -l /dev/"$sysdisk" | head -n1 | awk '{print $3}')"/3
 EOF
 )
+echo $rootsize
 #
 #Разметка системного диска.
 echo -e "\033[36mРазметка системного диска.\033[0m"
