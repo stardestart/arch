@@ -229,10 +229,10 @@ n
 n
 4
 
-+$rootsize
++"$rootsize"b
 n
 5
-+$(( $rootsize/2 ))
++$(( $rootsize/2 ))b
 n
 6
 
@@ -274,10 +274,10 @@ n
 n
 3
 
-+$rootsize
++"$rootsize"b
 n
 4
-+$(( $rootsize/2 ))
++$(( $rootsize/2 ))b
 n
 5
 
