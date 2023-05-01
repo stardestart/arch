@@ -37,6 +37,8 @@ p1=""
 p2=""
 p3=""
 p4=""
+p5=""
+p6=""
 #Переменная сохранит имя ПК для дальнейшей установки/настройки/расчета.
 hostname=""
 #Переменная сохранит имя пользователя для дальнейшей установки/настройки/расчета.
@@ -66,6 +68,15 @@ massd=()
 #
 #Переменная сохранит размер шрифта firefox.
 fox=""
+#
+#Переменная сохранит шифр авторизации grub.
+grubsha=""
+#
+#Переменная сохранит размер root-раздела
+rootsize=""
+#
+#Переменная сохранит размер var-раздела
+varsize=""
 #
 #Определяем процессор.
 echo -e "\033[36mОпределяем процессор.\033[0m"
@@ -202,21 +213,21 @@ elif [ "$ram" -lt 4 ]; then swap="1G"
 fi
 echo -e "\033[36mРазмер SWAP раздела: $swap\033[0m"
 #
+#Вычисление var и root разделов.
+echo -e "\033[36mВычисление var и root разделов.\033[0m"
 rootsize="$(fdisk -l /dev/"$sysdisk" | head -n1 | awk '{print $3}')"
-echo $rootsize
 rootsize=$(bc << EOF
 $rootsize/3
 EOF
 )
-echo $rootsize
 varsize=$(bc << EOF
 $rootsize/2
 EOF
 )
-echo $rootsize $varsize
-rootsize="$rootsize"G
 varsize="$varsize"G
-echo $rootsize $varsize
+echo -e "\033[36mРазмер var-раздела: $varsize\033[0m"
+rootsize="$rootsize"G
+echo -e "\033[36mРазмер root-раздела: $rootsize\033[0m"
 #
 #Разметка системного диска.
 echo -e "\033[36mРазметка системного диска.\033[0m"
@@ -468,7 +479,7 @@ elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then
 fi
 #Установка компонентов и программ ОС.
 echo -e "\033[36mУстановка компонентов и программ ОС.\033[0m"
-arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux firefox network-manager-applet wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt hspell libvoikko aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau clamav ufw usbguard arch-audit discord meld kcolorchooser kontrast dmg2img telegram-desktop gcompris-qt --noconfirm
+arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux firefox network-manager-applet wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt hspell libvoikko aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau clamav ufw usbguard arch-audit kde-cli-tools discord meld kcolorchooser kontrast dmg2img telegram-desktop gcompris-qt --noconfirm
 #Установка геолокации.
 echo -e "\033[36mУстановка геолокации.\033[0m"
 arch-chroot /mnt pacman -Ss geoclue2
