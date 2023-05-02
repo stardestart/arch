@@ -1769,6 +1769,12 @@ arch-chroot /mnt sed -i 's/umask 022/umask 027/' /etc/profile
 echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"
 arch-chroot /mnt ethtool -s "$netdev" wol g
 #
+#Добавление правил auditd.
+arch-chroot /mnt auditctl -w /etc/group -p wa 
+arch-chroot /mnt auditctl -w /etc/passwd -p wa 
+arch-chroot /mnt auditctl -w /etc/shadow -p wa 
+arch-chroot /mnt auditctl -w /etc/sudoers -p wa
+#
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
 while [[ 0 -ne $tic ]]; do
