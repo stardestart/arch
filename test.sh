@@ -404,7 +404,7 @@ if [ -z "$(efibootmgr | grep Boot)" ];
         arch-chroot /mnt sed -i 's/CLASS="--class gnu-linux --class gnu --class os"/CLASS="--class gnu-linux --class gnu --class os --unrestricted"/' /etc/grub.d/10_linux
         echo 'cat << EOF
         set superusers='"$username"'
-        password_pbkdf2 '"$username"' '"$grabsha"'
+        password_pbkdf2 '"$username"' '"$grubsha"'
         EOF' >> /mnt/etc/grub.d/00_header
         arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
     else
