@@ -395,10 +395,10 @@ if [ -z "$(efibootmgr | grep Boot)" ];
         arch-chroot /mnt sed -i 's/#GRUB_DISABLE_RECOVERY=true/GRUB_DISABLE_RECOVERY=true/' /etc/default/grub
         arch-chroot /mnt sed -i 's/GRUB_DISABLE_LINUX_UUID=true/#GRUB_DISABLE_LINUX_UUID=true/' /etc/default/grub
         arch-chroot /mnt sed -i 's/GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX="resume=\/dev\/'"$sysdisk"''"$p3"' /' /etc/default/grub
-        grubsha="$(grub-mkpasswd-pbkdf2 << EOF
+        grubsha="$(sh -c 'grub-mkpasswd-pbkdf2 << EOF
         $passuser
         $passuser
-        EOF )"
+        EOF')"
         grubsha="$(echo $x | awk '{print $NF}')"
         arch-chroot /mnt sed -i 's/CLASS="--class gnu-linux --class gnu --class os"/CLASS="--class gnu-linux --class gnu --class os --unrestricted"/' /etc/grub.d/10_linux
         echo 'cat << EOF
