@@ -1770,10 +1770,10 @@ echo -e "\033[36mУдаленное включение компьютера с �
 arch-chroot /mnt ethtool -s "$netdev" wol g
 #
 #Добавление правил auditd.
-arch-chroot /mnt auditctl -w /etc/group -p wa 
-arch-chroot /mnt auditctl -w /etc/passwd -p wa 
-arch-chroot /mnt auditctl -w /etc/shadow -p wa 
-arch-chroot /mnt auditctl -w /etc/sudoers -p wa
+echo '-w /etc/group -p wa 
+-w /etc/passwd -p wa 
+-w /etc/shadow -p wa 
+-w /etc/sudoers -p wa' > /mnt/etc/audit/rules.d/rules.rules
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
