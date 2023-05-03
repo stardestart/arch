@@ -1772,6 +1772,8 @@ echo '-w /etc/group -p wa
 -w /etc/shadow -p wa 
 -w /etc/sudoers -p wa' > /mnt/etc/audit/rules.d/rules.rules
 #
+chmod 600 /mnt/etc/ssh/sshd_config
+#
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
 while [[ 0 -ne $tic ]]; do
