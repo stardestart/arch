@@ -398,8 +398,7 @@ if [ -z "$(efibootmgr | grep Boot)" ];
         grubsha="$(grub-mkpasswd-pbkdf2 << EOF
         $passuser
         $passuser
-        EOF
-        )"
+        EOF )"
         grubsha="$(echo $x | awk '{print $NF}')"
         arch-chroot /mnt sed -i 's/CLASS="--class gnu-linux --class gnu --class os"/CLASS="--class gnu-linux --class gnu --class os --unrestricted"/' /etc/grub.d/10_linux
         echo 'cat << EOF
