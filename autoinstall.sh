@@ -1016,8 +1016,11 @@ exec --no-startup-id smb4k;
 # Автозапуск usbguard.
 exec --no-startup-id sudo -E usbguard-applet-qt;
 #
+# Автозапуск neofetch.
+exec --no-startup-id sh -c \047while [[ -z "$(ls /dev/pts/0)" ]]; do sleep 5; done; neofetch > /dev/pts/0;\047
+#
 # Автозапуск обновления.
-#exec --no-startup-id xterm -e sh -c \047sudo pacman -Suy --noconfirm; sudo pacman -Sc --noconfirm; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm\047;
+exec --no-startup-id sh -c \047while [[ -z "$(ls /dev/pts/1)" ]]; do sleep 5; done; sudo pacman -Suy --noconfirm > /dev/pts/1; sudo pacman -Sc --noconfirm > /dev/pts/1; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/1;\047
 #
 # Автозапуск numlockx.
 exec --no-startup-id numlockx;
