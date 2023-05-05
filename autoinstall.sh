@@ -1573,7 +1573,6 @@ while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\
     echo "\033[31mЦП занят!\033[0m" > /dev/pts/0
     sleep 5
 done
-neofetch > /dev/pts/1
 #
 #Создание конфига xdg-user-dirs.
 echo -e "\033[36mСоздание конфига xdg-user-dirs.\033[0m"
