@@ -703,11 +703,23 @@ ${top name 4} $alignr ${top pid 4}|${top cpu 4}|${top mem 4}
 #Информация о процессе 5.
 ${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}
 #Блок "Системный диск".
-#Разделитель.
+#Разделитель root.
+${color #f92b2b}/root${hr 3}$color'"$sysdisktemp"'
+#Общее/Занято/Свободно root.
+${color #b2b2b2}Объём:$alignr${fs_size /root} / ${color #f92b2b}${fs_used /root} / $color${fs_free /root}
+#Полоса загрузки root.
+$color(${fs_type /root})${fs_bar 4 /root}
+#Разделитель var.
+${color #f92b2b}/var${hr 3}$color'"$sysdisktemp"'
+#Общее/Занято/Свободно var.
+${color #b2b2b2}Объём:$alignr${fs_size /var} / ${color #f92b2b}${fs_used /var} / $color${fs_free /var}
+#Полоса загрузки var.
+$color(${fs_type /var})${fs_bar 4 /var}
+#Разделитель home.
 ${color #f92b2b}/home${hr 3}$color'"$sysdisktemp"'
-#Общее/Занято/Свободно.
+#Общее/Занято/Свободно home.
 ${color #b2b2b2}Объём:$alignr${fs_size /home} / ${color #f92b2b}${fs_used /home} / $color${fs_free /home}
-#Полоса загрузки.
+#Полоса загрузки home.
 $color(${fs_type /home})${fs_bar 4 /home}'"${masslabel[@]}"'
 ]]' > /mnt/home/"$username"/.config/conky/conky.conf
 #
