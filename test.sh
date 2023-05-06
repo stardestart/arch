@@ -837,9 +837,10 @@ opacity-rule = [ "80:class_g = \047i3bar\047",
                  "100:fullscreen" ];
 #
 #Закругленные углы.
-corner-radius = 10;
+corner-radius = '"$font"';
 rounded-corners-exclude = [ "window_type = \047dock\047",
                             "window_type = \047popup_menu\047",
+                            "window_type = \047dropdown_menu\047",
                             "window_type = \047notification\047" ];
 #
 #Обнаруживает дочерние окна.
