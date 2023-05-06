@@ -768,7 +768,9 @@ opacity-rule = [ "80:class_g = \047i3bar\047",
 #
 #Закругленные углы.
 corner-radius = 5;
-rounded-corners-exclude = [ "window_type = \047dock\047" ];
+rounded-corners-exclude = [ "window_type = \047dock\047",
+                            "window_type = \047popup_menu\047",
+                            "window_type = \047notification\047" ];
 #
 #Обнаруживает дочерние окна.
 mark-wmwin-focused = true;
