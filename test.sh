@@ -837,7 +837,7 @@ opacity-rule = [ "80:class_g = \047i3bar\047",
                  "100:fullscreen" ];
 #
 #Закругленные углы.
-corner-radius = 5;
+corner-radius = 10;
 rounded-corners-exclude = [ "window_type = \047dock\047" ];
 #
 #Обнаруживает дочерние окна.
