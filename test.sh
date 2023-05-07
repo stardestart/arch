@@ -21,7 +21,7 @@ namewifi=""
 #Переменная сохранит пароль wi-fi сети для дальнейшей установки/настройки/расчета.
 passwifi=""
 #Переменная сохранит имя сетевого устройства для дальнейшей установки/настройки/расчета.
-netdev=""
+netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
 #Массив хранит имена обнаруженных дисков.
 massdisks=()
 #Переменная сохранит имя диска на который будет установлена ОС для дальнейшей установки/настройки/расчета.
@@ -86,24 +86,24 @@ fi
 echo -e "\033[36mПроцессор:"$(lscpu | grep -i "model name")"\033[0m"
 #
 #Определяем сетевое устройство.
-echo -e "\033[36mОпределяем сетевое устройство.\033[0m"
-if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
-    then
-        if [ -z $(ls /var/lib/iwd/*.psk) ]; then
-            echo -e "\033[47m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m\033[32m";read -p ">" namewifi
-            netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
-        else
-            netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
-        fi
-fi
-if [ -z "$namewifi" ];
-    then
-        netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
-    else
-        echo -e "\033[47m\033[30mПароль wifi:\033[0m\033[32m";read -p ">" passwifi
-        iwctl --passphrase "$passwifi" station "$netdev" connect "$namewifi"
-fi
-echo -e "\033[36mСетевое устройство:"$netdev"\033[0m"
+#echo -e "\033[36mОпределяем сетевое устройство.\033[0m"
+#if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
+#    then
+#        if [ -z $(ls /var/lib/iwd/*.psk) ]; then
+#            echo -e "\033[47m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m\033[32m";read -p ">" namewifi
+#            netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
+#        else
+#            netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
+#        fi
+#fi
+#if [ -z "$namewifi" ];
+#    then
+#        netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
+#    else
+#        echo -e "\033[47m\033[30mПароль wifi:\033[0m\033[32m";read -p ">" passwifi
+#        iwctl --passphrase "$passwifi" station "$netdev" connect "$namewifi"
+#fi
+#echo -e "\033[36mСетевое устройство:"$netdev"\033[0m"
 #
 #Определяем часовой пояс.
 echo -e "\033[36mОпределяем часовой пояс.\033[0m"
@@ -1592,15 +1592,15 @@ rm /mnt/usr/share/fonts/google/*.zip
 rm /mnt/usr/share/fonts/google/*.txt
 #
 #Передача интернет настроек в установленную систему.
-echo -e "\033[36mПередача интернет настроек в установленную систему.\033[0m"
-if [ -z "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ]; then arch-chroot /mnt ip link set "$netdev" up
-    else
-        arch-chroot /mnt pacman --color always -Sy iwd --noconfirm
-        arch-chroot /mnt systemctl enable iwd
-        arch-chroot /mnt ip link set "$netdev" up
-        mkdir -p /mnt/var/lib/iwd
-        cp /var/lib/iwd/*.psk /mnt/var/lib/iwd/
-fi
+#echo -e "\033[36mПередача интернет настроек в установленную систему.\033[0m"
+#if [ -z "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ]; then arch-chroot /mnt ip link set "$netdev" up
+#    else
+#        arch-chroot /mnt pacman --color always -Sy iwd --noconfirm
+#        arch-chroot /mnt systemctl enable iwd
+#        arch-chroot /mnt ip link set "$netdev" up
+#        mkdir -p /mnt/var/lib/iwd
+#        cp /var/lib/iwd/*.psk /mnt/var/lib/iwd/
+#fi
 #Определяем, есть ли ssd.
 echo -e "\033[36mОпределяем, есть ли ssd.\033[0m"
 massd=($(lsblk -dno rota))
