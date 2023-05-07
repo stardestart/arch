@@ -1792,6 +1792,8 @@ echo '-w /etc/group -p wa
 #
 chmod 600 /mnt/etc/ssh/sshd_config
 #
+arch-chroot /mnt nmcli device wifi connect "$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)" "$(cat /var/lib/iwd/"$(sudo find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | grep --color=never Passphrase= | sed s/Passphrase=//)" "$(cat /var/lib/iwd/"$(sudo find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | grep --color=never Passphrase= | sed s/Passphrase=//)"
+#
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
 while [[ 0 -ne $tic ]]; do
