@@ -1629,7 +1629,7 @@ arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = s
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
 sleep 10
-nmcli device wifi connect \047'"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)"'\047 password '"$(cat /var/lib/iwd/"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | grep --color=never Passphrase= | sed s/Passphrase=//)"'
+nmcli device wifi connect \047'"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)"'\047 password \047'"$(cat /var/lib/iwd/"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | grep --color=never Passphrase= | sed s/Passphrase=//)"'\047
 echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/0
 while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1)" -lt 20 ]]; do
     echo "\033[31mЦП занят!\033[0m" > /dev/pts/0
@@ -1668,7 +1668,6 @@ amixer -c "$j" sset "Auto-Mute Mode" Disabled > /dev/pts/0
 amixer -c "$j" sset "HP/Speaker Auto Detect" unmute > /dev/pts/0
             done
 alsactl store
-sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 gsettings set org.gnome.desktop.interface icon-theme ePapirus-Dark
 gsettings set org.gnome.desktop.interface font-name \047Fantasque Sans Mono, '"$font"'\047
 gsettings set org.gnome.desktop.interface document-font-name \047Fantasque Sans Mono Bold Italic '"$font"'\047
@@ -1713,6 +1712,7 @@ sudo sh -c \047echo "net/ipv4/ip_forward=1
 net/ipv6/conf/default/forwarding=1
 net/ipv6/conf/all/forwarding=1" >> /etc/ufw/sysctl.conf\047
 #
+sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 sed -i \047s/#TechnicalSymbol//\047 ~/.config/i3/config
 WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/0
 #rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
