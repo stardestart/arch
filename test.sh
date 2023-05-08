@@ -85,26 +85,6 @@ elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="\ninitrd /intel-ucode.im
 fi
 echo -e "\033[36mПроцессор:"$(lscpu | grep -i "model name")"\033[0m"
 #
-#Определяем сетевое устройство.
-#echo -e "\033[36mОпределяем сетевое устройство.\033[0m"
-#if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
-#    then
-#        if [ -z $(ls /var/lib/iwd/*.psk) ]; then
-#            echo -e "\033[47m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m\033[32m";read -p ">" namewifi
-#            netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
-#        else
-#            netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
-#        fi
-#fi
-#if [ -z "$namewifi" ];
-#    then
-#        netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
-#    else
-#        echo -e "\033[47m\033[30mПароль wifi:\033[0m\033[32m";read -p ">" passwifi
-#        iwctl --passphrase "$passwifi" station "$netdev" connect "$namewifi"
-#fi
-#echo -e "\033[36mСетевое устройство:"$netdev"\033[0m"
-#
 #Определяем часовой пояс.
 echo -e "\033[36mОпределяем часовой пояс.\033[0m"
 timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
@@ -335,7 +315,7 @@ fi
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
 pacman-key --init
 pacman-key --populate archlinux
-pacman-key --refresh-keys
+#pacman-key --refresh-keys
 pacman --color always -Syy archlinux-keyring gnupg reflector usbguard --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
@@ -1103,10 +1083,10 @@ exec --no-startup-id smb4k;
 exec --no-startup-id sudo -E usbguard-applet-qt;
 #
 # Автозапуск neofetch.
-exec --no-startup-id sh -c \047sleep 5; while [[ -z "$(ls /dev/pts/0)" ]]; do sleep 5; done;sleep 5; neofetch > /dev/pts/0;\047
+exec --no-startup-id sh -c \047sleep 10; while [[ -z "$(ls /dev/pts/0)" ]]; do sleep 5; done;sleep 5; neofetch > /dev/pts/1;\047
 #
 # Автозапуск обновления.
-exec --no-startup-id sh -c \047sleep 5; while [[ -z "$(ls /dev/pts/1)" ]]; do sleep 5; done;sleep 5; sudo pacman -Suy --noconfirm > /dev/pts/1; sudo pacman -Sc --noconfirm > /dev/pts/1; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/1;\047
+#TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; while [[ -z "$(ls /dev/pts/1)" ]]; do sleep 5; done;sleep 5; sudo pacman -Suy --noconfirm > /dev/pts/0; sudo pacman -Sc --noconfirm > /dev/pts/0; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/0;\047
 #
 # Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u;
@@ -1592,16 +1572,6 @@ arch-chroot /mnt unzip -o /usr/share/fonts/google/SC.zip -d /usr/share/fonts/goo
 rm /mnt/usr/share/fonts/google/*.zip
 rm /mnt/usr/share/fonts/google/*.txt
 #
-#Передача интернет настроек в установленную систему.
-#echo -e "\033[36mПередача интернет настроек в установленную систему.\033[0m"
-#if [ -z "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ]; then arch-chroot /mnt ip link set "$netdev" up
-#    else
-#        arch-chroot /mnt pacman --color always -Sy iwd --noconfirm
-#        arch-chroot /mnt systemctl enable iwd
-#        arch-chroot /mnt ip link set "$netdev" up
-#        mkdir -p /mnt/var/lib/iwd
-#        cp /var/lib/iwd/*.psk /mnt/var/lib/iwd/
-#fi
 #Определяем, есть ли ssd.
 echo -e "\033[36mОпределяем, есть ли ssd.\033[0m"
 massd=($(lsblk -dno rota))
@@ -1659,6 +1629,7 @@ arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = s
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
 sleep 10
+nmcli device wifi connect \047'"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)"'\047 password '"$(cat /var/lib/iwd/"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | grep --color=never Passphrase= | sed s/Passphrase=//)"'
 echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/0
 while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1)" -lt 20 ]]; do
     echo "\033[31mЦП занят!\033[0m" > /dev/pts/0
@@ -1742,7 +1713,7 @@ sudo sh -c \047echo "net/ipv4/ip_forward=1
 net/ipv6/conf/default/forwarding=1
 net/ipv6/conf/all/forwarding=1" >> /etc/ufw/sysctl.conf\047
 #
-sed -i \047s/#exec --no-startup-id xterm/exec --no-startup-id xterm/\047 ~/.config/i3/config
+sed -i \047s/#TechnicalSymbol//\047 ~/.config/i3/config
 WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/0
 #rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
@@ -1791,8 +1762,6 @@ echo '-w /etc/group -p wa
 -w /etc/sudoers -p wa' > /mnt/etc/audit/rules.d/rules.rules
 #
 chmod 600 /mnt/etc/ssh/sshd_config
-#
-arch-chroot /mnt nmcli device wifi connect "$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)" password "$(cat /var/lib/iwd/"$(sudo find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | grep --color=never Passphrase= | sed s/Passphrase=//)"
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
