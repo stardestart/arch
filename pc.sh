@@ -21,7 +21,7 @@ namewifi=""
 #Переменная сохранит пароль wi-fi сети для дальнейшей установки/настройки/расчета.
 passwifi=""
 #Переменная сохранит имя сетевого устройства для дальнейшей установки/настройки/расчета.
-netdev=""
+netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
 #Массив хранит имена обнаруженных дисков.
 massdisks=()
 #Переменная сохранит имя диска на который будет установлена ОС для дальнейшей установки/настройки/расчета.
@@ -37,6 +37,8 @@ p1=""
 p2=""
 p3=""
 p4=""
+p5=""
+p6=""
 #Переменная сохранит имя ПК для дальнейшей установки/настройки/расчета.
 hostname=""
 #Переменная сохранит имя пользователя для дальнейшей установки/настройки/расчета.
@@ -67,32 +69,21 @@ massd=()
 #Переменная сохранит размер шрифта firefox.
 fox=""
 #
+#Переменная сохранит шифр авторизации grub.
+grubsha=""
+#
+#Переменная сохранит размер root-раздела
+rootsize=""
+#
+#Переменная сохранит размер var-раздела
+varsize=""
+#
 #Определяем процессор.
 echo -e "\033[36mОпределяем процессор.\033[0m"
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="\ninitrd /amd-ucode.img"
 elif [ -n "$(lscpu | grep -i intel)" ]; then microcode="\ninitrd /intel-ucode.img"
 fi
 echo -e "\033[36mПроцессор:"$(lscpu | grep -i "model name")"\033[0m"
-#
-#Определяем сетевое устройство.
-echo -e "\033[36mОпределяем сетевое устройство.\033[0m"
-if [ -n "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ];
-    then
-        if [ -z $(ls /var/lib/iwd/*.psk) ]; then
-            echo -e "\033[47m\033[30mОбнаружен wifi модуль, если основное подключение к интернету планируется через wifi введите имя сети, если через провод нажмите Enter:\033[0m\033[32m";read -p ">" namewifi
-            netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
-        else
-            netdev="$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)"
-        fi
-fi
-if [ -z "$namewifi" ];
-    then
-        netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
-    else
-        echo -e "\033[47m\033[30mПароль wifi:\033[0m\033[32m";read -p ">" passwifi
-        iwctl --passphrase "$passwifi" station "$netdev" connect "$namewifi"
-fi
-echo -e "\033[36mСетевое устройство:"$netdev"\033[0m"
 #
 #Определяем часовой пояс.
 echo -e "\033[36mОпределяем часовой пояс.\033[0m"
@@ -145,11 +136,15 @@ if [ -z "$(echo "$sysdisk" | grep -i "nvme")" ];
         p2="2"
         p3="3"
         p4="4"
+        p5="5"
+        p6="6"
     else
         p1="p1"
         p2="p2"
         p3="p3"
         p4="p4"
+        p5="p5"
+        p6="p6"
 fi
 #
 #Сбор данных пользователя.
@@ -163,7 +158,7 @@ select menuscreen in "~480p." "~720p-1080p." "~4K."
 do
     case "$menuscreen" in
         "~480p.")
-            font=8
+            font=10
             xterm="700 350"
             fox=0.0
             break
@@ -198,6 +193,22 @@ elif [ "$ram" -lt 4 ]; then swap="1G"
 fi
 echo -e "\033[36mРазмер SWAP раздела: $swap\033[0m"
 #
+#Вычисление var и root разделов.
+echo -e "\033[36mВычисление var и root разделов.\033[0m"
+rootsize="$(fdisk -l /dev/"$sysdisk" | head -n1 | awk '{print $3}')"
+rootsize=$(bc << EOF
+$rootsize/3
+EOF
+)
+varsize=$(bc << EOF
+$rootsize/2
+EOF
+)
+varsize="$varsize"G
+echo -e "\033[36mРазмер var-раздела: $varsize\033[0m"
+rootsize="$rootsize"G
+echo -e "\033[36mРазмер root-раздела: $rootsize\033[0m"
+#
 #Разметка системного диска.
 echo -e "\033[36mРазметка системного диска.\033[0m"
 if [ -z "$(efibootmgr | grep Boot)" ];
@@ -223,6 +234,14 @@ n
 n
 4
 
++$rootsize
+n
+5
+
++$varsize
+n
+6
+
 
 w
 EOF
@@ -233,8 +252,16 @@ mkswap /dev/"$sysdisk""$p3" -L swap
 mkfs.ext4 /dev/"$sysdisk""$p4" -L root<<EOF
 y
 EOF
+mkfs.ext4 /dev/"$sysdisk""$p5" -L var<<EOF
+y
+EOF
+mkfs.ext4 /dev/"$sysdisk""$p6" -L home<<EOF
+y
+EOF
 mount /dev/"$sysdisk""$p4" /mnt
 mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
+mount --mkdir /dev/"$sysdisk""$p5" /mnt/var
+mount --mkdir /dev/"$sysdisk""$p6" /mnt/home
 swapon /dev/"$sysdisk""$p3"
     else
         echo -e "\033[36mUEFI boot.\033[0m"
@@ -253,6 +280,14 @@ n
 n
 3
 
++$rootsize
+n
+4
+
++$varsize
+n
+5
+
 
 w
 EOF
@@ -263,8 +298,16 @@ mkswap /dev/"$sysdisk""$p2" -L swap
 mkfs.ext4 /dev/"$sysdisk""$p3" -L root<<EOF
 y
 EOF
+mkfs.ext4 /dev/"$sysdisk""$p4" -L var<<EOF
+y
+EOF
+mkfs.ext4 /dev/"$sysdisk""$p5" -L home<<EOF
+y
+EOF
 mount /dev/"$sysdisk""$p3" /mnt
 mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
+mount --mkdir /dev/"$sysdisk""$p4" /mnt/var
+mount --mkdir /dev/"$sysdisk""$p5" /mnt/home
 swapon /dev/"$sysdisk""$p2"
 fi
 #
@@ -272,7 +315,6 @@ fi
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
 pacman-key --init
 pacman-key --populate archlinux
-pacman-key --refresh-keys
 pacman --color always -Syy archlinux-keyring gnupg reflector usbguard --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
@@ -333,6 +375,17 @@ if [ -z "$(efibootmgr | grep Boot)" ];
         arch-chroot /mnt sed -i 's/#GRUB_DISABLE_RECOVERY=true/GRUB_DISABLE_RECOVERY=true/' /etc/default/grub
         arch-chroot /mnt sed -i 's/GRUB_DISABLE_LINUX_UUID=true/#GRUB_DISABLE_LINUX_UUID=true/' /etc/default/grub
         arch-chroot /mnt sed -i 's/GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX="resume=\/dev\/'"$sysdisk"''"$p3"' /' /etc/default/grub
+        grubsha=$(grub-mkpasswd-pbkdf2 << EOF
+$passuser
+$passuser
+EOF
+)
+        grubsha="$(echo $grubsha | awk '{print $NF}')"
+        arch-chroot /mnt sed -i 's/CLASS="--class gnu-linux --class gnu --class os"/CLASS="--class gnu-linux --class gnu --class os --unrestricted"/' /etc/grub.d/10_linux
+        echo 'cat << EOF
+set superusers='"$username"'
+password_pbkdf2 '"$username"' '"$grubsha"'
+EOF' >> /mnt/etc/grub.d/00_header
         arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
     else
         arch-chroot /mnt pacman --color always -Sy efibootmgr --noconfirm
@@ -375,15 +428,12 @@ net.ipv4.conf.all.rp_filter=1
 net.ipv4.conf.all.send_redirects=0
 net.ipv4.conf.all.accept_source_route=0
 net.ipv4.conf.all.bootp_relay=0
-net.ipv4.conf.all.forwarding=0
-net.ipv4.conf.all.log_martians=1
 net.ipv4.conf.all.mc_forwarding=0
 net.ipv4.conf.all.proxy_arp=0
 net.ipv4.conf.all.rp_filter=1
 net.ipv4.conf.all.send_redirects=0
 net.ipv4.conf.default.accept_redirects=0
 net.ipv4.conf.default.accept_source_route=0
-net.ipv4.conf.default.log_martians=1
 net.ipv4.icmp_echo_ignore_broadcasts=1
 net.ipv4.icmp_ignore_bogus_error_responses=1
 net.ipv4.tcp_syncookies=1
@@ -1032,10 +1082,10 @@ exec --no-startup-id smb4k;
 exec --no-startup-id sudo -E usbguard-applet-qt;
 #
 # Автозапуск neofetch.
-exec --no-startup-id sh -c \047sleep 5; while [[ -z "$(ls /dev/pts/0)" ]]; do sleep 5; done;sleep 5; neofetch > /dev/pts/0;\047
+exec --no-startup-id sh -c \047sleep 10; while [[ -z "$(ls /dev/pts/0)" ]]; do sleep 5; done;sleep 5; neofetch > /dev/pts/1;\047
 #
 # Автозапуск обновления.
-exec --no-startup-id sh -c \047sleep 5; while [[ -z "$(ls /dev/pts/1)" ]]; do sleep 5; done;sleep 5; sudo pacman -Suy --noconfirm > /dev/pts/1; sudo pacman -Sc --noconfirm > /dev/pts/1; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/1;\047
+#TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; while [[ -z "$(ls /dev/pts/1)" ]]; do sleep 5; done;sleep 5; sudo pacman -Suy --noconfirm > /dev/pts/0; sudo pacman -Sc --noconfirm > /dev/pts/0; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/0;\047
 #
 # Автозапуск numlockx.
 exec --no-startup-id numlockx;
@@ -1094,7 +1144,7 @@ bar {
         separator_symbol "☭"
         #
         # Назначить шрифт.
-        font pango:Fantasque Sans Mono Bold Italic '"$(($font/2+$font))"'
+        font pango:Fantasque Sans Mono '"$font"'
         #
         # Назначить цвета.
         colors {
@@ -1260,6 +1310,8 @@ Win+Shift+Q -- Закрыть окно в фокусе.
 Print Screen -- Снимок экрана.
 ПКМ на нижней панели -- Снимок экрана.
 #
+🚀 -- Включить/Выключить визуальные эффекты.
+#
 ⭯ -- Перезагрузить ПК.
 #
 ⏻ -- Выключить ПК.
@@ -1330,15 +1382,21 @@ __userfile__=true
 iconTheme=ePapirus-Dark
 [customcommand]
 alignment=Right
+click="sh -c \"x=pidof picom; if [ -n x ]; then killall picom; else picom -b; fi\""
+command=echo \xd83d\xde80
+runWithBash=true
+type=customcommand
+[customcommand2]
+alignment=Right
 click=xed /help.txt
 command=echo \x2753
 type=customcommand
-[customcommand2]
+[customcommand3]
 alignment=Right
 click=reboot
 command=echo \x2b6f
 type=customcommand
-[customcommand3]
+[customcommand4]
 alignment=Right
 click=poweroff
 command=echo \x23fb
@@ -1372,7 +1430,7 @@ lineCount=1
 lockPanel=false
 opacity=80
 panelSize='"$(($font*3))"'
-plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, worldclock, customcommand, customcommand2, customcommand3
+plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, worldclock, customcommand, customcommand2, customcommand3, customcommand4
 position=Top
 reserve-space=true
 show-delay=0
@@ -1525,16 +1583,6 @@ arch-chroot /mnt unzip -o /usr/share/fonts/google/SC.zip -d /usr/share/fonts/goo
 rm /mnt/usr/share/fonts/google/*.zip
 rm /mnt/usr/share/fonts/google/*.txt
 #
-#Передача интернет настроек в установленную систему.
-echo -e "\033[36mПередача интернет настроек в установленную систему.\033[0m"
-if [ -z "$(iwctl device list | awk '{print $2}' | grep wl | head -n 1)" ]; then arch-chroot /mnt ip link set "$netdev" up
-    else
-        arch-chroot /mnt pacman --color always -Sy iwd --noconfirm
-        arch-chroot /mnt systemctl enable iwd
-        arch-chroot /mnt ip link set "$netdev" up
-        mkdir -p /mnt/var/lib/iwd
-        cp /var/lib/iwd/*.psk /mnt/var/lib/iwd/
-fi
 #Определяем, есть ли ssd.
 echo -e "\033[36mОпределяем, есть ли ssd.\033[0m"
 massd=($(lsblk -dno rota))
@@ -1599,6 +1647,7 @@ SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.in
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
 sleep 10
+nmcli device wifi connect \047'"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)"'\047 password \047'"$(cat /var/lib/iwd/"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | grep --color=never Passphrase= | sed s/Passphrase=//)"'\047
 echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/0
 while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1)" -lt 20 ]]; do
     echo "\033[31mЦП занят!\033[0m" > /dev/pts/0
@@ -1637,7 +1686,6 @@ amixer -c "$j" sset "Auto-Mute Mode" Disabled > /dev/pts/0
 amixer -c "$j" sset "HP/Speaker Auto Detect" unmute > /dev/pts/0
             done
 alsactl store
-sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 gsettings set org.gnome.desktop.interface icon-theme ePapirus-Dark
 gsettings set org.gnome.desktop.interface font-name \047Fantasque Sans Mono, '"$font"'\047
 gsettings set org.gnome.desktop.interface document-font-name \047Fantasque Sans Mono Bold Italic '"$font"'\047
@@ -1682,7 +1730,8 @@ sudo sh -c \047echo "net/ipv4/ip_forward=1
 net/ipv6/conf/default/forwarding=1
 net/ipv6/conf/all/forwarding=1" >> /etc/ufw/sysctl.conf\047
 #
-sed -i \047s/#exec --no-startup-id xterm/exec --no-startup-id xterm/\047 ~/.config/i3/config
+sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
+sed -i \047s/#TechnicalSymbol//\047 ~/.config/i3/config
 WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/0
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
@@ -1723,6 +1772,14 @@ arch-chroot /mnt sed -i 's/umask 022/umask 027/' /etc/profile
 #Удаленное включение компьютера с помощью Wake-on-LAN (WOL).
 echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"
 arch-chroot /mnt ethtool -s "$netdev" wol g
+#
+#Добавление правил auditd.
+echo '-w /etc/group -p wa 
+-w /etc/passwd -p wa 
+-w /etc/shadow -p wa 
+-w /etc/sudoers -p wa' > /mnt/etc/audit/rules.d/rules.rules
+#
+chmod 600 /mnt/etc/ssh/sshd_config
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
