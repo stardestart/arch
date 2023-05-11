@@ -197,7 +197,7 @@ echo -e "\033[36mРазмер SWAP раздела: $swap\033[0m"
 echo -e "\033[36mВычисление var и root разделов.\033[0m"
 rootsize="$(fdisk -l /dev/"$sysdisk" | head -n1 | awk '{print $3}')"
 rootsize=$(bc << EOF
-$rootsize/3
+$rootsize/5*2
 EOF
 )
 varsize=$(bc << EOF
@@ -315,7 +315,7 @@ fi
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
 pacman-key --init
 pacman-key --populate archlinux
-pacman-key --refresh-keys
+#pacman-key --refresh-keys
 pacman --color always -Syy archlinux-keyring gnupg reflector usbguard --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
