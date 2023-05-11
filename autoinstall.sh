@@ -614,8 +614,8 @@ gap_y = '"$(($font*7))"', --Отступ сверху.
 gap_x = 40, --Отступ от края.
 own_window = true, --Собственное окно.
 own_window_class = "Conky", --Класс окна.
-own_window_type = "override", --Тип окна (возможные варианты: "normal", "desktop", "dock", "panel", "override" выбираем в зависимости от оконного менеджера и личных предпочтений).
-own_window_hints = "undecorated, skip_taskbar", --Задаем эфекты отображения окна.
+own_window_type = "override", --Тип окна.
+own_window_hints = "undecorated, sticky, above, skip_taskbar, skip_pager", --Задаем эфекты отображения окна.
 own_window_argb_visual = true, --Прозрачность окна.
 own_window_argb_value = 150, --Уровень прозрачности.
 use_xft = true, } --Использование шрифтов X сервера.
@@ -769,7 +769,7 @@ echo '[global]
     gap_size = '"$font"'
     enable_posix_regex = true
     enable_recursive_icon_lookup = true
-    icon_theme = Papirus
+    icon_theme = ePapirus-Dark
 [urgency_low]
     background = "#2b2b2b"
     foreground = "#b2b2b2"
@@ -1403,7 +1403,7 @@ type=kbindicator
 [mainmenu]
 alignment=Left
 filterClear=true
-icon=/usr/share/icons/Papirus-Dark/48x48/apps/distributor-logo-archlinux.svg
+icon=/usr/share/icons/ePapirus-Dark/16x16/apps/distributor-logo-archlinux.svg
 menu_file=/etc/xdg/menus/lxde-applications.menu
 ownIcon=true
 showText=false
@@ -1758,9 +1758,9 @@ echo -e "\033[36mУдаленное включение компьютера с �
 arch-chroot /mnt ethtool -s "$netdev" wol g
 #
 #Добавление правил auditd.
-echo '-w /etc/group -p wa 
--w /etc/passwd -p wa 
--w /etc/shadow -p wa 
+echo '-w /etc/group -p wa
+-w /etc/passwd -p wa
+-w /etc/shadow -p wa
 -w /etc/sudoers -p wa' > /mnt/etc/audit/rules.d/rules.rules
 #
 chmod 600 /mnt/etc/ssh/sshd_config
