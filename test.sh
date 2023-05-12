@@ -204,7 +204,7 @@ varsize=$(bc << EOF
 $rootsize/2
 EOF
 )
-#if [ $rootsize -lt 20 ]; then rootsize=20
+if [ $rootsize -lt 20 ]; then rootsize=20; fi
 varsize="$varsize"G
 echo -e "\033[36mРазмер var-раздела: $varsize\033[0m"
 rootsize="$rootsize"G
