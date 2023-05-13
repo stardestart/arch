@@ -1377,15 +1377,20 @@ runWithBash=true
 type=customcommand
 [customcommand2]
 alignment=Right
+click="sh -c \"sed -i \047s/own_window_type/--own_window_type/\047 ~/.config/conky/conky.conf; sed -i \047s/----//\047 ~/.config/conky/conky.conf\""
+command=echo \xd83d\xdec8
+type=customcommand
+[customcommand3]
+alignment=Right
 click=xed /help.txt
 command=echo \x2753
 type=customcommand
-[customcommand3]
+[customcommand4]
 alignment=Right
 click=reboot
 command=echo \x2b6f
 type=customcommand
-[customcommand4]
+[customcommand5]
 alignment=Right
 click=poweroff
 command=echo \x23fb
@@ -1419,7 +1424,7 @@ lineCount=1
 lockPanel=false
 opacity=80
 panelSize='"$(($font*3))"'
-plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, worldclock, customcommand, customcommand2, customcommand3, customcommand4
+plugins=mainmenu, spacer, quicklaunch, kbindicator, worldclock, volume, customcommand, customcommand2, customcommand3, customcommand4, customcommand5
 position=Top
 reserve-space=true
 show-delay=0
