@@ -616,6 +616,7 @@ gap_x = 40, --Отступ от края.
 own_window = true, --Собственное окно.
 own_window_class = "Conky", --Класс окна.
 own_window_type = "override", --Тип окна.
+--own_window_type = "desktop", --Тип окна.
 own_window_hints = "undecorated, sticky, above, skip_taskbar, skip_pager", --Задаем эфекты отображения окна.
 own_window_argb_visual = true, --Прозрачность окна.
 own_window_argb_value = 150, --Уровень прозрачности.
