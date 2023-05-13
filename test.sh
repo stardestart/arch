@@ -1647,11 +1647,11 @@ sudo pacman -Sy xdg-user-dirs --noconfirm
 sudo sh -c \047echo "DOCUMENTS=Documents
 DOWNLOAD=Documents/Downloads
 PUBLICSHARE=Documents/Public
-XDG_DESKTOP_DIR=\042$HOME/Documents/Desktop\042
-XDG_MUSIC_DIR=\042$HOME/Documents/Music\042
-XDG_PICTURES_DIR=\042$HOME/Documents/Pictures\042
-XDG_TEMPLATES_DIR=\042$HOME/Documents/Templates\042
-XDG_VIDEOS_DIR=\042$HOME/Documents/Videos\042" > /etc/xdg/user-dirs.defaults\047
+DESKTOP=Documents/Desktop
+MUSIC=/Documents/Music
+PICTURES=/Documents/Pictures
+TEMPLATES=/Documents/Templates
+VIDEOS=/Documents/Videos" > /etc/xdg/user-dirs.defaults\047
 LC_ALL=C xdg-user-dirs-update --force
 #
 #Обнаружение кулеров.
