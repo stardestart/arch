@@ -1639,7 +1639,7 @@ arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = s
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
 sleep 10
-nmcli device wifi connect \047'"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)"'\047 password \047'"$(cat /var/lib/iwd/"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | grep --color=never Passphrase= | sed s/Passphrase=//)"'\047
+nmcli device wifi connect \047'"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)"'\047 password \047'$(grep --color=never Passphrase= /lib/iwd/$(find /var/lib/iwd -type f -name "*.psk" -printf "%f") | sed s/Passphrase=//)'\047
 echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/0
 while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1)" -lt 20 ]]; do
     echo "\033[31mЦП занят!\033[0m" > /dev/pts/0
