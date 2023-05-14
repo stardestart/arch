@@ -468,7 +468,7 @@ elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then
 fi
 #Установка компонентов и программ ОС.
 echo -e "\033[36mУстановка компонентов и программ ОС.\033[0m"
-arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux firefox network-manager-applet wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt hspell libvoikko aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau clamav ufw usbguard arch-audit libpwquality kde-cli-tools ntp osquery discord meld kcolorchooser kontrast dmg2img telegram-desktop gcompris-qt --noconfirm
+arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux firefox network-manager-applet wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt hspell libvoikko aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau clamav ufw usbguard arch-audit libpwquality kde-cli-tools ntp osquery xdg-user-dirs discord meld kcolorchooser kontrast dmg2img telegram-desktop gcompris-qt --noconfirm
 #Установка геолокации.
 echo -e "\033[36mУстановка геолокации.\033[0m"
 arch-chroot /mnt pacman -Ss geoclue2
@@ -1644,19 +1644,6 @@ while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\
     sleep 5
 done
 #
-#Создание конфига xdg-user-dirs.
-echo -e "\033[36mСоздание конфига xdg-user-dirs.\033[0m"
-sudo pacman -Sy xdg-user-dirs --noconfirm
-sudo sh -c \047echo "DOCUMENTS=Documents
-DOWNLOAD=Documents/Downloads
-PUBLICSHARE=Documents/Public
-DESKTOP=Documents/Desktop
-MUSIC=/Documents/Music
-PICTURES=/Documents/Pictures
-TEMPLATES=/Documents/Templates
-VIDEOS=/Documents/Videos" > /etc/xdg/user-dirs.defaults\047
-LC_ALL=C xdg-user-dirs-update --force
-#
 #Обнаружение кулеров.
 sudo sensors-detect --auto > /dev/pts/0
 #
@@ -1773,6 +1760,17 @@ echo '-w /etc/group -p wa
 -w /etc/passwd -p wa
 -w /etc/shadow -p wa
 -w /etc/sudoers -p wa' > /mnt/etc/audit/rules.d/rules.rules
+#
+#Создание конфига xdg-user-dirs.
+echo -e "\033[36mСоздание конфига xdg-user-dirs.\033[0m"
+echo 'XDG_DOCUMENTS_DIR="$HOME/Documents"
+XDG_DOWNLOAD_DIR="$HOME/Documents/Downloads"
+XDG_PUBLICSHARE_DIR="$HOME/Documents/Public"
+XDG_DESKTOP_DIR="$HOME/Documents/Desktop"
+XDG_MUSIC_DIR="$HOME/Documents/Music"
+XDG_PICTURES_DIR="$HOME/Documents/Pictures"
+XDG_TEMPLATES_DIR="$HOME/Documents/Templates"
+XDG_VIDEOS_DIR="$HOME/Documents/Videos"' > /mnt/home/"$username"/.config/user-dirs.dirs
 #
 chmod 600 /mnt/etc/ssh/sshd_config
 #
