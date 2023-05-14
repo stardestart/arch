@@ -5,4 +5,4 @@
 #mount --mkdir /dev/sda6 /mnt/home
 #swapon /dev/sda3
 echo -e '#!/bin/bash
-nmcli device wifi connect "'"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)"'" password \"'"$(grep Passphrase= /var/lib/iwd/"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | sed s/Passphrase=//)"'\"' > /mnt/home/stardestart/archinstall.sh
+nmcli device wifi connect "'"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)"'" password "'"$(grep Passphrase= /var/lib/iwd/"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | sed s/Passphrase=//)"'"' > /mnt/home/stardestart/archinstall.sh
