@@ -1492,6 +1492,8 @@ BackgroundAlternate=50,50,50
 ForegroundNormal=238,238,238
 ForegroundInactive=178,178,178' > /mnt/home/"$username"/.config/kdeglobals
 #
+mkdir -p /mnt/home/"$username"/Documents/{Downloads,Public,Desktop,Music,Pictures,Templates,Videos}
+#
 #Создание конфига samba.
 mkdir -p /mnt/home/"$username"/Documents/Public/{Out,In}
 echo -e "\033[36mСоздание конфига samba.\033[0m"
