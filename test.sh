@@ -601,15 +601,15 @@ fi
 mkdir -p /mnt/home/"$username"/.config/conky
 echo -e 'conky.config = { --Внешний вид.
 alignment = "top_right", --Располжение виджета.
-border_inner_margin = '"$font"', --Отступ от внутренних границ.
-border_outer_margin = '"$font"', --Отступ от края окна.
+border_inner_margin = '"$(($font/2))"', --Отступ от внутренних границ.
+border_outer_margin = '"$(($font/2))"', --Отступ от края окна.
 cpu_avg_samples = 2, --Усреднение значений нагрузки.
 default_color = "#2bf92b", --Цвет по умолчанию.
 double_buffer = true, --Включение двойной буферизации.
 draw_shades = false, --Оттенки.
 font = "Fantasque Sans Mono:bold:size='"$(($font-2))"'", --Шрифт и размер шрифта.
-gap_y = '"$(($font*7))"', --Отступ сверху.
-gap_x = 40, --Отступ от края.
+gap_y = '"$(($font*5))"', --Отступ сверху.
+gap_x = '"$(($font*2))"', --Отступ от края.
 own_window = true, --Собственное окно.
 own_window_class = "Conky", --Класс окна.
 own_window_type = "override", --Тип окна.
@@ -623,9 +623,9 @@ conky.text = [[ #Наполнение виджета.
 #Часы.
 ${font Fantasque Sans Mono:bold:italic:size='"$(($font*3))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
 #Дата.
-${font Fantasque Sans Mono:bold:italic:size='"$(($font*2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
+${font Fantasque Sans Mono:bold:italic:size='"$(($font*2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$color
 #Погода.
-${execi 3600 curl wttr.in/?format=\047%l,+%t+(%f)\\n%h+(%p),+%w,+%P\047}
+${font Noto Sans Symbols:bolt:size='"$(($font-2))"'}${execi 3600 curl wttr.in/?format=\047%l,+%t+(%f)\\n%h+(%p),+%w,+%P\047}$font
 #Блок "Система".
 #Разделитель.
 ${color #f92b2b}Система${hr 3}$color
