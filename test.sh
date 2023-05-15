@@ -621,9 +621,9 @@ use_xft = true, } --Использование шрифтов X сервера.
 conky.text = [[ #Наполнение виджета.
 #Блок "Время".
 #Часы.
-${font Fantasque Sans Mono:bold:italic:size='"$(($font*3))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
+${font Fantasque Sans Mono:bold:italic:size='"$(($font*2))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
 #Дата.
-${font Fantasque Sans Mono:bold:italic:size='"$(($font*2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$color
+${font Fantasque Sans Mono:bold:italic:size='"$(($font+2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$color
 #Погода.
 ${font Noto Sans Symbols:bolt:size='"$(($font-2))"'}${execi 3600 curl wttr.in/?format=\047%l,+%t+(%f)\\n%h+(%p),+%w,+%P\047}$font
 #Блок "Система".
