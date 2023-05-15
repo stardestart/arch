@@ -1397,7 +1397,7 @@ command=echo \x23fb
 type=customcommand
 [kbindicator]
 alignment=Right
-keeper_type=application
+keeper_type=window
 show_caps_lock=true
 show_layout=true
 show_num_lock=true
@@ -1444,24 +1444,24 @@ type=volume
 [worldclock]
 alignment=Right
 autoRotate=true
-customFormat="\047<b>\047HH:mm:ss\047</b><br/><font size=\\"-2\\">\047ddd, d MMM yyyy\047<br/>\047TT\047</font>\047"
+customFormat="\047<b>\047HH:mm:ss\047</b><br/><font size=\\-2\\>\047ddd, d MMM yyyy\047<br/>\047TT\047</font>\047"
 dateFormatType=custom
-dateLongNames=true
+dateLongNames=false
 datePadDay=true
 datePosition=after
-dateShowDoW=true
-dateShowYear=true
+dateShowDoW=false
+dateShowYear=false
 defaultTimeZone=
 formatType=custom-timeonly
-showDate=true
-showTimezone=false
+showDate=false
+showTimezone=true
 showTooltip=false
 showWeekNumber=true
 timeAMPM=false
 timePadHour=true
 timeShowSeconds=true
 timeZones\size=0
-timezoneFormatType=iana
+timezoneFormatType=short
 timezonePosition=below
 type=worldclock
 useAdvancedManualFormat=false' > /mnt/home/"$username"/.config/lxqt/panel.conf
