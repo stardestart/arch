@@ -497,8 +497,8 @@ masslabel+='
 ${color #b2b2b2}Температура:$color$alignr${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047}°C'
                 fi
 masslabel+='
-${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"${massparts[$j]}"'} / ${color #f92b2b}${fs_used /home/'"$username"'/'"${massparts[$j]}"'} / $color${fs_free /home/'"$username"'/'"${massparts[$j]}"'}
-(${fs_type /home/'"$username"'/'"${massparts[$j]}"'})${fs_bar 4 /home/'"$username"'/'"${massparts[$j]}"'}'
+${color #f92b2b}~/Document/Device/'"${massparts[$j]}"'${hr 3}$color
+(${fs_type ~/Document/Device/'"${massparts[$j]}"'})${fs_bar '"$font"','"$(($font*6))"' ~/Document/Device/'"${massparts[$j]}"'} $alignr${color #f92b2b}${fs_used /home} / $color${fs_free ~/Document/Device/'"${massparts[$j]}"'} / ${color #b2b2b2}${fs_size ~/Document/Device/'"${massparts[$j]}"'}'
                 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"${massparts[$j]}" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
                     then
 masslabel+='
@@ -664,11 +664,11 @@ ${color #f92b2b}NET${hr 3}$color
 ${color #b2b2b2}IP:$alignr${curl eth0.me}$color↑${upspeedf '"$netdev"' }${upspeedgraph '"$netdev"' '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t}$alignr↓${downspeedf '"$netdev"'}${downspeedgraph '"$netdev"' '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t}
 #Блок "Системный диск".
 ${color #f92b2b}/root${hr 3}$color
-(${fs_type /root})${fs_bar 10,50 /root} $alignr${color #f92b2b}${fs_used /root} / $color${fs_free /root} / ${color #b2b2b2}${fs_size /root}
+(${fs_type /root})${fs_bar '"$font"','"$(($font*6))"' /root} $alignr${color #f92b2b}${fs_used /root} / $color${fs_free /root} / ${color #b2b2b2}${fs_size /root}
 ${color #f92b2b}/var${hr 3}$color
-(${fs_type /var})${fs_bar 10,50 /var} $alignr${color #f92b2b}${fs_used /var} / $color${fs_free /var} / ${color #b2b2b2}${fs_size /var}
+(${fs_type /var})${fs_bar '"$font"','"$(($font*6))"' /var} $alignr${color #f92b2b}${fs_used /var} / $color${fs_free /var} / ${color #b2b2b2}${fs_size /var}
 ${color #f92b2b}/home${hr 3}$color
-(${fs_type /home})${fs_bar 10,50 /home} $alignr${color #f92b2b}${fs_used /home} / $color${fs_free /home} / ${color #b2b2b2}${fs_size /home}'"${masslabel[@]}"'
+(${fs_type /home})${fs_bar '"$font"','"$(($font*6))"' /home} $alignr${color #f92b2b}${fs_used /home} / $color${fs_free /home} / ${color #b2b2b2}${fs_size /home}'"${masslabel[@]}"'
 ]]' > /mnt/home/"$username"/.config/conky/conky.conf
 #
 #Создание bash_profile.
