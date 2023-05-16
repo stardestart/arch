@@ -619,9 +619,9 @@ conky.text = [[ #Наполнение виджета.
 #Блок "Часы".
 ${font Fantasque Sans Mono:size='"$(($font*2))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
 #Блок "Дата".
-${font Fantasque Sans Mono:size='"$(($font+2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$color
+${font Fantasque Sans Mono:size='"$(($font+2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$color$font
 #Погода.
-${font Noto Sans Symbols:bolt:size='"$(($font-2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$color$font
+$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$color$font
 #Блок "Погода".
 $alignc${execi 3600 curl wttr.in/?format=\047%l,+%t+(%f)\047}$font
 #Блок "Система".
