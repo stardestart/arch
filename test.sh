@@ -78,6 +78,9 @@ rootsize=""
 #Переменная сохранит размер var-раздела
 varsize=""
 #
+#
+fanconky=""
+#
 #Определяем процессор.
 echo -e "\033[36mОпределяем процессор.\033[0m"
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="\ninitrd /amd-ucode.img"
@@ -581,6 +584,13 @@ ${color #b2b2b2}${execi 10 sensors | grep "Core '$i':" | awk \047{print $1, $2}\
     done
 fi
 #
+#
+if [ -n "$(arch-chroot /mnt sensors | grep -i fan)" ]; then
+fanconky='
+#Блок "Cкорость вращения кулеров (вентиляторов)".
+${color #f92b2b}FAN${hr 3}
+$color${execi 10 sensors | grep -i fan}'
+#
 #Параметры для видеокарт nvidia.
 if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
     nvidiac='
@@ -633,10 +643,7 @@ ${color #b2b2b2}${top name 1} ${color #f92b2b}$alignc ${top pid 1} $color$alignr
 ${color #b2b2b2}${top name 2} ${color #f92b2b}$alignc ${top pid 2}$color$alignr ${top cpu 2}
 ${color #b2b2b2}${top name 3} ${color #f92b2b}$alignc ${top pid 3}$color$alignr ${top cpu 3}
 ${color #b2b2b2}${top name 4} ${color #f92b2b}$alignc ${top pid 4}$color$alignr ${top cpu 4}
-${color #b2b2b2}${top name 5} ${color #f92b2b}$alignc ${top pid 5}$color$alignr ${top cpu 5}
-#Блок "Cкорость вращения кулеров (вентиляторов)".
-${color #f92b2b}FAN${hr 3}
-$color${execi 10 sensors | grep -i fan}'"$nvidiac"'
+${color #b2b2b2}${top name 5} ${color #f92b2b}$alignc ${top pid 5}$color$alignr ${top cpu 5}'"$fanconky"''"$nvidiac"'
 #Блок "ОЗУ".
 ${color #f92b2b}RAM${hr 3}$color
 $memperc% ${memgraph '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t} $alignr${color #f92b2b}$mem / $color$memeasyfree / ${color #b2b2b2}$memmax
