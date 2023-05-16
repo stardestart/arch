@@ -575,8 +575,7 @@ echo -e "\033[36mФормируется конфиг conky.\033[0m"
 if [ -n "$(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs)" ]; then
 coremass=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 coremassconf+='
-#Температура ядер ЦП.
-${color #b2b2b2}Температура ядер ЦП:$color'
+#Температура ядер ЦП.'
 for (( i=0, j=1; j<="${#coremass[*]}"; i++, j++ ))
     do
         coremassconf+='
