@@ -604,7 +604,7 @@ cpu_avg_samples = 2, --Усреднение значений нагрузки.
 default_color = "#2bf92b", --Цвет по умолчанию.
 double_buffer = true, --Включение двойной буферизации.
 draw_shades = false, --Оттенки.
-font = "Fantasque Sans Mono:bold:size='"$(($font-2))"'", --Шрифт и размер шрифта.
+font = "Fantasque Sans Mono:size='"$(($font-2))"'", --Шрифт и размер шрифта.
 gap_y = '"$(($font*5))"', --Отступ сверху.
 gap_x = '"$(($font*2))"', --Отступ от края.
 own_window = true, --Собственное окно.
