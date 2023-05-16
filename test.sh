@@ -496,7 +496,7 @@ masslabel+='$color$alignr${execi 10 sudo smartctl -al scttempsts /dev/'"${masspa
                 fi
 masslabel+='
 ${color #f92b2b}~/Documents/Devices/'"${massparts[$j]}"'${hr 3}$color
-(${fs_type ~/Documents/Devices/'"${massparts[$j]}"'})${fs_bar '"$font"','"$(($font*6))"' ~/Documents/Devices/'"${massparts[$j]}"'} $alignr${color #f92b2b}${fs_used /home} / $color${fs_free ~/Documents/Devices/'"${massparts[$j]}"'} / ${color #b2b2b2}${fs_size ~/Documents/Devices/'"${massparts[$j]}"'}'
+(${fs_type ~/Documents/Devices/'"${massparts[$j]}"'})${fs_bar '"$font"','"$(($font*6))"' ~/Documents/Devices/'"${massparts[$j]}"'} $alignr${color #f92b2b}${fs_used ~/Documents/Devices/'"${massparts[$j]}"'} / $color${fs_free ~/Documents/Devices/'"${massparts[$j]}"'} / ${color #b2b2b2}${fs_size ~/Documents/Devices/'"${massparts[$j]}"'}'
                 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"${massparts[$j]}" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
                     then
 masslabel+='$color${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047}°C'
