@@ -619,87 +619,56 @@ own_window_argb_visual = true, --Прозрачность окна.
 own_window_argb_value = 150, --Уровень прозрачности.
 use_xft = true, } --Использование шрифтов X сервера.
 conky.text = [[ #Наполнение виджета.
-#Блок "Время".
-#Часы.
-${font Fantasque Sans Mono:bold:italic:size='"$(($font*2))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
-#Дата.
-${font Fantasque Sans Mono:bold:italic:size='"$(($font+2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$color
+#Блок "Часы".
+${font Fantasque Sans Mono:size='"$(($font*2))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
+#Блок "Дата".
+${font Fantasque Sans Mono:size='"$(($font+2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$color
 #Погода.
-${font Noto Sans Symbols:bolt:size='"$(($font-2))"'}${execi 3600 curl wttr.in/?format=\047%l,+%t+(%f)\\n%h+(%p),+%w,+%P\047}$font
+${font Noto Sans Symbols:bolt:size='"$(($font-2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$color$font
+#Блок "Погода".
+$alignc${execi 3600 curl wttr.in/?format=\047%l,+%t+(%f)\047}$font
 #Блок "Система".
-#Разделитель.
-${color #f92b2b}Система${hr 3}$color
-#Ядро.
-${color #b2b2b2}Ядро:$color$alignr$kernel
-#Время в сети.
-${color #b2b2b2}Время в сети:$color$alignr$uptime
+${color #f92b2b}SYS${hr 3}
+${color #b2b2b2}Kernel:$color$alignr$kernel
+${color #b2b2b2}PC works:$color$alignr$uptime
 #Блок "ЦП".
-#Разделитель.
-${color #f92b2b}ЦП${hr 3}$color
-#Нагрузка ЦП.
-${color #b2b2b2}Нагрузка ЦП:$color$alignr$cpu %
-#Частота ЦП.
-${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz'"${coremassconf[@]}"'
+${color #f92b2b}CPU${hr 3}
+${color #b2b2b2}$cpu%$color$alignc${cpugraph '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t}$alignr$freq MHz'"${coremassconf[@]}"'
+${color #b2b2b2}${hr 2}
+${color #b2b2b2}Process ${color #f92b2b}$alignc PID $color$alignr Used
+$color${hr 1}
+${color #b2b2b2}${top name 1} ${color #f92b2b}$alignc ${top pid 1} $color$alignr ${top cpu 1}
+${color #b2b2b2}${top name 2} ${color #f92b2b}$alignc ${top pid 2}$color$alignr ${top cpu 2}
+${color #b2b2b2}${top name 3} ${color #f92b2b}$alignc ${top pid 3}$color$alignr ${top cpu 3}
+${color #b2b2b2}${top name 4} ${color #f92b2b}$alignc ${top pid 4}$color$alignr ${top cpu 4}
+${color #b2b2b2}${top name 5} ${color #f92b2b}$alignc ${top pid 5}$color$alignr ${top cpu 5}
 #Блок "Cкорость вращения кулеров (вентиляторов)".
 ${color #f92b2b}FAN${hr 3}
 $color${execi 10 sensors | grep -i fan}'"$nvidiac"'
 #Блок "ОЗУ".
-#Разделитель.
-${color #f92b2b}ОЗУ${hr 3}$color
-#ОЗУ.
-${color #b2b2b2}ОЗУ:$alignr$memmax / ${color #f92b2b}$mem / $color$memeasyfree
-#Полоса загрузки ОЗУ.
-$memperc%${membar 4}
+${color #f92b2b}RAM${hr 3}$color
+$memperc% ${memgraph '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t} $alignr${color #f92b2b}$mem / $color$memeasyfree / ${color #b2b2b2}$memmax
+${color #b2b2b2}${hr 2}
+${color #b2b2b2}Process ${color #f92b2b}$alignc PID $color$alignr Used
+$color${hr 1}
+${color #b2b2b2}${top_mem name 1} ${color #f92b2b}$alignc ${top_mem pid 1} $color$alignr ${top_mem mem 1}
+${color #b2b2b2}${top_mem name 2} ${color #f92b2b}$alignc ${top_mem pid 2}$color$alignr ${top_mem mem 2}
+${color #b2b2b2}${top_mem name 3} ${color #f92b2b}$alignc ${top_mem pid 3}$color$alignr ${top_mem mem 3}
+${color #b2b2b2}${top_mem name 4} ${color #f92b2b}$alignc ${top_mem pid 4}$color$alignr ${top_mem mem 4}
+${color #b2b2b2}${top_mem name 5} ${color #f92b2b}$alignc ${top_mem pid 5}$color$alignr ${top_mem mem 5}
 #Блок "Раздел подкачки".
-#Разделитель.
-${color #f92b2b}Раздел подкачки${hr 3}$color
-#Задействовано Подкачки.
-${color #b2b2b2}Задействовано:$color$alignr$swap / $swapmax
-#Полоса загрузки Подкачки.
-$swapperc%${swapbar 4}
+${color #f92b2b}SWAP${hr 3}$color
+$swapperc% ${swapbar '"$font"','"$(($font*6))"'} $alignr${color #f92b2b}$swap / $color$swapfree / ${color #b2b2b2}$swapmax
 #Блок "Сеть".
-#Разделитель.
-${color #f92b2b}Сеть${hr 3}$color
-#Скорость приёма ('"$netdev"' определенно командой "ls /sys/class/net" в терминале).
-${color #b2b2b2}Скорость приёма:$color$alignr${upspeedf '"$netdev"'}
-#Скорость отдачи.
-${color #b2b2b2}Скорость отдачи:$color$alignr${downspeedf '"$netdev"'}
-#IP адрес.
-${color #b2b2b2}IP адрес:$color$alignr${curl eth0.me}
-#Блок "Процессы".
-#Разделитель.
-${color #f92b2b}Процессы${hr 3}$color
-#Таблица процессов.
-${color #b2b2b2}Название$alignr PID | CPU% | MEM% $color
-#Информация о процессе 1.
-${top name 1} $alignr ${top pid 1}|${top cpu 1}|${top mem 1}
-#Информация о процессе 2.
-${top name 2} $alignr ${top pid 2}|${top cpu 2}|${top mem 2}
-#Информация о процессе 3.
-${top name 3} $alignr ${top pid 3}|${top cpu 3}|${top mem 3}
-#Информация о процессе 4.
-${top name 4} $alignr ${top pid 4}|${top cpu 4}|${top mem 4}
-#Информация о процессе 5.
-${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}
+${color #f92b2b}NET${hr 3}$color
+${color #b2b2b2}IP:$alignr${curl eth0.me}$color↑${upspeedf '"$netdev"' }${upspeedgraph '"$netdev"' '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t}$alignr↓${downspeedf '"$netdev"'}${downspeedgraph '"$netdev"' '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t}
 #Блок "Системный диск".
-#Разделитель root.
-${color #f92b2b}/root${hr 3}$color'"$sysdisktemp"'
-#Общее/Занято/Свободно root.
-${color #b2b2b2}Объём:$alignr${fs_size /root} / ${color #f92b2b}${fs_used /root} / $color${fs_free /root}
-#Полоса загрузки root.
-$color(${fs_type /root})${fs_bar 4 /root}
-#Разделитель var.
-${color #f92b2b}/var${hr 3}$color'"$sysdisktemp"'
-#Общее/Занято/Свободно var.
-${color #b2b2b2}Объём:$alignr${fs_size /var} / ${color #f92b2b}${fs_used /var} / $color${fs_free /var}
-#Полоса загрузки var.
-$color(${fs_type /var})${fs_bar 4 /var}
-#Разделитель home.
-${color #f92b2b}/home${hr 3}$color'"$sysdisktemp"'
-#Общее/Занято/Свободно home.
-${color #b2b2b2}Объём:$alignr${fs_size /home} / ${color #f92b2b}${fs_used /home} / $color${fs_free /home}
-#Полоса загрузки home.
-$color(${fs_type /home})${fs_bar 4 /home}'"${masslabel[@]}"'
+${color #f92b2b}/root${hr 3}$color
+(${fs_type /root})${fs_bar 10,50 /root} $alignr${color #f92b2b}${fs_used /root} / $color${fs_free /root} / ${color #b2b2b2}${fs_size /root}
+${color #f92b2b}/var${hr 3}$color
+(${fs_type /var})${fs_bar 10,50 /var} $alignr${color #f92b2b}${fs_used /var} / $color${fs_free /var} / ${color #b2b2b2}${fs_size /var}
+${color #f92b2b}/home${hr 3}$color
+(${fs_type /home})${fs_bar 10,50 /home} $alignr${color #f92b2b}${fs_used /home} / $color${fs_free /home} / ${color #b2b2b2}${fs_size /home}'"${masslabel[@]}"'
 ]]' > /mnt/home/"$username"/.config/conky/conky.conf
 #
 #Создание bash_profile.
