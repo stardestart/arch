@@ -513,9 +513,7 @@ ${color #f92b2b}~/Documents/Devices/'"${massparts[$j]}"'${hr 3}$color'
 masslabel+='$color${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047}°C'
                 fi
 masslabel+='
-${color #b2b2b2}Объём:$alignr${fs_size ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${color #f92b2b}${fs_used ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / $color${fs_free ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}
-(${fs_type ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'})${fs_bar 4 ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}'
-
+(${fs_type ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'})${fs_bar '"$font"','"$(($font*6))"' ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}'$alignr${fs_used ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${color #f92b2b}${fs_free ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / $color${fs_size ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}
         fi
     done
 #
