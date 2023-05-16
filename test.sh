@@ -583,7 +583,7 @@ ${color #b2b2b2}Температура ядер ЦП:$color'
 for (( i=0, j=1; j<="${#coremass[*]}"; i++, j++ ))
     do
         coremassconf+='
-$alignr${execi 10 sensors | grep "Core '$i':" | awk \047{print $1, $2, $3}\047}'
+${color #b2b2b2}${execi 10 sensors | grep "Core '$i':" | awk \047{print $1, $2}\047}$color$alignr${execi 10 sensors | grep "Core '$i':" | awk \047{print $3}\047}'
     done
 fi
 #
