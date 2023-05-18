@@ -1342,27 +1342,31 @@ iconTheme=ePapirus-Dark
 alignment=Right
 click="sh -c \"x=pidof picom; if [ -n x ]; then killall picom; else picom -b; fi\""
 command=echo \xd83d\xde80
-runWithBash=true
+maxWidth='"$(($font*2))"'
 type=customcommand
 [customcommand2]
 alignment=Right
 click="sh -c \"sed -i \047s/own_window_type/--own_window_type/\047 ~/.config/conky/conky.conf; sed -i \047s/----//\047 ~/.config/conky/conky.conf\""
 command=echo \xd83d\xdec8
+maxWidth='"$(($font*2))"'
 type=customcommand
 [customcommand3]
 alignment=Right
 click=xed /help.txt
 command=echo \x2753
+maxWidth='"$(($font*2))"'
 type=customcommand
 [customcommand4]
 alignment=Right
 click=reboot
 command=echo \x2b6f
+maxWidth='"$(($font*2))"'
 type=customcommand
 [customcommand5]
 alignment=Right
 click=poweroff
 command=echo \x23fb
+maxWidth='"$(($font*2))"'
 type=customcommand
 [kbindicator]
 alignment=Right
