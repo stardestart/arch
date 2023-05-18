@@ -590,6 +590,7 @@ fanconky='
 #Блок "Cкорость вращения кулеров (вентиляторов)".
 ${color #f92b2b}FAN${hr 3}
 $color${execi 10 sensors | grep -i fan}'
+fi
 #
 #Параметры для видеокарт nvidia.
 if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
