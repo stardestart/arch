@@ -78,6 +78,9 @@ rootsize=""
 #Переменная сохранит размер var-раздела
 varsize=""
 #
+#
+fanconky=""
+#
 #Определяем процессор.
 echo -e "\033[36mОпределяем процессор.\033[0m"
 if [ -n "$(lscpu | grep -i amd)" ]; then microcode="\ninitrd /amd-ucode.img"
@@ -204,8 +207,8 @@ varsize=$(bc << EOF
 $rootsize/2
 EOF
 )
-varsize="$varsize"G
 if [ $rootsize -lt 20 ]; then rootsize=20; fi
+varsize="$varsize"G
 echo -e "\033[36mРазмер var-раздела: $varsize\033[0m"
 rootsize="$rootsize"G
 echo -e "\033[36mРазмер root-раздела: $rootsize\033[0m"
@@ -325,6 +328,9 @@ pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware
 #
 #Добавление модулей в mkinitcpio.
 arch-chroot /mnt sed -i 's/HOOKS=(base udev/HOOKS=(base udev resume/' /etc/mkinitcpio.conf
+#
+#
+echo 'btusb' > /mnt/etc/modules-load.d/modules.conf
 #
 #Установка часового пояса.
 echo -e "\033[36mУстановка часового пояса.\033[0m"
@@ -473,8 +479,7 @@ arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3statu
 #Проверка наличия температурного датчика у системного диска.
 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"$sysdisk" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
     then
-sysdisktemp+='
-${color #b2b2b2}Температура:$color$alignr${execi 10 sudo smartctl -al scttempsts /dev/'"$sysdisk"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047}°C'
+sysdisktemp+='$color${execi 10 sudo smartctl -al scttempsts /dev/'"$sysdisk"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047}°C'
 fi
 #
 #Поиск не смонтированных разделов, проверка наличия у них температурного датчика и метки.
@@ -490,19 +495,17 @@ for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
                     else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/Documents/Devices/"${massparts[$j]}"
                 fi
 masslabel+='
-${color #f92b2b}/home/'"$username"'/'"${massparts[$j]}"'${hr 3}'
+${color #f92b2b}~/Documents/Devices/'"${massparts[$j]}"'${hr 3}'
                 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"${massparts[$j]}" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
                     then
-masslabel+='
-${color #b2b2b2}Температура:$color$alignr${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047}°C'
+masslabel+='$color$alignr${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047}°C'
                 fi
 masslabel+='
-${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"${massparts[$j]}"'} / ${color #f92b2b}${fs_used /home/'"$username"'/'"${massparts[$j]}"'} / $color${fs_free /home/'"$username"'/'"${massparts[$j]}"'}
-(${fs_type /home/'"$username"'/'"${massparts[$j]}"'})${fs_bar 4 /home/'"$username"'/'"${massparts[$j]}"'}'
+${color #f92b2b}~/Documents/Devices/'"${massparts[$j]}"'${hr 3}$color
+(${fs_type ~/Documents/Devices/'"${massparts[$j]}"'})${fs_bar '"$font"','"$(($font*6))"' ~/Documents/Devices/'"${massparts[$j]}"'} $alignr${color #f92b2b}${fs_used ~/Documents/Devices/'"${massparts[$j]}"'} / $color${fs_free ~/Documents/Devices/'"${massparts[$j]}"'} / ${color #b2b2b2}${fs_size ~/Documents/Devices/'"${massparts[$j]}"'}'
                 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"${massparts[$j]}" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
                     then
-masslabel+='
-${color #b2b2b2}Температура:$color$alignr${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047}°C'
+masslabel+='$color${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047}°C'
                 fi
             else
                 if [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "vfat" ];
@@ -510,15 +513,13 @@ ${color #b2b2b2}Температура:$color$alignr${execi 10 sudo smartctl -al
                     else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
                 fi
 masslabel+='
-${color #f92b2b}/home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'${hr 3}'
+${color #f92b2b}~/Documents/Devices/'"${massparts[$j]}"'${hr 3}$color'
                 if [ -n "$(arch-chroot /mnt smartctl -al scttempsts /dev/"${massparts[$j]}" | grep -i temperature: -m 1 | awk '!($NF="")' | awk '{print $NF}')" ];
                     then
-masslabel+='
-${color #b2b2b2}Температура:$color$alignr${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047}°C'
+masslabel+='$color${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature: -m 1 | awk \047!($NF="")\047 | awk \047{print $NF}\047}°C'
                 fi
 masslabel+='
-${color #b2b2b2}Объём:$alignr${fs_size /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${color #f92b2b}${fs_used /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / $color${fs_free /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}
-(${fs_type /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'})${fs_bar 4 /home/'"$username"'/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}'
+(${fs_type ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'})${fs_bar '"$font"','"$(($font*6))"' ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}'$alignr${fs_used ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${color #f92b2b}${fs_free ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / $color${fs_size ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}
         fi
     done
 #
@@ -578,13 +579,20 @@ echo -e "\033[36mФормируется конфиг conky.\033[0m"
 if [ -n "$(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs)" ]; then
 coremass=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 coremassconf+='
-#Температура ядер ЦП.
-${color #b2b2b2}Температура ядер ЦП:$color'
+#Температура ядер ЦП.'
 for (( i=0, j=1; j<="${#coremass[*]}"; i++, j++ ))
     do
         coremassconf+='
-$alignr${execi 10 sensors | grep "Core '$i':" | awk \047{print $1, $2, $3}\047}'
+${color #b2b2b2}${execi 10 sensors | grep "Core '$i':" | awk \047{print $1, $2}\047}$color$alignr${execi 10 sensors | grep "Core '$i':" | awk \047{print $3}\047}'
     done
+fi
+#
+#
+if [ -n "$(arch-chroot /mnt sensors | grep -i fan)" ]; then
+fanconky='
+#Блок "Cкорость вращения кулеров (вентиляторов)".
+${color #f92b2b}FAN${hr 3}
+$color${execi 10 sensors | grep -i fan}'
 fi
 #
 #Параметры для видеокарт nvidia.
@@ -601,104 +609,69 @@ fi
 mkdir -p /mnt/home/"$username"/.config/conky
 echo -e 'conky.config = { --Внешний вид.
 alignment = "top_right", --Располжение виджета.
-border_inner_margin = '"$font"', --Отступ от внутренних границ.
-border_outer_margin = '"$font"', --Отступ от края окна.
+border_inner_margin = '"$(($font/2))"', --Отступ от внутренних границ.
+border_outer_margin = '"$(($font/2))"', --Отступ от края окна.
 cpu_avg_samples = 2, --Усреднение значений нагрузки.
 default_color = "#2bf92b", --Цвет по умолчанию.
 double_buffer = true, --Включение двойной буферизации.
 draw_shades = false, --Оттенки.
-font = "Fantasque Sans Mono:bold:size='"$(($font-2))"'", --Шрифт и размер шрифта.
+font = "Fantasque Sans Mono:size='"$(($font-2))"'", --Шрифт и размер шрифта.
 gap_y = '"$(($font*5))"', --Отступ сверху.
-gap_x = 40, --Отступ от края.
+gap_x = '"$(($font*2))"', --Отступ от края.
 own_window = true, --Собственное окно.
 own_window_class = "Conky", --Класс окна.
 own_window_type = "override", --Тип окна.
+--own_window_type = "desktop", --Тип окна.
 own_window_hints = "undecorated, sticky, above, skip_taskbar, skip_pager", --Задаем эфекты отображения окна.
 own_window_argb_visual = true, --Прозрачность окна.
 own_window_argb_value = 150, --Уровень прозрачности.
 use_xft = true, } --Использование шрифтов X сервера.
 conky.text = [[ #Наполнение виджета.
-#Блок "Время".
-#Часы.
-${font Fantasque Sans Mono:bold:italic:size='"$(($font*3))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
-#Дата.
-${font Fantasque Sans Mono:italic:size='"$(($font*2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$color
-#Погода.
-${font Noto Sans Symbols:bolt:size='"$(($font-2))"'}${execi 3600 curl wttr.in/?format=\047%l,+%t+(%f)\\n%h+(%p),+%w,+%P\047}$font
+#Блок "Часы".
+${font Fantasque Sans Mono:size='"$(($font*2))"'}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
+#Блок "Дата".
+${font Fantasque Sans Mono:size='"$(($font+2))"'}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$color$font
+#Блок "Погода".
+$alignc${execi 3600 curl wttr.in/?format=\047%l,+%t+(%f)\047}$font
 #Блок "Система".
-#Разделитель.
-${color #f92b2b}Система${hr 3}$color
-#Ядро.
-${color #b2b2b2}Ядро:$color$alignr$kernel
-#Время в сети.
-${color #b2b2b2}Время в сети:$color$alignr$uptime
+${color #f92b2b}SYS${hr 3}
+${color #b2b2b2}Kernel:$color$alignr$kernel
+${color #b2b2b2}PC works:$color$alignr$uptime
 #Блок "ЦП".
-#Разделитель.
-${color #f92b2b}ЦП${hr 3}$color
-#Нагрузка ЦП.
-${color #b2b2b2}Нагрузка ЦП:$color$alignr$cpu %
-#Частота ЦП.
-${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz'"${coremassconf[@]}"'
-#Блок "Cкорость вращения кулеров (вентиляторов)".
-${color #f92b2b}FAN${hr 3}
-$color${execi 10 sensors | grep -i fan}'"$nvidiac"'
+${color #f92b2b}CPU${hr 3}
+${color #b2b2b2}$cpu%$color$alignc${cpugraph '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t}$alignr$freq MHz'"${coremassconf[@]}"'
+${color #b2b2b2}${hr 2}
+${color #b2b2b2}Process ${color #f92b2b}$alignc PID $color$alignr Used
+$color${hr 1}
+${color #b2b2b2}${top name 1} ${color #f92b2b}$alignc ${top pid 1} $color$alignr ${top cpu 1}
+${color #b2b2b2}${top name 2} ${color #f92b2b}$alignc ${top pid 2}$color$alignr ${top cpu 2}
+${color #b2b2b2}${top name 3} ${color #f92b2b}$alignc ${top pid 3}$color$alignr ${top cpu 3}
+${color #b2b2b2}${top name 4} ${color #f92b2b}$alignc ${top pid 4}$color$alignr ${top cpu 4}
+${color #b2b2b2}${top name 5} ${color #f92b2b}$alignc ${top pid 5}$color$alignr ${top cpu 5}'"$fanconky"''"$nvidiac"'
 #Блок "ОЗУ".
-#Разделитель.
-${color #f92b2b}ОЗУ${hr 3}$color
-#ОЗУ.
-${color #b2b2b2}ОЗУ:$alignr$memmax / ${color #f92b2b}$mem / $color$memeasyfree
-#Полоса загрузки ОЗУ.
-$memperc%${membar 4}
+${color #f92b2b}RAM${hr 3}$color
+$memperc% ${memgraph '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t} $alignr${color #f92b2b}$mem / $color$memeasyfree / ${color #b2b2b2}$memmax
+${color #b2b2b2}${hr 2}
+${color #b2b2b2}Process ${color #f92b2b}$alignc PID $color$alignr Used
+$color${hr 1}
+${color #b2b2b2}${top_mem name 1} ${color #f92b2b}$alignc ${top_mem pid 1} $color$alignr ${top_mem mem 1}
+${color #b2b2b2}${top_mem name 2} ${color #f92b2b}$alignc ${top_mem pid 2}$color$alignr ${top_mem mem 2}
+${color #b2b2b2}${top_mem name 3} ${color #f92b2b}$alignc ${top_mem pid 3}$color$alignr ${top_mem mem 3}
+${color #b2b2b2}${top_mem name 4} ${color #f92b2b}$alignc ${top_mem pid 4}$color$alignr ${top_mem mem 4}
+${color #b2b2b2}${top_mem name 5} ${color #f92b2b}$alignc ${top_mem pid 5}$color$alignr ${top_mem mem 5}
 #Блок "Раздел подкачки".
-#Разделитель.
-${color #f92b2b}Раздел подкачки${hr 3}$color
-#Задействовано Подкачки.
-${color #b2b2b2}Задействовано:$color$alignr$swap / $swapmax
-#Полоса загрузки Подкачки.
-$swapperc%${swapbar 4}
+${color #f92b2b}SWAP${hr 3}$color
+$swapperc% ${swapbar '"$font"','"$(($font*6))"'} $alignr${color #f92b2b}$swap / $color$swapfree / ${color #b2b2b2}$swapmax
 #Блок "Сеть".
-#Разделитель.
-${color #f92b2b}Сеть${hr 3}$color
-#Скорость приёма ('"$netdev"' определенно командой "ls /sys/class/net" в терминале).
-${color #b2b2b2}Скорость приёма:$color$alignr${upspeedf '"$netdev"'}
-#Скорость отдачи.
-${color #b2b2b2}Скорость отдачи:$color$alignr${downspeedf '"$netdev"'}
-#IP адрес.
-${color #b2b2b2}IP адрес:$color$alignr${curl eth0.me}
-#Блок "Процессы".
-#Разделитель.
-${color #f92b2b}Процессы${hr 3}$color
-#Таблица процессов.
-${color #b2b2b2}Название$alignr PID | CPU% | MEM% $color
-#Информация о процессе 1.
-${top name 1} $alignr ${top pid 1}|${top cpu 1}|${top mem 1}
-#Информация о процессе 2.
-${top name 2} $alignr ${top pid 2}|${top cpu 2}|${top mem 2}
-#Информация о процессе 3.
-${top name 3} $alignr ${top pid 3}|${top cpu 3}|${top mem 3}
-#Информация о процессе 4.
-${top name 4} $alignr ${top pid 4}|${top cpu 4}|${top mem 4}
-#Информация о процессе 5.
-${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}
+${color #f92b2b}NET${hr 3}$color
+${color #b2b2b2}IP:$alignr${curl eth0.me}$color↑${upspeedf '"$netdev"'} ${upspeedgraph '"$netdev"' '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t} $alignr↓${downspeedf '"$netdev"'} ${downspeedgraph '"$netdev"' '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t}
 #Блок "Системный диск".
-#Разделитель root.
 ${color #f92b2b}/root${hr 3}$color'"$sysdisktemp"'
-#Общее/Занято/Свободно root.
-${color #b2b2b2}Объём:$alignr${fs_size /root} / ${color #f92b2b}${fs_used /root} / $color${fs_free /root}
-#Полоса загрузки root.
-$color(${fs_type /root})${fs_bar 4 /root}
-#Разделитель var.
+(${fs_type /root})${fs_bar '"$font"','"$(($font*6))"' /root} $alignr${color #f92b2b}${fs_used /root} / $color${fs_free /root} / ${color #b2b2b2}${fs_size /root}
 ${color #f92b2b}/var${hr 3}$color'"$sysdisktemp"'
-#Общее/Занято/Свободно var.
-${color #b2b2b2}Объём:$alignr${fs_size /var} / ${color #f92b2b}${fs_used /var} / $color${fs_free /var}
-#Полоса загрузки var.
-$color(${fs_type /var})${fs_bar 4 /var}
-#Разделитель home.
+(${fs_type /var})${fs_bar '"$font"','"$(($font*6))"' /var} $alignr${color #f92b2b}${fs_used /var} / $color${fs_free /var} / ${color #b2b2b2}${fs_size /var}
 ${color #f92b2b}/home${hr 3}$color'"$sysdisktemp"'
-#Общее/Занято/Свободно home.
-${color #b2b2b2}Объём:$alignr${fs_size /home} / ${color #f92b2b}${fs_used /home} / $color${fs_free /home}
-#Полоса загрузки home.
-$color(${fs_type /home})${fs_bar 4 /home}'"${masslabel[@]}"'
+(${fs_type /home})${fs_bar '"$font"','"$(($font*6))"' /home} $alignr${color #f92b2b}${fs_used /home} / $color${fs_free /home} / ${color #b2b2b2}${fs_size /home}'"${masslabel[@]}"'
 ]]' > /mnt/home/"$username"/.config/conky/conky.conf
 #
 #Создание bash_profile.
@@ -1310,6 +1283,8 @@ Print Screen -- Снимок экрана.
 #
 🚀 -- Включить/Выключить визуальные эффекты.
 #
+🛈 -- Информация о системе.
+#
 ⭯ -- Перезагрузить ПК.
 #
 ⏻ -- Выключить ПК.
@@ -1382,26 +1357,35 @@ iconTheme=ePapirus-Dark
 alignment=Right
 click="sh -c \"x=pidof picom; if [ -n x ]; then killall picom; else picom -b; fi\""
 command=echo \xd83d\xde80
-runWithBash=true
+maxWidth='"$(($font*2))"'
 type=customcommand
 [customcommand2]
 alignment=Right
-click=xed /help.txt
-command=echo \x2753
+click="sh -c \"sed -i \047s/own_window_type/--own_window_type/\047 ~/.config/conky/conky.conf; sed -i \047s/----//\047 ~/.config/conky/conky.conf\""
+command=echo \xd83d\xdec8
+maxWidth='"$(($font*2))"'
 type=customcommand
 [customcommand3]
 alignment=Right
-click=reboot
-command=echo \x2b6f
+click=xed /help.txt
+command=echo \x2753
+maxWidth='"$(($font*2))"'
 type=customcommand
 [customcommand4]
 alignment=Right
+click=reboot
+command=echo \x2b6f
+maxWidth='"$(($font*2))"'
+type=customcommand
+[customcommand5]
+alignment=Right
 click=poweroff
 command=echo \x23fb
+maxWidth='"$(($font*2))"'
 type=customcommand
 [kbindicator]
 alignment=Right
-keeper_type=application
+keeper_type=window
 show_caps_lock=true
 show_layout=true
 show_num_lock=true
@@ -1428,7 +1412,7 @@ lineCount=1
 lockPanel=false
 opacity=80
 panelSize='"$(($font*3))"'
-plugins=mainmenu, spacer, quicklaunch, kbindicator, volume, worldclock, customcommand, customcommand2, customcommand3, customcommand4
+plugins=mainmenu, spacer, quicklaunch, kbindicator, worldclock, volume, customcommand, customcommand2, customcommand3, customcommand4, customcommand5
 position=Top
 reserve-space=true
 show-delay=0
@@ -1448,24 +1432,24 @@ type=volume
 [worldclock]
 alignment=Right
 autoRotate=true
-customFormat="\047<b>\047HH:mm:ss\047</b><br/><font size=\\"-2\\">\047ddd, d MMM yyyy\047<br/>\047TT\047</font>\047"
+customFormat="\047<b>\047HH:mm:ss\047</b><br/><font size=\\-2\\>\047ddd, d MMM yyyy\047<br/>\047TT\047</font>\047"
 dateFormatType=custom
-dateLongNames=true
+dateLongNames=false
 datePadDay=true
 datePosition=after
-dateShowDoW=true
-dateShowYear=true
+dateShowDoW=false
+dateShowYear=false
 defaultTimeZone=
 formatType=custom-timeonly
-showDate=true
-showTimezone=false
+showDate=false
+showTimezone=true
 showTooltip=false
 showWeekNumber=true
 timeAMPM=false
 timePadHour=true
 timeShowSeconds=true
 timeZones\size=0
-timezoneFormatType=iana
+timezoneFormatType=short
 timezonePosition=below
 type=worldclock
 useAdvancedManualFormat=false' > /mnt/home/"$username"/.config/lxqt/panel.conf
@@ -1492,6 +1476,8 @@ BackgroundNormal=56,56,56
 BackgroundAlternate=50,50,50
 ForegroundNormal=238,238,238
 ForegroundInactive=178,178,178' > /mnt/home/"$username"/.config/kdeglobals
+#
+mkdir -p /mnt/home/"$username"/Documents/{Downloads,Public,Desktop,Music,Pictures,Templates,Videos}
 #
 #Создание конфига samba.
 mkdir -p /mnt/home/"$username"/Documents/Public/{Out,In}
@@ -1645,20 +1631,12 @@ SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.in
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
 echo -e '#!/bin/bash
 sleep 10
-nmcli device wifi connect \047'"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)"'\047 password \047'"$(cat /var/lib/iwd/"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | grep --color=never Passphrase= | sed s/Passphrase=//)"'\047
+nmcli device wifi connect "'"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)"'" password "'"$(grep Passphrase= /var/lib/iwd/"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | sed s/Passphrase=//)"'"
 echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/0
 while [[ "$(sar 1 5 | awk \047{print $NF}\047 | awk -F \047,\047 \047{print $1}\047 | tail -n 1)" -lt 20 ]]; do
     echo "\033[31mЦП занят!\033[0m" > /dev/pts/0
     sleep 5
 done
-#
-#Создание конфига xdg-user-dirs.
-echo -e "\033[36mСоздание конфига xdg-user-dirs.\033[0m"
-sudo pacman -Sy xdg-user-dirs --noconfirm
-sudo sh -c \047echo "DOCUMENTS=Documents
-DOWNLOAD=Documents/Downloads
-PUBLICSHARE=Documents/Public" > /etc/xdg/user-dirs.defaults\047
-LC_ALL=C xdg-user-dirs-update --force
 #
 #Обнаружение кулеров.
 sudo sensors-detect --auto > /dev/pts/0
@@ -1776,6 +1754,17 @@ echo '-w /etc/group -p wa
 -w /etc/passwd -p wa
 -w /etc/shadow -p wa
 -w /etc/sudoers -p wa' > /mnt/etc/audit/rules.d/rules.rules
+#
+#Создание конфига xdg-user-dirs.
+echo -e "\033[36mСоздание конфига xdg-user-dirs.\033[0m"
+echo 'XDG_DOCUMENTS_DIR="$HOME/Documents"
+XDG_DOWNLOAD_DIR="$HOME/Documents/Downloads"
+XDG_PUBLICSHARE_DIR="$HOME/Documents/Public"
+XDG_DESKTOP_DIR="$HOME/Documents/Desktop"
+XDG_MUSIC_DIR="$HOME/Documents/Music"
+XDG_PICTURES_DIR="$HOME/Documents/Pictures"
+XDG_TEMPLATES_DIR="$HOME/Documents/Templates"
+XDG_VIDEOS_DIR="$HOME/Documents/Videos"' > /mnt/home/"$username"/.config/user-dirs.dirs
 #
 chmod 600 /mnt/etc/ssh/sshd_config
 #
