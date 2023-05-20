@@ -499,6 +499,7 @@ ${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temp
 masslabel+='
 $color${execi 10 sudo smartctl -al scttempsts /dev/sdb | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}°C ${color #f92b2b}~/Documents/Devices/'"${massparts[$j]}"'${hr 3}$color
 (${fs_type ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'})${fs_bar '"$font"','"$(($font*6))"' ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}$alignr${fs_used ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${color #f92b2b}${fs_free ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / $color${fs_size ~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}'
+        fi
     done
 #
 #Копирование файла автоматического монтирования разделов.
