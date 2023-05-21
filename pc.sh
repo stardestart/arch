@@ -1649,27 +1649,15 @@ gsettings set org.gnome.desktop.wm.preferences titlebar-font \047Fantasque Sans 
 gsettings set org.gnome.libgnomekbd.indicator font-size '"$font"'
 gsettings set org.gnome.meld custom-font \047monospace, '"$font"'\047
 if [ -n "$(xinput list | grep -i touchpad)" ]; then
-sudo pacman -S xf86-input-synaptics --noconfirm > /dev/pts/0
-sudo echo \047Section "InputClass"
-    Identifier "touchpad"
-    Driver "synaptics"
-    MatchIsTouchpad "on"
-        Option "TapButton1" "1"
-        Option "TapButton2" "3"
-        Option "TapButton3" "2"
-        Option "VertEdgeScroll" "on"
-        Option "VertTwoFingerScroll" "on"
-        Option "HorizEdgeScroll" "on"
-        Option "HorizTwoFingerScroll" "on"
-        Option "CircularScrolling" "on"
-        Option "CircScrollTrigger" "2"
-        Option "EmulateTwoFingerMinZ" "40"
-        Option "EmulateTwoFingerMinW" "8"
-        Option "CoastingSpeed" "0"
-        Option "FingerLow" "30"
-        Option "FingerHigh" "50"
-        Option "MaxTapTime" "125"
-EndSection\047 > /etc/X11/xorg.conf.d/70-synaptics.conf
+sudo pacman -S xf86-input-libinput --noconfirm > /dev/pts/0
+sudo tee -a /etc/X11/xorg.conf.d/00-keyboard.conf <<< \047
+Section "InputClass"
+Identifier "libinput touchpad catchall"
+MatchIstouchpad "on"
+MatchDevicePath "/dev/input/event*"
+Driver "libinput"
+Option "Tapping" "on"
+EndSection\047
 fi
 #
 #Настройка брандмауэра.
