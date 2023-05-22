@@ -424,15 +424,20 @@ fs.suid_dumpable=0
 kernel.core_uses_pid=1
 kernel.ctrl-alt-del=0
 kernel.dmesg_restrict=1
+kernel.kexec_load_disabled=1
 kernel.kptr_restrict=2
 kernel.perf_event_paranoid=3
 kernel.randomize_va_space=2
 kernel.unprivileged_bpf_disabled=1
 net.core.bpf_jit_harden=2
+net.core.netdev_max_backlog=16384
+net.core.somaxconn=8192
 net.ipv4.conf.all.accept_redirects=0
 net.ipv4.conf.all.log_martians=1
 net.ipv4.conf.all.rp_filter=1
-net.ipv4.conf.all.send_redirects=0
+net.ipv4.conf.all.secure_redirects=0
+net.ipv6.conf.all.accept_redirects=0
+net.ipv6.conf.all.accept_source_route=0
 net.ipv4.conf.all.accept_source_route=0
 net.ipv4.conf.all.bootp_relay=0
 net.ipv4.conf.all.mc_forwarding=0
@@ -440,14 +445,31 @@ net.ipv4.conf.all.proxy_arp=0
 net.ipv4.conf.all.rp_filter=1
 net.ipv4.conf.all.send_redirects=0
 net.ipv4.conf.default.accept_redirects=0
+net.ipv6.conf.default.accept_redirects=0
 net.ipv4.conf.default.accept_source_route=0
+net.ipv6.conf.default.accept_source_route=0
+net.ipv4.conf.default.rp_filter=1
+net.ipv4.conf.default.secure_redirects=0
+net.ipv4.conf.default.send_redirects=0
+net.ipv4.icmp_echo_ignore_all=1
+net.ipv6.icmp.echo_ignore_all=1
 net.ipv4.icmp_echo_ignore_broadcasts=1
 net.ipv4.icmp_ignore_bogus_error_responses=1
+net.ipv4.tcp_fastopen=3
+net.ipv4.tcp_fin_timeout=10
+net.ipv4.tcp_keepalive_time=60
+net.ipv4.tcp_keepalive_intvl=10
+net.ipv4.tcp_keepalive_probes=6
+net.ipv4.tcp_max_syn_backlog=8192
+net.ipv4.tcp_max_tw_buckets=2000000
+net.ipv4.tcp_rfc1337=1
+net.ipv4.tcp_slow_start_after_idle=0
 net.ipv4.tcp_syncookies=1
-net.ipv6.conf.all.accept_redirects=0
-net.ipv6.conf.all.accept_source_route=0
-net.ipv6.conf.default.accept_redirects=0
-net.ipv6.conf.default.accept_source_route=0" > /mnt/etc/sysctl.d/99-sysctl.conf
+net.ipv4.tcp_timestamps=0
+net.ipv4.tcp_tw_reuse=1
+vm.dirty_ratio=10
+vm.dirty_background_ratio=5
+vm.vfs_cache_pressure=50" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установим видеодрайвер.
 echo -e "\033[36mУстановка видеодрайвера.\033[0m"
@@ -497,7 +519,7 @@ ${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temp
                     else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
                 fi
 masslabel+='
-$color${execi 10 sudo smartctl -al scttempsts /dev/sdb | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}°C ${color #f92b2b}~/Documents/Devices/'"${massparts[$j]}"'${hr 3}$color
+${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}°C ${color #f92b2b}~/Documents/Devices/'"${massparts[$j]}"'${hr 3}$color
 (${fs_type /home/'"$username"'/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'})${fs_bar '"$font"','"$(($font*6))"' /home/'"$username"'/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}$alignr${fs_used /home/'"$username"'/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${color #f92b2b}${fs_free /home/'"$username"'/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / $color${fs_size /home/'"$username"'/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}'
         fi
     done
