@@ -263,9 +263,9 @@ mkfs.ext4 /dev/"$sysdisk""$p6" -L home<<EOF
 y
 EOF
 mount /dev/"$sysdisk""$p4" /mnt
-mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
-mount --mkdir /dev/"$sysdisk""$p5" /mnt/var
-mount --mkdir /dev/"$sysdisk""$p6" /mnt/home
+mount -o nodev,noexec,nosuid --mkdir /dev/"$sysdisk""$p1" /mnt/boot
+mount -o nodev,nosuid --mkdir /dev/"$sysdisk""$p5" /mnt/var
+mount -o nodev,nosuid --mkdir /dev/"$sysdisk""$p6" /mnt/home
 swapon /dev/"$sysdisk""$p3"
     else
         echo -e "\033[36mUEFI boot.\033[0m"
@@ -1713,7 +1713,7 @@ usbguard generate-policy > /mnt/etc/usbguard/rules.conf
 #
 echo "* hard core 0" >> /mnt/etc/security/limits.conf
 #
-arch-chroot /mnt sed -i 's/umask 022/umask 027/' /etc/profile
+arch-chroot /mnt sed -i 's/umask 022/umask 077/' /etc/profile
 #
 #Удаленное включение компьютера с помощью Wake-on-LAN (WOL).
 echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"
