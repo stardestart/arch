@@ -309,9 +309,9 @@ mkfs.ext4 /dev/"$sysdisk""$p5" -L home<<EOF
 y
 EOF
 mount /dev/"$sysdisk""$p3" /mnt
-mount --mkdir /dev/"$sysdisk""$p1" /mnt/boot
-mount --mkdir /dev/"$sysdisk""$p4" /mnt/var
-mount --mkdir /dev/"$sysdisk""$p5" /mnt/home
+mount -o nodev,noexec,nosuid --mkdir /dev/"$sysdisk""$p1" /mnt/boot
+mount -o nodev,nosuid --mkdir /dev/"$sysdisk""$p4" /mnt/var
+mount -o nodev,nosuid --mkdir /dev/"$sysdisk""$p5" /mnt/home
 swapon /dev/"$sysdisk""$p2"
 fi
 #
@@ -507,16 +507,16 @@ for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
         if [ -z "$(lsblk -no LABEL /dev/"${massparts[$j]}")" ];
             then
                 if [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "vfat" ];
-                    then arch-chroot /mnt mount -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /home/"$username"/Documents/Devices/"${massparts[$j]}"
-                    else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/Documents/Devices/"${massparts[$j]}"
+                    then mount -o nodev,noexec,nosuid -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"${massparts[$j]}"
+                    else mount -o nodev,noexec,nosuid --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"${massparts[$j]}"
                 fi
 masslabel+='
 ${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}°C ${color #f92b2b}~/Documents/Devices/'"${massparts[$j]}"'${hr 3}$color
 (${fs_type /home/'"$username"'/Documents/Devices/'"${massparts[$j]}"'})${fs_bar '"$font"','"$(($font*6))"' /home/'"$username"'/Documents/Devices/'"${massparts[$j]}"'} $alignr${color #f92b2b}${fs_used /home/'"$username"'/Documents/Devices/'"${massparts[$j]}"'} / $color${fs_free /home/'"$username"'/Documents/Devices/'"${massparts[$j]}"'} / ${color #b2b2b2}${fs_size /home/'"$username"'/Documents/Devices/'"${massparts[$j]}"'}'
             else
                 if [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "vfat" ];
-                    then arch-chroot /mnt mount -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
-                    else arch-chroot /mnt mount --mkdir /dev/"${massparts[$j]}" /home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
+                    then mount -o nodev,noexec,nosuid -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
+                    else mount -o nodev,noexec,nosuid --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
                 fi
 masslabel+='
 ${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}°C ${color #f92b2b}~/Documents/Devices/'"${massparts[$j]}"'${hr 3}$color
@@ -1736,7 +1736,12 @@ XDG_PICTURES_DIR="$HOME/Documents/Pictures"
 XDG_TEMPLATES_DIR="$HOME/Documents/Templates"
 XDG_VIDEOS_DIR="$HOME/Documents/Videos"' > /mnt/home/"$username"/.config/user-dirs.dirs
 #
+#
 chmod 600 /mnt/etc/ssh/sshd_config
+#
+#
+echo '[charger]
+scaling_max_freq = '$(("$(sudo cat /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq)"/100*90))'' > /mnt/etc/auto-cpufreq.conf
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
