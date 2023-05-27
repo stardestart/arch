@@ -1663,6 +1663,10 @@ Option "Tapping" "on"
 EndSection\047
 fi
 #
+#
+sudo tee -a /etc/auto-cpufreq.conf <<< \047[charger]
+scaling_max_freq = \047$(("$(sudo cat /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq)"/100*90))\047\047
+#
 #Настройка брандмауэра.
 echo -e "\033[36mНастройка брандмауэра.\033[0m"
 sudo ufw default deny
@@ -1738,10 +1742,6 @@ XDG_VIDEOS_DIR="$HOME/Documents/Videos"' > /mnt/home/"$username"/.config/user-di
 #
 #
 chmod 600 /mnt/etc/ssh/sshd_config
-#
-#
-echo '[charger]
-scaling_max_freq = '$(("$(sudo cat /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq)"/100*90))'' > /mnt/etc/auto-cpufreq.conf
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
 echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
