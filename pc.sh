@@ -511,7 +511,7 @@ for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
                     else mount -o nodev,noexec,nosuid --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"${massparts[$j]}"
                 fi
 masslabel+='
-${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}°C ${color #f92b2b}~/Documents/Devices/'"${massparts[$j]}"'${hr 3}$color
+${execi 10 sudo smartctl -A /dev/'"${massparts[$j]}"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}${execi 10 sudo smartctl -A /dev/'"${massparts[$j]}"' | grep -i temperature: | awk \047{print $2}\047}°C ${color #f92b2b}~/Documents/Devices/'"${massparts[$j]}"'${hr 3}$color
 (${fs_type /home/'"$username"'/Documents/Devices/'"${massparts[$j]}"'})${fs_bar '"$font"','"$(($font*6))"' /home/'"$username"'/Documents/Devices/'"${massparts[$j]}"'} $alignr${color #f92b2b}${fs_used /home/'"$username"'/Documents/Devices/'"${massparts[$j]}"'} / $color${fs_free /home/'"$username"'/Documents/Devices/'"${massparts[$j]}"'} / ${color #b2b2b2}${fs_size /home/'"$username"'/Documents/Devices/'"${massparts[$j]}"'}'
             else
                 if [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "vfat" ];
@@ -519,8 +519,8 @@ ${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temp
                     else mount -o nodev,noexec,nosuid --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
                 fi
 masslabel+='
-${execi 10 sudo smartctl -al scttempsts /dev/'"${massparts[$j]}"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}°C ${color #f92b2b}~/Documents/Devices/'"${massparts[$j]}"'${hr 3}$color
-(${fs_type /home/'"$username"'/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'})${fs_bar '"$font"','"$(($font*6))"' /home/'"$username"'/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}$alignr${fs_used /home/'"$username"'/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${color #f92b2b}${fs_free /home/'"$username"'/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / $color${fs_size /home/'"$username"'/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}'
+${execi 10 sudo smartctl -A /dev/'"${massparts[$j]}"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}${execi 10 sudo smartctl -A /dev/'"${massparts[$j]}"' | grep -i temperature: | awk \047{print $2}\047}°C ${color #f92b2b}~/Documents/Devices/'"${massparts[$j]}"'${hr 3}$color
+(${fs_type /home/'"$username"'/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'})${fs_bar '"$font"','"$(($font*6))"' /home/'"$username"'/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}$alignr${fs_used /home/'"$username"'/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${color #f92b2b}${fs_free /home/'"$username"'/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'} / ${color #b2b2b2}${fs_size /home/'"$username"'/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'}'
         fi
     done
 #
@@ -667,11 +667,11 @@ $swapperc% ${swapbar '"$font"','"$(($font*6))"'} $alignr${color #f92b2b}$swap / 
 ${color #f92b2b}NET${hr 3}$color
 ${color #b2b2b2}IP:$alignr${curl eth0.me}$color↑${upspeedf '"$netdev"'} ${upspeedgraph '"$netdev"' '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t} $alignr↓${downspeedf '"$netdev"'} ${downspeedgraph '"$netdev"' '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t}
 #Блок "Системный диск".
-${color #b2b2b2}${execi 10 sudo smartctl -al scttempsts /dev/'"$sysdisk"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}°C ${color #f92b2b}/root${hr 3}$color
+${color #b2b2b2}${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature: | awk \047{print $2}\047}°C ${color #f92b2b}/root${hr 3}$color
 (${fs_type /root})${fs_bar '"$font"','"$(($font*6))"' /root} $alignr${color #f92b2b}${fs_used /root} / $color${fs_free /root} / ${color #b2b2b2}${fs_size /root}
-${execi 10 sudo smartctl -al scttempsts /dev/'"$sysdisk"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}°C ${color #f92b2b}/var${hr 3}$color
+${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature: | awk \047{print $2}\047}°C ${color #f92b2b}/var${hr 3}$color
 (${fs_type /var})${fs_bar '"$font"','"$(($font*6))"' /var} $alignr${color #f92b2b}${fs_used /var} / $color${fs_free /var} / ${color #b2b2b2}${fs_size /var}
-${execi 10 sudo smartctl -al scttempsts /dev/'"$sysdisk"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}°C ${color #f92b2b}/home${hr 3}$color
+${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature: | awk \047{print $2}\047}°C ${color #f92b2b}/home${hr 3}$color
 (${fs_type /home})${fs_bar '"$font"','"$(($font*6))"' /home} $alignr${color #f92b2b}${fs_used /home} / $color${fs_free /home} / ${color #b2b2b2}${fs_size /home}'"${masslabel[@]}"'
 ]]' > /mnt/home/"$username"/.config/conky/conky.conf
 #
@@ -1358,31 +1358,31 @@ iconTheme=ePapirus-Dark
 alignment=Right
 click="sh -c \"x=pidof picom; if [ -n x ]; then killall picom; else picom -b; fi\""
 command=echo \xd83d\xde80
-maxWidth='"$(($font*2))"'
+maxWidth='"$(($font*3))"'
 type=customcommand
 [customcommand2]
 alignment=Right
 click="sh -c \"sed -i \047s/own_window_type/--own_window_type/\047 ~/.config/conky/conky.conf; sed -i \047s/----//\047 ~/.config/conky/conky.conf\""
 command=echo \xd83d\xdec8
-maxWidth='"$(($font*2))"'
+maxWidth='"$(($font*3))"'
 type=customcommand
 [customcommand3]
 alignment=Right
 click=xed /help.txt
 command=echo \x2753
-maxWidth='"$(($font*2))"'
+maxWidth='"$(($font*3))"'
 type=customcommand
 [customcommand4]
 alignment=Right
 click=reboot
 command=echo \x2b6f
-maxWidth='"$(($font*2))"'
+maxWidth='"$(($font*3))"'
 type=customcommand
 [customcommand5]
 alignment=Right
 click=poweroff
 command=echo \x23fb
-maxWidth='"$(($font*2))"'
+maxWidth='"$(($font*3))"'
 type=customcommand
 [kbindicator]
 alignment=Right
@@ -1433,24 +1433,24 @@ type=volume
 [worldclock]
 alignment=Right
 autoRotate=true
-customFormat="\047<b>\047HH:mm:ss\047</b><br/><font size=\\-2\\>\047ddd, d MMM yyyy\047<br/>\047TT\047</font>\047"
+customFormat="\047<b>\047HH:mm:ss\047</b><br/><font size=\"-2\">\047ddd, d MMM yyyy\047<br/>\047TT\047</font>\047"
 dateFormatType=custom
 dateLongNames=false
-datePadDay=true
-datePosition=after
+datePadDay=false
+datePosition=below
 dateShowDoW=false
 dateShowYear=false
 defaultTimeZone=
-formatType=custom-timeonly
+formatType=long-timeonly
 showDate=false
-showTimezone=true
+showTimezone=false
 showTooltip=false
 showWeekNumber=true
 timeAMPM=false
 timePadHour=true
 timeShowSeconds=true
 timeZones\size=0
-timezoneFormatType=short
+timezoneFormatType=iana
 timezonePosition=below
 type=worldclock
 useAdvancedManualFormat=false' > /mnt/home/"$username"/.config/lxqt/panel.conf
