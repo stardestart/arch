@@ -1717,6 +1717,7 @@ arch-chroot /mnt sed -i 's/exec i3 #Автозапуск i3./\/usr\/sbin\/VBoxCl
 arch-chroot /mnt gpasswd -a "$username" vboxsf
 else
 arch-chroot /mnt pacman --color always -Sy virtualbox-host-dkms --noconfirm
+arch-chroot /mnt sudo -u "$username" yay -S virtualbox-ext-oracle --noconfirm
 echo "vboxdrv
 vboxnetflt
 vboxnetadp" > /mnt/etc/modules-load.d/virtualboxhosts.config
