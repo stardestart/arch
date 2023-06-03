@@ -279,7 +279,7 @@ n
 n
 5
 
-
++50G
 w
 EOF
 mkfs.fat -F32 /dev/"$sysdisk""$p1" -n boot<<EOF
@@ -1770,5 +1770,5 @@ while [[ 0 -ne $tic ]]; do
     sleep 1
     tic=$(($tic-1))
 done
-#umount -R /mnt
-#reboot
+umount -R /mnt
+poweroff
