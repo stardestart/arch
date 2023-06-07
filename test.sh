@@ -1685,8 +1685,8 @@ sudo sh -c \047echo "net/ipv4/ip_forward=1
 net/ipv6/conf/default/forwarding=1
 net/ipv6/conf/all/forwarding=1" >> /etc/ufw/sysctl.conf\047
 #
-sudo sh -c \047echo 'ENABLE_VKBASALT=1
-GTK_USE_PORTAL=1' >> /etc/environment\047
+sudo sh -c \047echo "ENABLE_VKBASALT=1
+GTK_USE_PORTAL=1" >> /etc/environment\047
 #
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 sed -i \047s/#TechnicalSymbol//\047 ~/.config/i3/config
