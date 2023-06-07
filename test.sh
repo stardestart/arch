@@ -1343,8 +1343,6 @@ gtk-cursor-theme-name=Adwaita
 gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'"
 gtk-icon-theme-name="ePapirus-Dark"
 gtk-theme-name="Adwaita-dark"' > /mnt/home/"$username"/.config/gtkrc-2.0
-echo 'ENABLE_VKBASALT=1
-GTK_USE_PORTAL=1' >> /etc/environment
 #
 #Создание директории и конфига lxqt-panel.
 echo -e "\033[36mСоздание конфига lxqt-panel.\033[0m"
@@ -1686,6 +1684,9 @@ sudo sed -i \047s/# End required lines/# End required lines\n-A ufw-before-forwa
 sudo sh -c \047echo "net/ipv4/ip_forward=1
 net/ipv6/conf/default/forwarding=1
 net/ipv6/conf/all/forwarding=1" >> /etc/ufw/sysctl.conf\047
+#
+sudo sh -c \047echo 'ENABLE_VKBASALT=1
+GTK_USE_PORTAL=1' >> /etc/environment\047
 #
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 sed -i \047s/#TechnicalSymbol//\047 ~/.config/i3/config
