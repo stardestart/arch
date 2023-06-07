@@ -1058,7 +1058,7 @@ exec --no-startup-id sudo -E usbguard-applet-qt;
 exec --no-startup-id sh -c \047sleep 10; while [[ -z "$(ls /dev/pts/1)" ]]; do sleep 5; done;sleep 5; neofetch > /dev/pts/1;\047
 #
 # Автозапуск обновления.
-#TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; while [[ -n "$(ls /dev/pts/0)" ]]; do sleep 5; done; sleep 5; sudo rm /var/lib/pacman/db.lck > /dev/pts/0; sudo pacman -Suy --noconfirm > /dev/pts/0; sudo pacman -Sc --noconfirm > /dev/pts/0; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/0;\047
+#TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; while [[ -z "$(ls /dev/pts/0)" ]]; do sleep 5; done; sleep 5; sudo rm /var/lib/pacman/db.lck > /dev/pts/0; sudo pacman -Suy --noconfirm > /dev/pts/0; sudo pacman -Sc --noconfirm > /dev/pts/0; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/0;\047
 #
 # Автозапуск numlockx.
 exec --no-startup-id numlockx;
