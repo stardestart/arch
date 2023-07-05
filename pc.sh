@@ -184,12 +184,25 @@ done
 #
 #Вычисление swap.
 echo -e "\033[36mВычисление swap.\033[0m"
-swap="8G"
+ram="$(free -g | grep -i mem | awk '{print $2}')"
+if [ "$ram" -ge 120 ]; then swap="11G"
+elif [ "$ram" -ge 60 ]; then swap="8G"
+elif [ "$ram" -ge 30 ]; then swap="6G"
+elif [ "$ram" -ge 20 ]; then swap="5G"
+elif [ "$ram" -ge 10 ]; then swap="4G"
+elif [ "$ram" -ge 8 ]; then swap="3G"
+elif [ "$ram" -ge 4 ]; then swap="2G"
+elif [ "$ram" -lt 4 ]; then swap="1G"
+fi
 echo -e "\033[36mРазмер SWAP раздела: $swap\033[0m"
 #
 #Вычисление var и root разделов.
 echo -e "\033[36mВычисление var и root разделов.\033[0m"
-rootsize=50
+rootsize="$(fdisk -l /dev/"$sysdisk" | head -n1 | awk '{print $3}')"
+rootsize=$(bc << EOF
+$rootsize/5*2
+EOF
+)
 varsize=$(bc << EOF
 $rootsize/2
 EOF
@@ -233,7 +246,7 @@ n
 n
 6
 
-+50G
+
 w
 EOF
 mkfs.ext2 /dev/"$sysdisk""$p1" -L boot<<EOF
@@ -483,7 +496,7 @@ elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then
 fi
 #Установка компонентов и программ ОС.
 echo -e "\033[36mУстановка компонентов и программ ОС.\033[0m"
-arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux firefox network-manager-applet networkmanager-strongswan wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt hspell libvoikko aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite nss-mdns cups-pk-helper cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau clamav ufw usbguard arch-audit libpwquality kde-cli-tools ntp osquery xdg-user-dirs geoclue lib32-giflib lib32-v4l-utils lib32-libxslt lib32-libva lib32-gst-plugins-base-libs gimp avidemux-qt kdenlive numlockx obs-studio blender tesseract-data-eng tesseract-data-rus transmission-qt discord meld kcolorchooser kontrast dmg2img telegram-desktop --noconfirm
+arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux firefox flatpak xdg-desktop-portal-gtk network-manager-applet networkmanager-strongswan wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick sysstat acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt hspell libvoikko aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en ocrfeeder kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite nss-mdns cups-pk-helper cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau clamav ufw usbguard arch-audit libpwquality kde-cli-tools ntp osquery xdg-user-dirs geoclue lib32-giflib lib32-v4l-utils lib32-libxslt lib32-libva lib32-gst-plugins-base-libs gimp avidemux-qt kdenlive numlockx obs-studio blender transmission-qt discord meld kcolorchooser kontrast dmg2img telegram-desktop --noconfirm
 #
 #Поиск не смонтированных разделов, проверка наличия у них метки.
 echo -e "\033[36mПоиск не смонтированных разделов.\033[0m"
@@ -1604,7 +1617,7 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR.
 echo -e "\033[36mУстановка программ из AUR.\033[0m"
-arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap libreoffice-extension-languagetool minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt vkbasalt cups-xerox-b2xx --noconfirm
+arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap libreoffice-extension-languagetool hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt vkbasalt cups-xerox-b2xx --noconfirm
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
