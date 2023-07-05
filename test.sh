@@ -1742,6 +1742,7 @@ case "$2" in
         timedatectl set-timezone "$(curl --fail https://ipapi.co/timezone)"
     ;;
 esac' > /mnt/etc/NetworkManager/dispatcher.d/09-timezone
+chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone
 #
 #Удаленное включение компьютера с помощью Wake-on-LAN (WOL).
 echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"
