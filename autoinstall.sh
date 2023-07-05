@@ -319,7 +319,8 @@ fi
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
 pacman-key --init
 pacman-key --populate archlinux
-pacman --color always -Syy archlinux-keyring gnupg reflector usbguard --noconfirm
+pacman --color always -Syy archlinux-keyring gnupg --noconfirm
+pacman --color always -Syy reflector usbguard --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
@@ -1608,7 +1609,7 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR.
 echo -e "\033[36mУстановка программ из AUR.\033[0m"
-arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap libreoffice-extension-languagetool unspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt vkbasalt --noconfirm
+arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap unspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt vkbasalt --noconfirm
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
