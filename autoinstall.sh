@@ -1608,7 +1608,7 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR.
 echo -e "\033[36mУстановка программ из AUR.\033[0m"
-arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap unspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt vkbasalt --noconfirm
+arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap unspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt vkbasalt --noconfirm --ask 4
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
