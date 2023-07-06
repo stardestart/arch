@@ -679,7 +679,7 @@ ${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature_celsius | aw
 #
 #Создание bash_profile.
 echo -e "\033[36mСоздание bash_profile.\033[0m"
-echo '[[ -f ~/.profile ]] && . ~/.profile' > /mnt/home/"$username"/.bash_profile
+echo '[[ -f ~/.profile ]] && . ~/.profile' | tee /mnt/home/"$username"/.bash_profile /mnt/root/.bash_profile
 #
 #Создание bashrc.
 echo -e "\033[36mСоздание bashrc.\033[0m"
@@ -729,13 +729,13 @@ PS1="\[\033[43m\]\[\033[2;34m\]\A\[\033[0m\]\[\033[44m\]\[\033[3;33m\] \u@\h \[\
 #\[\033[0m\] - Конец изменениям.
 #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
 export HISTCONTROL="ignoreboth"
-export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' > /mnt/home/"$username"/.bashrc
+export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' | tee /mnt/home/"$username"/.bashrc /mnt/root/.bashrc
 #
 #Создание profile.
 echo -e "\033[36mСоздание profile.\033[0m"
 echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
 export QT_QPA_PLATFORMTHEME=gnome #Изменение внешнего вида приложений использующих qt.
-export QT_STYLE_OVERRIDE=adwaita-dark #Использовать Adwaitа в качестве стиля Qt по умолчанию' > /mnt/home/"$username"/.profile
+export QT_STYLE_OVERRIDE=adwaita-dark #Использовать Adwaitа в качестве стиля Qt по умолчанию' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
 #
 #Создание конфига сервера уведомлений.
 echo -e "\033[36mСоздание конфига сервера уведомлений.\033[0m"
@@ -862,7 +862,7 @@ xterm*scrollKey: true
 !
 !Размер курсора.
 Xcursor.size: '"$(($font*3))"'
-Xcursor.theme: Adwaita' > /mnt/home/"$username"/.Xresources
+Xcursor.theme: Adwaita' tee /mnt/home/"$username"/.Xresources /mnt/root/.Xresources
 #
 #Создание директории и конфига i3.
 echo -e "\033[36mСоздание конфига i3.\033[0m"
@@ -1165,7 +1165,7 @@ cpu_temperature 0 { #Температура ЦП.
     format_above_threshold = "%degrees°C" #Формат вывода красного порога.
     path = "/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp*_input" } #Путь данных.path: /sys/devices/platform/coretemp.0/temp1_input
 tztime 0 { #Вывод разделителя.
-    format = "|" } #Формат вывода.' > /mnt/home/"$username"/.i3status.conf
+    format = "|" } #Формат вывода.' | tee /mnt/home/"$username"/.i3status.conf /mnt/root/.i3status.conf
 #
 #Создание конфига redshift.
 echo -e "\033[36mСоздание конфига redshift.\033[0m"
@@ -1329,20 +1329,18 @@ Win+Alt-left+1 -- Восстановление рабочего стола №1.
 #
 #Создание директории и конфига gtk.
 echo -e "\033[36mСоздание конфига gtk.\033[0m"
-mkdir -p /mnt/home/$username/.config/gtk-3.0/
-mkdir -p /mnt/home/$username/.config/gtk-4.0/
+mkdir -p /mnt/home/$username/.config/gtk-3.0/ /mnt/root/gtk-3.0/ /mnt/home/$username/.config/gtk-4.0/ /mnt/root/gtk-4.0/
 echo '[Settings]
 gtk-application-prefer-dark-theme=true
 gtk-cursor-theme-name=Adwaita
 gtk-font-name=Fantasque Sans Mono Bold Italic '"$font"'
 gtk-icon-theme-name=ePapirus-Dark
-gtk-theme-name=Adwaita-dark' > /mnt/home/"$username"/.config/gtk-3.0/settings.ini
-cp /mnt/home/"$username"/.config/gtk-3.0/settings.ini /mnt/home/"$username"/.config/gtk-4.0/settings.ini
+gtk-theme-name=Adwaita-dark' | tee /mnt/home/"$username"/.config/gtk-3.0/settings.ini /mnt/root/.config/gtk-3.0/settings.ini /mnt/home/"$username"/.config/gtk-4.0/settings.ini /mnt/root/.config/gtk-4.0/settings.ini
 echo 'gtk-application-prefer-dark-theme=true
 gtk-cursor-theme-name=Adwaita
 gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'"
 gtk-icon-theme-name="ePapirus-Dark"
-gtk-theme-name="Adwaita-dark"' > /mnt/home/"$username"/.config/gtkrc-2.0
+gtk-theme-name="Adwaita-dark"' | tee /mnt/home/"$username"/.config/gtkrc-2.0 /mnt/root/.config/gtkrc-2.0
 #
 #Создание директории и конфига lxqt-panel.
 echo -e "\033[36mСоздание конфига lxqt-panel.\033[0m"
@@ -1472,7 +1470,7 @@ ForegroundInactive=178,178,178
 BackgroundNormal=56,56,56
 BackgroundAlternate=50,50,50
 ForegroundNormal=238,238,238
-ForegroundInactive=178,178,178' > /mnt/home/"$username"/.config/kdeglobals
+ForegroundInactive=178,178,178' | tee /mnt/home/"$username"/.config/kdeglobals /mnt/root/.config/kdeglobals
 #
 mkdir -p /mnt/home/"$username"/Documents/{Downloads,Public,Desktop,Music,Pictures,Templates,Videos}
 #
@@ -1740,7 +1738,7 @@ case "$2" in
 esac' > /mnt/etc/NetworkManager/dispatcher.d/09-timezone
 #
 #Делаем xinitrc, 09-timezone и archinstall.sh исполняемыми.
-chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
+chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh /mnt/root/.xinitrc
 #
 #Удаленное включение компьютера с помощью Wake-on-LAN (WOL).
 echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"
@@ -1761,7 +1759,7 @@ XDG_DESKTOP_DIR="$HOME/Documents/Desktop"
 XDG_MUSIC_DIR="$HOME/Documents/Music"
 XDG_PICTURES_DIR="$HOME/Documents/Pictures"
 XDG_TEMPLATES_DIR="$HOME/Documents/Templates"
-XDG_VIDEOS_DIR="$HOME/Documents/Videos"' > /mnt/home/"$username"/.config/user-dirs.dirs
+XDG_VIDEOS_DIR="$HOME/Documents/Videos"' | tee /mnt/home/"$username"/.config/user-dirs.dirs /mnt/root/.config/user-dirs.dirs
 #
 #
 chmod 600 /mnt/etc/ssh/sshd_config
