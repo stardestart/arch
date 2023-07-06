@@ -683,8 +683,8 @@ echo '[[ -f ~/.profile ]] && . ~/.profile' > /mnt/home/"$username"/.bash_profile
 #
 #Создание bashrc.
 echo -e "\033[36mСоздание bashrc.\033[0m"
-echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
-alias grep="grep --color=always" #Раскрашиваем grep.
+arch-chroot /mnt sed -i '/PS1=/d' /etc/bash.bashrc
+echo 'alias grep="grep --color=always" #Раскрашиваем grep.
 alias ip="ip --color=always" #Раскрашиваем ip.
 alias diff="diff --color=always" #Раскрашиваем diff.
 alias ls="ls --color" #Раскрашиваем ls.
@@ -729,7 +729,7 @@ PS1="\[\033[43m\]\[\033[2;34m\]\A\[\033[0m\]\[\033[44m\]\[\033[3;33m\] \u@\h \[\
 #\[\033[0m\] - Конец изменениям.
 #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
 export HISTCONTROL="ignoreboth"
-export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' > /mnt/home/"$username"/.bashrc
+export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' > /mnt/etc/bash.bashrc
 #
 #Создание profile.
 echo -e "\033[36mСоздание profile.\033[0m"
@@ -1338,8 +1338,7 @@ gtk-font-name=Fantasque Sans Mono Bold Italic '"$font"'
 gtk-icon-theme-name=ePapirus-Dark
 gtk-theme-name=Adwaita-dark' > /mnt/home/"$username"/.config/gtk-3.0/settings.ini
 cp /mnt/home/"$username"/.config/gtk-3.0/settings.ini /mnt/home/"$username"/.config/gtk-4.0/settings.ini
-echo '[Settings]
-gtk-application-prefer-dark-theme=true
+echo 'gtk-application-prefer-dark-theme=true
 gtk-cursor-theme-name=Adwaita
 gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'"
 gtk-icon-theme-name="ePapirus-Dark"

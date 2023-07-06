@@ -1341,8 +1341,7 @@ gtk-font-name=Fantasque Sans Mono Bold Italic '"$font"'
 gtk-icon-theme-name=ePapirus-Dark
 gtk-theme-name=Adwaita-dark' > /mnt/home/"$username"/.config/gtk-3.0/settings.ini
 cp /mnt/home/"$username"/.config/gtk-3.0/settings.ini /mnt/home/"$username"/.config/gtk-4.0/settings.ini
-echo '[Settings]
-gtk-application-prefer-dark-theme=true
+echo 'gtk-application-prefer-dark-theme=true
 gtk-cursor-theme-name=Adwaita
 gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'"
 gtk-icon-theme-name="ePapirus-Dark"
