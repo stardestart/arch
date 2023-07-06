@@ -1345,7 +1345,7 @@ echo 'gtk-application-prefer-dark-theme=true
 gtk-cursor-theme-name=Adwaita
 gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'"
 gtk-icon-theme-name="ePapirus-Dark"
-gtk-theme-name="Adwaita-dark"' > /mnt/usr/share/gtk-2.0/gtkrc
+gtk-theme-name="Adwaita-dark"' > /mnt/home/"$username"/.config/gtkrc-2.0
 #
 #Создание директории и конфига lxqt-panel.
 echo -e "\033[36mСоздание конфига lxqt-panel.\033[0m"
@@ -1608,7 +1608,7 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR.
 echo -e "\033[36mУстановка программ из AUR.\033[0m"
-arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap unspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt vkbasalt --noconfirm
+arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap unspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt vkbasalt --noconfirm
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"

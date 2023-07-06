@@ -683,8 +683,8 @@ echo '[[ -f ~/.profile ]] && . ~/.profile' > /mnt/home/"$username"/.bash_profile
 #
 #Создание bashrc.
 echo -e "\033[36mСоздание bashrc.\033[0m"
-arch-chroot /mnt sed -i '/PS1=/d' /etc/bash.bashrc
-echo 'alias grep="grep --color=always" #Раскрашиваем grep.
+echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
+alias grep="grep --color=always" #Раскрашиваем grep.
 alias ip="ip --color=always" #Раскрашиваем ip.
 alias diff="diff --color=always" #Раскрашиваем diff.
 alias ls="ls --color" #Раскрашиваем ls.
@@ -729,7 +729,7 @@ PS1="\[\033[43m\]\[\033[2;34m\]\A\[\033[0m\]\[\033[44m\]\[\033[3;33m\] \u@\h \[\
 #\[\033[0m\] - Конец изменениям.
 #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
 export HISTCONTROL="ignoreboth"
-export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' > /mnt/etc/bash.bashrc
+export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' > /mnt/home/"$username"/.bashrc
 #
 #Создание profile.
 echo -e "\033[36mСоздание profile.\033[0m"
@@ -1342,7 +1342,7 @@ echo 'gtk-application-prefer-dark-theme=true
 gtk-cursor-theme-name=Adwaita
 gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'"
 gtk-icon-theme-name="ePapirus-Dark"
-gtk-theme-name="Adwaita-dark"' > /mnt/usr/share/gtk-2.0/gtkrc
+gtk-theme-name="Adwaita-dark"' > /mnt/home/"$username"/.config/gtkrc-2.0
 #
 #Создание директории и конфига lxqt-panel.
 echo -e "\033[36mСоздание конфига lxqt-panel.\033[0m"
@@ -1605,7 +1605,7 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR.
 echo -e "\033[36mУстановка программ из AUR.\033[0m"
-arch-chroot /mnt sudo -u "$username" yay -S hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt cups-xerox-b2xx --noconfirm
+arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt cups-xerox-b2xx --noconfirm
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
