@@ -1712,9 +1712,6 @@ sed -i \047s/#TechnicalSymbol//\047 ~/.config/i3/config
 WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/0
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
-#Делаем xinitrc и archinstall.sh исполняемыми.
-chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
-#
 #Передача прав созданному пользователю.
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
 arch-chroot /mnt chown -R "$username" /home/"$username"/
@@ -1760,7 +1757,9 @@ case "$2" in
         timedatectl set-timezone "$(curl --fail https://ipapi.co/timezone)"
     ;;
 esac' > /mnt/etc/NetworkManager/dispatcher.d/09-timezone
-chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone
+#
+#Делаем xinitrc, 09-timezone и archinstall.sh исполняемыми.
+chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
 #
 #Удаленное включение компьютера с помощью Wake-on-LAN (WOL).
 echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"

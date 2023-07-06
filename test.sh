@@ -559,7 +559,7 @@ fi
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
 feh --bg-max --randomize --no-fehbg /usr/share/backgrounds/archlinux/ & #Автозапуск обоев рабочего стола.
 xautolock -time 50 -locker "systemctl hibernate" -notify 1800 -notifier "xlock -mode matrix -delay 10000" -detectsleep -noclose & #Автозапуск заставки.
-exec i3 #Автозапуск i3.' > /mnt/home/"$username"/.xinitrc
+exec i3 #Автозапуск i3.' | tee /mnt/home/"$username"/.xinitrc /mnt/root/.xinitrc
 #
 #Создание общего конфига клавиатуры.
 echo -e "\033[36mСоздание общего конфига клавиатуры.\033[0m"
@@ -1693,9 +1693,6 @@ sed -i \047s/#TechnicalSymbol//\047 ~/.config/i3/config
 WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/0
 #rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
-#Делаем xinitrc и archinstall.sh исполняемыми.
-chmod +x /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
-#
 #Передача прав созданному пользователю.
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
 arch-chroot /mnt chown -R "$username" /home/"$username"/
@@ -1741,7 +1738,9 @@ case "$2" in
         timedatectl set-timezone "$(curl --fail https://ipapi.co/timezone)"
     ;;
 esac' > /mnt/etc/NetworkManager/dispatcher.d/09-timezone
-chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone
+#
+#Делаем xinitrc, 09-timezone и archinstall.sh исполняемыми.
+chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh
 #
 #Удаленное включение компьютера с помощью Wake-on-LAN (WOL).
 echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"
