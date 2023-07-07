@@ -862,7 +862,7 @@ xterm*scrollKey: true
 !
 !Размер курсора.
 Xcursor.size: '"$(($font*3))"'
-Xcursor.theme: Adwaita' tee /mnt/home/"$username"/.Xresources /mnt/root/.Xresources
+Xcursor.theme: Adwaita' | tee /mnt/home/"$username"/.Xresources /mnt/root/.Xresources
 #
 #Создание директории и конфига i3.
 echo -e "\033[36mСоздание конфига i3.\033[0m"
