@@ -1628,7 +1628,7 @@ echo -e '#!/bin/bash
 sleep 10
 nmcli device wifi connect "'"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)"'" password "'"$(grep Passphrase= /var/lib/iwd/"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | sed s/Passphrase=//)"'"
 echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/0
-while [[ -z "$(pidof firefox)" ]]; do
+while [[ -z "$(xlsclients -al | grep firefox)" ]]; do
     echo "\033[31mОжидание запуска браузера!\033[0m" > /dev/pts/0
     sleep 5
 done
