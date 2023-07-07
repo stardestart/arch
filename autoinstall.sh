@@ -1729,10 +1729,10 @@ usbguard generate-policy > /mnt/etc/usbguard/rules.conf
 echo "* hard core 0" >> /mnt/etc/security/limits.conf
 #
 #
-arch-chroot /mnt sed -i 's/umask 022/umask 077/' /etc/profile
+sed -i 's/umask 022/umask 077/' /mnt/etc/profile
 #
 #
-arch-chroot /mnt sed -i 's/mymachines/mymachines mdns_minimal [NOTFOUND=return]/' /etc/nsswitch.conf
+sed -i 's/mymachines/mymachines mdns_minimal [NOTFOUND=return]/' /mnt/etc/nsswitch.conf
 #
 #
 echo '#!/bin/sh
