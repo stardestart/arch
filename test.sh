@@ -320,7 +320,7 @@ echo -e "\033[36mУстановка и настройка программы д�
 pacman-key --init
 pacman-key --populate archlinux
 pacman --color always -Syy archlinux-keyring gnupg --noconfirm
-pacman --color always -Syy reflector usbguard --noconfirm
+pacman --color always -Syy reflector usbguard coreutils sad --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
@@ -1724,10 +1724,10 @@ usbguard generate-policy > /mnt/etc/usbguard/rules.conf
 echo "* hard core 0" >> /mnt/etc/security/limits.conf
 #
 #
-arch-chroot /mnt sed -i 's/umask 022/umask 077/' /etc/profile
+sed -i 's/umask 022/umask 077/' /mnt/etc/profile
 #
 #
-arch-chroot /mnt sed -i 's/mymachines/mymachines mdns_minimal [NOTFOUND=return]/' /etc/nsswitch.conf
+sed -i 's/mymachines/mymachines mdns_minimal [NOTFOUND=return]/' /mnt/etc/nsswitch.conf
 #
 #
 echo '#!/bin/sh
