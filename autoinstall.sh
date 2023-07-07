@@ -320,7 +320,7 @@ echo -e "\033[36mУстановка и настройка программы д�
 pacman-key --init
 pacman-key --populate archlinux
 pacman --color always -Syy archlinux-keyring gnupg --noconfirm
-pacman --color always -Syy reflector usbguard --noconfirm
+pacman --color always -Syy reflector usbguard coreutils sad --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
