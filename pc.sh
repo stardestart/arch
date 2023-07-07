@@ -1350,11 +1350,11 @@ gtk-font-name=Fantasque Sans Mono Bold Italic '"$font"'
 gtk-icon-theme-name=ePapirus-Dark
 gtk-theme-name=Adwaita-dark' > /mnt/home/"$username"/.config/gtk-3.0/settings.ini
 cp /mnt/home/"$username"/.config/gtk-3.0/settings.ini /mnt/home/"$username"/.config/gtk-4.0/settings.ini
-echo 'gtk-application-prefer-dark-theme=true
-gtk-cursor-theme-name=Adwaita
+echo 'gtk-application-prefer-dark-theme="true"
+gtk-cursor-theme-name="Adwaita"
 gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'"
 gtk-icon-theme-name="ePapirus-Dark"
-gtk-theme-name="Adwaita-dark"' > /mnt/home/"$username"/.config/gtkrc-2.0
+gtk-theme-name="Adwaita-dark"' > /mnt/usr/share/gtk-2.0/gtkrc
 #
 #Создание директории и конфига lxqt-panel.
 echo -e "\033[36mСоздание конфига lxqt-panel.\033[0m"
@@ -1623,7 +1623,7 @@ arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspel
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus
 arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb saned.socket cups.socket cups-browsed x11vnc clamav-freshclam clamav-daemon ufw auditd usbguard ntpd osqueryd
-arch-chroot /mnt systemctl --user --global enable redshift-gtk
+arch-chroot /mnt sudo -u "$username" systemctl --user enable redshift-gtk
 #
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
