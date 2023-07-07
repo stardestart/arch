@@ -953,7 +953,7 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 #
 # Выход из i3 (выходит из сеанса X).
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -B \047Да, выйти из i3\047 \047i3 -msg exit\047"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -b \047Да, выйти из i3\047 \047i3-msg exit\047"
 #
 # Войти в режим изменения размеров окон.
 bindsym $mod+r mode "resize"
@@ -1297,6 +1297,8 @@ Print Screen -- Снимок экрана.
 #
 🛈 -- Информация о системе.
 #
+✖ -- Выход пользователя.
+#
 ⭯ -- Перезагрузить ПК.
 #
 ⏻ -- Выключить ПК.
@@ -1382,11 +1384,17 @@ maxWidth='"$(($font*3))"'
 type=customcommand
 [customcommand4]
 alignment=Right
+click="sh -c \"i3-nagbar -t warning -m \047\x412\x44b \x434\x435\x439\x441\x442\x432\x438\x442\x435\x43b\x44c\x43d\x43e \x445\x43e\x442\x438\x442\x435 \x432\x44b\x439\x442\x438 \x438\x437 i3? \x42d\x442\x43e \x437\x430\x432\x435\x440\x448\x438\x442 \x432\x430\x448\x443 \x441\x435\x441\x441\x438\x44e X.\047 -b \047\x414\x430, \x432\x44b\x439\x442\x438 \x438\x437 i3\047 \047i3-msg exit\047\""
+command=echo \x2716
+maxWidth='"$(($font*3))"'
+type=customcommand
+[customcommand5]
+alignment=Right
 click=reboot
 command=echo \x2b6f
 maxWidth='"$(($font*3))"'
 type=customcommand
-[customcommand5]
+[customcommand6]
 alignment=Right
 click=poweroff
 command=echo \x23fb
@@ -1421,7 +1429,7 @@ lineCount=1
 lockPanel=false
 opacity=80
 panelSize='"$(($font*3))"'
-plugins=mainmenu, spacer, quicklaunch, kbindicator, worldclock, volume, customcommand, customcommand2, customcommand3, customcommand4, customcommand5
+plugins=mainmenu, spacer, quicklaunch, kbindicator, worldclock, volume, customcommand, customcommand2, customcommand3, customcommand4, customcommand5, customcommand6
 position=Top
 reserve-space=true
 show-delay=0
