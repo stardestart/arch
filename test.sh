@@ -320,7 +320,7 @@ echo -e "\033[36mУстановка и настройка программы д�
 pacman-key --init
 pacman-key --populate archlinux
 pacman --color always -Syy archlinux-keyring gnupg --noconfirm
-pacman --color always -Syy reflector usbguard --noconfirm
+pacman --color always -Syy reflector usbguard sad --noconfirm
 reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
@@ -328,7 +328,7 @@ echo -e "\033[36mУстановка ОС.\033[0m"
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware
 #
 #Добавление модулей в mkinitcpio.
-arch-chroot /mnt sed -i 's/HOOKS=(base udev/HOOKS=(base udev resume/' /etc/mkinitcpio.conf
+sed -i 's/HOOKS=(base udev/HOOKS=(base udev resume/' /mnt/etc/mkinitcpio.conf
 #
 #
 echo 'btusb' > /mnt/etc/modules-load.d/modules.conf
@@ -340,8 +340,8 @@ arch-chroot /mnt hwclock --systohc
 #
 #Настройка локали.
 echo -e "\033[36mНастройка локали.\033[0m"
-arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
-arch-chroot /mnt sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
+sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /mnt/etc/locale.gen
+sed -i 's/#ru_RU.UTF-8/ru_RU.UTF-8/' /mnt/etc/locale.gen
 echo -e "LANG=\"ru_RU.UTF-8\"" > /mnt/etc/locale.conf
 echo -e "KEYMAP=ru\nFONT=ter-v18n\nUSECOLOR=yes" > /mnt/etc/vconsole.conf
 arch-chroot /mnt locale-gen
@@ -360,7 +360,7 @@ EOF
 echo -e "\033[36mСоздание пользователя.\033[0m"
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "$username"
 #
-arch-chroot /mnt sed -i 's/nullok/nullok rounds=80000/' /etc/pam.d/passwd
+sed -i 's/nullok/nullok rounds=80000/' /mnt/etc/pam.d/passwd
 #
 echo "SHA_CRYPT_MIN_ROUNDS 80000" >> /mnt/etc/login.defs
 #
@@ -379,17 +379,17 @@ if [ -z "$(efibootmgr | grep Boot)" ];
     then
         arch-chroot /mnt pacman --color always -Sy grub --noconfirm
         arch-chroot /mnt grub-install /dev/"$sysdisk"
-        arch-chroot /mnt sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=2/' /etc/default/grub
-        arch-chroot /mnt sed -i 's/#GRUB_DISABLE_RECOVERY=true/GRUB_DISABLE_RECOVERY=true/' /etc/default/grub
-        arch-chroot /mnt sed -i 's/GRUB_DISABLE_LINUX_UUID=true/#GRUB_DISABLE_LINUX_UUID=true/' /etc/default/grub
-        arch-chroot /mnt sed -i 's/GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX="resume=\/dev\/'"$sysdisk"''"$p3"' /' /etc/default/grub
+        sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=2/' /mnt/etc/default/grub
+        sed -i 's/#GRUB_DISABLE_RECOVERY=true/GRUB_DISABLE_RECOVERY=true/' /mnt/etc/default/grub
+        sed -i 's/GRUB_DISABLE_LINUX_UUID=true/#GRUB_DISABLE_LINUX_UUID=true/' /mnt/etc/default/grub
+        sed -i 's/GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX="resume=\/dev\/'"$sysdisk"''"$p3"' /' /mnt/etc/default/grub
         grubsha=$(grub-mkpasswd-pbkdf2 << EOF
 $passuser
 $passuser
 EOF
 )
         grubsha="$(echo $grubsha | awk '{print $NF}')"
-        arch-chroot /mnt sed -i 's/CLASS="--class gnu-linux --class gnu --class os"/CLASS="--class gnu-linux --class gnu --class os --unrestricted"/' /etc/grub.d/10_linux
+        sed -i 's/CLASS="--class gnu-linux --class gnu --class os"/CLASS="--class gnu-linux --class gnu --class os --unrestricted"/' /mnt/etc/grub.d/10_linux
         echo 'cat << EOF
 set superusers='"$username"'
 password_pbkdf2 '"$username"' '"$grubsha"'
@@ -410,7 +410,7 @@ fi
 #
 #Настройка установщика.
 echo -e "\033[36mНастройка установщика.\033[0m"
-arch-chroot /mnt sed -i "s/#Color/Color/" /etc/pacman.conf
+sed -i "s/#Color/Color/" /mnt/etc/pacman.conf
 echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
 #
 #Настройка sysrq.
@@ -477,23 +477,23 @@ echo -e "\033[36mУстановка видеодрайвера.\033[0m"
 if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
     if [ -n "$(lspci | grep -i vga | grep -i nvidia | grep -E 'TU1|GA1|GV1|GP10|GM20|GM10')" ]; then
         arch-chroot /mnt pacman --color always -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
-        arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
+        sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /mnt/etc/mkinitcpio.conf
     else
         arch-chroot /mnt pacman --color always -Sy xf86-video-nouveau --noconfirm
-        arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(nouveau)/' /etc/mkinitcpio.conf
+        sed -i 's/MODULES=()/MODULES=(nouveau)/' /mnt/etc/mkinitcpio.conf
     fi
 elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then
     arch-chroot /mnt pacman --color always -Sy virtualbox-guest-utils --noconfirm
-    arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(vmwgfx)/' /etc/mkinitcpio.conf
+    sed -i 's/MODULES=()/MODULES=(vmwgfx)/' /mnt/etc/mkinitcpio.conf
 elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then
     arch-chroot /mnt pacman --color always -Sy virtualbox-guest-utils --noconfirm
-    arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(vboxvideo)/' /etc/mkinitcpio.conf
+    sed -i 's/MODULES=()/MODULES=(vboxvideo)/' /mnt/etc/mkinitcpio.conf
 elif [ -n "$(lspci | grep -i vga | grep AMD)" ]; then
     arch-chroot /mnt pacman --color always -Sy xf86-video-ati xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon --noconfirm
-    arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(amdgpu radeon)/' /etc/mkinitcpio.conf
+    sed -i 's/MODULES=()/MODULES=(amdgpu radeon)/' /mnt/etc/mkinitcpio.conf
 elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then
     arch-chroot /mnt pacman --color always -Sy vulkan-intel intel-media-driver libva-intel-driver --noconfirm
-    arch-chroot /mnt sed -i 's/MODULES=()/MODULES=(i915)/' /etc/mkinitcpio.conf
+    sed -i 's/MODULES=()/MODULES=(i915)/' /mnt/etc/mkinitcpio.conf
 fi
 #Установка компонентов и программ ОС.
 echo -e "\033[36mУстановка компонентов и программ ОС.\033[0m"
@@ -1331,8 +1331,7 @@ Win+Alt-left+1 -- Восстановление рабочего стола №1.
 #
 #Создание директории и конфига gtk.
 echo -e "\033[36mСоздание конфига gtk.\033[0m"
-mkdir -p /mnt/home/$username/.config/gtk-3.0/
-mkdir -p /mnt/home/$username/.config/gtk-4.0/
+mkdir -p /mnt/home/"$username"/.config/{gtk-3.0,gtk-4.0} /mnt/root/.config/{gtk-3.0,gtk-4.0}
 echo '[Settings]
 gtk-application-prefer-dark-theme=true
 gtk-cursor-theme-name=Adwaita
@@ -1340,6 +1339,8 @@ gtk-font-name=Fantasque Sans Mono Bold Italic '"$font"'
 gtk-icon-theme-name=ePapirus-Dark
 gtk-theme-name=Adwaita-dark' > /mnt/home/"$username"/.config/gtk-3.0/settings.ini
 cp /mnt/home/"$username"/.config/gtk-3.0/settings.ini /mnt/home/"$username"/.config/gtk-4.0/settings.ini
+cp /mnt/home/"$username"/.config/gtk-3.0/settings.ini /mnt/root/.config/gtk-3.0/settings.ini
+cp /mnt/home/"$username"/.config/gtk-3.0/settings.ini /mnt/root/.config/gtk-4.0/settings.ini
 echo 'gtk-application-prefer-dark-theme="true"
 gtk-cursor-theme-name="Adwaita"
 gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'"
@@ -1619,11 +1620,11 @@ arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspel
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus
 arch-chroot /mnt systemctl enable acpid bluetooth sysstat fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker auto-cpufreq smartd smb saned.socket cups.socket cups-browsed x11vnc clamav-freshclam clamav-daemon ufw auditd usbguard ntpd osqueryd
-arch-chroot /mnt sudo -u "$username" systemctl --user enable redshift-gtk
+arch-chroot /mnt su "$username" systemctl --user enable redshift-gtk
 #
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
-arch-chroot /mnt sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
+sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /mnt/etc/pulse/daemon.conf
 #
 #Создание скрипта, который после перезагрузки продолжит установку.
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
@@ -1716,7 +1717,7 @@ echo "vboxguest
 vboxsf
 vboxvideo" > /mnt/etc/modules-load.d/virtualboxguest.config
 arch-chroot /mnt systemctl enable vboxservice
-arch-chroot /mnt sed -i 's/exec i3 #Автозапуск i3./\/usr\/sbin\/VBoxClient-all \&\nexec i3 #Автозапуск i3./' /home/"$username"/.xinitrc
+sed -i 's/exec i3 #Автозапуск i3./\/usr\/sbin\/VBoxClient-all \&\nexec i3 #Автозапуск i3./' /mnt/home/"$username"/.xinitrc
 arch-chroot /mnt gpasswd -a "$username" vboxsf
 else
 arch-chroot /mnt pacman --color always -Sy virtualbox-host-dkms --noconfirm
@@ -1734,10 +1735,10 @@ usbguard generate-policy > /mnt/etc/usbguard/rules.conf
 echo "* hard core 0" >> /mnt/etc/security/limits.conf
 #
 #
-arch-chroot /mnt sed -i 's/umask 022/umask 077/' /etc/profile
+sed -i 's/umask 022/umask 077/' /mnt/etc/profile
 #
 #
-arch-chroot /mnt sed -i 's/mymachines/mymachines mdns_minimal [NOTFOUND=return]/' /etc/nsswitch.conf
+sed -i 's/mymachines/mymachines mdns_minimal [NOTFOUND=return]/' /mnt/etc/nsswitch.conf
 #
 #
 echo '#!/bin/sh
