@@ -482,12 +482,9 @@ if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
         arch-chroot /mnt pacman --color always -Sy xf86-video-nouveau --noconfirm
         sed -i 's/MODULES=()/MODULES=(nouveau)/' /mnt/etc/mkinitcpio.conf
     fi
-elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then
+elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga|virtualbox')" ]; then
     arch-chroot /mnt pacman --color always -Sy virtualbox-guest-utils --noconfirm
-    sed -i 's/MODULES=()/MODULES=(vmwgfx)/' /mnt/etc/mkinitcpio.conf
-elif [ -n "$(lspci | grep -i vga | grep -i virtualbox )" ]; then
-    arch-chroot /mnt pacman --color always -Sy virtualbox-guest-utils --noconfirm
-    sed -i 's/MODULES=()/MODULES=(vboxvideo)/' /mnt/etc/mkinitcpio.conf
+    sed -i 's/MODULES=()/MODULES=(vmwgfx vboxvideo vboxguest)/' /mnt/etc/mkinitcpio.conf
 elif [ -n "$(lspci | grep -i vga | grep AMD)" ]; then
     arch-chroot /mnt pacman --color always -Sy xf86-video-ati xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon --noconfirm
     sed -i 's/MODULES=()/MODULES=(amdgpu radeon)/' /mnt/etc/mkinitcpio.conf
@@ -1750,10 +1747,6 @@ esac' > /mnt/etc/NetworkManager/dispatcher.d/09-timezone
 #
 #Делаем xinitrc, 09-timezone и archinstall.sh исполняемыми.
 chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh /mnt/root/.xinitrc
-#
-#Удаленное включение компьютера с помощью Wake-on-LAN (WOL).
-echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"
-arch-chroot /mnt ethtool -s "$netdev" wol g
 #
 #Добавление правил auditd.
 echo '-w /etc/group -p wa
