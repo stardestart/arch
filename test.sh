@@ -1747,6 +1747,10 @@ esac' > /mnt/etc/NetworkManager/dispatcher.d/09-timezone
 #Делаем xinitrc, 09-timezone и archinstall.sh исполняемыми.
 chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh /mnt/root/.xinitrc
 #
+#Удаленное включение компьютера с помощью Wake-on-LAN (WOL).
+echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"
+arch-chroot /mnt ethtool -s "$netdev" wol g
+#
 #Добавление правил auditd.
 echo '-w /etc/group -p wa
 -w /etc/passwd -p wa
