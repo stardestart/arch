@@ -482,7 +482,7 @@ if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
         arch-chroot /mnt pacman --color always -Sy xf86-video-nouveau --noconfirm
         sed -i 's/MODULES=()/MODULES=(nouveau)/' /mnt/etc/mkinitcpio.conf
     fi
-elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga|virtualbox')" ]; then
+elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then
     arch-chroot /mnt pacman --color always -Sy virtualbox-guest-utils --noconfirm
     sed -i 's/MODULES=()/MODULES=(vmwgfx vboxvideo vboxguest)/' /mnt/etc/mkinitcpio.conf
 elif [ -n "$(lspci | grep -i vga | grep AMD)" ]; then
@@ -757,13 +757,13 @@ echo '[global]
 #Создание конфига picom.
 echo -e "\033[36mСоздание конфига picom.\033[0m"
 echo -e '# Прозрачность активных окон (0,1–1,0).
-active-opacity = 0.9;
+active-opacity = 0.95;
 #
 # Прозрачность неактивных окон (0,1–1,0).
-inactive-opacity = 0.8;
+inactive-opacity = 0.9;
 #
 # Затемнение неактивных окон (0,0–1,0).
-inactive-dim = 0.4;
+inactive-dim = 0.8;
 #
 # Включить вертикальную синхронизацию (если picom выдает ошибку по vsync, то отключаем заменой true на false).
 vsync = true;
@@ -780,10 +780,9 @@ wintypes: { # Отключить прозрачность выпадающего
             popup_menu = { opacity = 1; }; };
 #
 # Прозрачность i3status, dmenu, XTerm и заголовков окон.
-opacity-rule = [ "80:class_g = \047i3bar\047",
+opacity-rule = [ "90:class_g = \047i3bar\047",
                  "90:class_g = \047dmenu\047",
-                 "70:class_g = \047XTerm\047",
-                 "80:class_g = \047i3-frame\047",
+                 "80:class_g = \047XTerm\047",
                  "100:class_g = \047vlc\047",
                  "100:fullscreen" ];
 #
