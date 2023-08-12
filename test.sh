@@ -555,7 +555,7 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
 fi
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
 feh --bg-max --randomize --no-fehbg /usr/share/backgrounds/archlinux/ & #Автозапуск обоев рабочего стола.
-xautolock -time 50 -locker "systemctl hibernate" -notify 1800 -notifier "xlock -mode matrix -delay 10000" -detectsleep -noclose & #Автозапуск заставки.
+xautolock -time 50 -locker "systemctl hibernate" -notify 1800 -notifier "xlock -mode matrix -delay 10000 -echokeys -echokey \047*\047" -detectsleep -noclose & #Автозапуск заставки.
 exec i3 #Автозапуск i3.' | tee /mnt/home/"$username"/.xinitrc /mnt/root/.xinitrc
 #
 #Создание общего конфига клавиатуры.
@@ -1762,8 +1762,10 @@ fi
 #
 #Undervolting CPU (Снижение напряжения ЦП на 10%).
 echo -e "\033[36mUndervolting CPU (Снижение напряжения ЦП на 10%).\033[0m"
+if [ -n "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq)" ]; then
 echo '[charger]
 scaling_max_freq = '$(("$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq)"/100*90))'' > /mnt/etc/auto-cpufreq.conf
+fi
 #
 #Настройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).
 echo -e "\033[36mНастройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).\033[0m"
