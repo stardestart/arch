@@ -16,10 +16,6 @@ pacman -Sc --noconfirm
 killall gpg-agent
 #Переменная назначит образ микрокода ЦП для UEFI загрузчика.
 microcode=""
-#Переменная сохранит имя wi-fi сети для дальнейшей установки/настройки/расчета.
-namewifi=""
-#Переменная сохранит пароль wi-fi сети для дальнейшей установки/настройки/расчета.
-passwifi=""
 #Переменная сохранит имя сетевого устройства для дальнейшей установки/настройки/расчета.
 netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
 #Массив хранит имена обнаруженных дисков.
@@ -65,20 +61,15 @@ nvidiac=""
 tic=3
 #Массив хранит наличие ssd, если такие имеются.
 massd=()
-#
 #Переменная сохранит размер шрифта firefox.
 fox=""
-#
 #Переменная сохранит шифр авторизации grub.
 grubsha=""
-#
-#Переменная сохранит размер root-раздела
+#Переменная сохранит размер root-раздела.
 rootsize=""
-#
-#Переменная сохранит размер var-раздела
+#Переменная сохранит размер var-раздела.
 varsize=""
-#
-#
+#Переменная сохранит кулеры.
 fanconky=""
 #
 #Определяем процессор.
@@ -150,7 +141,8 @@ if [ -z "$(echo "$sysdisk" | grep -i "nvme")" ];
         p6="p6"
 fi
 #
-#Сбор данных пользователя.
+#Создание пользователя.
+echo -e "\033[36mСоздание пользователя.\033[0m"
 echo -e "\033[47m\033[30mВведите имя компьютера:\033[0m\033[32m";read -p ">" hostname
 echo -e "\033[47m\033[30mВведите имя пользователя:\033[0m\033[32m";read -p ">" username
 echo -e "\033[47m\033[30mВведите пароль для "$username":\033[0m\033[32m";read -p ">" passuser
@@ -327,10 +319,9 @@ reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorli
 echo -e "\033[36mУстановка ОС.\033[0m"
 pacstrap -K /mnt base base-devel linux-zen linux-zen-headers linux-firmware
 #
-#Добавление модулей в mkinitcpio.
+#Добавление модулей.
+echo -e "\033[36mДобавление модулей.\033[0m"
 sed -i 's/HOOKS=(base udev/HOOKS=(base udev resume/' /mnt/etc/mkinitcpio.conf
-#
-#
 echo 'btusb' > /mnt/etc/modules-load.d/modules.conf
 #
 #Установка часового пояса.
@@ -373,7 +364,7 @@ EOF
 #Убираем sudo пароль для пользователя.
 echo ""$username" ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
 #
-#Установим загрузчик.
+#Установка загрузчика.
 echo -e "\033[36mУстановка загрузчика.\033[0m"
 if [ -z "$(efibootmgr | grep Boot)" ];
     then
@@ -402,19 +393,19 @@ EOF' >> /mnt/etc/grub.d/00_header
         echo -e "title  Arch Linux\nlinux  /vmlinuz-linux-zen"$microcode"\ninitrd  /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw\noptions resume=/dev/"$sysdisk""$p2"" > /mnt/boot/loader/entries/arch.conf
 fi
 #
-#Установим микроинструкции для процессора.
+#Установка микроинструкции для процессора.
 echo -e "\033[36mУстановка микроинструкций для процессора.\033[0m"
 if [ "$microcode" = "\ninitrd /amd-ucode.img" ]; then arch-chroot /mnt pacman --color always -Sy amd-ucode --noconfirm
 elif [ "$microcode" = "\ninitrd /intel-ucode.img" ]; then arch-chroot /mnt pacman --color always -Sy intel-ucode iucode-tool --noconfirm
 fi
 #
-#Настройка установщика.
-echo -e "\033[36mНастройка установщика.\033[0m"
+#Настройка установщика pacman.
+echo -e "\033[36mНастройка установщика pacman.\033[0m"
 sed -i "s/#Color/Color/" /mnt/etc/pacman.conf
 echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
 #
-#Настройка sysrq.
-echo -e "\033[36mНастройка sysrq.\033[0m"
+#Настройка sysctl (Параметры ядра).
+echo -e "\033[36mНастройка sysctl (Параметры ядра).\033[0m"
 echo "kernel.sysrq=1
 dev.tty.ldisc_autoload=0
 fs.protected_fifos=2
@@ -472,7 +463,7 @@ vm.dirty_ratio=10
 vm.dirty_background_ratio=5
 vm.vfs_cache_pressure=50" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
-#Установим видеодрайвер.
+#Установка видеодрайвера.
 echo -e "\033[36mУстановка видеодрайвера.\033[0m"
 if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
     if [ -n "$(lspci | grep -i vga | grep -i nvidia | grep -E 'TU1|GA1|GV1|GP10|GM20|GM10')" ]; then
@@ -482,7 +473,7 @@ if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
         arch-chroot /mnt pacman --color always -Sy xf86-video-nouveau --noconfirm
         sed -i 's/MODULES=()/MODULES=(nouveau)/' /mnt/etc/mkinitcpio.conf
     fi
-elif [ -n "$(lspci | grep -i vga | grep -i 'vmware svga')" ]; then
+elif [ -n "$(lspci | grep -i vga | grep -iE 'vmware svga|virtualbox')" ]; then
     arch-chroot /mnt pacman --color always -Sy virtualbox-guest-utils --noconfirm
     sed -i 's/MODULES=()/MODULES=(vmwgfx vboxvideo vboxguest)/' /mnt/etc/mkinitcpio.conf
 elif [ -n "$(lspci | grep -i vga | grep AMD)" ]; then
@@ -497,7 +488,7 @@ echo -e "\033[36mУстановка компонентов и программ �
 arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux firefox flatpak xdg-desktop-portal-gtk network-manager-applet networkmanager-strongswan wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt hspell libvoikko aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en ocrfeeder kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite nss-mdns cups-pk-helper cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau clamav ufw usbguard arch-audit libpwquality kde-cli-tools ntp osquery xdg-user-dirs geoclue lib32-giflib lib32-v4l-utils lib32-libxslt lib32-libva lib32-gst-plugins-base-libs gimp avidemux-qt kdenlive numlockx --noconfirm
 #
 #Поиск не смонтированных разделов, проверка наличия у них метки.
-echo -e "\033[36mПоиск не смонтированных разделов.\033[0m"
+echo -e "\033[36mПоиск не смонтированных разделов, проверка наличия у них метки.\033[0m"
 masslabel+='
 #Блок "Диски и разделы".'
 for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
@@ -523,11 +514,11 @@ ${execi 10 sudo smartctl -A /dev/'"${massparts[$j]}"' | grep -i temperature_cels
     done
 #
 #Копирование файла автоматического монтирования разделов.
-echo -e "\033[36mПеренос genfstab.\033[0m"
+echo -e "\033[36mКопирование файла автоматического монтирования разделов.\033[0m"
 genfstab -U -p /mnt >> /mnt/etc/fstab
 #
 #Создание общего конфига загрузки оконного менеджера.
-echo -e "\033[36mСоздание xinit.\033[0m"
+echo -e "\033[36mСоздание общего конфига загрузки оконного менеджера.\033[0m"
 echo '#Указание на конфигурационные файлы.
 userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
@@ -555,7 +546,7 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
 fi
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
 feh --bg-max --randomize --no-fehbg /usr/share/backgrounds/archlinux/ & #Автозапуск обоев рабочего стола.
-xautolock -time 50 -locker "systemctl hibernate" -notify 1800 -notifier "xlock -mode matrix -delay 10000" -detectsleep -noclose & #Автозапуск заставки.
+xautolock -time 50 -locker "systemctl hibernate" -notify 1800 -notifier "xlock -mode matrix -delay 10000 -echokeys -echokey \047*\047" -detectsleep -noclose & #Автозапуск заставки.
 exec i3 #Автозапуск i3.' | tee /mnt/home/"$username"/.xinitrc /mnt/root/.xinitrc
 #
 #Создание общего конфига клавиатуры.
@@ -568,13 +559,13 @@ Option "XkbOptions" "grp:alt_shift_toggle,terminate:ctrl_alt_bksp"
 EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
 #
 #Создание общего конфига сканера.
-echo -e "\033[36mСоздание sane.d.\033[0m"
+echo -e "\033[36mСоздание общего конфига сканера.\033[0m"
 mkdir -p /mnt/etc/sane.d
 echo -e "localhost\n192.168.0.0/24" >> /mnt/etc/sane.d/net.conf
 #
-echo -e "\033[36mФормируется конфиг conky.\033[0m"
-#
+#Формируется конфиг conky (Системный монитор).
 #Температура ядер процессора.
+echo -e "\033[36mФормируется конфиг conky (Системный монитор): Температура ядер процессора.\033[0m"
 if [ -n "$(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs)" ]; then
 coremass=($(arch-chroot /mnt sensors | grep Core | awk '{print $1}' | xargs))
 coremassconf+='
@@ -586,15 +577,17 @@ ${color #b2b2b2}${execi 10 sensors | grep "Core '$i':" | awk \047{print $1, $2}\
     done
 fi
 #
-#
+#Cкорость вращения кулеров
+echo -e "\033[36mФормируется конфиг conky (Системный монитор): Cкорость вращения кулеров.\033[0m"
 if [ -n "$(arch-chroot /mnt sensors | grep -i fan)" ]; then
 fanconky='
-#Блок "Cкорость вращения кулеров (вентиляторов)".
+#Блок "Cкорость вращения кулеров".
 ${color #f92b2b}FAN${hr 3}
 $color${execi 10 sensors | grep -i fan}'
 fi
 #
 #Параметры для видеокарт nvidia.
+echo -e "\033[36mФормируется конфиг conky (Системный монитор): Параметры для видеокарт nvidia.\033[0m"
 if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
     nvidiac='
 #Блок "Видеокарта Nvidia".
@@ -604,7 +597,8 @@ ${color #b2b2b2}Видео ОЗУ:$color$alignr${nvidia mem} / ${nvidia memmax} 
 ${color #b2b2b2}Температура ГП:$color$alignr${nvidia temp} °C / ${nvidia fanspeed} RPM'
 fi
 #
-#Создание директории и конфига.
+#Создание конфига conky (Системный монитор).
+echo -e "\033[36mСоздание конфига conky (Системный монитор).\033[0m"
 mkdir -p /mnt/home/"$username"/.config/conky
 echo -e 'conky.config = { --Внешний вид.
 alignment = "top_right", --Располжение виджета.
@@ -674,12 +668,12 @@ ${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature_celsius | aw
 (${fs_type /home})${fs_bar '"$font"','"$(($font*6))"' /home} $alignr${color #f92b2b}${fs_used /home} / $color${fs_free /home} / ${color #b2b2b2}${fs_size /home}'"${masslabel[@]}"'
 ]]' > /mnt/home/"$username"/.config/conky/conky.conf
 #
-#Создание bash_profile.
-echo -e "\033[36mСоздание bash_profile.\033[0m"
+#Создание конфига bash_profile (Настройка Xorg).
+echo -e "\033[36mСоздание конфига bash_profile (Настройка Xorg).\033[0m"
 echo '[[ -f ~/.profile ]] && . ~/.profile' | tee /mnt/home/"$username"/.bash_profile /mnt/root/.bash_profile
 #
-#Создание bashrc.
-echo -e "\033[36mСоздание bashrc.\033[0m"
+#Создание конфига bashrc (Настройка Xterm).
+echo -e "\033[36mСоздание конфига bashrc (Настройка Xterm).\033[0m"
 echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
 alias grep="grep --color=always" #Раскрашиваем grep.
 alias ip="ip --color=always" #Раскрашиваем ip.
@@ -728,8 +722,8 @@ PS1="\[\033[43m\]\[\033[2;34m\]\A\[\033[0m\]\[\033[44m\]\[\033[3;33m\] \u@\h \[\
 export HISTCONTROL="ignoreboth"
 export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' | tee /mnt/home/"$username"/.bashrc /mnt/root/.bashrc
 #
-#Создание profile.
-echo -e "\033[36mСоздание profile.\033[0m"
+#Создание конфига profile (Настройка Xorg).
+echo -e "\033[36mСоздание конфига profile (Настройка Xorg).\033[0m"
 echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
 export QT_QPA_PLATFORMTHEME=gnome #Изменение внешнего вида приложений использующих qt.
 export QT_STYLE_OVERRIDE=adwaita-dark #Использовать Adwaitа в качестве стиля Qt по умолчанию' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
@@ -754,8 +748,8 @@ echo '[global]
     foreground = "#f92b2b"
     timeout = 0' > /mnt/etc/dunst/dunstrc
 #
-#Создание конфига picom.
-echo -e "\033[36mСоздание конфига picom.\033[0m"
+#Создание конфига picom (Автономный композитор для Xorg).
+echo -e "\033[36mСоздание конфига picom (Автономный композитор для Xorg).\033[0m"
 echo -e '# Прозрачность активных окон (0,1–1,0).
 active-opacity = 0.95;
 #
@@ -763,7 +757,7 @@ active-opacity = 0.95;
 inactive-opacity = 0.9;
 #
 # Затемнение неактивных окон (0,0–1,0).
-inactive-dim = 0.8;
+inactive-dim = 0.65;
 #
 # Включить вертикальную синхронизацию (если picom выдает ошибку по vsync, то отключаем заменой true на false).
 vsync = true;
@@ -829,8 +823,8 @@ use-damage = true;
 #TechnicalSymbol                            "_NET_WM_STATE@:a != \047_NET_WM_STATE_FOCUSED\047" ];
 ' > /mnt/home/"$username"/.config/picom.conf
 #
-#Создание xresources.
-echo -e "\033[36mСоздание xresources.\033[0m"
+#Создание конфига xresources (Настройка Xorg).
+echo -e "\033[36mСоздание конфига xresources (Настройка Xorg).\033[0m"
 echo '!Настройка внешнего вида xterm.
 !
 !Задает имя типа терминала, которое будет установлено в переменной среды TERM.
@@ -860,8 +854,8 @@ xterm*scrollKey: true
 Xcursor.size: '"$(($font*3))"'
 Xcursor.theme: Adwaita' | tee /mnt/home/"$username"/.Xresources /mnt/root/.Xresources
 #
-#Создание директории и конфига i3.
-echo -e "\033[36mСоздание конфига i3.\033[0m"
+#Создание директории и конфига i3-wm (Тайловый оконный менеджер).
+echo -e "\033[36mСоздание конфига i3-wm (Тайловый оконный менеджер).\033[0m"
 mkdir -p /mnt/home/"$username"/.config/i3
 echo -e '########### Основные настройки ###########
 #
@@ -1126,8 +1120,8 @@ bar {
 exec --no-startup-id firefox; #TechnicalString
 exec --no-startup-id ~/archinstall.sh; #TechnicalString' > /mnt/home/"$username"/.config/i3/config
 #
-#Создание конфига i3status.
-echo -e "\033[36mСоздание конфига i3status.\033[0m"
+#Создание конфига i3status (Панель рабочего стола i3-wm (Тайловый оконный менеджер)).
+echo -e "\033[36mСоздание конфига i3status (Панель рабочего стола i3-wm (Тайловый оконный менеджер)).\033[0m"
 echo 'general { #Основные настройки.
     colors = true #Включение/выключение поддержки цветов.
     color_good = "#2bf92b" #Цвет OK.
@@ -1166,8 +1160,8 @@ cpu_temperature 0 { #Температура ЦП.
 tztime 0 { #Вывод разделителя.
     format = "|" } #Формат вывода.' | tee /mnt/home/"$username"/.i3status.conf /mnt/root/.i3status.conf
 #
-#Создание конфига redshift.
-echo -e "\033[36mСоздание конфига redshift.\033[0m"
+#Создание конфига redshift (Регулирует цветовую температуру вашего экрана).
+echo -e "\033[36mСоздание конфига redshift (Регулирует цветовую температуру вашего экрана).\033[0m"
 echo '[redshift]
 allowed=true
 system=false
@@ -1181,8 +1175,8 @@ echo 'polkit.addRule(function(action, subject) {
     }
 });' > /mnt/etc/polkit-1/rules.d/49-nopasswd_global.rules
 #
-#Настройка bluetooth polkit.
-echo -e "\033[36mНастройка bluetooth polkit.\033[0m"
+#Настройка polkit (Фреймворк для управления общесистемными привилегиями) для блютуз.
+echo -e "\033[36mНастройка polkit (Фреймворк для управления общесистемными привилегиями) для блютуз.\033[0m"
 echo 'polkit.addRule(function(action, subject) {
     if ((action.id == "org.blueman.network.setup" ||
          action.id == "org.blueman.dhcp.client" ||
@@ -1194,8 +1188,8 @@ echo 'polkit.addRule(function(action, subject) {
     }
 });' > /mnt/etc/polkit-1/rules.d/51-blueman.rules
 #
-#Настройка printer polkit.
-echo -e "\033[36mНастройка bluetooth polkit.\033[0m"
+#Настройка polkit (Фреймворк для управления общесистемными привилегиями) для принтеров.
+echo -e "\033[36mНастройка polkit (Фреймворк для управления общесистемными привилегиями) для принтеров.\033[0m"
 echo 'polkit.addRule(function(action, subject) {
     if (action.id == "org.opensuse.cupspkhelper.mechanism.all-edit" &&
         subject.isInGroup("wheel")){
@@ -1203,8 +1197,8 @@ echo 'polkit.addRule(function(action, subject) {
     }
 });' > /mnt/etc/polkit-1/rules.d/49-allow-passwordless-printer-admin.rules
 #
-#Загрузка PAM.
-echo -e "\033[36mЗагрузка PAM.\033[0m"
+#Загрузка PAM (Фреймворк для аутентификации пользователей).
+echo -e "\033[36mЗагрузка PAM (Фреймворк для аутентификации пользователей).\033[0m"
 echo 'auth optional pam_kwallet5.so
 session optional pam_kwallet5.so auto_start' >> /mnt/etc/pam.d/xdm
 #
@@ -1328,8 +1322,8 @@ Win+Minus -- Показать первое окно черновика/блок�
 Win+Alt-left+1 -- Восстановление рабочего стола №1.
 #' > /mnt/help.txt
 #
-#Создание директории и конфига gtk.
-echo -e "\033[36mСоздание конфига gtk.\033[0m"
+#Создание директории и конфига gtk (Внешний вид gtk программ).
+echo -e "\033[36mСоздание конфига gtk (Внешний вид gtk программ).\033[0m"
 mkdir -p /mnt/home/"$username"/.config/{gtk-3.0,gtk-4.0} /mnt/root/.config/{gtk-3.0,gtk-4.0}
 echo '[Settings]
 gtk-application-prefer-dark-theme=true
@@ -1343,8 +1337,8 @@ gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'"
 gtk-icon-theme-name="ePapirus-Dark"
 gtk-theme-name="Adwaita-dark"' > /mnt/usr/share/gtk-2.0/gtkrc
 #
-#Создание директории и конфига lxqt-panel.
-echo -e "\033[36mСоздание конфига lxqt-panel.\033[0m"
+#Создание директории и конфига lxqt-panel (Панель рабочего стола LXQt).
+echo -e "\033[36mСоздание конфига lxqt-panel (Панель рабочего стола LXQt).\033[0m"
 mkdir -p /mnt/home/"$username"/.config/lxqt
 echo '[General]
 __userfile__=true
@@ -1412,7 +1406,7 @@ hide-on-overlap=false
 iconSize='"$(($font*3))"'
 lineCount=1
 lockPanel=false
-opacity=80
+opacity=90
 panelSize='"$(($font*3))"'
 plugins=mainmenu, spacer, quicklaunch, kbindicator, worldclock, volume, customcommand, customcommand2, customcommand3, customcommand4, customcommand5, customcommand6
 position=Top
@@ -1456,8 +1450,8 @@ timezonePosition=below
 type=worldclock
 useAdvancedManualFormat=false' > /mnt/home/"$username"/.config/lxqt/panel.conf
 #
-#Создание конфига kdeglobals.
-echo -e "\033[36mСоздание конфига kdeglobals.\033[0m"
+#Создание конфига kdeglobals (Внешний вид kde программ).
+echo -e "\033[36mСоздание конфига kdeglobals (Внешний вид kde программ).\033[0m"
 echo '[Colors:Button]
 BackgroundNormal=53,53,53
 BackgroundAlternate=50,50,50
@@ -1479,11 +1473,13 @@ BackgroundAlternate=50,50,50
 ForegroundNormal=238,238,238
 ForegroundInactive=178,178,178' | tee /mnt/home/"$username"/.config/kdeglobals /mnt/root/.config/kdeglobals
 #
+#Создание пользовательских директорий.
+echo -e "\033[36mСоздание пользовательских директорий.\033[0m"
 mkdir -p /mnt/home/"$username"/Documents/{Downloads,Public,Desktop,Music,Pictures,Templates,Videos} /mnt/root/Documents/{Downloads,Public,Desktop,Music,Pictures,Templates,Videos}
 #
-#Создание конфига samba.
+#Создание конфига samba (Стандартный набор программ взаимодействия Windows для Linux и Unix).
 mkdir -p /mnt/home/"$username"/Documents/Public/{Out,In}
-echo -e "\033[36mСоздание конфига samba.\033[0m"
+echo -e "\033[36mСоздание конфига samba (Стандартный набор программ взаимодействия Windows для Linux и Unix).\033[0m"
 echo '[global]
 workgroup = WORKGROUP
 security = user
@@ -1501,8 +1497,8 @@ guest ok = no
 browsable = yes
 writable = yes' > /mnt/etc/samba/smb.conf
 #
-#Создание конфига smb4krc.
-echo -e "\033[36mСоздание конфига smb4krc.\033[0m"
+#Создание конфига smb4krc (браузер общих ресурсов Samba (SMB/CIFS)).
+echo -e "\033[36mСоздание конфига smb4krc (браузер общих ресурсов Samba (SMB/CIFS)).\033[0m"
 echo '[Mounting]
 DetectAllShares=true
 MountPrefix=file:///home/'"$username"'/Documents/Public/In
@@ -1582,7 +1578,8 @@ for (( j=0, i=1; i<="${#massd[*]}"; i++, j++ ))
         fi
     done
 #
-#
+#Настройка удаленного рабочего стола.
+echo -e "\033[36mНастройка удаленного рабочего стола.\033[0m"
 arch-chroot /mnt x11vnc -storepasswd $passuser /etc/x11vnc.pass
 chmod ugo+r /mnt/etc/x11vnc.pass
 echo '[Unit]
@@ -1600,17 +1597,17 @@ ExecStart=x11vnc -many -rfbauth /etc/x11vnc.pass -env FD_XDM=1 -auth guess
 [Install]
 WantedBy=graphical.target' > /mnt/etc/systemd/system/x11vnc.service
 #
-#Установка помощника yay для работы с AUR.
-echo -e "\033[36mУстановка помощника yay для работы с AUR.\033[0m"
+#Установка помощника yay для работы с AUR (Репозиторий пользователей).
+echo -e "\033[36mУстановка помощника yay для работы с AUR (Репозиторий пользователей).\033[0m"
 arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
 git clone https://aur.archlinux.org/yay.git
 cd /home/'"$username"'/yay
 BUILDDIR=/tmp/makepkg makepkg -i --noconfirm'
 rm -Rf /mnt/home/"$username"/yay
 #
-#Установка программ из AUR.
-echo -e "\033[36mУстановка программ из AUR.\033[0m"
-arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap unspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt vkbasalt --noconfirm --ask 4
+#Установка программ из AUR (Репозиторий пользователей).
+echo -e "\033[36mУстановка программ из AUR (Репозиторий пользователей).\033[0m"
+arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt cups-xerox-b2xx --noconfirm --ask 4
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
@@ -1627,15 +1624,20 @@ echo -e '#!/bin/bash
 sleep 10
 nmcli device wifi connect "'"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)"'" password "'"$(grep Passphrase= /var/lib/iwd/"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | sed s/Passphrase=//)"'"
 echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/0
+#
+#Счетчик.
 while [[ -z "$(xwininfo -root -tree | grep -i firefox | grep -i mozilla)" ]]; do
-    echo "\033[31mОжидание запуска браузера!\033[0m" > /dev/pts/0
+    echo "\033[31mПродолжение установки!\033[0m" > /dev/pts/0
     sleep 5
 done
 sleep 10
 #
 #Обнаружение кулеров.
+echo -e "\033[36mОбнаружение кулеров.\033[0m"
 sudo sensors-detect --auto > /dev/pts/0
 #
+#Настройка браузера.
+echo -e "\033[36mНастройка браузера.\033[0m"
 ls ~/.mozilla/firefox/*.default-release
 echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
 user_pref("accessibility.typeaheadfind", true);
@@ -1643,10 +1645,16 @@ user_pref("intl.regional_prefs.use_os_locales", true);
 user_pref("widget.gtk.overlay-scrollbars.enabled", false);
 user_pref("browser.startup.page", 3);
 user_pref("browser.download.useDownloadDir", false);\047 > $_/user.js
+#
+#Настройка picom (Автономный композитор для Xorg).
+echo -e "\033[36mНастройка picom (Автономный композитор для Xorg).\033[0m"
 if [ -n "$(clinfo -l)" ];
     then sed -i \047s/#TechnicalSymbol //\047 ~/.config/picom.conf
     else sed -i \047/#TechnicalSymbol /d\047 ~/.config/picom.conf
 fi
+#
+#Настройка звука.
+echo -e "\033[36mНастройка звука.\033[0m"
 soundmass=($(pacmd list-sinks | grep -i name: | awk \047{print $2}\047))
 for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
             do
@@ -1657,6 +1665,9 @@ amixer -c "$j" sset "Auto-Mute Mode" Disabled > /dev/pts/0
 amixer -c "$j" sset "HP/Speaker Auto Detect" unmute > /dev/pts/0
             done
 alsactl store
+#
+#Настройка внешнего вида программ.
+echo -e "\033[36mНастройка внешнего вида программ.\033[0m"
 gsettings set org.gnome.desktop.interface icon-theme ePapirus-Dark
 gsettings set org.gnome.desktop.interface font-name \047Fantasque Sans Mono, '"$font"'\047
 gsettings set org.gnome.desktop.interface document-font-name \047Fantasque Sans Mono Bold Italic '"$font"'\047
@@ -1664,6 +1675,9 @@ gsettings set org.gnome.desktop.interface monospace-font-name \047Fantasque Sans
 gsettings set org.gnome.desktop.wm.preferences titlebar-font \047Fantasque Sans Mono Bold '"$font"'\047
 gsettings set org.gnome.libgnomekbd.indicator font-size '"$font"'
 gsettings set org.gnome.meld custom-font \047monospace, '"$font"'\047
+#
+#Проверка наличия touchpad.
+echo -e "\033[36mПроверка наличия touchpad.\033[0m"
 if [ -n "$(xinput list | grep -i touchpad)" ]; then
 sudo pacman -S xf86-input-libinput --noconfirm > /dev/pts/0
 sudo tee -a /etc/X11/xorg.conf.d/00-keyboard.conf <<< \047
@@ -1690,27 +1704,40 @@ sudo sed -i \047s/#net\/ipv4\/ip_forward=1/net\/ipv4\/ip_forward=1/\047 /etc/ufw
 sudo sed -i \047s/#net\/ipv6\/conf\/default\/forwarding=1/net\/ipv6\/conf\/default\/forwarding=1/\047 /etc/ufw/sysctl.conf
 sudo sed -i \047s/#net\/ipv6\/conf\/all\/forwarding=1/net\/ipv6\/conf\/all\/forwarding=1/\047 /etc/ufw/sysctl.conf
 #
+#Установка переменных окружения.
+echo -e "\033[36mУстановка переменных окружения.\033[0m"
 sudo sh -c \047echo "ENABLE_VKBASALT=1
 GTK_USE_PORTAL=1" >> /etc/environment\047
 #
+#Включение службы redshift (Регулирует цветовую температуру вашего экрана).
+echo -e "\033[36mВключение службы redshift (Регулирует цветовую температуру вашего экрана).\033[0m"
 systemctl --user enable redshift-gtk
 systemctl --user start redshift-gtk
 #
+#Настройка wine (Позволяет запускать приложения Windows).
+echo -e "\033[36mНастройка wine (Позволяет запускать приложения Windows).\033[0m"
+WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/0
+#
+#Удаление временных файлов.
+echo -e "\033[36mУдаление временных файлов.\033[0m"
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 sed -i \047s/#TechnicalSymbol//\047 ~/.config/i3/config
-WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/0
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #Передача прав созданному пользователю.
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
 arch-chroot /mnt chown -R "$username" /home/"$username"/
-mkdir /mnt/var/lib/samba/usershares
 #
+#Настройка samba (Стандартный набор программ взаимодействия Windows для Linux и Unix).
+echo -e "\033[36mНастройка samba (Стандартный набор программ взаимодействия Windows для Linux и Unix).\033[0m"
+mkdir /mnt/var/lib/samba/usershares
 arch-chroot /mnt groupadd -r sambashare
 arch-chroot /mnt chown root:sambashare /var/lib/samba/usershares
 arch-chroot /mnt chmod 1770 /var/lib/samba/usershares
 arch-chroot /mnt gpasswd sambashare -a "$username"
 #
+#Настройка virtualbox учитывая хост/гость.
+echo -e "\033[36mНастройка virtualbox учитывая хост/гость.\033[0m"
 if [ -n "$(lspci | grep -i vga | grep -iE 'vmware svga|virtualbox')" ]; then
 echo "vboxguest
 vboxsf
@@ -1725,21 +1752,33 @@ echo "vboxdrv
 vboxnetflt
 vboxnetadp" > /mnt/etc/modules-load.d/virtualboxhosts.config
 arch-chroot /mnt gpasswd -a "$username" vboxusers
+fi
+#
+#Undervolting CPU (Снижение напряжения ЦП на 10%).
+echo -e "\033[36mUndervolting CPU (Снижение напряжения ЦП на 10%).\033[0m"
+if [ -n "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq)" ]; then
 echo '[charger]
 scaling_max_freq = '$(("$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq)"/100*90))'' > /mnt/etc/auto-cpufreq.conf
 fi
 #
+#Настройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).
+echo -e "\033[36mНастройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).\033[0m"
 usbguard generate-policy > /mnt/etc/usbguard/rules.conf
 #
+#Ограничение на размер дампа.
+echo -e "\033[36mОграничение на размер дампа.\033[0m"
 echo "* hard core 0" >> /mnt/etc/security/limits.conf
 #
-#
+#Настройка прав: Только пользователь создатель имеет разрешения на чтение, запись и выполнение.
+echo -e "\033[36mНастройка прав: Только пользователь создатель имеет разрешения на чтение, запись и выполнение.\033[0m"
 sed -i 's/umask 022/umask 077/' /mnt/etc/profile
 #
-#
+#Настройка разрешения локального имени хоста.
+echo -e "\033[36mНастройка разрешения локального имени хоста.\033[0m"
 sed -i 's/mymachines/mymachines mdns_minimal [NOTFOUND=return]/' /mnt/etc/nsswitch.conf
 #
-#
+#Обновление часового пояса после подключения к сети через NetworkManager.
+echo -e "\033[36mОбновление часового пояса после подключения к сети через NetworkManager.\033[0m"
 echo '#!/bin/sh
 case "$2" in
     up)
@@ -1748,20 +1787,22 @@ case "$2" in
 esac' > /mnt/etc/NetworkManager/dispatcher.d/09-timezone
 #
 #Делаем xinitrc, 09-timezone и archinstall.sh исполняемыми.
+echo -e "\033[36mДелаем xinitrc, 09-timezone и archinstall.sh исполняемыми.\033[0m"
 chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh /mnt/root/.xinitrc
 #
 #Удаленное включение компьютера с помощью Wake-on-LAN (WOL).
 echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"
 arch-chroot /mnt ethtool -s "$netdev" wol g
 #
-#Добавление правил auditd.
+#Добавление правил auditd (Аудит доступа к основным файлам общей безопасности).
+echo -e "\033[36mДобавление правил auditd (Аудит доступа к основным файлам общей безопасности).\033[0m"
 echo '-w /etc/group -p wa
 -w /etc/passwd -p wa
 -w /etc/shadow -p wa
 -w /etc/sudoers -p wa' > /mnt/etc/audit/rules.d/rules.rules
 #
-#Создание конфига xdg-user-dirs.
-echo -e "\033[36mСоздание конфига xdg-user-dirs.\033[0m"
+#Создание конфига xdg-user-dirs (Пользовательские директории).
+echo -e "\033[36mСоздание конфига xdg-user-dirs (Пользовательские директории).\033[0m"
 echo 'XDG_DOCUMENTS_DIR="$HOME/Documents"
 XDG_DOWNLOAD_DIR="$HOME/Documents/Downloads"
 XDG_PUBLICSHARE_DIR="$HOME/Documents/Public"
@@ -1771,11 +1812,12 @@ XDG_PICTURES_DIR="$HOME/Documents/Pictures"
 XDG_TEMPLATES_DIR="$HOME/Documents/Templates"
 XDG_VIDEOS_DIR="$HOME/Documents/Videos"' | tee /mnt/home/"$username"/.config/user-dirs.dirs /mnt/root/.config/user-dirs.dirs
 #
-#
+#Ограничение прав к ключям ssh.
+echo -e "\033[36mОграничение прав к ключям ssh.\033[0m"
 chmod 600 /mnt/etc/ssh/sshd_config
 #
 #Установка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.
-echo -e "\033[36mУстановка завершена, после перезагрузки вас встретит настроенная и готовая к работе ОС.\033[0m"
+echo -e "\033[36mУстановка завершена, после перезагрузки скрипт продолжит установку.\033[0m"
 while [[ 0 -ne $tic ]]; do
     echo -e "\033[31m...\033[36m$tic\033[31m...\033[0m"
     sleep 1

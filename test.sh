@@ -16,10 +16,6 @@ pacman -Sc --noconfirm
 killall gpg-agent
 #Переменная назначит образ микрокода ЦП для UEFI загрузчика.
 microcode=""
-#Переменная сохранит имя wi-fi сети для дальнейшей установки/настройки/расчета.
-namewifi=""
-#Переменная сохранит пароль wi-fi сети для дальнейшей установки/настройки/расчета.
-passwifi=""
 #Переменная сохранит имя сетевого устройства для дальнейшей установки/настройки/расчета.
 netdev="$(ip -br link show | grep -vEi "unknown|down" | awk '{print $1}' | xargs)"
 #Массив хранит имена обнаруженных дисков.
@@ -65,20 +61,15 @@ nvidiac=""
 tic=3
 #Массив хранит наличие ssd, если такие имеются.
 massd=()
-#
 #Переменная сохранит размер шрифта firefox.
 fox=""
-#
 #Переменная сохранит шифр авторизации grub.
 grubsha=""
-#
-#Переменная сохранит размер root-раздела
+#Переменная сохранит размер root-раздела.
 rootsize=""
-#
-#Переменная сохранит размер var-раздела
+#Переменная сохранит размер var-раздела.
 varsize=""
-#
-#
+#Переменная сохранит кулеры.
 fanconky=""
 #
 #Определяем процессор.
@@ -373,7 +364,7 @@ EOF
 #Убираем sudo пароль для пользователя.
 echo ""$username" ALL=(ALL:ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
 #
-#Установка загрузчик.
+#Установка загрузчика.
 echo -e "\033[36mУстановка загрузчика.\033[0m"
 if [ -z "$(efibootmgr | grep Boot)" ];
     then
@@ -678,8 +669,8 @@ ${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature_celsius | aw
 ]]' > /mnt/home/"$username"/.config/conky/conky.conf
 #
 #Создание конфига bash_profile (Настройка Xorg).
-#echo -e "\033[36mСоздание конфига bash_profile (Настройка Xorg).\033[0m"
-#echo '[[ -f ~/.profile ]] && . ~/.profile' | tee /mnt/home/"$username"/.bash_profile /mnt/root/.bash_profile
+echo -e "\033[36mСоздание конфига bash_profile (Настройка Xorg).\033[0m"
+echo '[[ -f ~/.profile ]] && . ~/.profile' | tee /mnt/home/"$username"/.bash_profile /mnt/root/.bash_profile
 #
 #Создание конфига bashrc (Настройка Xterm).
 echo -e "\033[36mСоздание конфига bashrc (Настройка Xterm).\033[0m"
@@ -1728,7 +1719,7 @@ WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /d
 echo -e "\033[36mУдаление временных файлов.\033[0m"
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 sed -i \047s/#TechnicalSymbol//\047 ~/.config/i3/config
-rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
+#rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #Передача прав созданному пользователю.
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
