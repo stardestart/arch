@@ -219,8 +219,7 @@
       </li>
       <li>
         <p class=text>
-          Выбираем русскую раскладку (смысла этой команды я не понимаю, но в оф. wiki она
-          есть).
+          Выбираем русскую раскладку.
         </p>
         <div class=term>
           <span class=ps>#:</span>
@@ -229,21 +228,20 @@
       </li>
       <li>
         <p class=text>
-         Установка шрифта с кириллицей (шрифт меняется, но русской раскладки после предыдушей
-         команды нет, нужен ли шрифт с поддержкой вопрос открытый).
+         Установка шрифта с кириллицей.
         </p>
         <div class=term>
           <span class=ps>#:</span>
-          setfont cyr-sun16
+          setfont ter-v18n
         </div>
       </li>
       <li>
         <p class=text>
-          Синхронизируем системные часы.
+          Определяем часовой пояс.
         </p>
         <div class=term>
           <span class=ps>#:</span>
-          timedatectl set-ntp true
+          timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
         </div>
       </li>
     </ol>
@@ -1000,29 +998,20 @@
         <ol class=listB>
           <li>
             <p class=text>
-              Синхронизируем системные часы.
+              Определяем часовой пояс.
             </p>
             <div class=term>
               <span class=ps>#:</span>
-              timedatectl set-ntp true
+              timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
             </div>
           </li>
           <li>
             <p class=text>
-              Определяем свой часовой пояс.
+              Зададим системе свой часовой пояс.
             </p>
             <div class=term>
               <span class=ps>#:</span>
-              curl https://ipapi.co/timezone
-            </div>
-          </li>
-          <li>
-            <p class=text>
-              Зададим системе свой часовой пояс, например Europe/Moscow.
-            </p>
-            <div class=term>
-              <span class=ps>#:</span>
-              ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime
+              ln -sf /usr/share/zoneinfo/"$(curl https://ipapi.co/timezone)" /etc/localtime
             </div>
           </li>
           <li>
@@ -1098,7 +1087,7 @@ LANG="ru_RU.UTF-8"
 #Включаем русский язык.
 KEYMAP=ru
 #Установка шрифта с кириллицей.
-FONT=cyr-sun16
+FONT=ter-v18n
 #Раскрашиваем консоль.
 USECOLOR=yes
 
@@ -1141,6 +1130,48 @@ USECOLOR=yes
 
 
 
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+            </div>
+          </li>
+          <li>
+            <p class=text>
+              Установим дополнительное количество итераций для хеширования паролей.
+            </p>
+            <div class=term>
+              <span class=ps>#:</span>
+              nano /etc/pam.d/passwd
+            </div>
+            <div class=nano>
+              <pre>
+password        required        pam_unix.so sha512 shadow nullok rounds=500000
+
+
+
+
+
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+            </div>
+            <div class=term>
+              <span class=ps>#:</span>
+              nano /etc/login.defs
+            </div>
+            <p class=text>
+              Находим, раскомментируем (Удаляем знак «#») и изменяем строчку.
+            </p>
+            <div class=nano>
+              <pre>
+...
+SHA_CRYPT_MIN_ROUNDS 500000
+...
+...
+...
+...
+...
+...
                       <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
 <span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
 <span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
@@ -1250,17 +1281,17 @@ USECOLOR=yes
           </li>
           <li>
             <p class=text>
-              Находим эту строчку и раскомментируем (Удаляем знак «#»).
+              В конце пишем одну строчку.
             </p>
             <div class=nano>
               <pre>
 ...
-<span class=ps>#</span>%wheel ALL=(ALL) ALL
 ...
 ...
 ...
 ...
 ...
+ИмяПользователя ALL=(ALL:ALL) NOPASSWD: ALL
                       <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
 <span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
 <span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
@@ -1340,7 +1371,7 @@ USECOLOR=yes
             </li>
             <li>
               <p class=text>
-                Время задержки меню GRUB, я выключаю т.к. других ОС нет.
+                Время задержки меню GRUB.
               </p>
               <div class=nano>
                 <pre>
@@ -1399,10 +1430,10 @@ GRUB_TIMEOUT=0
                 <pre>
 #Указывает загрузить систему основываясь на записи в файле arch.conf.
 default arch
-#Время задержки меню UEFI, я выключаю т.к. других ОС нет.
+#Время задержки меню UEFI.
 timeout 0
-#Отключить редактор.
-editor 0
+editor yes
+console-mode max
 
 
 
@@ -1423,16 +1454,18 @@ editor 0
               </div>
               <div class=nano>
                 <pre>
-#Название, которое будет видно в меню UEFI (задержка отключена, меню не появится)
+#Название, которое будет видно в меню UEFI.
 title  Arch Linux
 #Ядро системы.
 linux  /vmlinuz-linux-zen
-#Микрокод.
+#Микрокод (initrd /amd-ucode.img).
 initrd /intel-ucode.img
 #Начальный загрузочный диск.
 initrd  /initramfs-linux-zen.img
 #Указание где находится ROOT-раздел.
 options root=/dev/sda3 rw
+#Указание где находится SWAP-раздел.
+options resume=/dev/sda2
 
 
 
@@ -1474,77 +1507,6 @@ options root=/dev/sda3 rw
 <span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
 <span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
         </div>
-      </li>
-      <li>
-        <h3>Подключение поддержки SysRq (прямая связь с ядром).</h3>
-        <p class=text>
-          Клавиша SysRq — единственная прямая связь с ядром, которая работает всегда, если
-          работает ядро, так как соответствующие комбинации напрямую перехватываются ядром и
-          соответствующий код является частью драйвера клавиатуры. При помощи некоторых
-          комбинаций клавиш можно заставить систему аварийно сбросить данные на диски,
-          перемонтировать все файловые системы в режим «только чтение», перезагрузиться или
-          перезапустить графическую подсистему даже при зависшей системе.
-        </p>
-        <p class=text>
-          Открываем конфиг sysctl.
-        </p>
-        <div class=term>
-          <span class=ps>#:</span>
-          nano /etc/sysctl.d/99-sysctl.conf
-        </div>
-        <div class=nano>
-          <pre>
-kernel.sysrq=1
-
-
-
-
-
-                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
-<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
-<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
-        </div>
-        <p class=text>
-          Сочетания клавиш:
-        </p>
-        <ul>
-          <li>
-            <span class=text>
-              Alt+SysRq(PrintScreen)+REISUB.
-            </span>
-          </li>
-          <li>
-            <span class=text>
-              Alt+SysRq(PrintScreen)+r Забираем клавиатуру у Xorg.
-            </span>
-          </li>
-          <li>
-            <span class=text>
-              Alt+SysRq(PrintScreen)+e Запрашиваем завершение процесса, но запрос может
-              быть проигнорирован.
-            </span>
-          </li>
-          <li>
-            <span class=text>
-              Alt+SysRq(PrintScreen)+i Запрашиваем немедленное завершение процесса.
-            </span>
-          </li>
-          <li>
-            <span class=text>
-              Alt+SysRq(PrintScreen)+s Сбрасываем данные на диск.
-            </span>
-          </li>
-          <li>
-            <span class=text>
-              Alt+SysRq(PrintScreen)+u Монтируем все файловые системы только для чтения.
-            </span>
-          </li>
-          <li>
-            <span class=text>
-              Alt+SysRq(PrintScreen)+b Перезагружаем.
-            </span>
-          </li>
-        </ul>
       </li>
       <li>
         <h3>Установка ОС завершена.</h3>
@@ -1672,7 +1634,7 @@ kernel.sysrq=1
             </p>
             <div class=term>
               <span class=ps>$:</span>
-              sudo pacman -Sy archlinux-keyring
+              sudo pacman -Syy archlinux-keyring
             </div>
           </li>
           <li>
@@ -1690,24 +1652,7 @@ kernel.sysrq=1
             </p>
             <div class=term>
               <span class=ps>$:</span>
-              sudo nano /etc/xdg/reflector/reflector.conf
-            </div>
-            <p class=text>
-              Находим эту строчку, раскомментируем её (Удаляем знак «#») и через запятую без
-              пробелов дописываем «Russia».
-            </p>
-            <div class=nano>
-              <pre>
-...
-<span class=ps>#</span> --country France,Germany,Russia
-...
-...
-...
-...
-...
-                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
-<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
-<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+              reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
             </div>
           </li>
           <li>
@@ -1731,7 +1676,7 @@ kernel.sysrq=1
         </ol>
       </li>
       <li>
-        <h3>Установка оконных менеджеров.</h3>
+        <h3>Установка основных компонентов системы.</h3>
         <ol>
           <li>
             <p class=text>
@@ -1751,11 +1696,6 @@ kernel.sysrq=1
               <li>
                 <span class=text>
                   xorg-xinit — Скрипт запуска из DM.
-                </span>
-              </li>
-              <li>
-                <span class=text>
-                  xorg-apps — Приложения xorg.
                 </span>
               </li>
               <li>
@@ -1787,8 +1727,7 @@ kernel.sysrq=1
             </ul>
             <div class=term>
               <span class=ps>$:</span>
-              sudo pacman -S xorg i3-gaps xorg-xinit xorg-apps xterm dmenu xdm-archlinux
-              i3status git
+              sudo pacman -S xorg i3-gaps xorg-xinit xterm dmenu xdm-archlinux i3status git
             </div>
           </li>
           <li>
@@ -1797,24 +1736,33 @@ kernel.sysrq=1
             </p>
             <details>
               <summary>... NVIDIA.</summary>
+              <p class=text>
+                Микроархитектура Turing, Ampere, Volta, Pascal, Maxwell (Графический процессор TU1, GA1, GV1, GP10, GM20, GM10).
+              </p>
               <div class=term>
                 <span class=ps>$:</span>
-                sudo pacman -S nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings
-                opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda
+                sudo pacman -S nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda
+              </div>
+              <p class=text>
+                Остальные.
+              </p>
+              <div class=term>
+                <span class=ps>$:</span>
+                sudo pacman -S xf86-video-nouveau
               </div>
             </details>
             <details>
               <summary>... AMD.</summary>
               <div class=term>
                 <span class=ps>$:</span>
-                sudo pacman -S amdvlk lib32-amdvlk
+                sudo pacman -S f86-video-ati xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon
               </div>
             </details>
             <details>
-              <summary>... которые старше 7 лет.</summary>
+              <summary>... Intel.</summary>
               <div class=term>
                 <span class=ps>$:</span>
-                sudo pacman -S mesa lib32-mesa
+                sudo pacman -S vulkan-intel intel-media-driver libva-intel-driver
               </div>
             </details>
           </li>
@@ -1870,6 +1818,8 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
 fi
 
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
+feh --bg-max --randomize --no-fehbg /usr/share/backgrounds/archlinux/ & #Автозапуск обоев рабочего стола.
+xautolock -time 50 -locker "systemctl hibernate" -notify 1800 -notifier "xlock -mode matrix -delay 10000" -detectsleep -noclose & #Автозапуск заставки.
 exec i3 #Автозапуск i3.
 
 
@@ -1887,6 +1837,13 @@ exec i3 #Автозапуск i3.
               <span class=ps>$:</span>
               chmod +x ~/.xinitrc
             </div>
+            <p class=text>
+              Копируем его в root.
+            </p>
+            <div class=term>
+              <span class=ps>$:</span>
+              sudo cp ./.xinitrc /root/.xinitrc
+            </div>
           </li>
           <li>
             <p class=text>
@@ -1899,19 +1856,34 @@ exec i3 #Автозапуск i3.
           </li>
           <li>
             <p class=text>
-              Настройка переключения раскладки (alt+shift) и перезагрузки оконного менеджера
+              Настройка клавиатуры, переключения раскладки (alt+shift) и перезагрузки оконного менеджера
               (ctrl+alt+bksp).
             </p>
             <div class=term>
               <span class=ps>$:</span>
-              sudo localectl --no-convert set-x11-keymap us,ru  "" "" grp:alt_shift_toggle,terminate:ctrl_alt_bksp
+              sudo nano /etc/X11/xorg.conf.d/00-keyboard.conf
+            </div>
+            <div class=nano>
+              <pre>
+Section "InputClass"
+Identifier "system-keyboard"
+MatchIsKeyboard "on"
+Option "XkbLayout" "us,ru"
+Option "XkbOptions" "grp:alt_shift_toggle,terminate:ctrl_alt_bksp"
+EndSection
+
+
+
+
+
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
             </div>
           </li>
           <li>
             <p class=text>
-              Теперь можно установить браузер и копировать команды из браузера (CTRL+C) и
-              вставлять в терминал (вставляется текст в XTerm нажатием СКМ или одновременным
-              зажатием ЛКМ+ПКМ на тачпаде), но сначала перезагружаем ПК.
+              Теперь можно установить браузер и копировать команды из браузера (CTRL+C) и вставлять в терминал (вставляется текст в XTerm нажатием СКМ или одновременным зажатием ЛКМ+ПКМ на тачпаде), но сначала перезагружаем ПК.
             </p>
             <div class=term>
               <span class=ps>$:</span>
@@ -1925,8 +1897,7 @@ exec i3 #Автозапуск i3.
         <ol class=listB>
           <li>
             <p class=text>
-              После перезагрузки нас встречает xdm-archlinux (Display manager или Экранный
-              менеджер).
+              После перезагрузки нас встречает xdm-archlinux (Display manager или Экранный менеджер).
             </p>
           </li>
           <li>
@@ -1986,8 +1957,7 @@ exec i3 #Автозапуск i3.
         <ol class=listB>
           <li>
             <p class=text>
-              Программы из основных репозиториев ставятся командой pacman, для установки из
-              репозиториев AUR удобнее установить помощник. Скачиваем пакет.
+              Программы из основных репозиториев ставятся командой pacman, для установки из репозиториев AUR удобнее установить помощник. Скачиваем пакет.
             </p>
             <div class=term>
               <span class=ps>$:</span>
@@ -2025,6 +1995,61 @@ exec i3 #Автозапуск i3.
               cd
             </div>
           </li>
+          <li>
+        <h3>
+          Создание пользовательских директорий.
+        </h3>
+        <ol class=listB>
+          <li>
+            <p class=text>
+              Создание папок.
+            </p>
+            <div class=term>
+              <span class=ps>$:</span>
+              mkdir -p ~/Documents/{Downloads,Public,Desktop,Music,Pictures,Templates,Videos}
+            </div>
+            <div class=term>
+              <span class=ps>$:</span>
+              sudo mkdir -p /root/Documents/{Downloads,Public,Desktop,Music,Pictures,Templates,Videos}
+            </div>
+          </li>
+          <li>
+            <p class=text>
+              Создание конфига xdg-user-dirs.
+            </p>
+            <div class=term>
+              <span class=ps>$:</span>
+              nano ~/.config/user-dirs.dirs
+            </div>
+            <div class=nano>
+              <pre>
+XDG_DOCUMENTS_DIR="$HOME/Documents"
+XDG_DOWNLOAD_DIR="$HOME/Documents/Downloads"
+XDG_PUBLICSHARE_DIR="$HOME/Documents/Public"
+XDG_DESKTOP_DIR="$HOME/Documents/Desktop"
+XDG_MUSIC_DIR="$HOME/Documents/Music"
+XDG_PICTURES_DIR="$HOME/Documents/Pictures"
+XDG_TEMPLATES_DIR="$HOME/Documents/Templates"
+XDG_VIDEOS_DIR="$HOME/Documents/Videos"
+
+
+
+
+
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+            </div>
+          </li>
+          <li>
+            <p class=text>
+              Создание конфига xdg-user-dirs для root.
+            </p>
+            <div class=term>
+              <span class=ps>$:</span>
+              sudo cp ~/.config/user-dirs.dirs /root/.config/user-dirs.dirs
+            </div>
+          </li>
         </ol>
       </li>
       <li>
@@ -2042,13 +2067,17 @@ exec i3 #Автозапуск i3.
               </li>
               <li>
                 <span class=text>
-                  gparted — Утилита позволяющая управлять дисками, разделами и файловыми
-                  системами.
+                  gparted — Утилита позволяющая управлять дисками, разделами и файловыми системами.
                 </span>
               </li>
               <li>
                 <span class=text>
                   kwalletmanager — Инструмент управления кошельком с паролями.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  kwallet-pam — Интеграция KWallet PAM.
                 </span>
               </li>
               <li>
@@ -2078,11 +2107,6 @@ exec i3 #Автозапуск i3.
               </li>
               <li>
                 <span class=text>
-                  dmg2img — Инструмент для распаковки сжатых файлов DMG в IMG.
-                </span>
-              </li>
-              <li>
-                <span class=text>
                   network-manager-applet — Апплет для управления сетевыми подключениями.
                 </span>
               </li>
@@ -2093,15 +2117,12 @@ exec i3 #Автозапуск i3.
               </li>
               <li>
                 <span class=text>
-                  dbus-broker — Полная замена эталонной реализации dbus, целью которой является
-                  «обеспечить высокую производительность и надежность, сохраняя при этом
-                  совместимость с эталонной реализацией D-Bus».
+                  dbus-broker — Полная замена эталонной реализации dbus, целью которой является «обеспечить высокую производительность и надежность, сохраняя при этом совместимость с эталонной реализацией D-Bus».
                 </span>
               </li>
               <li>
                 <span class=text>
-                  acpid — Обеспечивает интеллектуальное управление питанием в системе и
-                  позволяет запрашивать состояние батареи и конфигурации.
+                  acpid — Обеспечивает интеллектуальное управление питанием в системе и позволяет запрашивать состояние батареи и конфигурации.
                 </span>
               </li>
               <li>
@@ -2116,85 +2137,252 @@ exec i3 #Автозапуск i3.
               </li>
               <li>
                 <span class=text>
-                  gtk4 — Фреймворк GTK+.
+                  perl-anyevent-i3 — Связь с оконным менеджером i3.
                 </span>
               </li>
               <li>
                 <span class=text>
-                  gtk3 — Фреймворк GTK+.
+                  perl-json-xs — json для оконного менеджера i3.
                 </span>
               </li>
               <li>
                 <span class=text>
-                  lib32-gtk3 — Фреймворк GTK+ x32.
+                  flatpak — Платформа изолированной программной среды и распространения приложений Linux (ранее xdg-app).
                 </span>
               </li>
               <li>
                 <span class=text>
-                  gtk2 — Фреймворк GTK.
+                  usbguard — Программная платформа для реализации политик авторизации USB-устройств.
                 </span>
               </li>
               <li>
                 <span class=text>
-                  lib32-gtk2 — Фреймворк GTK x32.
+                  x11vnc — VNC-сервер.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  neofetch — Консольный системный монитор.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  aspell — Интерактивная программа проверки орфографии.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  nuspell — Быстрая и безопасная библиотека C++ для проверки орфографии.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  aspell-en — Английский словарь для aspell.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  aspell-ru — Русский словарь aspell.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  ethtool — Утилита для управления сетевыми драйверами и оборудованием.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  hunspell — Библиотека и программа для проверки орфографии.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  hunspell-en_us — Англо-американские словари hunspell.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  hyphen — Библиотека для расстановки переносов и выравнивания.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  hyphen-en — Правила расстановки переносов в английском языке.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  libmythes — Простой тезаурус.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  mythes-en — Английский тезаурус.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  ocrfeeder — Анализ макета документа GTK и приложение для оптического распознавания символов.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  xdg-desktop-portal-gtk — Бэкенд-реализация для xdg-desktop-portal с использованием GTK.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  networkmanager-strongswan — Плагин Strongswan для NetworkManager.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  wireless_tools — Инструменты, позволяющие управлять беспроводными расширениями.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  krdc — Клиент удаленного рабочего стола.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  clinfo — Простое приложение OpenCL, которое перечисляет все доступные свойства платформы и устройства.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  autocutsel — Синхронизирует два буфера копирования/вставки.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  openssh — Реализация протокола SSH для удаленного входа в систему, выполнения команд и передачи файлов.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  haveged — Демон сбора энтропии с использованием таймингов ЦП.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  unzip — Для извлечения и просмотра файлов в архивах zip.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  smartmontools — Управление и мониторинг S.M.A.R.T. для жестких дисков.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  nss-mdns — Плагин glibc, обеспечивающий разрешение имени хоста через mDNS
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  ufw — Брандмауэр.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  libpwquality — Библиотека для проверки качества паролей и генерации случайных паролей.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  ntp — Эталонная реализация протокола сетевого времени.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  xdg-user-dirs — Пользовательские директории.
                 </span>
               </li>
             </ul>
             <div class=term>
               <span class=ps>$:</span>
-              sudo pacman -S numlockx gparted kwalletmanager ark mc htop conky polkit dmg2img
-              network-manager-applet rng-tools dbus-broker acpid giflib lib32-giflib gtk4 gtk3
-              lib32-gtk3 gtk2 lib32-gtk2
+              sudo pacman -S numlockx gparted kwalletmanager kwallet-pam ark mc htop conky polkit dmg2img network-manager-applet rng-tools dbus-broker acpid giflib lib32-giflib perl-anyevent-i3 perl-json-xs flatpak usbguard x11vnc neofetch aspell nuspell aspell-en aspell-ru ethtool hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en ocrfeeder xdg-desktop-portal-gtk networkmanager-strongswan wireless_tools krdc clinfo autocutsel openssh haveged unzip smartmontools nss-mdns ufw libpwquality ntp xdg-user-dirs
             </div>
           </li>
           <li>
             <p class=text>
-              transset-df — прозрачность для приложений Xorg.
+              Настройка usbguard, важный пункт, иначе после перезагрузки ВСЕ usb устройства не будут подключены.
             </p>
             <div class=term>
               <span class=ps>$:</span>
-              yay -S transset-df
+              sudo usbguard generate-policy > /etc/usbguard/rules.conf
             </div>
           </li>
           <li>
             <p class=text>
-              Hardinfo — это приложение, которое поможет вам найти много информации о вашем ПК.
+              Пакеты из AUR:
             </p>
+            <ul>
+              <li>
+                <span class=text>
+                  gtk3-classic — Классический gtk.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  Hardinfo — Приложение, которое поможет вам найти много информации о вашем ПК.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  usbguard-applet-qt — Графический интерфейс USBguard.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  debtap — Скрипт для преобразования пакетов .deb в пакеты Arch Linux. Не используйте его для преобразования пакетов, которые уже существуют в официальных репозиториях или могут быть собраны из AUR!
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  auto-cpufreq — Автоматический оптимизатор скорости и мощности процессора.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  hunspell-ru-aot — Словарь проверки правописания русского языка.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  hyphen-ru — Правила расстановки переносов в русском языке.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  mythes-ru — Русский тезаурус.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  minq-ananicy-git — Ananicy (ANother Auto NICe daemon) — это демон оболочки, созданный для управления приоритетами ввода-вывода и процессора процессов.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  kde-cdemu-manager — Окно менеджера, которое дает вам обзор ваших виртуальных дисков и позволяет вам монтировать и размонтировать образы.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  vkbasalt — Слой постобработки Vulkan.
+                </span>
+              </li>
+            </ul>
             <div class=term>
               <span class=ps>$:</span>
-              yay -S hardinfo
-            </div>
-          </li>
-          <li>
-            <p class=text>
-              r-linux — утилита восстановления файлов для файловой системы ext2/ext3/ext4.
-            </p>
-            <div class=term>
-              <span class=ps>$:</span>
-              yay -S r-linux
-            </div>
-          </li>
-          <li>
-            <p class=text>
-              debtap — скрипт для преобразования пакетов .deb в пакеты Arch Linux.
-              Не используйте его для преобразования пакетов, которые уже существуют
-              в официальных репозиториях или могут быть собраны из AUR!
-            </p>
-            <div class=term>
-              <span class=ps>$:</span>
-              yay -S debtap
-            </div>
-          </li>
-          <li>
-            <p class=text>
-              auto-cpufreq — автоматический оптимизатор скорости и мощности процессора.
-            </p>
-            <div class=term>
-              <span class=ps>$:</span>
-              yay -S auto-cpufreq
+              yay -S gtk3-classic hardinfo usbguard-applet-qt debtap auto-cpufreq hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git kde-cdemu-manager vkbasalt
             </div>
           </li>
         </ol>
+      </li>
       <li>
         <h3>Установка графического файлового менеджера и дополнений к нему.</h3>
         <p class=text>
@@ -2245,8 +2433,7 @@ exec i3 #Автозапуск i3.
           </li>
           <li>
             <span class=text>
-              samba — Файловый сервер SMB и сервер домена AD (Путь вводится в формате
-              smb://ИмяПользователяПароль@192.168.1.1/).
+              samba — Файловый сервер SMB.
             </span>
           </li>
           <li>
@@ -2270,12 +2457,20 @@ exec i3 #Автозапуск i3.
               kde-cli-tools — Ассоциации файлов.
             </span>
           </li>
+          <li>
+            <span class=text>
+              smb4k — Просмотр общих ресурсов Samba.
+            </span>
+          </li>
+          <li>
+            <span class=text>
+              kdenetwork-filesharing — Плагин диалога свойств для совместного использования каталога с локальной сетью.
+            </span>
+          </li>
         </ul>
         <div class=term>
           <span class=ps>$:</span>
-          sudo pacman -S dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice
-          curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers
-          qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools
+          sudo pacman -S dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs ntfs-3g dosfstools kde-cli-tools smb4k kdenetwork-filesharing
         </div>
       </li>
       <li>
@@ -2286,12 +2481,12 @@ exec i3 #Автозапуск i3.
         <ul>
           <li>
             <span class=text>
-              qt5ct — Настройка оформления QT приложений.
+              lxqt-panel — Панель рабочего стола.
             </span>
           </li>
           <li>
             <span class=text>
-              lxappearance-gtk3 — Настройка оформления GTK приложений.
+              qgnomeplatform-qt5 — Смена внешнего вида QT приложений.
             </span>
           </li>
           <li>
@@ -2311,7 +2506,7 @@ exec i3 #Автозапуск i3.
           </li>
           <li>
             <span class=text>
-              tint2 — Панель задач, использую только панель быстрого запуска.
+              archlinux-wallpaper — Arch Linux Обои.
             </span>
           </li>
           <li>
@@ -2326,17 +2521,17 @@ exec i3 #Автозапуск i3.
           </li>
           <li>
             <span class=text>
-              xscreensaver — Заставка и блокировщик экрана.
+              feh — Быстрый и легкий просмотрщик.
             </span>
           </li>
           <li>
             <span class=text>
-              notification-daemon — Уведомления рабочего стола.
+              dunst — Настраиваемый и легкий демон уведомлений.
             </span>
           </li>
           <li>
             <span class=text>
-              adwaita-qt5 — Тема для QT приложений.
+              libnotify — Библиотека для отправки уведомлений на рабочий стол.
             </span>
           </li>
           <li>
@@ -2346,14 +2541,18 @@ exec i3 #Автозапуск i3.
           </li>
           <li>
             <span class=text>
-              variety — Менеджер обоев рабочего стола.
+              xlockmore — Хранитель экрана.
+            </span>
+          </li>
+          <li>
+            <span class=text>
+              xautolock — Хранитель экрана.
             </span>
           </li>
         </ul>
         <div class=term>
           <span class=ps>$:</span>
-          sudo pacman -S qt5ct lxappearance-gtk3 papirus-icon-theme picom redshift tint2 grc
-          flameshot xscreensaver notification-daemon adwaita-qt5 gnome-themes-extra variety
+          sudo pacman -S lxqt-panel qgnomeplatform-qt5 papirus-icon-theme picom redshift archlinux-wallpaper grc flameshot feh dunst libnotify gnome-themes-extra xlockmore xautolock
         </div>
       </li>
       <li>
@@ -2407,47 +2606,64 @@ exec i3 #Автозапуск i3.
               </li>
               <li>
                 <span class=text>
-                  pavucontrol — Регулятор громкости PulseAudio.
-                </span>
-              </li>
-              <li>
-                <span class=text>
-                  faudio — Звуковые библиотеки для игр.
-                </span>
-              </li>
-              <li>
-                <span class=text>
-                  lib32-faudio — Звуковые библиотеки для игр x32.
+                  pavucontrol-qt — Регулятор громкости PulseAudio.
                 </span>
               </li>
             </ul>
             <div class=term>
               <span class=ps>$:</span>
-              sudo pacman -S alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol faudio lib32-faudio
+              sudo pacman -S alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt
             </div>
           </li>
           <li>
             <p class=text>
-              Регулятор громкости для каждого приложения и экранное меню для настольных
-              компьютеров Linux.
+              Настройка звука.
             </p>
-            <div class=term>
-              <span class=ps>$:</span>
-              yay -S volctl
-            </div>
-          </li>
-          <li>
-            <p class=text>
-              ?
-            </p>
-            <div class=term>
-              <span class=ps>$:</span>
-              alsamixer save
-            </div>
-            <div class=term>
-              <span class=ps>$:</span>
-              sudo alsactl store
-            </div>
+            <ul>
+              <li>
+                <p class=text>
+                  Чтобы получить список доступных звуковых выходов.
+                </p>
+                <div class=term>
+                  <span class=ps>$:</span>
+                  pacmd list-sinks | grep -i name: | awk '{print $2}'
+                </div>
+              </li>
+              <li>
+                <p class=text>
+                  Снимаем mute.
+                </p>
+                <div class=term>
+                  <span class=ps>$:</span>
+                  amixer -c ПорядковыйНомерЗвуковогоВыхода sset Master unmute
+                </div>
+                <div class=term>
+                  <span class=ps>$:</span>
+                  amixer -c ПорядковыйНомерЗвуковогоВыхода sset Speaker unmute
+                </div>
+                <div class=term>
+                  <span class=ps>$:</span>
+                  amixer -c ПорядковыйНомерЗвуковогоВыхода sset Headphone unmute
+                </div>
+                <div class=term>
+                  <span class=ps>$:</span>
+                  amixer -c ПорядковыйНомерЗвуковогоВыхода sset "Auto-Mute Mode" Disabled
+                </div>
+                <div class=term>
+                  <span class=ps>$:</span>
+                  amixer -c ПорядковыйНомерЗвуковогоВыхода sset "HP/Speaker Auto Detect" unmute
+                </div>
+              </li>
+              <li>
+                <p class=text>
+                  Сохраняем изменения.
+                </p>
+                <div class=term>
+                  <span class=ps>$:</span>
+                  alsactl store
+                </div>
+              </li>
+            </ul>
           </li>
         </ol>
       </li>
@@ -2464,27 +2680,72 @@ exec i3 #Автозапуск i3.
           </li>
           <li>
             <span class=text>
-              noto-fonts-extra — Семейство шрифтов, включающее более 100 отдельных шрифтов,
-              которые в совокупности предназначены для охвата всех шрифтов, закодированных в
-              стандарте Unicode.
-            </span>
-          </li>
-          <li>
-            <span class=text>
-              noto-fonts-cjk — Переименованные версии шрифтов Adobe Source Han, разработанные
-              Adobe и Google, которые содержат китайские иероглифы, хангыль и кана; латинские
-              буквы и цифры взяты из шрифтов Source Pro.
-            </span>
-          </li>
-          <li>
-            <span class=text>
-              ttf-joypixels — Смайлы.
+              ttf-fantasque-sans-mono — Семейство шрифтов с отличным моноширинным вариантом для программистов.
             </span>
           </li>
         </ul>
         <div class=term>
           <span class=ps>$:</span>
-          sudo pacman -S freetype2 noto-fonts-extra noto-fonts-cjk ttf-joypixels
+          sudo pacman -S freetype2 ttf-fantasque-sans-mono
+        </div>
+        <p class=text>
+          Чтобы не скачивать все шрифты NOTO font от Google, скачаем нужные по одному.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span>
+          <pre>
+sudo mkdir -p /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Emoji.zip https://fonts.google.com/download?family=Noto%20Emoji
+sudo unzip -o /usr/share/fonts/google/Emoji.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Symbols.zip https://fonts.google.com/download?family=Noto%20Sans%20Symbols
+sudo unzip -o /usr/share/fonts/google/Symbols.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Symbols2.zip https://fonts.google.com/download?family=Noto%20Sans%20Symbols%202
+sudo unzip -o /usr/share/fonts/google/Symbols2.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Duployan.zip https://fonts.google.com/download?family=Noto%20Sans%20Duployan
+sudo unzip -o /usr/share/fonts/google/Duployan.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Music.zip https://fonts.google.com/download?family=Noto%20Music
+sudo unzip -o /usr/share/fonts/google/Music.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Math.zip https://fonts.google.com/download?family=Noto%20Sans%20Math
+sudo unzip -o /usr/share/fonts/google/Math.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Sans.zip https://fonts.google.com/download?family=Noto%20Sans
+sudo unzip -o /usr/share/fonts/google/Sans.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Arabic.zip https://fonts.google.com/download?family=Noto%20Sans%20Arabic
+sudo unzip -o /usr/share/fonts/google/Arabic.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Serif.zip https://fonts.google.com/download?family=Noto%20Serif
+sudo unzip -o /usr/share/fonts/google/Serif.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/TC.zip https://fonts.google.com/download?family=Noto%20Serif%20TC
+sudo unzip -o /usr/share/fonts/google/TC.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Armenian.zip https://fonts.google.com/download?family=Noto%20Serif%20Armenian
+sudo unzip -o /usr/share/fonts/google/Armenian.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Gurmukhi.zip https://fonts.google.com/download?family=Noto%20Serif%20Gurmukhi
+sudo unzip -o /usr/share/fonts/google/Gurmukhi.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Gujarati.zip https://fonts.google.com/download?family=Noto%20Serif%20Gujarati
+sudo unzip -o /usr/share/fonts/google/Gujarati.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Tamil.zip https://fonts.google.com/download?family=Noto%20Serif%20Tamil
+sudo unzip -o /usr/share/fonts/google/Tamil.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Hebrew.zip https://fonts.google.com/download?family=Noto%20Serif%20Hebrew
+sudo unzip -o /usr/share/fonts/google/Hebrew.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/JP.zip https://fonts.google.com/download?family=Noto%20Serif%20JP
+sudo unzip -o /usr/share/fonts/google/JP.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/KR.zip https://fonts.google.com/download?family=Noto%20Serif%20KR
+sudo unzip -o /usr/share/fonts/google/KR.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Khmer.zip https://fonts.google.com/download?family=Noto%20Serif%20Khmer
+sudo unzip -o /usr/share/fonts/google/Khmer.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Georgian.zip https://fonts.google.com/download?family=Noto%20Serif%20Georgian
+sudo unzip -o /usr/share/fonts/google/Georgian.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Kannada.zip https://fonts.google.com/download?family=Noto%20Serif%20Kannada
+sudo unzip -o /usr/share/fonts/google/Kannada.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Thai.zip https://fonts.google.com/download?family=Noto%20Serif%20Thai
+sudo unzip -o /usr/share/fonts/google/Thai.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Devanagari.zip https://fonts.google.com/download?family=Noto%20Serif%20Devanagari
+sudo unzip -o /usr/share/fonts/google/Devanagari.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/Bengali.zip https://fonts.google.com/download?family=Noto%20Serif%20Bengali
+sudo unzip -o /usr/share/fonts/google/Bengali.zip -d /usr/share/fonts/google
+sudo curl -o /usr/share/fonts/google/SC.zip https://fonts.google.com/download?family=Noto%20Serif%20SC
+sudo unzip -o /usr/share/fonts/google/SC.zip -d /usr/share/fonts/google
+sudo rm /usr/share/fonts/google/*.zip
+sudo rm /usr/share/fonts/google/*.txt
+          </pre>
         </div>
       </li>
       <li>
@@ -2512,17 +2773,6 @@ exec i3 #Автозапуск i3.
               </li>
               <li>
                 <span class=text>
-                  kwrite — Редактор кода («kate» — если нужно больше функционала).
-                </span>
-              </li>
-              <li>
-                <span class=text>
-                  sweeper — Удаляет ненужные файлы, чтобы освободить место на диске и сохранить
-                  конфиденциальность.
-                </span>
-              </li>
-              <li>
-                <span class=text>
                   pinta — Аналог paint.
                 </span>
               </li>
@@ -2533,27 +2783,12 @@ exec i3 #Автозапуск i3.
               </li>
               <li>
                 <span class=text>
-                  transmission-qt — Быстрый, простой и бесплатный клиент BitTorrent.
-                </span>
-              </li>
-              <li>
-                <span class=text>
                   vlc — Видеоплеер.
                 </span>
               </li>
               <li>
                 <span class=text>
                   libreoffice-still-ru — Офисный пакет.
-                </span>
-              </li>
-              <li>
-                <span class=text>
-                  obs-studio — Захват экрана.
-                </span>
-              </li>
-              <li>
-                <span class=text>
-                  ktouch — Клавиатурный тренажер.
                 </span>
               </li>
               <li>
@@ -2573,44 +2808,8 @@ exec i3 #Автозапуск i3.
               </li>
               <li>
                 <span class=text>
-                  blender — Пакет для создания 3D-графики.
-                </span>
-              </li>
-              <li>
-                <span class=text>
-                  telegram-desktop — Мессенджер.
-                </span>
-              </li>
-              <li>
-                <span class=text>
-                  discord - Универсальный голосовой и текстовый чат для геймеров, бесплатный и
-                  безопасный.
-                </span>
-              </li>
-              <li>
-                <span class=text>
-                  marble — Глобус.
-                </span>
-              </li>
-              <li>
-                <span class=text>
-                  step — Интерактивный физический симулятор.
-                </span>
-              </li>
-              <li>
-                <span class=text>
-                  kontrast — Программа для проверки контрастности цветов.
-                </span>
-              </li>
-              <li>
-                <span class=text>
                   kamera — Протокол передачи изображений (PTP) — это старый метод связи с
                   камерами.
-                </span>
-              </li>
-              <li>
-                <span class=text>
-                  kcolorchooser — Пипетка.
                 </span>
               </li>
               <li>
@@ -2630,32 +2829,25 @@ exec i3 #Автозапуск i3.
                   Postscript.
                 </span>
               </li>
+              <li>
+                <span class=text>
+                  xed — Небольшой и легкий текстовый редактор.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  geoclue — Модульный геоинформационный сервис, построенный на системе обмена сообщениями D-Bus.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  gogglesmm — Музыкальный менеджер и проигрыватель.
+                </span>
+              </li>
             </ul>
             <div class=term>
               <span class=ps>$:</span>
-              sudo pacman -S audacity kdenlive cheese kwrite sweeper pinta gimp transmission-qt
-              vlc libreoffice-still-ru obs-studio ktouch kalgebra avidemux-qt copyq  blender
-              telegram-desktop discord marble step kontrast kamera kcolorchooser gwenview
-              imagemagick xreader
-            </div>
-          </li>
-          <li>
-            <p class=text>
-              Средство проверки грамматики с открытым исходным кодом (более 30 языков).
-            </p>
-            <div class=term>
-              <span class=ps>$:</span>
-              yay -S libreoffice-extension-languagetool
-            </div>
-          </li>
-          <li>
-            <p class=text>
-              Модульный геоинформационный сервис, построенный на системе обмена сообщениями
-              D-Bus.
-            </p>
-            <div class=term>
-              <span class=ps>$:</span>
-              sudo pacman -Ss geoclue2
+              sudo pacman -S audacity kdenlive cheese pinta gimp vlc libreoffice-still-ru kalgebra avidemux-qt copyq kamera gwenview imagemagick xreader xed geoclue gogglesmm
             </div>
           </li>
         </ol>
@@ -2671,12 +2863,6 @@ exec i3 #Автозапуск i3.
               <li>
                 <span class=text>
                   sane — Доступ к сканеру.
-                </span>
-              </li>
-              <li>
-                <span class=text>
-                  sane-airscan — Серверная часть SANE для сканеров документов AirScan (eSCL)
-                  и WSD.
                 </span>
               </li>
               <li>
@@ -2700,10 +2886,20 @@ exec i3 #Автозапуск i3.
                   различных сервисов.
                 </span>
               </li>
+              <li>
+                <span class=text>
+                  cups-pk-helper — Помощник, который заставляет system-config-printer использовать PolicyKit.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  system-config-printer — Инструмент настройки принтера CUPS и апплет состояния.
+                </span>
+              </li>
             </ul>
             <div class=term>
               <span class=ps>$:</span>
-              sudo pacman -S sane skanlite cups cups-pdf avahi
+              sudo pacman -S sane skanlite cups cups-pdf avahi cups-pk-helper system-config-printer
             </div>
           </li>
           <li>
@@ -2726,6 +2922,7 @@ exec i3 #Автозапуск i3.
             </div>
             <div class=nano>
               <pre>
+localhost
 192.168.0.0/24
 
 
@@ -2757,43 +2954,7 @@ exec i3 #Автозапуск i3.
           </li>
           <li>
             <span class=text>
-              bluez-cups - Bluetooth Linux для работы с принтером.
-            </span>
-          </li>
-          <li>
-            <span class=text>
-              bluez-hid2hci — Перевод HID-прокси Bluetooth HCI в режим HCI.
-            </span>
-          </li>
-          <li>
-            <span class=text>
-              bluez-libs — Устаревшие библиотеки для стека протоколов Bluetooth.
-            </span>
-          </li>
-          <li>
-            <span class=text>
-              bluez-plugins — Плагины bluez.
-            </span>
-          </li>
-          <li>
-            <span class=text>
               bluez-qt — Оболочка Qt для Bluez 5 DBus API.
-            </span>
-          </li>
-          <li>
-            <span class=text>
-              bluez-tools — Набор инструментов для управления Bluetooth-устройствами.
-            </span>
-          </li>
-          <li>
-            <span class=text>
-              python-bluepy — Модуль Python для взаимодействия с устройствами Bluetooth LE
-              через Bluez.
-            </span>
-          </li>
-          <li>
-            <span class=text>
-              python-pybluez — Оболочка Python для стека BlueZ Bluetooth.
             </span>
           </li>
           <li>
@@ -2804,8 +2965,7 @@ exec i3 #Автозапуск i3.
         </ul>
         <div class=term>
           <span class=ps>$:</span>
-          sudo pacman -S bluez bluez-utils bluez-cups bluez-hid2hci bluez-libs bluez-plugins
-          bluez-qt bluez-tools python-bluepy python-pybluez blueman
+          sudo pacman -S bluez bluez-utils bluez-qt blueman
         </div>
       </li>
       <li>
@@ -2931,13 +3091,30 @@ exec i3 #Автозапуск i3.
                   vulkan-devel — Vulkan разработчика.
                 </span>
               </li>
+              <li>
+                <span class=text>
+                  mesa — Реализация спецификации OpenGL с открытым исходным кодом.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  lib32-mesa — Реализация спецификации OpenGL с открытым исходным кодом (32-bit).
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  libva-mesa-driver — Драйверы VA-API.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  mesa-vdpau — Драйверы VDPAU.
+                </span>
+              </li>
             </ul>
             <div class=term>
               <span class=ps>$:</span>
-              sudo pacman -S steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode
-              mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer
-              lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader
-              python-glfw lib32-vulkan-validation-layers vulkan-devel --noconfirm
+              sudo pacman -S steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau --noconfirm
             </div>
           </li>
           <li>
@@ -2954,11 +3131,7 @@ exec i3 #Автозапуск i3.
             </div>
             <div class=term>
               <span class=ps>$:</span>
-              winetricks directx9 d3dx9 d3dx9_26 d3dx9_28 d3dx9_31 d3dx9_35 d3dx9_36 d3dx9_42
-              d3dx9_43 d3dx10 d3dx10_43 d3dx11_42 d3dx11_43 d3dxof devenum dinput8 dinput dirac
-              directmusic directplay dmsynth dsound dxdiagn gdiplus mfc40 mfc42 msxml6 quartz
-              vb5run vcrun2005 vcrun2008 vcrun2012 vcrun2013 vcrun2015 vcrun6 vcrun6sp6 wsh57
-              xact xinput
+              winetricks directx9 d3dx9 d3dx9_26 d3dx9_28 d3dx9_31 d3dx9_35 d3dx9_36 d3dx9_42 d3dx9_43 d3dx10 d3dx10_43 d3dx11_42 d3dx11_43 d3dxof devenum dinput8 dinput dirac directmusic directplay dmsynth dsound dxdiagn gdiplus mfc40 mfc42 msxml6 quartz vb5run vcrun2005 vcrun2008 vcrun2012 vcrun2013 vcrun2015 vcrun6 vcrun6sp6 wsh57 xact xinput
             </div>
           </li>
         </ol>
@@ -3001,142 +3174,88 @@ exec i3 #Автозапуск i3.
         <div class=nano>
           <pre>
 conky.config = { --Внешний вид.
-alignment = 'middle_right', --Располжение виджета.
-border_inner_margin = 30, --Отступ от внутренних границ.
-border_width = 1, --Толщина рамки.
+alignment = "top_right", --Располжение виджета.
+border_inner_margin = 6, --Отступ от внутренних границ.
+border_outer_margin = 6, --Отступ от края окна.
 cpu_avg_samples = 2, --Усреднение значений нагрузки.
-default_color = '#2bf92b', --Цвет по умолчанию.
-default_outline_color = '#2bf92b', --Цвет рамки по умолчанию.
+default_color = "#2bf92b", --Цвет по умолчанию.
 double_buffer = true, --Включение двойной буферизации.
 draw_shades = false, --Оттенки.
-draw_borders = true, --Включение границ.
-font = 'Noto Sans Mono:size=10', --Шрифт и размер шрифта.
-gap_x = 60, --Отступ от края.
+font = "Fantasque Sans Mono:size=10", --Шрифт и размер шрифта.
+gap_y = 60, --Отступ сверху.
+gap_x = 24, --Отступ от края.
 own_window = true, --Собственное окно.
-own_window_class = 'Conky', --Класс окна.
-own_window_type = 'override', --Тип окна (возможные варианты: "normal", "desktop", "ock", "panel", "override" выбираем в зависимости от оконного менеджера и личных предпочтений).
-own_window_hints = 'undecorated, skip_taskbar', --Задаем эфекты отображения окна.
+own_window_class = "Conky", --Класс окна.
+own_window_type = "override", --Тип окна.
+--own_window_type = "desktop", --Тип окна.
+own_window_hints = "undecorated, sticky, above, skip_taskbar, skip_pager", --Задаем эфекты отображения окна.
 own_window_argb_visual = true, --Прозрачность окна.
-own_window_argb_value = 180, --Уровень прозрачности.
+own_window_argb_value = 150, --Уровень прозрачности.
 use_xft = true, } --Использование шрифтов X сервера.
 conky.text = [[ #Наполнение виджета.
-#Блок "Время".
-#Часы.
-${font :size=44}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
-#Дата.
-${font :size=12}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$font$color
+#Блок "Часы".
+${font Fantasque Sans Mono:size=24}$alignc${color #f92b2b}$alignc${time %H:%M}$font$color
+#Блок "Дата".
+${font Fantasque Sans Mono:size=14}$alignc${color #b2b2b2}${time %d %b %Y} (${time %a})$color$font
+#Блок "Погода".
+$alignc${execi 3600 curl wttr.in/?format='%l,+%t+(%f)'}$font
 #Блок "Система".
-#Разделитель.
-${color #f92b2b}SYS${hr 3}$color
-#Ядро.
-${color #b2b2b2}Ядро:$color$alignr$kernel
-#Время в сети.
-${color #b2b2b2}Время в сети:$color$alignr$uptime
+${color #f92b2b}SYS${hr 3}
+${color #b2b2b2}Kernel:$color$alignr$kernel
+${color #b2b2b2}PC works:$color$alignr$uptime
 #Блок "ЦП".
-#Разделитель.
-${color #f92b2b}CPU${hr 3}$color
-#Нагрузка ЦП.
-${color #b2b2b2}Нагрузка ЦП:$color$alignr$cpu %
-#Частота ЦП.
-${color #b2b2b2}Частота ЦП:$color$alignr$freq MHz
-#Температура ЦП.
-${color #b2b2b2}Температура ЦП:$color$alignr${execi 10 sensors | grep "id 0:" | cut -b15-22}
-#Температура Ядра 1.
-$alignr${execi 10 sensors | grep "Core 0:" | cut -b1-22 }
-#Температура Ядра 2.
-$alignr${execi 10 sensors | grep "Core 1:" | cut -b1-22 }
-#Температура Ядра 3.
-$alignr${execi 10 sensors | grep "Core 2:" | cut -b1-22 }
-#Температура Ядра 4.
-$alignr${execi 10 sensors | grep "Core 3:" | cut -b1-22 }
-#Блок "Видеокарта".
-#Разделитель.
-${color #f92b2b}GPU${hr 3}$color
-#Частота ГП.
+${color #f92b2b}CPU${hr 3}
+${color #b2b2b2}$cpu%$color$alignc${cpugraph 12,72 b2b2b2 f92b2b -t}$alignr$freq MHz
+#Температура ядер ЦП.
+${color #b2b2b2}${execi 10 sensors | grep "Core 0:" | awk '{print $1, $2}'}$color$alignr${execi 10 sensors | grep "Core 0:" | awk '{print $3}'}
+${color #b2b2b2}${execi 10 sensors | grep "Core 1:" | awk '{print $1, $2}'}$color$alignr${execi 10 sensors | grep "Core 1:" | awk '{print $3}'}
+${color #b2b2b2}${execi 10 sensors | grep "Core 2:" | awk '{print $1, $2}'}$color$alignr${execi 10 sensors | grep "Core 2:" | awk '{print $3}'}
+${color #b2b2b2}${execi 10 sensors | grep "Core 3:" | awk '{print $1, $2}'}$color$alignr${execi 10 sensors | grep "Core 3:" | awk '{print $3}'}
+${color #b2b2b2}${hr 2}
+${color #b2b2b2}Process ${color #f92b2b}$alignc PID $color$alignr Used
+$color${hr 1}
+${color #b2b2b2}${top name 1} ${color #f92b2b}$alignc ${top pid 1} $color$alignr ${top cpu 1}
+${color #b2b2b2}${top name 2} ${color #f92b2b}$alignc ${top pid 2}$color$alignr ${top cpu 2}
+${color #b2b2b2}${top name 3} ${color #f92b2b}$alignc ${top pid 3}$color$alignr ${top cpu 3}
+${color #b2b2b2}${top name 4} ${color #f92b2b}$alignc ${top pid 4}$color$alignr ${top cpu 4}
+${color #b2b2b2}${top name 5} ${color #f92b2b}$alignc ${top pid 5}$color$alignr ${top cpu 5}
+#Блок "Cкорость вращения кулеров (вентиляторов)".
+${color #f92b2b}FAN${hr 3}
+$color${execi 10 sensors | grep -i fan}
+#Блок "Видеокарта Nvidia".
+${color #f92b2b}GPU${hr 3}
 ${color #b2b2b2}Частота ГП:$color$alignr${nvidia gpufreq} Mhz
-#Видео ОЗУ.
 ${color #b2b2b2}Видео ОЗУ:$color$alignr${nvidia mem} / ${nvidia memmax} MiB
-#Температура ГП.
-${color #b2b2b2}Температура ГП:$color$alignr${nvidia temp} °C
+${color #b2b2b2}Температура ГП:$color$alignr${nvidia temp} °C / ${nvidia fanspeed} RPM
 #Блок "ОЗУ".
-#Разделитель.
 ${color #f92b2b}RAM${hr 3}$color
-#Задействовано ОЗУ.
-${color #b2b2b2}Задействовано:$color$alignr$mem / $memmax
-#Свободно ОЗУ.
-${color #b2b2b2}Свободно:$color$alignr$memeasyfree / $memmax
-#Полоса загрузки ОЗУ.
-$memperc%${membar 4}
-#Блок "Подкачка".
-#Разделитель.
+$memperc% ${memgraph 12,72 b2b2b2 f92b2b -t} $alignr${color #f92b2b}$mem / $color$memeasyfree / ${color #b2b2b2}$memmax
+${color #b2b2b2}${hr 2}
+${color #b2b2b2}Process ${color #f92b2b}$alignc PID $color$alignr Used
+$color${hr 1}
+${color #b2b2b2}${top_mem name 1} ${color #f92b2b}$alignc ${top_mem pid 1} $color$alignr ${top_mem mem 1}
+${color #b2b2b2}${top_mem name 2} ${color #f92b2b}$alignc ${top_mem pid 2}$color$alignr ${top_mem mem 2}
+${color #b2b2b2}${top_mem name 3} ${color #f92b2b}$alignc ${top_mem pid 3}$color$alignr ${top_mem mem 3}
+${color #b2b2b2}${top_mem name 4} ${color #f92b2b}$alignc ${top_mem pid 4}$color$alignr ${top_mem mem 4}
+${color #b2b2b2}${top_mem name 5} ${color #f92b2b}$alignc ${top_mem pid 5}$color$alignr ${top_mem mem 5}
+#Блок "Раздел подкачки".
 ${color #f92b2b}SWAP${hr 3}$color
-#Задействовано Подкачки.
-${color #b2b2b2}Задействовано:$color$alignr$swap / $swapmax
-#Полоса загрузки Подкачки.
-$swapperc%${swapbar 4}
+$swapperc% ${swapbar 12,72} $alignr${color #f92b2b}$swap / $color$swapfree / ${color #b2b2b2}$swapmax
 #Блок "Сеть".
-#Разделитель.
 ${color #f92b2b}NET${hr 3}$color
-#Скорость приёма (enp0s31f6 определенно командой "ls /sys/class/net" в терминале).
-${color #b2b2b2}Скорость приёма:$color$alignr${upspeedf enp0s31f6}
-#Скорость отдачи.
-${color #b2b2b2}Скорость отдачи:$color$alignr${downspeedf enp0s31f6}
-#IP адрес.
-${color #b2b2b2}IP адрес:$color$alignr${curl eth0.me}
-#Блок "Процессы".
-#Разделитель.
-${color #f92b2b}Процессы${hr 3}$color
-#Таблица процессов.
-${color #b2b2b2}Название$alignr PID | CPU% | MEM% $color
-#Информация о процессе 1.
-${top name 1} $alignr ${top pid 1}|${top cpu 1}|${top mem 1}
-#Информация о процессе 2.
-${top name 2} $alignr ${top pid 2}|${top cpu 2}|${top mem 2}
-#Информация о процессе 3.
-${top name 3} $alignr ${top pid 3}|${top cpu 3}|${top mem 3}
-#Информация о процессе 4.
-${top name 4} $alignr ${top pid 4}|${top cpu 4}|${top mem 4}
-#Информация о процессе 5.
-${top name 5} $alignr ${top pid 5}|${top cpu 5}|${top mem 5}
-#Информация о процессе 6.
-${top name 6} $alignr ${top pid 6}|${top cpu 6}|${top mem 6}
-#Информация о процессе 7.
-${top name 7} $alignr ${top pid 7}|${top cpu 7}|${top mem 7}
-#Информация о процессе 8.
-${top name 8} $alignr ${top pid 8}|${top cpu 8}|${top mem 8}
-#Информация о процессе 9.
-${top name 9} $alignr ${top pid 9}|${top cpu 9}|${top mem 9}
-#Блок "Диск1".
-#Разделитель.
-${color #f92b2b}/home${hr 3}$color
-#Температура SSD1.
-${color #b2b2b2}Температура диска:$color$alignr${execi 10 sensors nvme-pci-0200 | grep "Composite:" | cut -b14-22}
-#Занято.
-${color #b2b2b2}Задействовано:$color$alignr${fs_used /home/} / ${fs_size /home/}
-#Свободно.
-${color #b2b2b2}Свободно:$color$alignr${fs_free /home/} / ${fs_size /home/}
-#Полоса загрузки SSD1.
-(${fs_type /home})$color${fs_bar 4 /home/}
-#Блок "Диск2".
-#Разделитель.
-${color #f92b2b}/games${hr 3}$color
-#Температура SSD2.
-${color #b2b2b2}Температура:$color$alignr${execi 10 sensors nvme-pci-0700 | grep "Composite:" | cut -b14-22}
-#Занято.
-${color #b2b2b2}Задействовано:$color$alignr${fs_used /games/} / ${fs_size /games/}
-#Свободно.
-${color #b2b2b2}Свободно:$color$alignr${fs_free /games/} / ${fs_size /games/}
-#Полоса загрузки SSD2.
-(${fs_type /games})$color${fs_bar 4 /games/}
-#Блок "Диск3".
-#Разделитель.
-${color #f92b2b}/data${hr 3}$color
-#Занято.
-${color #b2b2b2}Задействовано:$color$alignr${fs_used /data/} / ${fs_size /data/}
-#Свободно.
-${color #b2b2b2}Свободно:$color$alignr${fs_free /data/} / ${fs_size /data/}
-#Полоса загрузки HDD.
-(${fs_type /data})$color${fs_bar 4 /data/}  ]]
+${color #b2b2b2}IP:$alignr${curl eth0.me}$color↑${upspeedf enp0s31f6} ${upspeedgraph enp0s31f6 12,72 b2b2b2 f92b2b -t} $alignr↓${downspeedf enp0s31f6} ${downspeedgraph enp0s31f6 12,72 b2b2b2 f92b2b -t}
+#Блок "Системный диск".
+${color #f92b2b}HDD/SSD${hr 3}$color
+${color #b2b2b2}${execi 10 sudo smartctl -A /dev/nvme0n1 | grep -i temperature_celsius | awk -F '-' '{print $NF}' | awk '{print $1}'}${execi 10 sudo smartctl -A /dev/nvme0n1 | grep -i temperature: | awk '{print $2}'}°C ${color #f92b2b}/root${hr 1}$color
+(${fs_type /root})${fs_bar 12,72 /root} $alignr${color #f92b2b}${fs_used /root} / $color${fs_free /root} / ${color #b2b2b2}${fs_size /root}
+${execi 10 sudo smartctl -A /dev/nvme0n1 | grep -i temperature_celsius | awk -F '-' '{print $NF}' | awk '{print $1}'}${execi 10 sudo smartctl -A /dev/nvme0n1 | grep -i temperature: | awk '{print $2}'}°C ${color #f92b2b}/var${hr 1}$color
+(${fs_type /var})${fs_bar 12,72 /var} $alignr${color #f92b2b}${fs_used /var} / $color${fs_free /var} / ${color #b2b2b2}${fs_size /var}
+${execi 10 sudo smartctl -A /dev/nvme0n1 | grep -i temperature_celsius | awk -F '-' '{print $NF}' | awk '{print $1}'}${execi 10 sudo smartctl -A /dev/nvme0n1 | grep -i temperature: | awk '{print $2}'}°C ${color #f92b2b}/home${hr 1}$color
+(${fs_type /home})${fs_bar 12,72 /home} $alignr${color #f92b2b}${fs_used /home} / $color${fs_free /home} / ${color #b2b2b2}${fs_size /home}
+#Блок "Диски и разделы".
+${execi 10 sudo smartctl -A /dev/sda | grep -i temperature_celsius | awk -F '-' '{print $NF}' | awk '{print $1}'}${execi 10 sudo smartctl -A /dev/sda | grep -i temperature: | awk '{print $2}'}°C ${color #f92b2b}~/Documents/Devices/data${hr 1}$color
+(${fs_type /home/ИмяПользователя/Documents/Devices/data})${fs_bar 12,72 /home/ИмяПользователя/Documents/Devices/data}$alignr${fs_used /home/ИмяПользователя/Documents/Devices/data} / ${color #f92b2b}${fs_free /home/ИмяПользователя/Documents/Devices/data} / ${color #b2b2b2}${fs_size /home/ИмяПользователя/Documents/Devices/data}
+]]
 
 
 
@@ -3181,29 +3300,51 @@ ${color #b2b2b2}Свободно:$color$alignr${fs_free /data/} / ${fs_size /dat
         <div class=nano>
           <pre>
 [[ $- != *i* ]] && return #Определяем интерактивность шелла.
-[ -n "$XTERM_VERSION" ] && transset-df --id "$WINDOWID" >/dev/null #Автоматическая прозрачность xterm.
-alias grep="grep --color=auto" #Раскрашиваем grep.
-alias ip="ip --color=auto" #Раскрашиваем ip.
-alias ping="grc --colour=auto ping" #Раскрашиваем ping.
-alias gcc="grc --colour=auto gcc" #Раскрашиваем gcc.
-alias diff="grc --colour=auto diff" #Раскрашиваем diff.
-alias log="grc --colour=auto log" #Раскрашиваем log.
-alias cvs="grc --colour=auto cvs" #Раскрашиваем cvs.
-alias mount="grc --colour=auto mount" #Раскрашиваем mount.
-alias ps="grc --colour=auto ps" #Раскрашиваем ps.
-alias ls="grc --colour=auto ls" #Раскрашиваем ls.
-alias df="grc --colour=auto df" #Раскрашиваем df.
-PS1="\[\e[2;32m\][\A]\[\e[0m\]\[\e[3;31m\][\u@\h \W]\[\e[0m\]\[\e[5;36m\]\$: \[\e[0m\]" #Изменяем вид приглашения командной строки.
-#\[\e[2;32m\] 2 - более темный цвет, 32 - зеленый цвет.
-#[\A] Текущее время в 24-часовом формате.
-#\[\e[0m\] Конец изменениям.
-#\[\e[3;31m\] 3 - курсив, 31 - красный цвет.
-#[\u@\h \W] ИмяПользователя@имя хоста Текущий относительный путь.
-#\[\e[0m\] Конец изменениям.
-#\[\e[5;35m\] 5 - моргание, 36 - голубой цвет.
+alias grep="grep --color=always" #Раскрашиваем grep.
+alias ip="ip --color=always" #Раскрашиваем ip.
+alias diff="diff --color=always" #Раскрашиваем diff.
+alias ls="ls --color" #Раскрашиваем ls.
+alias df="grc --colour=on df" #Раскрашиваем df.
+alias zgrep="grc --colour=on zgrep" #Раскрашиваем zgrep.
+alias cvs="grc --colour=on cvs" #Раскрашиваем cvs.
+alias esperanto="grc --colour=on esperanto" #Раскрашиваем esperanto.
+alias irclog="grc --colour=on irclog" #Раскрашиваем irclog.
+alias ldap="grc --colour=on ldap" #Раскрашиваем ldap.
+alias log="grc --colour=on log" #Раскрашиваем log.
+alias netstat="grc --colour=on netstat" #Раскрашиваем netstat.
+alias proftpd="grc --colour=on proftpd" #Раскрашиваем proftpd.
+alias traceroute="grc --colour=on traceroute" #Раскрашиваем traceroute.
+alias wdiff="grc --colour=on wdiff" #Раскрашиваем wdiff.
+alias dig="grc --colour=on dig" #Раскрашиваем dig.
+alias cat="grc --colour=on cat" #Раскрашиваем cat.
+alias zcat="grc --colour=on zcat" #Раскрашиваем zcat.
+alias make="grc --colour=on make" #Раскрашиваем make.
+alias g++="grc --colour=on g++" #Раскрашиваем g++.
+alias head="grc --colour=on head" #Раскрашиваем head.
+alias mtr="grc --colour=on mtr" #Раскрашиваем mtr.
+alias ping="grc --colour=on ping" #Раскрашиваем ping.
+alias gcc="grc --colour=on gcc" #Раскрашиваем gcc.
+alias mount="grc --colour=on mount" #Раскрашиваем mount.
+alias ps="grc --colour=on ps" #Раскрашиваем ps.
+#Изменяем вид приглашения командной строки.
+PS1="\[\033[43m\]\[\033[2;34m\]\A\[\033[0m\]\[\033[44m\]\[\033[3;33m\] \u@\h \[\033[0m\]\[\033[2;41m\]\[\033[30m\] \W/ \[\033[0m\]\[\033[5;31m\] \$:\[\033[0m\]"
+#\[\033[43m\] - Жёлтый цвет фона.
+#\[\033[2;34m\] - 2 - Более темный цвет, 34 - Синий цвет.
+#\A Текущее время в 24-часовом формате.
+#\[\033[0m\] - Конец изменениям.
+#\[\033[44m\] - Синий цвет фона.
+#\[\033[3;33m\] - 3 - Курсив, 33 - Жёлтый цвет.
+#\u@\h ИмяПользователя@ИмяХоста
+#\[\033[0m\] - Конец изменениям.
+#\[\033[2;41m\] - 2 - Более темный цвет, 41 - Красный цвет фона.
+#\[\033[30m\]  - Черный цвет.
+#\W  ТекущийОтносительныйПуть.
+#\[\033[0m\] - Конец изменениям.
+#\[\033[5;31m\] - 5 - моргание, 91 - красный цвет.
 #\$: Символ приглашения (# для root, $ для обычных пользователей).
-#\[\e[0m\] Конец изменениям.
-export HISTCONTROL="ignoreboth" #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
+#\[\033[0m\] - Конец изменениям.
+#Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
+export HISTCONTROL="ignoreboth"
 export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.
 
 
@@ -3225,9 +3366,9 @@ export COLORTERM=truecolor #Включаем все 16 миллионов цве
         </div>
         <div class=nano>
           <pre>
-setleds -D +num #Включенный по умолчанию NumLock.
 [[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
-export QT_QPA_PLATFORMTHEME="qt5ct" #Изменение внешнего вида приложений использующих qt.
+export QT_QPA_PLATFORMTHEME=gnome #Изменение внешнего вида приложений использующих qt.
+export QT_STYLE_OVERRIDE=adwaita-dark #Использовать Adwaitа в качестве стиля Qt по умолчанию
 
 
 
@@ -3244,13 +3385,28 @@ export QT_QPA_PLATFORMTHEME="qt5ct" #Изменение внешнего вид�
         </p>
         <div class=term>
           <span class=ps>$:</span>
-          sudo nano /usr/share/dbus-1/services/org.freedesktop.Notifications.service
+          sudo nano /etc/dunst/dunstrc
         </div>
         <div class=nano>
           <pre>
-[D-BUS Service]
-Name=org.freedesktop.Notifications
-Exec=/usr/lib/notification-daemon-1.0/notification-daemon
+[global]
+    gap_size = 12
+    enable_posix_regex = true
+    enable_recursive_icon_lookup = true
+    icon_theme = ePapirus-Dark
+[urgency_low]
+    background = "#2b2b2b"
+    foreground = "#b2b2b2"
+    timeout = 10
+[urgency_normal]
+    background = "#2b2b2b"
+    foreground = "#2bf92b"
+    timeout = 10
+[urgency_critical]
+    background = "#2b2b2b"
+    foreground = "#f92b2b"
+    timeout = 0
+
 
 
 
@@ -3278,26 +3434,77 @@ Exec=/usr/lib/notification-daemon-1.0/notification-daemon
         </div>
         <div class=nano>
           <pre>
+# Прозрачность активных окон (0,1–1,0).
+active-opacity = 0.95;
+#
 # Прозрачность неактивных окон (0,1–1,0).
-inactive-opacity = 0.8;
-
+inactive-opacity = 0.9;
+#
 # Затемнение неактивных окон (0,0–1,0).
-inactive-dim = 0.5
-
+inactive-dim = 0.65;
+#
 # Включить вертикальную синхронизацию (если picom выдает ошибку по vsync, то отключаем заменой true на false).
 vsync = true;
-
+#
 # Отключить прозрачность и затемнение загаловков окон.
 mark-ovredir-focused = true;
-
-wintypes:
-{
-# Отключить прозрачность выпадающего меню.
-dropdown_menu = { opacity = false; }
-
-# Отключить прозрачность всплывающего меню.
-popup_menu = { opacity = false; }
-};
+#
+#Пусть неактивная непрозрачность, переопределяет значения окон.
+inactive-opacity-override = false;
+#
+wintypes: { # Отключить прозрачность выпадающего меню.
+            dropdown_menu = { opacity = 1; };
+            # Отключить прозрачность всплывающего меню.
+            popup_menu = { opacity = 1; }; };
+#
+# Прозрачность i3status, dmenu, XTerm и заголовков окон.
+opacity-rule = [ "90:class_g = 'i3bar'",
+                 "90:class_g = 'dmenu'",
+                 "80:class_g = 'XTerm'",
+                 "100:class_g = 'vlc'",
+                 "100:fullscreen" ];
+#
+#Закругленные углы.
+corner-radius = 12;
+rounded-corners-exclude = [ "window_type = 'dock'",
+                            "window_type = 'popup_menu'",
+                            "window_type = 'dropdown_menu'",
+                            "window_type = 'notification'" ];
+#
+#Обнаруживает дочерние окна.
+mark-wmwin-focused = true;
+#
+#Обнаруживает окна со скругленными углами и не учитывает их.
+detect-rounded-corners = true;
+#
+#Обнаружение прозрачности в клиентских окнах.
+detect-client-opacity = true;
+#
+#Отменить перенаправление всех окон, если обнаружено полноэкранное непрозрачное окно.
+unredir-if-possible = true;
+#
+#Обнаружение групп окон.
+detect-transient = true;
+detect-client-leader = true;
+#
+#Отключить информацию о повреждениях, каждый раз перерисовывается весь экран, а не его часть.
+use-damage = true;
+#
+#Размытие.
+backend = "glx"
+glx-no-stencil = true;
+glx-no-rebind-pixmap = true;
+blur:{ method = "dual_kawase";
+      strength = 5;
+      background = false;
+      background-frame = false;
+      background-fixed = false; }
+      blur-background-exclude = [ "window_type = 'dock'",
+                           "window_type = 'tooltip'",
+                           "class_g = 'Conky'",
+                           "class_g = 'i3bar'",
+                           "class_g = 'vlc'",
+                           "_NET_WM_STATE@:a != '_NET_WM_STATE_FOCUSED'" ];
 
 
 
@@ -3319,60 +3526,33 @@ popup_menu = { opacity = false; }
         <div class=nano>
           <pre>
 !Настройка внешнего вида xterm.
-
+!
 !Задает имя типа терминала, которое будет установлено в переменной среды TERM.
 xterm*termName: xterm-256color
-
+!
 !Xterm будет использовать кодировку, указанную в локали пользователя.
 xterm*locale: true
-
+!
 !Определяет количество строк, сохраняемых за пределами верхней части экрана, когда включена полоса прокрутки.
-xterm*saveLines: 4096
-
-!Укажите шаблон для масштабируемых шрифтов.
-xterm*faceName: Noto Sans Mono
-
-!Размер шрифтов.
-xterm*faceSize: 12
-
+xterm*saveLines: 10000
+!
+!Шрифт xterm.
+xterm*faceName: Fantasque Sans Mono:style=bold:size=12
+!
 !Указывает цвет фона.
-xterm*background: #2b0f2b
+xterm*background: #2b2b2b
 !Определяет цвет, который будет использоваться для переднего плана.
 xterm*foreground: #2bf92b
-
+!
 !Указывает, должна ли отображаться полоса прокрутки.
-xterm*scrollBar: true
-
-!Определяет ширину полосы прокрутки.
-xterm*scrollbar.width: 20
-
+xterm*scrollBar: false
+!
 !Указывает, должно ли нажатие клавиши автоматически перемещать полосу прокрутки в нижнюю часть области прокрутки.
 xterm*scrollKey: true
-
-!Указывает, должна ли полоса прокрутки отображаться справа.
-xterm*rightScrollBar: true
-
-
-!Настройка внешнего вида xscreensaver.
-
-!Указывает шрифт.
-xscreensaver-auth.?.Dialog.headingFont: Noto Sans Mono 12
-xscreensaver-auth.?.Dialog.bodyFont: Noto Sans Mono 12
-xscreensaver-auth.?.Dialog.labelFont: Noto Sans Mono 12
-xscreensaver-auth.?.Dialog.unameFont: Noto Sans Mono 12
-xscreensaver-auth.?.Dialog.buttonFont: Noto Sans Mono 12
-xscreensaver-auth.?.Dialog.dateFont: Noto Sans Mono 12
-xscreensaver-auth.?.passwd.passwdFont: Noto Sans Mono 12
-
-!Указывает цвета.
-xscreensaver-auth.?.Dialog.foreground: #b2f9b2
-xscreensaver-auth.?.Dialog.background: #b20fb2
-xscreensaver-auth.?.Dialog.Button.foreground: #b20fb2
-xscreensaver-auth.?.Dialog.Button.background: #b2f9b2
-xscreensaver-auth.?.Dialog.text.foreground: #b20fb2
-xscreensaver-auth.?.Dialog.text.background: #b2f9b2
-xscreensaver-auth.?.passwd.thermometer.foreground: #f92b2b
-xscreensaver-auth.?.passwd.thermometer.background: #b2f9b2
+!
+!Размер курсора.
+Xcursor.size: 36
+Xcursor.theme: Adwaita
 
 
 
@@ -3401,65 +3581,50 @@ xscreensaver-auth.?.passwd.thermometer.background: #b2f9b2
         <div class=nano>
           <pre>
 ########### Основные настройки ###########
-
+#
 # Назначаем клавишу MOD, Mod4 - это клавиша WIN.
 set $mod Mod4
-
+#
 # Закрыть окно в фокусе.
 bindsym $mod+Shift+q kill
-# Средняя кнопка мыши над заголовком закрывает окно.
-bindsym --release button2 kill
-
-# Изменить фокус на другое окно (semicolon - это клавиша ;:жЖ).
-bindsym $mod+j focus left
-bindsym $mod+k focus down
-bindsym $mod+l focus up
-bindsym $mod+semicolon focus right
-# Альтернативные настройки смены фокуса на другое окно.
+#
+# Изменить фокус на другое окно
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
-
+#
 # Переместить окно.
-bindsym $mod+Shift+j move left
-bindsym $mod+Shift+k move down
-bindsym $mod+Shift+l move up
-bindsym $mod+Shift+semicolon move right
-# Альтернативные настройки перемешения окна.
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
-# Боковые кнопки мыши перемещают окно.
-bindsym button9 move left
-bindsym button8 move right
-
+#
 # Следующее открытое окно разделит экран по горизонтали (такое деление установленно по умолчанию). Легко запомнить по первой букве Horizontal.
 bindsym $mod+h split h
-
+#
 # Следующее открытое окно разделит экран по вертикали. Легко запомнить по первой букве Vertical.
 bindsym $mod+v split v
-
+#
 # Развернуть окно во весь экран. Легко запомнить по первой букве Fullscreen.
 bindsym $mod+f fullscreen toggle
-
+#
 # Делаем из окон вкладки.
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
-
-# Делаем окно плавающим.
-bindsym $mod+Shift+space floating toggle
+#
+# ScrollDown на заголовке закрыть окно.
+bindsym button5 kill
+# ScrollUP на заголовке развернуть окно во весь экран.
+bindsym button4 fullscreen toggle
 # Правая кнопка мыши делает окно плавающим.
 bindsym button3 floating toggle
-bindsym $mod+button3 floating toggle
-
-# Изменить фокус между мозаичными / плавающими окнами.
-bindsym $mod+space focus mode_toggle
-
+# Средняя кнопка мыши сворачивает окно в черновик.
+bindsym button2 move scratchpad
+#
 # Определяем имена для рабочих областей по умолчанию.
-set $ws1 "1"
+set $ws1 "1: ⛏️"
 set $ws2 "2: 🌍"
 set $ws3 "3: 🎮"
 set $ws4 "4"
@@ -3469,7 +3634,7 @@ set $ws7 "7"
 set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
-
+#
 # Переключение между рабочими столами.
 bindsym $mod+1 workspace number $ws1
 bindsym $mod+2 workspace number $ws2
@@ -3481,7 +3646,7 @@ bindsym $mod+7 workspace number $ws7
 bindsym $mod+8 workspace number $ws8
 bindsym $mod+9 workspace number $ws9
 bindsym $mod+0 workspace number $ws10
-
+#
 # Переместить сфокусированное окно на заданный рабочий стол.
 bindsym $mod+Shift+1 move container to workspace number $ws1
 bindsym $mod+Shift+2 move container to workspace number $ws2
@@ -3493,186 +3658,184 @@ bindsym $mod+Shift+7 move container to workspace number $ws7
 bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
-
+#
 # Перечитать файл конфигурации.
 bindsym $mod+Shift+c reload
-
+#
 # Перезапустить i3 (сохраняет макет/сессию, может использоваться для обновления i3).
 bindsym $mod+Shift+r restart
-
+#
 # Выход из i3 (выходит из сеанса X).
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Вы действительно хотите выйти из i3? Это завершит вашу сессию X.' -B 'Да, выйти из i3' 'i3-msg exit'"
-
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Вы действительно хотите выйти из i3? Это завершит вашу сессию X.' -b 'Да, выйти из i3' 'i3-msg exit'"
+#
 # Войти в режим изменения размеров окон.
 bindsym $mod+r mode "resize"
 # Изменить размер окна (можно использовать мышь).
 mode "resize" {
-
+#
         # Настройки смены размеров окон.
-        bindsym j resize shrink width 10 px or 10 ppt
-        bindsym k resize grow height 10 px or 10 ppt
-        bindsym l resize shrink height 10 px or 10 ppt
-        bindsym semicolon resize grow width 10 px or 10 ppt
-
-        # Альтернативные настройки смены размеров окон (мне показались более удобными).
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
-
+        bindsym Left resize shrink width 10 px or 5 ppt
+        bindsym Down resize grow height 10 px or 5 ppt
+        bindsym Up resize shrink height 10 px or 5 ppt
+        bindsym Right resize grow width 10 px or 5 ppt
+        #
         # Выйти из режима изменения размеров окон.
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
         bindsym $mod+r mode "default"
 }
-
+#
 # Некоторые видеодрайверы X11 обеспечивают поддержку только Xinerama вместо RandR.
 # В такой ситуации нужно сказать i3, чтобы он явно использовал подчиненный Xinerama API.
-force_xinerama yes
-
+#force_xinerama yes
+#
 ########### Внешний вид ###########
-
+#
 # Шрифт для заголовков окон. Также будет использоваться ibar, если не выбран другой шрифт.
-font pango:Noto Sans Mono 12
-
+font pango:Fantasque Sans Mono Bold 12
+#
 # Просветы между окнами.
-gaps inner 20
-
+gaps inner 12
+#
 # Толщина границы окна.
-default_border normal 5
-
-# Толщина границы плавающего окна.
-default_floating_border normal 5
-
+default_border normal 1
+#
 # Устанавливаем цвет рамки активного окна #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.
-client.focused #2b2bf9 #2b2bf9 #2bf92b #2b2bf9 #2b2bf9
-
-# Устанавливаем цвет рамки неактивного окна #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.
-client.unfocused #2b2b0f #2b2b0f #b2b2b2 #2b2b0f #2b2b0f
-
-# Печатать все заголовки окон жирным, красным шрифтом.
-# for_window [all] title_format "&lt;span foreground='#d64c2f'&gt;&lt;b&gt;Заголовок | %title&lt;/b&gt;&lt;/span&gt;"
-
+client.focused #2b2b2b #2b2b2b #2bf92b #2b2b2b #2b2b2b
+# Устанавливаем цвет рамки окна не в фокусе #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.
+client.unfocused #000000 #000000 #b2b2b2 #000000 #000000
+# Устанавливаем цвет рамки неактивного окна в фокусе #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.
+client.focused_inactive #000000 #000000 #b2b2b2 #000000 #000000
+# Устанавливаем цвет рамки важного окна #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.
+client.urgent #000000 #000000 #b2b2b2 #000000 #000000
+# Устанавливаем цвет рамки окна-заполнитель #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.
+client.placeholder #000000 #000000 #b2b2b2 #000000 #000000
+#
 # Включить значки окон для всех окон с дополнительным горизонтальным отступом.
-for_window [all] title_window_icon padding 3px
-
+for_window [all] title_window_icon padding 12px
+#
 # Внешний вид XTerm
 # Включить плавающий режим для всех окон XTerm.
 for_window [class="XTerm"] floating enable
-# Сделать границу в 1 пиксель для всех окон XTerm.
-for_window [class="XTerm"] border normal 1
 # Липкие плавающие окна, окно XTerm прилипло к стеклу.
 for_window [class="XTerm"] sticky enable
 # Задаем размеры окна XTerm.
-for_window [class="XTerm"] resize set 1000 500
-
+for_window [class="XTerm"] resize set 2000 1000
+#
+# Включить плавающий режим для всех окон gogglesmm.
+for_window [class="gogglesmm"] floating enable
+#
 ########### Автозапуск программ ###########
-
-# Запуск графического интерфейса системного трея NetworkManager (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id nm-applet
-
-# Запуск геолокации (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
-
-# Автозапуск volctl.
-exec --no-startup-id volctl
-
-# Автозапуск flameshot.
-exec --no-startup-id flameshot
-
-# Автозапуск copyq.
-exec --no-startup-id copyq
-
-# Автозапуск obs.
-exec --no-startup-id obs
-
-# Автозапуск tint2.
-exec --no-startup-id tint2
-
-# Автозапуск picom.
-exec --no-startup-id picom -b
-
+#
+# Приветствие в течении 10 сек (--no-startup-id убирает курсор загрузки).
+exec --no-startup-id notify-send -te 10000 "✊Доброго времени суток✊" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm.";
+#
 # Автозапуск conky.
-exec --no-startup-id conky
-
-# Автозапуск numlockx.
-exec --no-startup-id numlockx
-
-# Автозапуск transmission.
-exec --no-startup-id transmission-qt -m
-
-# Автозапуск blueman-applet.
-exec --no-startup-id blueman-applet
-
-# Приветствие в течении 10 сек.
-exec --no-startup-id notify-send -t 10000 "✊Доброго времени суток✊"
-
-# Автозапуск xscreensaver.
-exec --no-startup-id xscreensaver --no-splash
-
+exec --no-startup-id conky;
+#
+# Автозапуск lxqt-panel.
+exec --no-startup-id lxqt-panel;
+#
+# Автозапуск picom.
+exec --no-startup-id picom -b;
+#
+# Запуск графического интерфейса системного трея NetworkManager.
+exec --no-startup-id nm-applet;
+#
+# Запуск геолокации.
+exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent;
+#
+# Автозапуск flameshot.
+exec --no-startup-id flameshot;
+#
+# Автозапуск copyq и autocutsel.
+exec --no-startup-id copyq;
+exec --no-startup-id autocutsel;
+#
 # Автозапуск dolphin.
-exec --no-startup-id dolphin --daemon
-
-# Автозапуск steam через gamemod.
-exec --no-startup-id gamemoderun steam -silent %U
-
-# Автозапуск telegram.
-exec --no-startup-id telegram-desktop -startintray -- %u
-
-# Автозапуск variety.
-exec --no-startup-id variety
-
+exec --no-startup-id dolphin --daemon;
+#
 # Автоматическая разблокировка KWallet.
-exec --no-startup-id /usr/lib/pam_kwallet_init
-
+exec --no-startup-id /usr/lib/pam_kwallet_init;
+#
+# Автозапуск gogglesmm.
+exec --no-startup-id gogglesmm --tray;
+#
+# Автозапуск blueman.
+exec --no-startup-id blueman-applet;
+#
+# Автозапуск smb4k.
+exec --no-startup-id smb4k;
+#
+# Автозапуск usbguard.
+exec --no-startup-id sudo -E usbguard-applet-qt;
+#
+# Автозапуск neofetch.
+exec --no-startup-id sh -c 'sleep 10; while [[ -z "$(ls /dev/pts/1)" ]]; do sleep 5; done;sleep 5; neofetch > /dev/pts/1;'
+#
+# Автозапуск обновления.
+exec --no-startup-id sh -c 'sleep 10; while [[ -z "$(ls /dev/pts/0)" ]]; do sleep 5; done; sleep 5; sudo rm /var/lib/pacman/db.lck > /dev/pts/0; sudo pacman -Suy --noconfirm > /dev/pts/0; sudo pacman -Sc --noconfirm > /dev/pts/0; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/0;'
+#
+# Автозапуск numlockx.
+exec --no-startup-id numlockx;
+#
+# Автозапуск steam.
+exec --no-startup-id ENABLE_VKBASALT=1 gamemoderun steam -silent %U;
+#
 ########### Горячие клавиши запуска программ ###########
-
+#
+#Восстановление рабочего стола №1.
+bindsym $mod+mod1+1 exec --no-startup-id "i3-msg 'workspace 1: ⛏️; append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; exec dolphin; exec xed'"
+exec --no-startup-id "i3-msg 'workspace 1: ⛏️; append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; exec dolphin; exec xed'"
+#
 # Используйте mod+enter, чтобы запустить терминал ("i3-sensible-terminal" можно заменить "xterm", "terminator" или любым другим на выбор).
-bindsym $mod+Return exec i3-sensible-terminal
-
+bindsym $mod+Return exec xterm
+#
 # Запуск dmenu (программа запуска) с параметрами шрифта, приглашения, цвета фона.
-bindsym $mod+d exec --no-startup-id dmenu_run -fn 'Noto Sans Mono-15' -p 'Поиск программы:' -nb '#2b0f2b' -sf '#2b2b0f' -nf '#2bf02b' -sb '#f92b2b'
-
+bindsym $mod+d exec --no-startup-id dmenu_run -fn "Fantasque Sans Mono:style=bold:size=18" -p "Поиск программы:" -nb "#2b2b2b" -sf "#2b2bf9" -nf "#2bf92b" -sb "#f92b2b"
+#
 # Используйте mod+f1, чтобы запустить firefox.
 bindsym $mod+F1 exec --no-startup-id firefox
-
+#
 # Сделать текущее окно черновиком/блокнотом.
 bindsym $mod+Shift+minus move scratchpad
-
+#
 # Показать первое окно черновика/блокнота.
 bindsym $mod+minus scratchpad show
-
+#
+# Снимок экрана.
+bindsym Print exec flameshot full
+#
 ########### Распределение окон по рабочим столам ###########
-
+#
 # Firefox будет запускаться на 2 рабочем столе.
 assign [class="firefox"] "2: 🌍"
-
+#
 # Steam будет запускаться на 3 рабочем столе.
 assign [title="Steam"] "3: 🎮"
-
+#
 ########### Настройка панели задач ###########
-
+#
 bar {
         # Назначить панели задач.
         status_command i3status
-
+        #
         # Разделитель.
         separator_symbol "☭"
-
+        #
         # Назначить шрифт.
-        font pango:Noto Sans Mono 12
-
+        font pango:Fantasque Sans Mono 12
+        #
         # Назначить цвета.
         colors {
-
             # Цвет фона i3status.
-            background #2b0f2b
-
+            background #2b2b2b
             # Цвет текста в i3status.
-            statusline #2bf92b
-
+            statusline #b2b2b2
             # Цвет разделителя в i3status.
             separator #f92b2b
+            # Цвет границы, фона и текста для кнопки активного рабочего стола.
+            focused_workspace  #4c7899 #285577 #f92b2b
+            # Цвет границы, фона и текста для кнопки не активного рабочего стола.
+            inactive_workspace #333333 #222222 #2bf92b
             }
          # Сделайте снимок экрана, щелкнув правой кнопкой мыши на панели (--no-startup-id убирает курсор загрузки).
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
@@ -3710,30 +3873,18 @@ general { #Основные настройки.
     color_bad = "#f92b2b" #Цвет ошибки.
     interval = 1 #Интервал обновления строки статуса.
     output_format = "i3bar" } #Формат вывода.
+order += "tztime 0" #0 модуль - пробел.
 order += "ethernet _first_" #1 модуль - rj45.
-order += "run_watch openvpn" #2 модуль - openvpn.
-order += "run_watch openconnect" #3 модуль - openconnect.
-order += "wireless _first_" #4 модуль - Wi-Fi.
-order += "battery all" #5 модуль - батарея.
-order += "disk /" #6 модуль - root директория.
-order += "memory" #7 модуль - ram.
-order += "cpu_usage" #8 модуль - использование ЦП.
-order += "cpu_temperature 0" #9 модуль - температура ЦП.
-order += "tztime local" #10 модуль - время.
-order += "volume master" #11 модуль - звук.
+order += "wireless _first_" #2 модуль - Wi-Fi.
+order += "battery all" #3 модуль - батарея.
+order += "cpu_usage" #5 модуль - использование ЦП.
+order += "cpu_temperature 0" #6 модуль - температура ЦП.
+order += "tztime 0" #0 модуль - пробел.
 ethernet _first_ { #Индикатор rj45.
-        format_up = "🖧: %ip (%speed)" #Формат вывода.
-        format_down = "" } #При неактивном процессе блок будет отсутствовать.
-run_watch openvpn { #Индикатор openvpn.
-    pidfile = "/var/run/openvpn.pid" #Путь данных.
-    format = "🖧 openvpn" #Формат вывода.
-    format_down="" } #При неактивном процессе блок будет отсутствовать.
-run_watch openconnect { #Индикатор openconnect.
-    pidfile = "/var/run/openconnect.pid" #Путь данных.
-    format = "🖧 vpn" #Формат вывода.
-    format_down="" } #При неактивном процессе блок будет отсутствовать.
+    format_up = "🌐: %ip " #Формат вывода.
+    format_down = "" } #При неактивном процессе блок будет отсутствовать.
 wireless _first_ { #Индикатор WI-FI.
-    format_up = "📶%quality %frequency %essid %ip" #Формат вывода.
+    format_up = "📶: %quality | %frequency | %essid: %ip " #Формат вывода.
     format_down = "" } #При неактивном процессе блок будет отсутствовать.
 battery all { #Индикатор батареи
     format = "%status %percentage" #Формат вывода.
@@ -3743,25 +3894,16 @@ battery all { #Индикатор батареи
     status_bat = "🔋" #Режим работы от батареи.
     path = "/sys/class/power_supply/BAT%d/uevent" #Путь данных.
     low_threshold = 10 } #Нижний порог заряда.
-disk "/" { #Root директория.
-    format = "♚ %avail / %total" } #Формат вывода.
-memory { #Индикатор ram
-    format = "🗂 %used" #Формат вывода.
-    threshold_degraded = "1G" #Желтый порог.
-    threshold_critical = "200M" #Красный порог.
-    format_degraded = "MEMORY 🗂 %available" } #Формат вывода желтого/красного порога.
 cpu_usage { #Использование ЦП.
-    format = "🖳 %usage" } #Формат вывода.
+    format = "🧠: %usage/"
+    separator_block_width = 0 } #Формат вывода.
 cpu_temperature 0 { #Температура ЦП.
-    format = "🌡 %degrees°C" #Формат вывода.
-    max_threshold = "80" #Красный порог.
-    format_above_threshold = "🌡 %degrees°C" #Формат вывода красного порога.
-    path = "/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp1_input"} #Путь данных.
-tztime local { #Вывод даты и времени.
-    format = "📅 %a %d-%m-%Y(%W) 🕗 %H:%M:%S" } #Формат вывода.
-volume master { #Вывод звука.
-    format = "🔈 %volume" #Формат вывода.
-    format_muted = "🔇 %volume" } #Формат вывода без звука.
+    format = "%degrees°C" #Формат вывода.
+    max_threshold = "70" #Красный порог.
+    format_above_threshold = "%degrees°C" #Формат вывода красного порога.
+    path = "/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp*_input" } #Путь данных.path: /sys/devices/platform/coretemp.0/temp1_input
+tztime 0 { #Вывод разделителя.
+    format = "|" } #Формат вывода.
 
 
 
@@ -3784,15 +3926,19 @@ volume master { #Вывод звука.
         <div class=nano>
           <pre>
 ...
+...
+...
+...
+...
+...
 [redshift]
 allowed=true
 system=false
 users=
-...
-...
-...
-...
-...
+
+
+
+
                       <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
 <span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
 <span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
@@ -3828,8 +3974,217 @@ polkit.addRule(function(action, subject) {
       </li>
       <li>
         <p class=text>
-          При запуске Dolphin не из Plasma, цвет фона в панели просмотра папок не будет
-          соответствовать системной теме Qt.
+          Настройка polkit (Фреймворк для управления общесистемными привилегиями) для блютуз.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span>
+          sudo nano /etc/polkit-1/rules.d/51-blueman.rules
+        </div>
+        <div class=nano>
+          <pre>
+polkit.addRule(function(action, subject) {
+    if ((action.id == "org.blueman.network.setup" ||
+         action.id == "org.blueman.dhcp.client" ||
+         action.id == "org.blueman.rfkill.setstate" ||
+         action.id == "org.blueman.pppd.pppconnect") &&
+        subject.isInGroup("wheel")) {
+
+        return polkit.Result.YES;
+    }
+});
+
+
+
+
+
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Настройка polkit (Фреймворк для управления общесистемными привилегиями) для принтеров.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span>
+          sudo nano /etc/polkit-1/rules.d/49-allow-passwordless-printer-admin.rules
+        </div>
+        <div class=nano>
+          <pre>
+polkit.addRule(function(action, subject) {
+    if (action.id == "org.opensuse.cupspkhelper.mechanism.all-edit" &&
+        subject.isInGroup("wheel")){
+        return polkit.Result.YES;
+    }
+});
+
+
+
+
+
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Создание конфига рабочего стола №1.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span>
+          nano ~/.config/i3/workspace_1.json
+        </div>
+        <div class=nano>
+          <pre>
+{
+    "border": "normal",
+    "current_border_width": 1,
+    "floating": "auto_off",
+    "percent": 0.5,
+    "swallows": [
+       { "class": "^Xed$" }
+    ]
+}
+{
+    "border": "normal",
+    "layout": "splitv",
+    "percent": 0.5,
+    "type": "con",
+    "nodes": [
+        {
+            "border": "normal",
+            "current_border_width": 1,
+            "floating": "auto_off",
+            "percent": 0.6,
+            "swallows": [
+               { "class": "^dolphin$" }
+            ]
+        },
+        {
+            "border": "normal",
+            "floating": "auto_off",
+            "layout": "splith",
+            "percent": 0.4,
+            "type": "con",
+            "nodes": [
+                {
+                    "border": "normal",
+                    "current_border_width": 1,
+                    "floating": "user_off",
+                    "percent": 0.5,
+                    "swallows": [
+                       {
+                        "class": "^XTerm$",
+                        "title": "ИмяПользователя\\@ИмяХоста\\:\\~$"
+                       }
+                    ]
+                },
+                {
+                    "border": "normal",
+                    "current_border_width": 1,
+                    "floating": "user_off",
+                    "percent": 0.5,
+                    "swallows": [
+                       {
+                        "class": "^XTerm$",
+                        "title": "ИмяПользователя\\@ИмяХоста\\:\\~$"
+                       }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
+
+
+
+
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Настройка sysctl (Параметры ядра).
+        </p>
+        <div class=term>
+          <span class=ps>$:</span>
+          sudo nano /etc/sysctl.d/99-sysctl.conf
+        </div>
+        <div class=nano>
+          <pre>
+kernel.sysrq=1
+dev.tty.ldisc_autoload=0
+fs.protected_fifos=2
+fs.protected_hardlinks=1
+fs.protected_regular=2
+fs.protected_symlinks=1
+fs.suid_dumpable=0
+kernel.core_uses_pid=1
+kernel.ctrl-alt-del=0
+kernel.dmesg_restrict=1
+kernel.kexec_load_disabled=1
+kernel.kptr_restrict=2
+kernel.perf_event_paranoid=3
+kernel.randomize_va_space=2
+kernel.unprivileged_bpf_disabled=1
+net.core.bpf_jit_harden=2
+net.core.netdev_max_backlog=16384
+net.core.somaxconn=8192
+net.ipv4.conf.all.accept_redirects=0
+net.ipv4.conf.all.log_martians=1
+net.ipv4.conf.all.rp_filter=1
+net.ipv4.conf.all.secure_redirects=0
+net.ipv6.conf.all.accept_redirects=0
+net.ipv6.conf.all.accept_source_route=0
+net.ipv4.conf.all.accept_source_route=0
+net.ipv4.conf.all.bootp_relay=0
+net.ipv4.conf.all.mc_forwarding=0
+net.ipv4.conf.all.proxy_arp=0
+net.ipv4.conf.all.rp_filter=1
+net.ipv4.conf.all.send_redirects=0
+net.ipv4.conf.default.accept_redirects=0
+net.ipv6.conf.default.accept_redirects=0
+net.ipv4.conf.default.accept_source_route=0
+net.ipv6.conf.default.accept_source_route=0
+net.ipv4.conf.default.rp_filter=1
+net.ipv4.conf.default.secure_redirects=0
+net.ipv4.conf.default.send_redirects=0
+net.ipv4.icmp_echo_ignore_all=1
+net.ipv6.icmp.echo_ignore_all=1
+net.ipv4.icmp_echo_ignore_broadcasts=1
+net.ipv4.icmp_ignore_bogus_error_responses=1
+net.ipv4.tcp_fastopen=3
+net.ipv4.tcp_fin_timeout=10
+net.ipv4.tcp_keepalive_time=60
+net.ipv4.tcp_keepalive_intvl=10
+net.ipv4.tcp_keepalive_probes=6
+net.ipv4.tcp_max_syn_backlog=8192
+net.ipv4.tcp_max_tw_buckets=2000000
+net.ipv4.tcp_rfc1337=1
+net.ipv4.tcp_slow_start_after_idle=0
+net.ipv4.tcp_syncookies=1
+net.ipv4.tcp_timestamps=0
+net.ipv4.tcp_tw_reuse=1
+vm.dirty_ratio=10
+vm.dirty_background_ratio=5
+vm.vfs_cache_pressure=50
+
+
+
+
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          При запуске Dolphin не из Plasma, цвет фона в панели просмотра папок не будет соответствовать системной теме Qt.
         </p>
         <div class=term>
           <span class=ps>$:</span>
@@ -3837,14 +4192,484 @@ polkit.addRule(function(action, subject) {
         </div>
         <div class=nano>
           <pre>
-...
+[Colors:Button]
+BackgroundNormal=53,53,53
+BackgroundAlternate=50,50,50
+ForegroundNormal=238,238,238
+ForegroundInactive=178,178,178
+[Colors:Tooltip]
+BackgroundNormal=53,53,53
+BackgroundAlternate=50,50,50
+ForegroundNormal=238,238,238
+ForegroundInactive=178,178,178
 [Colors:View]
-BackgroundNormal=#2b0f2b
-...
-...
-...
-...
-...
+BackgroundNormal=43,43,43
+BackgroundAlternate=50,50,50
+ForegroundNormal=238,238,238
+ForegroundInactive=178,178,178
+[Colors:Window]
+BackgroundNormal=56,56,56
+BackgroundAlternate=50,50,50
+ForegroundNormal=238,238,238
+ForegroundInactive=178,178,178
+
+
+
+
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Создание конфига gtk+ (Внешний вид gtk+ программ).
+        </p>
+        <div class=term>
+          <span class=ps>$:</span>
+          mkdir -p ~/.config/{gtk-3.0,gtk-4.0}
+        </div>
+        <div class=term>
+          <span class=ps>$:</span>
+          sudo mkdir -p /root/.config/{gtk-3.0,gtk-4.0}
+        </div>
+        <div class=term>
+          <span class=ps>$:</span>
+          nano ~/.config/gtk-3.0/settings.ini
+        </div>
+        <div class=nano>
+          <pre>
+[Settings]
+gtk-application-prefer-dark-theme=true
+gtk-cursor-theme-name=Adwaita
+gtk-font-name=Fantasque Sans Mono Bold Italic 12
+gtk-icon-theme-name=ePapirus-Dark
+gtk-theme-name=Adwaita-dark
+
+
+
+
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+        </div>
+        <p class=text>
+          Копируем конфиг.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span>
+          cp ~/.config/gtk-3.0/settings.ini ~/.config/gtk-4.0/settings.ini
+        </div>
+        <div class=term>
+          <span class=ps>$:</span>
+          sudo cp ~/.config/gtk-3.0/settings.ini /root/.config/gtk-3.0/settings.ini
+        </div>
+        <div class=term>
+          <span class=ps>$:</span>
+          sudo cp ~/.config/gtk-3.0/settings.ini /root/.config/gtk-4.0/settings.ini
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Создание конфига gtk (Внешний вид gtk программ).
+        </p>
+        <div class=term>
+          <span class=ps>$:</span>
+          sudo nano /usr/share/gtk-2.0/gtkrc
+        </div>
+        <div class=nano>
+          <pre>
+gtk-application-prefer-dark-theme="true"
+gtk-cursor-theme-name="Adwaita"
+gtk-font-name="Fantasque Sans Mono Bold Italic 12"
+gtk-icon-theme-name="ePapirus-Dark"
+gtk-theme-name="Adwaita-dark"
+
+
+
+
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Создание конфига lxqt-panel (Панель рабочего стола LXQt).
+        </p>
+        <div class=term>
+          <span class=ps>$:</span>
+          mkdir -p ~/.config/lxqt
+        </div>
+        <div class=term>
+          <span class=ps>$:</span>
+          sudo nano ~/.config/lxqt/panel.conf
+        </div>
+        <div class=nano>
+          <pre>
+[General]
+__userfile__=true
+iconTheme=ePapirus-Dark
+
+[customcommand]
+alignment=Right
+click="sh -c \"x=pidof picom; if [ -n x ]; then killall picom; else picom -b; fi\""
+command=echo \xd83d\xde80
+maxWidth=36
+type=customcommand
+
+[customcommand2]
+alignment=Right
+click="sh -c \"sed -i 's/own_window_type/--own_window_type/' ~/.config/conky/conky.conf; sed -i 's/----//' ~/.config/conky/conky.conf\""
+command=echo \xd83d\xdec8
+maxWidth=36
+type=customcommand
+
+[customcommand3]
+alignment=Right
+click=xed /help.txt
+command=echo \x2753
+maxWidth=36
+type=customcommand
+
+[customcommand4]
+alignment=Right
+click="sh -c \"i3-nagbar -t warning -m '\x412\x44b \x434\x435\x439\x441\x442\x432\x438\x442\x435\x43b\x44c\x43d\x43e \x445\x43e\x442\x438\x442\x435 \x432\x44b\x439\x442\x438 \x438\x437 i3? \x42d\x442\x43e \x437\x430\x432\x435\x440\x448\x438\x442 \x432\x430\x448\x443 \x441\x435\x441\x441\x438\x44e X.' -b '\x414\x430, \x432\x44b\x439\x442\x438 \x438\x437 i3' 'i3-msg exit'\""
+command=echo \x2716
+maxWidth=36
+type=customcommand
+
+[customcommand5]
+alignment=Right
+click=reboot
+command=echo \x2b6f
+maxWidth=36
+type=customcommand
+
+[customcommand6]
+alignment=Right
+click=poweroff
+command=echo \x23fb
+maxWidth=36
+type=customcommand
+
+[kbindicator]
+alignment=Right
+keeper_type=window
+show_caps_lock=true
+show_layout=true
+show_num_lock=true
+show_scroll_lock=true
+type=kbindicator
+
+[mainmenu]
+alignment=Left
+filterClear=true
+icon=/usr/share/icons/ePapirus-Dark/16x16/apps/distributor-logo-archlinux.svg
+menu_file=/etc/xdg/menus/lxde-applications.menu
+ownIcon=true
+showText=false
+type=mainmenu
+
+[panel1]
+alignment=0
+animation-duration=0
+background-color=@Variant(\0\0\0\x43\x1\xff\xff++++++\0\0)
+background-image=
+desktop=0
+font-color=@Variant(\0\0\0\x43\0\xff\xff\0\0\0\0\0\0\0\0)
+hidable=false
+hide-on-overlap=false
+iconSize=36
+lineCount=1
+lockPanel=false
+opacity=80
+panelSize=36
+plugins=mainmenu, spacer, quicklaunch, kbindicator, worldclock, volume, customcommand, customcommand2, customcommand3, customcommand4, customcommand5, customcommand6
+position=Top
+reserve-space=true
+show-delay=0
+visible-margin=true
+width=100
+width-percent=true
+
+[quicklaunch]
+alignment=Left
+apps\1\desktop=/usr/share/applications/firefox.desktop
+apps\size=1
+type=quicklaunch
+
+[spacer]
+alignment=Left
+type=spacer
+
+[volume]
+alignment=Right
+alwaysShowNotifications=false
+audioEngine=PulseAudio
+device=2
+ignoreMaxVolume=true
+showKeyboardNotifications=true
+type=volume
+
+[worldclock]
+alignment=Right
+autoRotate=true
+customFormat="'&ltb&gt'HH:mm:ss'&lt/b&gt&ltbr/&gt&ltfont size=\"-2\"&gt'ddd, d MMM yyyy'&ltbr/&gt'TT'&lt/font&gt'"
+dateFormatType=custom
+dateLongNames=false
+datePadDay=false
+datePosition=below
+dateShowDoW=false
+dateShowYear=false
+defaultTimeZone=
+formatType=long-timeonly
+showDate=false
+showTimezone=false
+showTooltip=false
+showWeekNumber=true
+timeAMPM=false
+timePadHour=true
+timeShowSeconds=true
+timeZones\size=0
+timezoneFormatType=iana
+timezonePosition=below
+type=worldclock
+useAdvancedManualFormat=false
+
+
+
+
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Создание конфига samba (Стандартный набор программ взаимодействия Windows для Linux и Unix).
+        </p>
+        <div class=term>
+          <span class=ps>$:</span>
+          mkdir -p ~/Documents/Public/{Out,In}
+        </div>
+        <div class=term>
+          <span class=ps>$:</span>
+          sudo nano /etc/samba/smb.conf
+        </div>
+        <div class=nano>
+          <pre>
+[global]
+workgroup = WORKGROUP
+security = user
+map to guest = bad user
+wins support = no
+dns proxy = no
+usershare path = /var/lib/samba/usershares
+usershare max shares = 100
+usershare allow guests = yes
+usershare owner only = yes
+[private]
+path = /home/ИмяПользователя/Documents/Public/Out/
+valid users = @wheel
+guest ok = no
+browsable = yes
+writable = yes
+
+
+
+
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Создание конфига smb4krc (браузер общих ресурсов Samba (SMB/CIFS)).
+        </p>
+        <div class=term>
+          <span class=ps>$:</span>
+          nano ~/.config/smb4krc
+        </div>
+        <div class=nano>
+          <pre>
+[Mounting]
+DetectAllShares=true
+MountPrefix=file:///home/ИмяПользователя/Documents/Public/In
+RemountShares=true
+UnmountSharesOnExit=true
+[Network]
+EnableWakeOnLAN=true
+ForceSmb1Protocol=true
+PreviewHiddenItems=true
+[UserInterface]
+StartMainWindowDocked=true
+
+
+
+
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Обновление часового пояса после подключения к сети через NetworkManager.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span>
+          sudo nano /etc/NetworkManager/dispatcher.d/09-timezone
+        </div>
+        <div class=nano>
+          <pre>
+#!/bin/sh
+case "$2" in
+    up)
+        timedatectl set-timezone "$(curl --fail https://ipapi.co/timezone)"
+    ;;
+esac
+
+
+
+
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Добавление правил auditd (Аудит доступа к основным файлам общей безопасности).
+        </p>
+        <div class=term>
+          <span class=ps>$:</span>
+          sudo nano /etc/audit/rules.d/rules.rules
+        </div>
+        <div class=nano>
+          <pre>
+-w /etc/group -p wa
+-w /etc/passwd -p wa
+-w /etc/shadow -p wa
+-w /etc/sudoers -p wa
+
+
+
+
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Настройка удаленного рабочего стола.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span>
+          sudo x11vnc -storepasswd ПарольПользователя /etc/x11vnc.pass
+        </div>
+        <div class=term>
+          <span class=ps>$:</span>
+          sudo chmod ugo+r /mnt/etc/x11vnc.pass
+        </div>
+        <div class=term>
+          <span class=ps>$:</span>
+          sudo nano /etc/systemd/system/x11vnc.service
+        </div>
+        <div class=nano>
+          <pre>
+[Unit]
+Description="x11vnc"
+Requires=display-manager.service
+After=display-manager.service
+[Service]
+ProtectSystem=full
+ProtectHome=true
+PrivateDevices=true
+NoNewPrivileges=true
+PrivateTmp=true
+ExecStart=
+ExecStart=x11vnc -many -rfbauth /etc/x11vnc.pass -env FD_XDM=1 -auth guess
+[Install]
+WantedBy=graphical.target
+
+
+
+
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+<span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
+<span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Создание подсказки.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span>
+          sudo nano /help.txt
+        </div>
+        <div class=nano>
+          <pre>
+Win+Enter -- Запустить терминал.
+Win+D -- Запуск dmenu (программа запуска).
+Win+F1 -- Запустить firefox.
+Win+Shift+Q -- Закрыть окно в фокусе.
+Print Screen -- Снимок экрана.
+ПКМ на нижней панели -- Снимок экрана.
+#
+🚀 -- Включить/Выключить визуальные эффекты.
+#
+🛈 -- Информация о системе.
+#
+✖ -- Выход пользователя.
+#
+⭯ -- Перезагрузить ПК.
+#
+⏻ -- Выключить ПК.
+#
+ScrollUp на заголовке -- Развернуть окно во весь экран.
+ScrollDown на заголовке -- Закрывает окно.
+ПКМ на заголовке -- Делает окно плавающим.
+СКМ на заголовке -- Сворачивает окно в черновик.
+#
+Win+Left -- Фокус на левое окно.
+Win+Down -- Фокус на нижнее окно.
+Win+Up -- Фокус на верхнее окно.
+Win+Right -- Фокус на правое окно.
+#
+Win+Shift+Left -- Переместить окно влево.
+Win+Shift+Down -- Переместить окно вниз.
+Win+Shift+Up -- Переместить окно вверх.
+Win+Shift+Right -- Переместить окно вправо.
+#
+Win+H -- Следующее открытое окно разделит экран по горизонтали.
+Win+V -- Следующее открытое окно разделит экран по вертикали.
+Win+F -- Развернуть окно во весь экран.
+Win+S Win+W Win+E -- Делаем из окон вкладки.
+#
+Win+1..0 -- Переключение между рабочими столами.
+Win+Shift+1..0 -- Переместить сфокусированное окно на заданный рабочий стол.
+#
+Win+Shift+R -- Перезапустить i3.
+Win+Shift+E -- Выход из i3 (выходит из сеанса X).
+#
+Win+R -- Войти/Выйти в режим изменения размеров окон.
+Left -- Сдвинуть границу влево.
+Down -- Сдвинуть границу вниз.
+Up -- Сдвинуть границу вверх.
+Right -- Сдвинуть границу вправо.
+#
+Win+Shift+Minus -- Сделать текущее окно черновиком/блокнотом.
+Win+Minus -- Показать первое окно черновика/блокнота.
+#
+Win+Alt-left+1 -- Восстановление рабочего стола №1.
+
+
+
+
                       <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
 <span class=nanocomm>Ctrl+G</span>Справка    <span class=nanocomm>Ctrl+O</span> Записать    <span class=nanocomm>Ctrl+W</span> Поиск    <span class=nanocomm>Ctrl+K</span> Вырезать    <span class=nanocomm>Ctrl+T</span> Выполнить    <span class=nanocomm>Ctrl+C</span> Позиция    <span class=nanocomm>Esc+U</span> Отмена
 <span class=nanocomm>Ctrl+X</span> Выход    <span class=nanocomm>Ctrl+R</span> ЧитФайл    <span class=nanocomm>Ctrl+\</span> Замена    <span class=nanocomm>Ctrl+U</span> Вставить    <span class=nanocomm>Ctrl+J</span> Выровнять    <span class=nanocomm>Ctrl+/</span> К строке    <span class=nanocomm>Esc+E</span> Повтор2</pre>
@@ -3950,8 +4775,7 @@ BackgroundNormal=#2b0f2b
         </p>
         <div class=term>
           <span class=ps>$:</span>
-          sudo systemctl enable avahi-daemon saned.socket cups.socket bluetooth
-          acpid auto-cpufreq dbus-broker rngd cups-browsed fstrim.timer
+          sudo systemctl enable acpid bluetooth fancontrol NetworkManager avahi-daemon ananicy haveged dbus-broker rngd auto-cpufreq smartd smb saned.socket cups.socket cups-browsed x11vnc ufw auditd usbguard ntpd fstrim.timer
         </div>
       </li>
       <li>
@@ -4311,9 +5135,6 @@ file '11.mp4'
     </ol>
     <hr>
       <pre>
-amixer sset Master unmute
-amixer sset Speaker unmute
-amixer sset Headphone unmute
 #Sheel “map” “bcfg boot dump” “bcfg boot rm”
       </pre>
   </body>
