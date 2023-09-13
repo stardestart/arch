@@ -309,6 +309,7 @@ fi
 #
 #Установка и настройка программы для фильтрования зеркал и обновление ключей.
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
+pacman --color always -Syy archlinux-keyring gnupg --noconfirm
 pacman-key --init
 pacman-key --populate archlinux
 pacman --color always -Syy archlinux-keyring gnupg --noconfirm
