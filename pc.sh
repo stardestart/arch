@@ -485,7 +485,7 @@ elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then
 fi
 #Установка компонентов и программ ОС.
 echo -e "\033[36mУстановка компонентов и программ ОС.\033[0m"
-arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux firefox flatpak xdg-desktop-portal-gtk network-manager-applet networkmanager-strongswan wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en ocrfeeder kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite nss-mdns cups-pk-helper cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau ufw usbguard libpwquality kde-cli-tools ntp xdg-user-dirs geoclue rng-tools lib32-giflib gimp avidemux-qt kdenlive numlockx obs-studio blender transmission-qt discord meld kcolorchooser kontrast dmg2img telegram-desktop --noconfirm
+arch-chroot /mnt pacman --color always -Sy xorg xorg-xinit xterm i3-gaps i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux firefox flatpak xdg-desktop-portal-gtk network-manager-applet networkmanager-strongswan wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst qgnomeplatform-qt5 gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en gimagereader-gtk  tesseract-data-rus  tesseract-data-eng kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite nss-mdns cups-pk-helper cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau ufw usbguard libpwquality kde-cli-tools ntp xdg-user-dirs geoclue rng-tools lib32-giflib gimp avidemux-qt kdenlive numlockx obs-studio blender transmission-qt discord meld kcolorchooser kontrast dmg2img telegram-desktop --noconfirm
 #
 #Поиск не смонтированных разделов, проверка наличия у них метки.
 echo -e "\033[36mПоиск не смонтированных разделов, проверка наличия у них метки.\033[0m"
@@ -702,22 +702,27 @@ alias gcc="grc --colour=on gcc" #Раскрашиваем gcc.
 alias mount="grc --colour=on mount" #Раскрашиваем mount.
 alias ps="grc --colour=on ps" #Раскрашиваем ps.
 #Изменяем вид приглашения командной строки.
-PS1="\[\033[43m\]\[\033[2;34m\]\A\[\033[0m\]\[\033[44m\]\[\033[3;33m\] \u@\h \[\033[0m\]\[\033[2;41m\]\[\033[30m\] \W/ \[\033[0m\]\[\033[5;31m\] \$:\[\033[0m\]"
-#\[\033[43m\] - Жёлтый цвет фона.
-#\[\033[2;34m\] - 2 - Более темный цвет, 34 - Синий цвет.
-#\A Текущее время в 24-часовом формате.
-#\[\033[0m\] - Конец изменениям.
-#\[\033[44m\] - Синий цвет фона.
-#\[\033[3;33m\] - 3 - Курсив, 33 - Жёлтый цвет.
-#\u@\h ИмяПользователя@ИмяХоста
-#\[\033[0m\] - Конец изменениям.
-#\[\033[2;41m\] - 2 - Более темный цвет, 41 - Красный цвет фона.
-#\[\033[30m\]  - Черный цвет.
-#\W  ТекущийОтносительныйПуть.
-#\[\033[0m\] - Конец изменениям.
-#\[\033[5;31m\] - 5 - моргание, 91 - красный цвет.
-#\$: Символ приглашения (# для root, $ для обычных пользователей).
-#\[\033[0m\] - Конец изменениям.
+PS1="\[\e[48;2;249;43;43m\]\[\e[38;2;43;249;43m\] \$\[\e[48;2;249;249;43m\]\[\e[38;2;249;43;43m\]\[\e[48;2;249;249;43m\]\[\e[38;2;43;43;249m\]\A\[\e[48;2;43;43;249m\]\[\e[38;2;249;249;43m\] \u@\h\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;249m\]\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;43m\]\W\[\e[48;2;43;43;43m\]\[\e[0m\]\[\e[38;2;43;249;43m\] \[\e[0m\]"
+#\[\e[48;2;249;43;43m\] - Красный цвет фона.
+#\[\e[38;2;43;249;43m\] - Зеленый цвет шрифта.
+#\$ - Символ приглашения (# для root, $ для обычных пользователей).
+#\[\e[48;2;249;249;43m\] - Жёлтый цвет фона.
+#\[\e[38;2;249;43;43m\] - Красный цвет шрифта.
+#\[\e[48;2;249;249;43m\] - Жёлтый цвет фона.
+#\[\e[38;2;43;43;249m\] - Синий цвет шрифта.
+#\A - Текущее время в 24-часовом формате.
+#\[\e[48;2;43;43;249m\] - Синий цвет фона.
+#\[\e[38;2;249;249;43m\] - Жёлтый цвет шрифта.
+#\u@\h - ИмяПользователя@ИмяХоста.
+#\[\e[48;2;43;249;43m\] - Зеленый цвет фона.
+#\[\e[38;2;43;43;249m\] - Синий цвет шрифта.
+#\[\e[48;2;43;249;43m\] - Зеленый цвет фона.
+#\[\e[38;2;43;43;43m\] - Серый цвет шрифта.
+#\W - ТекущийОтносительныйПуть.
+#\[\e[48;2;43;43;43m\] - Серый цвет фона.
+#\[\e[0m\] - Конец изменениям.
+#\[\e[38;2;43;249;43m\] - Зеленый цвет шрифта.
+#\[\e[0m\] - Конец изменениям.
 #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
 export HISTCONTROL="ignoreboth"
 export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' | tee /mnt/home/"$username"/.bashrc /mnt/root/.bashrc
@@ -1616,7 +1621,7 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR (Репозиторий пользователей).
 echo -e "\033[36mУстановка программ из AUR (Репозиторий пользователей).\033[0m"
-arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt vkbasalt cups-xerox-b2xx --noconfirm --ask 4
+arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt vkbasalt kmscon cups-xerox-b2xx --noconfirm --ask 4
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
