@@ -11,12 +11,12 @@ swapoff -a
 #Размонтирование дисков.
 umount -R /mnt
 #Удаление ключей pacman.
-rm -rf /etc/pacman.d/gnupg/*
 pacman -Scc --noconfirm
-#gpg-connect-agent reloadagent /bye
 killall gpg-agent
 gpg-agent
 rm /var/lib/pacman/db.lck
+rm -R /root/.gnupg/
+rm -R /etc/pacman.d/gnupg/
 #Переменная назначит образ микрокода ЦП для UEFI загрузчика.
 microcode=""
 #Переменная сохранит имя сетевого устройства для дальнейшей установки/настройки/расчета.
@@ -312,7 +312,9 @@ fi
 #
 #Установка и настройка программы для фильтрования зеркал и обновление ключей.
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
+gpg --refresh-keys
 pacman-key --init
+pacman-key --populate archlinux
 pacman-key --refresh-keys
 pacman --color always -Syy archlinux-keyring gnupg openssh --noconfirm
 pacman --color always -Syy reflector usbguard sad coreutils --noconfirm
