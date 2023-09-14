@@ -14,6 +14,7 @@ umount -R /mnt
 rm -rf /etc/pacman.d/gnupg/*
 pacman -Sc --noconfirm
 killall gpg-agent
+rm /var/lib/pacman/db.lck
 #Переменная назначит образ микрокода ЦП для UEFI загрузчика.
 microcode=""
 #Переменная сохранит имя сетевого устройства для дальнейшей установки/настройки/расчета.
