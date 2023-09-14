@@ -310,11 +310,10 @@ fi
 #
 #Установка и настройка программы для фильтрования зеркал и обновление ключей.
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
-pacman --color always -Sy archlinux-keyring gnupg openssh --noconfirm
 pacman-key --init
 pacman-key --refresh-keys
-pacman --color always -Sy archlinux-keyring gnupg openssh --noconfirm
-pacman --color always -Sy reflector usbguard sad coreutils --noconfirm
+pacman --color always -Syy archlinux-keyring gnupg openssh --noconfirm
+pacman --color always -Syy reflector usbguard sad coreutils --noconfirm
 reflector --latest 20 --protocol https --sort rate --download-timeout 2 --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
