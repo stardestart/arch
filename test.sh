@@ -13,8 +13,9 @@ umount -R /mnt
 #Удаление ключей pacman.
 rm -rf /etc/pacman.d/gnupg/*
 pacman -Scc --noconfirm
-gpg-connect-agent reloadagent /bye
-#killall gpg-agent
+#gpg-connect-agent reloadagent /bye
+killall gpg-agent
+gpg-agent
 rm /var/lib/pacman/db.lck
 #Переменная назначит образ микрокода ЦП для UEFI загрузчика.
 microcode=""
