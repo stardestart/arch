@@ -313,7 +313,7 @@ pacman-key --init
 pacman-key --populate archlinux
 pacman --color always -Syy archlinux-keyring gnupg --noconfirm
 pacman --color always -Syy reflector usbguard sad coreutils --noconfirm
-reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+reflector --latest 20 --protocol https --sort rate --download-timeout 2 --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
 echo -e "\033[36mУстановка ОС.\033[0m"

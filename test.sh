@@ -12,7 +12,7 @@ swapoff -a
 umount -R /mnt
 #Удаление ключей pacman.
 rm -rf /etc/pacman.d/gnupg/*
-pacman -Sc --noconfirm
+pacman -Scc --noconfirm
 killall gpg-agent
 rm /var/lib/pacman/db.lck
 #Переменная назначит образ микрокода ЦП для UEFI загрузчика.
@@ -312,10 +312,10 @@ fi
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
 pacman --color always -Sy archlinux-keyring gnupg openssh --noconfirm
 pacman-key --init
-pacman-key --populate archlinux
+pacman-key --refresh-keys
 pacman --color always -Sy archlinux-keyring gnupg openssh --noconfirm
 pacman --color always -Sy reflector usbguard sad coreutils --noconfirm
-reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+reflector --latest 20 --protocol https --sort rate --download-timeout 2 --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
 echo -e "\033[36mУстановка ОС.\033[0m"

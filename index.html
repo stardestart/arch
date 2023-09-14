@@ -1652,7 +1652,7 @@ options resume=/dev/sda2
             </p>
             <div class=term>
               <span class=ps>$:</span>
-              reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+              reflector --latest 20 --protocol https --sort rate --download-timeout 2 --save /etc/pacman.d/mirrorlist
             </div>
           </li>
           <li>
