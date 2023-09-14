@@ -14,6 +14,7 @@ umount -R /mnt
 pacman -Scc --noconfirm
 killall gpg-agent
 gpg-agent
+gpg-connect-agent reloadagent /bye
 rm /var/lib/pacman/db.lck
 rm -R /root/.gnupg/
 rm -R /etc/pacman.d/gnupg/
