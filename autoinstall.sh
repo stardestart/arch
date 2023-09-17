@@ -1617,7 +1617,7 @@ echo -e "\033[36mУстановка программ из AUR (Репозито�
 arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt vkbasalt kmscon qgnomeplatform-qt5-git --noconfirm --ask 4
 #
 #Включение kmscon на всех виртуальных терминалах.
-arch-chroot /mnt ln -s /usr/lib/systemd/system/kmsconvt\@.service /etc/systemd/system/autovt\@.service
+#arch-chroot /mnt ln -s /usr/lib/systemd/system/kmsconvt\@.service /etc/systemd/system/autovt\@.service
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
