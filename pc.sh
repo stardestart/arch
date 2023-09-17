@@ -11,9 +11,11 @@ swapoff -a
 #Размонтирование дисков.
 umount -R /mnt
 #Удаление ключей pacman.
-rm -rf /etc/pacman.d/gnupg/*
-pacman -Sc --noconfirm
+pacman -Scc --noconfirm
 gpg-connect-agent reloadagent /bye
+rm /var/lib/pacman/db.lck
+rm -R /root/.gnupg/
+rm -R /etc/pacman.d/gnupg/
 #Переменная назначит образ микрокода ЦП для UEFI загрузчика.
 microcode=""
 #Переменная сохранит имя сетевого устройства для дальнейшей установки/настройки/расчета.
@@ -309,10 +311,10 @@ fi
 #
 #Установка и настройка программы для фильтрования зеркал и обновление ключей.
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
+sed -i '/= Required DatabaseOptional/c\SigLevel = Required DatabaseOptional TrustAll' /etc/pacman.conf
 pacman-key --init
 pacman-key --populate archlinux
-pacman --color always -Syy archlinux-keyring gnupg --noconfirm
-pacman --color always -Syy reflector usbguard sad coreutils --noconfirm
+pacman --color always -Sy reflector usbguard sad coreutils --noconfirm
 reflector --latest 20 --protocol https --sort rate --download-timeout 2 --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
@@ -351,9 +353,9 @@ EOF
 echo -e "\033[36mСоздание пользователя.\033[0m"
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "$username"
 #
-sed -i 's/nullok/nullok rounds=80000/' /mnt/etc/pam.d/passwd
-#
-echo "SHA_CRYPT_MIN_ROUNDS 80000" >> /mnt/etc/login.defs
+#Установим дополнительное количество итераций для хеширование паролей.
+sed -i 's/nullok/nullok rounds=500000/' /mnt/etc/pam.d/passwd
+echo "SHA_CRYPT_MIN_ROUNDS 500000" >> /mnt/etc/login.defs
 #
 #Пароль пользователя.
 arch-chroot /mnt passwd "$username"<<EOF
@@ -390,7 +392,7 @@ EOF' >> /mnt/etc/grub.d/00_header
         arch-chroot /mnt pacman --color always -Sy efibootmgr --noconfirm
         arch-chroot /mnt bootctl install
         echo -e "default arch\ntimeout 2\neditor yes\nconsole-mode max" > /mnt/boot/loader/loader.conf
-        echo -e "title  Arch Linux\nlinux  /vmlinuz-linux-zen"$microcode"\ninitrd  /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw\noptions resume=/dev/"$sysdisk""$p2"" > /mnt/boot/loader/entries/arch.conf
+        echo -e "title Arch Linux\nlinux /vmlinuz-linux-zen"$microcode"\ninitrd /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw\noptions resume=/dev/"$sysdisk""$p2"" > /mnt/boot/loader/entries/arch.conf
 fi
 #
 #Установка микроинструкции для процессора.

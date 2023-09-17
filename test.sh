@@ -314,7 +314,6 @@ echo -e "\033[36mУстановка и настройка программы д�
 sed -i '/= Required DatabaseOptional/c\SigLevel = Required DatabaseOptional TrustAll' /etc/pacman.conf
 pacman-key --init
 pacman-key --populate archlinux
-#pacman --color always -Sy gnupg archlinux-keyring --noconfirm
 pacman --color always -Sy reflector usbguard sad coreutils --noconfirm
 reflector --latest 20 --protocol https --sort rate --download-timeout 2 --save /etc/pacman.d/mirrorlist
 #
@@ -356,7 +355,6 @@ arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "$username"
 #
 #Установим дополнительное количество итераций для хеширование паролей.
 sed -i 's/nullok/nullok rounds=500000/' /mnt/etc/pam.d/passwd
-#
 echo "SHA_CRYPT_MIN_ROUNDS 500000" >> /mnt/etc/login.defs
 #
 #Пароль пользователя.
