@@ -311,7 +311,7 @@ fi
 #
 #Установка и настройка программы для фильтрования зеркал и обновление ключей.
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
-sed -i '/SigLevel = Required DatabaseOptional/c\SigLevel = Required DatabaseOptional TrustAll' /etc/pacman.conf
+sed -i '/= Required DatabaseOptional/c\SigLevel = Required DatabaseOptional TrustAll' /etc/pacman.conf
 pacman-key --init
 pacman-key --populate archlinux
 #pacman --color always -Sy gnupg archlinux-keyring --noconfirm
