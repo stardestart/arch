@@ -1623,10 +1623,13 @@ rm -Rf /mnt/home/"$username"/yay
 echo -e "\033[36mУстановка программ из AUR (Репозиторий пользователей).\033[0m"
 arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt vkbasalt kmscon qgnomeplatform-qt5-git cups-xerox-b2xx --noconfirm --ask 4
 #
+#Включение kmscon на всех виртуальных терминалах.
+arch-chroot /mnt ln -s /usr/lib/systemd/system/kmsconvt\@.service /etc/systemd/system/autovt\@.service
+#
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
-arch-chroot /mnt systemctl disable dbus
-arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker rngd auto-cpufreq smartd smb saned.socket cups.socket cups-browsed x11vnc ufw auditd usbguard ntpd
+arch-chroot /mnt systemctl disable dbus getty@tty1.service
+arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker rngd auto-cpufreq smartd smb saned.socket cups.socket cups-browsed x11vnc ufw auditd usbguard ntpd kmsconvt@tty1.service
 #
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
