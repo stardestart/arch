@@ -12,8 +12,6 @@ swapoff -a
 umount -R /mnt
 #Удаление ключей pacman.
 pacman -Scc --noconfirm
-killall gpg-agent
-gpg-agent
 gpg-connect-agent reloadagent /bye
 rm /var/lib/pacman/db.lck
 rm -R /root/.gnupg/
@@ -313,12 +311,12 @@ fi
 #
 #Установка и настройка программы для фильтрования зеркал и обновление ключей.
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
-gpg --refresh-keys
+#gpg --refresh-keys
 pacman-key --init
 pacman-key --populate archlinux
 pacman --color always -Syy gnupg --noconfirm
 pacman --color always -Syy archlinux-keyring --noconfirm
-pacman --color always -Syy openssh --noconfirm
+#pacman --color always -Syy openssh --noconfirm
 pacman --color always -Syy reflector usbguard sad coreutils --noconfirm
 reflector --latest 20 --protocol https --sort rate --download-timeout 2 --save /etc/pacman.d/mirrorlist
 #
