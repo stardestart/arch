@@ -311,11 +311,12 @@ fi
 #
 #Установка и настройка программы для фильтрования зеркал и обновление ключей.
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
+sed -i 's/[core]/[core]\nSigLevel = TrustAll/' /etc/pacman.conf
 #gpg --refresh-keys
-pacman-key --init
-pacman-key --populate archlinux
-pacman --color always -Sy gnupg --noconfirm
-pacman --color always -Sy archlinux-keyring --noconfirm
+#pacman-key --init
+#pacman-key --populate archlinux
+#pacman --color always -Sy gnupg --noconfirm
+#pacman --color always -Sy archlinux-keyring --noconfirm
 #pacman --color always -Syy openssh --noconfirm
 pacman --color always -Sy reflector usbguard sad coreutils --noconfirm
 reflector --latest 20 --protocol https --sort rate --download-timeout 2 --save /etc/pacman.d/mirrorlist
