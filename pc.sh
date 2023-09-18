@@ -1057,10 +1057,10 @@ exec --no-startup-id smb4k;
 exec --no-startup-id sudo -E usbguard-applet-qt;
 #
 # Автозапуск neofetch.
-exec --no-startup-id sh -c \047sleep 10; while [[ -z "$(ls /dev/pts/1)" ]]; do sleep 5; done;sleep 5; neofetch > /dev/pts/1;\047
+exec --no-startup-id sh -c \047sleep 10; while [[ -z "$(ls /dev/pts/2)" ]]; do sleep 5; done;sleep 5; neofetch > /dev/pts/2;\047
 #
 # Автозапуск обновления.
-#TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; while [[ -z "$(ls /dev/pts/0)" ]]; do sleep 5; done; sleep 5; sudo rm /var/lib/pacman/db.lck > /dev/pts/0; sudo pacman -Suy --noconfirm > /dev/pts/0; sudo pacman -Sc --noconfirm > /dev/pts/0; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/0;\047
+#TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; while [[ -z "$(ls /dev/pts/1)" ]]; do sleep 5; done; sleep 5; sudo rm /var/lib/pacman/db.lck > /dev/pts/1; sudo pacman -Suy --noconfirm > /dev/pts/1; sudo pacman -Sc --noconfirm > /dev/pts/1; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/1;\047
 #
 # Автозапуск numlockx.
 exec --no-startup-id numlockx;
@@ -1650,18 +1650,18 @@ echo -e "\033[36mСоздание скрипта, который после пе
 echo -e '#!/bin/bash
 sleep 10
 nmcli device wifi connect "'"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)"'" password "'"$(grep Passphrase= /var/lib/iwd/"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | sed s/Passphrase=//)"'"
-echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/0
+echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/1
 #
 #Счетчик.
 while [[ -z "$(xwininfo -root -tree | grep -i firefox | grep -i mozilla)" ]]; do
-    echo "\033[31mПродолжение установки!\033[0m" > /dev/pts/0
+    echo "\033[31mПродолжение установки!\033[0m" > /dev/pts/1
     sleep 5
 done
 sleep 10
 #
 #Обнаружение кулеров.
 echo -e "\033[36mОбнаружение кулеров.\033[0m"
-sudo sensors-detect --auto > /dev/pts/0
+sudo sensors-detect --auto > /dev/pts/1
 #
 #Настройка браузера.
 echo -e "\033[36mНастройка браузера.\033[0m"
@@ -1685,11 +1685,11 @@ echo -e "\033[36mНастройка звука.\033[0m"
 soundmass=($(pacmd list-sinks | grep -i name: | awk \047{print $2}\047))
 for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
             do
-amixer -c "$j" sset Master unmute > /dev/pts/0
-amixer -c "$j" sset Speaker unmute > /dev/pts/0
-amixer -c "$j" sset Headphone unmute > /dev/pts/0
-amixer -c "$j" sset "Auto-Mute Mode" Disabled > /dev/pts/0
-amixer -c "$j" sset "HP/Speaker Auto Detect" unmute > /dev/pts/0
+amixer -c "$j" sset Master unmute > /dev/pts/1
+amixer -c "$j" sset Speaker unmute > /dev/pts/1
+amixer -c "$j" sset Headphone unmute > /dev/pts/1
+amixer -c "$j" sset "Auto-Mute Mode" Disabled > /dev/pts/1
+amixer -c "$j" sset "HP/Speaker Auto Detect" unmute > /dev/pts/1
             done
 alsactl store
 #
@@ -1706,7 +1706,7 @@ gsettings set org.gnome.meld custom-font \047monospace, '"$font"'\047
 #Проверка наличия touchpad.
 echo -e "\033[36mПроверка наличия touchpad.\033[0m"
 if [ -n "$(xinput list | grep -i touchpad)" ]; then
-sudo pacman -S xf86-input-libinput --noconfirm > /dev/pts/0
+sudo pacman -S xf86-input-libinput --noconfirm > /dev/pts/1
 sudo tee -a /etc/X11/xorg.conf.d/00-keyboard.conf <<< \047
 Section "InputClass"
 Identifier "libinput touchpad catchall"
@@ -1743,7 +1743,7 @@ systemctl --user start redshift-gtk
 #
 #Настройка wine (Позволяет запускать приложения Windows).
 echo -e "\033[36mНастройка wine (Позволяет запускать приложения Windows).\033[0m"
-WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/0
+WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/1
 #
 #Удаление временных файлов.
 echo -e "\033[36mУдаление временных файлов.\033[0m"
