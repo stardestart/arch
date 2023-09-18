@@ -846,10 +846,14 @@ xterm*saveLines: 10000
 !Шрифт xterm.
 xterm*faceName: Fantasque Sans Mono:style=bold:size='"$font"'
 !
-!Указывает цвет фона.
+!Цвет фона.
 xterm*background: #2b2b2b
-!Определяет цвет, который будет использоваться для переднего плана.
+!Цвет шрифта.
 xterm*foreground: #2bf92b
+!Цвет курсора.
+xterm*cursorColor: #f92b2b
+!Мерцание курсора.
+xterm*cursorBlink: true
 !
 !Указывает, должна ли отображаться полоса прокрутки.
 xterm*scrollBar: false
@@ -1612,9 +1616,6 @@ rm -Rf /mnt/home/"$username"/yay
 #Установка программ из AUR (Репозиторий пользователей).
 echo -e "\033[36mУстановка программ из AUR (Репозиторий пользователей).\033[0m"
 arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt vkbasalt kmscon qgnomeplatform-qt5-git cups-xerox-b2xx --noconfirm --ask 4
-#
-#Включение kmscon на всех виртуальных терминалах.
-#arch-chroot /mnt ln -s /usr/lib/systemd/system/kmsconvt\@.service /etc/systemd/system/autovt\@.service
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"

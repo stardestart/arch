@@ -2222,7 +2222,17 @@ XDG_VIDEOS_DIR="$HOME/Documents/Videos"
               </li>
               <li>
                 <span class=text>
-                  ocrfeeder — Анализ макета документа GTK и приложение для оптического распознавания символов.
+                  gimagereader-gtk — Приложение для оптического распознавания символов.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  tesseract-data-rus — Программа для распознавания текстов.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  tesseract-data-eng — Программа для распознавания текстов.
                 </span>
               </li>
               <li>
@@ -2303,7 +2313,7 @@ XDG_VIDEOS_DIR="$HOME/Documents/Videos"
             </ul>
             <div class=term>
               <span class=ps>$:</span>
-              sudo pacman -S numlockx gparted kwalletmanager kwallet-pam ark mc htop conky polkit dmg2img network-manager-applet rng-tools dbus-broker acpid giflib lib32-giflib perl-anyevent-i3 perl-json-xs flatpak usbguard x11vnc neofetch aspell nuspell aspell-en aspell-ru ethtool hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en ocrfeeder xdg-desktop-portal-gtk networkmanager-strongswan wireless_tools krdc clinfo autocutsel openssh haveged unzip smartmontools nss-mdns ufw libpwquality ntp xdg-user-dirs
+              sudo pacman -S numlockx gparted kwalletmanager kwallet-pam ark mc htop conky polkit dmg2img network-manager-applet rng-tools dbus-broker acpid giflib lib32-giflib perl-anyevent-i3 perl-json-xs flatpak usbguard x11vnc neofetch aspell nuspell aspell-en aspell-ru ethtool hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en gimagereader-gtk tesseract-data-rus tesseract-data-eng xdg-desktop-portal-gtk networkmanager-strongswan wireless_tools krdc clinfo autocutsel openssh haveged unzip smartmontools nss-mdns ufw libpwquality ntp xdg-user-dirs
             </div>
           </li>
           <li>
@@ -2375,10 +2385,20 @@ XDG_VIDEOS_DIR="$HOME/Documents/Videos"
                   vkbasalt — Слой постобработки Vulkan.
                 </span>
               </li>
+              <li>
+                <span class=text>
+                  qgnomeplatform-qt5-git — Смена внешнего вида QT приложений.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  kmscon — Эмулятор терминала в ядре Linux.
+                </span>
+              </li>
             </ul>
             <div class=term>
               <span class=ps>$:</span>
-              yay -S gtk3-classic hardinfo usbguard-applet-qt debtap auto-cpufreq hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git kde-cdemu-manager vkbasalt
+              yay -S gtk3-classic hardinfo usbguard-applet-qt debtap auto-cpufreq hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git kde-cdemu-manager vkbasalt qgnomeplatform-qt5-git kmscon
             </div>
           </li>
         </ol>
@@ -2486,11 +2506,6 @@ XDG_VIDEOS_DIR="$HOME/Documents/Videos"
           </li>
           <li>
             <span class=text>
-              qgnomeplatform-qt5 — Смена внешнего вида QT приложений.
-            </span>
-          </li>
-          <li>
-            <span class=text>
               papirus-icon-theme — Иконки.
             </span>
           </li>
@@ -2552,7 +2567,7 @@ XDG_VIDEOS_DIR="$HOME/Documents/Videos"
         </ul>
         <div class=term>
           <span class=ps>$:</span>
-          sudo pacman -S lxqt-panel qgnomeplatform-qt5 papirus-icon-theme picom redshift archlinux-wallpaper grc flameshot feh dunst libnotify gnome-themes-extra xlockmore xautolock
+          sudo pacman -S lxqt-panel papirus-icon-theme picom redshift archlinux-wallpaper grc flameshot feh dunst libnotify gnome-themes-extra xlockmore xautolock
         </div>
       </li>
       <li>
@@ -3539,10 +3554,14 @@ xterm*saveLines: 10000
 !Шрифт xterm.
 xterm*faceName: Fantasque Sans Mono:style=bold:size=12
 !
-!Указывает цвет фона.
+!Цвет фона.
 xterm*background: #2b2b2b
-!Определяет цвет, который будет использоваться для переднего плана.
+!Цвет шрифта.
 xterm*foreground: #2bf92b
+!Цвет курсора.
+xterm*cursorColor: #f92b2b
+!Мерцание курсора.
+xterm*cursorBlink: true
 !
 !Указывает, должна ли отображаться полоса прокрутки.
 xterm*scrollBar: false
@@ -4761,21 +4780,20 @@ Win+Alt-left+1 -- Восстановление рабочего стола №1.
       </li>
       <li>
         <p class=text>
-          Отключить dbus.
+          Отключаем стандартные dbus и getty.
         </p>
         <div class=term>
           <span class=ps>$:</span>
-          sudo systemctl disable dbus
+          sudo systemctl disable dbus getty@tty1.service
         </div>
       </li>
       <li>
         <p class=text>
-          Автозапуск avahi, cups, bluetooth, acpid, auto-cpufreq, dbus-broker, rngd, trim,
-          saned.socket, cups-browsed.
+          Автозапуск avahi, cups, bluetooth, acpid, auto-cpufreq, dbus-broker, rngd, trim, saned.socket, cups-browsed, kmscon.
         </p>
         <div class=term>
           <span class=ps>$:</span>
-          sudo systemctl enable acpid bluetooth fancontrol NetworkManager avahi-daemon ananicy haveged dbus-broker rngd auto-cpufreq smartd smb saned.socket cups.socket cups-browsed x11vnc ufw auditd usbguard ntpd fstrim.timer
+          sudo systemctl enable acpid bluetooth fancontrol NetworkManager avahi-daemon ananicy haveged dbus-broker rngd auto-cpufreq smartd smb saned.socket cups.socket cups-browsed x11vnc ufw auditd usbguard ntpd fstrim.timer kmsconvt@tty1.service
         </div>
       </li>
       <li>
