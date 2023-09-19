@@ -848,10 +848,13 @@ xterm*faceName: Fantasque Sans Mono:style=bold:size='"$font"'
 !
 !Цвет фона.
 xterm*background: #2b2b2b
+!
 !Цвет шрифта.
 xterm*foreground: #2bf92b
+!
 !Цвет курсора.
 xterm*cursorColor: #f92b2b
+!
 !Мерцание курсора.
 xterm*cursorBlink: true
 !
