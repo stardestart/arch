@@ -5,58 +5,60 @@
     <meta charset="utf-8">
     <title>Arch Linux</title>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Mono&display=swap');
-      @keyframes blink
-      {
+      @font-face {
+        font-family: FantasqueSansMono-Regular;
+        src: url(fonts/FantasqueSansMono-Regular.woff2);
+      }
+      @font-face {
+        font-family: NotoSerif-Italic-VariableFont_wdth_wght;
+        src: url(fonts/NotoSerif-Italic-VariableFont_wdth_wght.woff2);
+      }
+      @font-face {
+        font-family: NotoEmoji-VariableFont_wght;
+        src: url(fonts/NotoEmoji-VariableFont_wght.woff2);
+      }
+      @keyframes blink {
         from { opacity: 1 }
         to { opacity: 0 }
       }
-      html
-      {
+      html {
         background: #2b2b2b;
       }
-      body
-      {
+      body {
         background: #b2b2b2;
         color: #2b2b2b;
-        font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+        font-family: 'NotoSerif-Italic-VariableFont_wdth_wght', 'NotoEmoji-VariableFont_wght';
         max-width: 60em;
         margin-left: auto;
         margin-right: auto;
         padding: 1%;
         font-size: calc(0.6em + 1vmin);
       }
-      summary
-      {
+      summary {
         font-weight: bold;
         outline: none;
         padding: 0.1%;
       }
-      details
-      {
+      details {
         border: 3px solid #2b2b2b;
         padding: 0.1%;
         margin: 0.1%;
         color: #2b2b2b;
       }
-      h1, h2, h3
-      {
+      h1, h2, h3 {
         text-align: center;
         padding-top: 3em;
         color: #2b2b2b;
       }
-      ul, ol
-      {
+      ul, ol {
         padding-left: 0;
         margin-left: 6%;
         color: #f92b2b;
       }
-      .text
-      {
+      .text {
         color: #2b2b2b;
       }
-      .ulmenu
-      {
+      .ulmenu {
         background: #2b0f2bdd;
         color: #2bf92b;
         margin-top: 0;
@@ -67,56 +69,47 @@
         position: sticky;
         top: 5px;
       }
-      .limenu
-      {
+      .limenu {
         display: inline;
         padding: 0.3%;
       }
-      .amenu
-      {
+      .amenu {
         text-decoration: none;
         color: #2bf92b;
       }
-      .amenu:hover
-      {
+      .amenu:hover {
         text-decoration: none;
         color: #b2b2b2;
         background: #2b2b2bff;
       }
-      .term
-      {
+      .term {
         background: #2b2b2b;
         color: #b2b2b2;
+        font-family: 'FantasqueSansMono-Regular', 'NotoEmoji-VariableFont_wght';
         padding: 0.1%;
         margin: 0.5%;
         border: 3px solid #662b2b;
         overflow-x: scroll;
-        font-family: 'Noto Sans Mono', monospace;
       }
-      .nano
-      {
+      .nano {
         background: #2b2b2b;
         color: #b2b2b2;
+        font-family: 'FantasqueSansMono-Regular', 'NotoEmoji-VariableFont_wght';
         padding: 0.1%;
         margin: 0.5%;
         border: 3px solid #2b2b66;
         overflow-x: scroll;
         white-space: nowrap;
-        font-family: 'Noto Sans Mono', monospace;
       }
-      .nanocomm
-      {
+      .nanocomm {
         background: #b2b2b2;
         color: #2b2b2b;
-        font-family: 'Noto Sans Mono', monospace;
       }
-      .ps
-      {
+      .ps {
         animation: blink 1s infinite;
         color: #b2b2b2;
       }
-      .listB
-      {
+      .listB {
         list-style-type: lower-alpha;
       }
     </style>
