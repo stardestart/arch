@@ -1220,8 +1220,8 @@ echo 'polkit.addRule(function(action, subject) {
     }
 });' > /mnt/etc/polkit-1/rules.d/49-allow-passwordless-printer-admin.rules
 #
-#Загрузка PAM (Фреймворк для аутентификации пользователей).
-echo -e "\033[36mЗагрузка PAM (Фреймворк для аутентификации пользователей).\033[0m"
+#Настройка pam_kwallet.
+echo -e "\033[36mНастройка pam_kwallet.\033[0m"
 echo 'auth optional pam_kwallet5.so
 session optional pam_kwallet5.so auto_start' >> /mnt/etc/pam.d/xdm
 #
