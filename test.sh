@@ -312,13 +312,13 @@ fi
 #Установка и настройка программы для фильтрования зеркал и обновление ключей.
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
 sed -i '/= Required DatabaseOptional/c\SigLevel = Required DatabaseOptional TrustAll' /etc/pacman.conf
-#pacman-key --init
-#pacman-key --populate archlinux
+pacman-key --init
+pacman-key --populate archlinux
 pacman --color always -Sy reflector --noconfirm
 pacman --color always -Sy usbguard --noconfirm
 pacman --color always -Sy sad --noconfirm
 pacman --color always -Sy coreutils --noconfirm
-reflector --latest 20 --protocol https --sort rate --download-timeout 2 --save /etc/pacman.d/mirrorlist
+#reflector --latest 20 --protocol https --sort rate --download-timeout 2 --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
 echo -e "\033[36mУстановка ОС.\033[0m"
