@@ -315,13 +315,14 @@ sed -i '/= Required DatabaseOptional/c\SigLevel = Required DatabaseOptional Trus
 pacman-key --init
 pacman-key --populate archlinux
 pacman --color always -Sy reflector --noconfirm
+pacman --color always -Sy glibc --noconfirm
+pacman --color always -Sy lib32-glibc --noconfirm
 pacman --color always -Sy usbguard --noconfirm
 pacman --color always -Sy sad --noconfirm
 pacman --color always -Sy coreutils --noconfirm
-#reflector --latest 20 --protocol https --sort rate --download-timeout 2 --save /etc/pacman.d/mirrorlist
 echo -e "Старый список зеркал."
 cat /etc/pacman.d/mirrorlist
-reflector --latest 5 --sort rate --download-timeout 2 --save /etc/pacman.d/mirrorlist
+reflector --latest 20 --protocol https --sort rate --download-timeout 2 --save /etc/pacman.d/mirrorlist
 echo -e "Новый список зеркал."
 cat /etc/pacman.d/mirrorlist
 #
