@@ -12,7 +12,7 @@ swapoff -a
 umount -R /mnt
 #Удаление ключей pacman.
 pacman -Scc --noconfirm
-gpg-connect-agent reloadagent /bye
+#gpg-connect-agent reloadagent /bye
 rm /var/lib/pacman/db.lck
 rm -R /root/.gnupg/
 rm -R /etc/pacman.d/gnupg/
