@@ -12,7 +12,7 @@ swapoff -a
 umount -R /mnt
 #Удаление ключей pacman.
 pacman -Scc --noconfirm
-#gpg-connect-agent reloadagent /bye
+gpg-connect-agent reloadagent /bye
 rm /var/lib/pacman/db.lck
 rm -R /root/.gnupg/
 rm -R /etc/pacman.d/gnupg/
@@ -312,9 +312,12 @@ fi
 #Установка и настройка программы для фильтрования зеркал и обновление ключей.
 echo -e "\033[36mУстановка и настройка программы для фильтрования зеркал и обновление ключей.\033[0m"
 sed -i '/= Required DatabaseOptional/c\SigLevel = Required DatabaseOptional TrustAll' /etc/pacman.conf
-pacman-key --init
-pacman-key --populate archlinux
-pacman --color always -Sy reflector usbguard sad coreutils --noconfirm
+#pacman-key --init
+#pacman-key --populate archlinux
+pacman --color always -Sy reflector --noconfirm
+pacman --color always -Sy usbguard --noconfirm
+pacman --color always -Sy sad --noconfirm
+pacman --color always -Sy coreutils --noconfirm
 reflector --latest 20 --protocol https --sort rate --download-timeout 2 --save /etc/pacman.d/mirrorlist
 #
 #Установка ОС.
