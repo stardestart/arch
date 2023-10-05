@@ -2807,14 +2807,6 @@ XDG_VIDEOS_DIR="$HOME/Documents/Videos"
           </li>
           <li>
             <p class=text>
-              Настройка pam_kwallet.
-            </p>
-            <div class=term>
-              <span class=ps>$:</span> echo -e 'auth optional pam_kwallet5.so\nsession optional pam_kwallet5.so auto_start' | sudo tee -a /etc/pam.d/xdm
-            </div>
-          </li>
-          <li>
-            <p class=text>
               Пакеты из AUR:
             </p>
             <ul>
@@ -3150,6 +3142,14 @@ XDG_VIDEOS_DIR="$HOME/Documents/Videos"
                 </p>
                 <div class=term>
                   <span class=ps>$:</span> alsactl store
+                </div>
+              </li>
+              <li>
+                <p class=text>
+                  Настройка pulseaudio.
+                </p>
+                <div class=term>
+                  <span class=ps>$:</span> sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /etc/pulse/daemon.conf
                 </div>
               </li>
             </ul>
@@ -3636,13 +3636,7 @@ localhost
               Настройка wine.
             </p>
             <div class=term>
-              <span class=ps>$:</span> WINEARCH=win32
-            </div>
-            <div class=term>
-              <span class=ps>$:</span> winecfg
-            </div>
-            <div class=term>
-              <span class=ps>$:</span> winetricks directx9 d3dx9 d3dx9_26 d3dx9_28 d3dx9_31 d3dx9_35 d3dx9_36 d3dx9_42 d3dx9_43 d3dx10 d3dx10_43 d3dx11_42 d3dx11_43 d3dxof devenum dinput8 dinput dirac directmusic directplay dmsynth dsound dxdiagn gdiplus mfc40 mfc42 msxml6 quartz vb5run vcrun2005 vcrun2008 vcrun2012 vcrun2013 vcrun2015 vcrun6 vcrun6sp6 wsh57 xact xinput
+              <span class=ps>$:</span> WINEARCH=win32 winetricks directx9 d3dx9 d3dx9_26 d3dx9_28 d3dx9_31 d3dx9_35 d3dx9_36 d3dx9_42 d3dx9_43 d3dx10 d3dx10_43 d3dx11_42 d3dx11_43 d3dxof devenum dinput8 dinput dirac directmusic directplay dmsynth dsound dxdiagn gdiplus mfc40 mfc42 msxml6 quartz vb5run vcrun2005 vcrun2008 vcrun2012 vcrun2013 vcrun2015 vcrun6 vcrun6sp6 wsh57 xact xinput
             </div>
           </li>
         </ol>
@@ -3918,7 +3912,7 @@ alias gcc="grc --colour=on gcc" #Раскрашиваем gcc.
 alias mount="grc --colour=on mount" #Раскрашиваем mount.
 alias ps="grc --colour=on ps" #Раскрашиваем ps.
 #Изменяем вид приглашения командной строки.
-PS1="\[\e[48;2;249;43;43m\]\[\e[38;2;43;249;43m\] \$\[\e[48;2;249;249;43m\]\[\e[38;2;249;43;43m\]&#57520;\[\e[48;2;249;249;43m\]\[\e[38;2;43;43;249m\]\A\[\e[48;2;43;43;249m\]\[\e[38;2;249;249;43m\]&#57520; \u@\h\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;249m\]&#57520;\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;43m\]\W\[\e[48;2;43;43;43m\]\[\e[0m\]\[\e[38;2;43;249;43m\]&#57520; \[\e[0m\]"
+PS1="\[\e[48;2;249;43;43m\]\[\e[38;2;43;249;43m\] \$\[\e[48;2;249;249;43m\]\[\e[38;2;249;43;43m\]\[\e[48;2;249;249;43m\]\[\e[38;2;43;43;249m\]\A\[\e[48;2;43;43;249m\]\[\e[38;2;249;249;43m\] \u@\h\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;249m\]\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;43m\]\W\[\e[48;2;43;43;43m\]\[\e[0m\]\[\e[38;2;43;249;43m\] \[\e[0m\]"
 #\[\e[48;2;249;43;43m\] - Красный цвет фона.
 #\[\e[38;2;43;249;43m\] - Зеленый цвет шрифта.
 #\$ - Символ приглашения (# для root, $ для обычных пользователей).
@@ -5856,6 +5850,21 @@ writable = yes
             </tr>
           </table>
         </div>
+        <div class=term>
+          <span class=ps>$:</span> sudo mkdir /var/lib/samba/usershares
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> sudo groupadd -r sambashare
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> sudo chown root:sambashare /var/lib/samba/usershares
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> sudo chmod 1770 /var/lib/samba/usershares
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> sudo mkdir gpasswd sambashare -a ИмяПользователя
+        </div>
       </li>
       <li>
         <p class=text>
@@ -5998,6 +6007,12 @@ esac
               <td>Обр. поиск</td>
             </tr>
           </table>
+        </div>
+        <p class=text>
+          Делаем 09-timezone исполняемыми.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span> sudo chmod +x /etc/NetworkManager/dispatcher.d/09-timezone
         </div>
       </li>
       <li>
@@ -6264,6 +6279,131 @@ Win+Alt-left+1 -- Восстановление рабочего стола №1.
               <td>Обр. поиск</td>
             </tr>
           </table>
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Добавление модулей.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span> sudo sed -i 's/HOOKS=(base udev/HOOKS=(base udev resume/' /etc/mkinitcpio.conf
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> echo -e 'btusb' | sudo tee -a /etc/modules-load.d/modules.conf
+        </div>
+        <p class=text>
+          Модули для видеокарт.
+        </p>
+        <details>
+          <summary>... NVIDIA.</summary>
+          <p class=text>
+            Микроархитектура Turing, Ampere, Volta, Pascal, Maxwell (Графический процессор TU1, GA1, GV1, GP10, GM20, GM10).
+          </p>
+          <div class=term>
+            <span class=ps>$:</span> sudo sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
+          </div>
+          <p class=text>
+            Остальные.
+          </p>
+          <div class=term>
+            <span class=ps>$:</span> sudo sed -i 's/MODULES=()/MODULES=(nouveau)/' /etc/mkinitcpio.conf
+          </div>
+        </details>
+        <br>
+        <details>
+          <summary>... AMD.</summary>
+          <div class=term>
+            <span class=ps>$:</span> sudo sed -i 's/MODULES=()/MODULES=(amdgpu radeon)/' /etc/mkinitcpio.conf
+          </div>
+        </details>
+        <br>
+        <details>
+          <summary>... Intel.</summary>
+          <div class=term>
+            <span class=ps>$:</span> sudo sed -i 's/MODULES=()/MODULES=(i915)/' /etc/mkinitcpio.conf
+          </div>
+        </details>
+      </li>
+      <li>
+        <p class=text>
+          Настройка pam_kwallet.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span> echo -e 'auth optional pam_kwallet5.so\nsession optional pam_kwallet5.so auto_start' | sudo tee -a /etc/pam.d/xdm
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Ограничение на размер дампа.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span> echo -e '* hard core 0' | sudo tee -a /etc/security/limits.conf
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Обнаружение кулеров.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span> sudo sensors-detect --auto
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Настройка внешнего вида программ.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span> gsettings set org.gnome.desktop.interface icon-theme ePapirus-Dark
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> gsettings set org.gnome.desktop.interface font-name 'Fantasque Sans Mono, 10'
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> gsettings set org.gnome.desktop.interface document-font-name 'Fantasque Sans Mono Bold Italic 10'
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> gsettings set org.gnome.desktop.interface monospace-font-name 'Fantasque Sans Mono 10'
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Fantasque Sans Mono Bold 10'
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> gsettings set org.gnome.libgnomekbd.indicator font-size 10
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> gsettings set org.gnome.meld custom-font 'monospace, 10'
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Установка переменных окружения.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span> echo -e 'ENABLE_VKBASALT=1\nGTK_USE_PORTAL=1' | sudo tee -a /etc/environment
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Настройка разрешения локального имени хоста.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span> sudo sed -i 's/mymachines/mymachines mdns_minimal [NOTFOUND=return]/' /etc/nsswitch.conf
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Ограничение прав к ключям ssh.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span> sudo chmod 600 /etc/ssh/sshd_config
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Настройка прав: Только пользователь создатель имеет разрешения на чтение, запись и выполнение.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span> sudo sed -i 's/umask 022/umask 077/' /etc/profile
         </div>
       </li>
       <li>

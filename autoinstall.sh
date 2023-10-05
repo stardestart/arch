@@ -1713,7 +1713,6 @@ sudo ufw limit ssh
 sudo ufw allow 5900
 sudo ufw allow 5353
 sudo ufw enable
-sudo sed -i \047s/# End required lines/# End required lines\\n-A ufw-before-forward -i wg0 -j ACCEPT\\n-A ufw-before-forward -o wg0 -j ACCEPT/\047 /etc/ufw/before.rules
 sudo sed -i \047s/#net\/ipv4\/ip_forward=1/net\/ipv4\/ip_forward=1/\047 /etc/ufw/sysctl.conf
 sudo sed -i \047s/#net\/ipv6\/conf\/default\/forwarding=1/net\/ipv6\/conf\/default\/forwarding=1/\047 /etc/ufw/sysctl.conf
 sudo sed -i \047s/#net\/ipv6\/conf\/all\/forwarding=1/net\/ipv6\/conf\/all\/forwarding=1/\047 /etc/ufw/sysctl.conf
