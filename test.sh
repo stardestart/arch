@@ -73,6 +73,8 @@ rootsize=""
 varsize=""
 #Переменная сохранит кулеры.
 fanconky=""
+#Часовой пояс
+timezone="$(curl https://ipapi.co/timezone)"
 #
 #Определяем процессор.
 echo -e "\033[36mОпределяем процессор.\033[0m"
@@ -83,8 +85,8 @@ echo -e "\033[36mПроцессор:"$(lscpu | grep -i "model name")"\033[0m"
 #
 #Определяем часовой пояс.
 echo -e "\033[36mОпределяем часовой пояс.\033[0m"
-timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
-echo -e "\033[36mЧасовой пояс:"$(curl https://ipapi.co/timezone)"\033[0m"
+timedatectl set-timezone $timezone
+echo -e "\033[36mЧасовой пояс:$timezone\033[0m"
 #
 #Определяем физический диск на который будет установлена ОС.
 echo -e "\033[36mОпределяем физический диск на который будет установлена ОС.\033[32m"
@@ -338,7 +340,7 @@ echo 'btusb' > /mnt/etc/modules-load.d/modules.conf
 #
 #Установка часового пояса.
 echo -e "\033[36mУстановка часового пояса.\033[0m"
-arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$(curl https://ipapi.co/timezone)" /etc/localtime
+arch-chroot /mnt ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
 arch-chroot /mnt hwclock --systohc
 #
 #Настройка локали.
