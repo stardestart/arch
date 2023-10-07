@@ -2330,6 +2330,81 @@ EndSection
                 </tr>
               </table>
             </div>
+            <details>
+              <summary>При наличие touchpad.</summary>
+              <div class=nano>
+                <pre class=pre>
+Section "InputClass"
+Identifier "system-keyboard"
+MatchIsKeyboard "on"
+Option "XkbLayout" "us,ru"
+Option "XkbOptions" "grp:alt_shift_toggle,terminate:ctrl_alt_bksp"
+EndSection
+
+Section "InputClass"
+Identifier "libinput touchpad catchall"
+MatchIstouchpad "on"
+MatchDevicePath "/dev/input/event*"
+Driver "libinput"
+Option "Tapping" "on"
+EndSection
+
+
+
+
+</pre>
+                <table>
+                  <tr>
+                    <td colspan="18">
+                      <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><span class=nanocomm>Ctrl+G</span></td>
+                    <td>Справка</td>
+                    <td><span class=nanocomm>Ctrl+O</span></td>
+                    <td>Записать</td>
+                    <td><span class=nanocomm>Ctrl+W</span></td>
+                    <td>Поиск</td>
+                    <td><span class=nanocomm>Ctrl+K</span></td>
+                    <td>Вырезать</td>
+                    <td><span class=nanocomm>Ctrl+T</span></td>
+                    <td>Выполнить</td>
+                    <td><span class=nanocomm>Ctrl+C</span></td>
+                    <td>Позиция</td>
+                    <td><span class=nanocomm>Esc+U</span></td>
+                    <td>Отмена</td>
+                    <td><span class=nanocomm>Esc+A</span></td>
+                    <td>Установить</td>
+                    <td><span class=nanocomm>Esc+]</span></td>
+                    <td>На скобку</td>
+                  </tr>
+                  <tr>
+                    <td><span class=nanocomm>Ctrl+X</span></td>
+                    <td>Выход</td>
+                    <td><span class=nanocomm>Ctrl+R</span></td>
+                    <td>ЧитФайл</td>
+                    <td><span class=nanocomm>Ctrl+\</span></td>
+                    <td>Замена</td>
+                    <td><span class=nanocomm>Ctrl+U</span></td>
+                    <td>Вставить</td>
+                    <td><span class=nanocomm>Ctrl+J</span></td>
+                    <td>Выровнять</td>
+                    <td><span class=nanocomm>Ctrl+/</span></td>
+                    <td>К строке</td>
+                    <td><span class=nanocomm>Esc+E</span></td>
+                    <td>Повтор</td>
+                    <td><span class=nanocomm>Esc+6</span></td>
+                    <td>Копировать</td>
+                    <td><span class=nanocomm>Ctrl+Q</span></td>
+                    <td>Обр. поиск</td>
+                  </tr>
+                </table>
+              </div>
+              <div class=term>
+                <span class=ps>$:</span> sudo pacman -S xf86-input-libinput
+              </div>
+            </details>
           </li>
           <li>
             <p class=text>
