@@ -6480,6 +6480,97 @@ Win+Alt-left+1 -- Восстановление рабочего стола №1.
       </li>
       <li>
         <p class=text>
+          Настройка брандмауэра.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span> sudo ufw default deny
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> sudo ufw allow from 192.168.0.0/24
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> sudo ufw allow Deluge
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> sudo ufw limit ssh
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> sudo ufw allow 5900
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> sudo ufw allow 5353
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> sudo ufw enable
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> sudo nano /etc/ufw/sysctl.conf
+        </div>
+        <p class=text>
+          Находим эти строчки и раскомментируем (Удаляем знак «#»).
+        </p>
+        <div class=nano>
+          <pre class=pre>
+...
+<span class=ps>#</span>net/ipv4/ip_forward=1
+<span class=ps>#</span>net/ipv6/conf/default/forwarding=1
+<span class=ps>#</span>net/ipv6/conf/all/forwarding=1
+...
+...
+...
+...
+</pre>
+          <table>
+            <tr>
+              <td colspan="18">
+                <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+              </td>
+            </tr>
+            <tr>
+              <td><span class=nanocomm>Ctrl+G</span></td>
+              <td>Справка</td>
+              <td><span class=nanocomm>Ctrl+O</span></td>
+              <td>Записать</td>
+              <td><span class=nanocomm>Ctrl+W</span></td>
+              <td>Поиск</td>
+              <td><span class=nanocomm>Ctrl+K</span></td>
+              <td>Вырезать</td>
+              <td><span class=nanocomm>Ctrl+T</span></td>
+              <td>Выполнить</td>
+              <td><span class=nanocomm>Ctrl+C</span></td>
+              <td>Позиция</td>
+              <td><span class=nanocomm>Esc+U</span></td>
+              <td>Отмена</td>
+              <td><span class=nanocomm>Esc+A</span></td>
+              <td>Установить</td>
+              <td><span class=nanocomm>Esc+]</span></td>
+              <td>На скобку</td>
+            </tr>
+            <tr>
+              <td><span class=nanocomm>Ctrl+X</span></td>
+              <td>Выход</td>
+              <td><span class=nanocomm>Ctrl+R</span></td>
+              <td>ЧитФайл</td>
+              <td><span class=nanocomm>Ctrl+\</span></td>
+              <td>Замена</td>
+              <td><span class=nanocomm>Ctrl+U</span></td>
+              <td>Вставить</td>
+              <td><span class=nanocomm>Ctrl+J</span></td>
+              <td>Выровнять</td>
+              <td><span class=nanocomm>Ctrl+/</span></td>
+              <td>К строке</td>
+              <td><span class=nanocomm>Esc+E</span></td>
+              <td>Повтор</td>
+              <td><span class=nanocomm>Esc+6</span></td>
+              <td>Копировать</td>
+              <td><span class=nanocomm>Ctrl+Q</span></td>
+              <td>Обр. поиск</td>
+            </tr>
+          </table>
+        </div>
+      </li>
+      <li>
+        <p class=text>
           Перезагрузка.
         </p>
         <div class=term>
@@ -6492,7 +6583,7 @@ Win+Alt-left+1 -- Восстановление рабочего стола №1.
     <ol>
       <li>
         <p class=text>
-          Откройте в браузере адрес http://127.0.0.1:631 (http://localhost:631), введите ИмяПользователя и ПарольПользователя для настройки локального принтера. Настройка steam, для увеличения производительности игр, нужно открыть ярлык Steam (Runtime), блокнотом с ROOT правами (sudo nano /usr/share/applications/steam.desktop), найти строчку отвечающую за запуск (Exec=/usr/bin/steam-runtime %U), исправить ее на запуск через gamemode (Exec=gamemoderun /usr/bin/steam-runtime %U) kdesu -c и root-пароль.
+          Откройте в браузере адрес http://127.0.0.1:631 (http://localhost:631), введите ИмяПользователя и ПарольПользователя для настройки локального принтера.
         </p>
         <details>
           <summary>Настройка nvidia.</summary>
@@ -6584,6 +6675,50 @@ Win+Alt-left+1 -- Восстановление рабочего стола №1.
     <hr>
     <h2 id=ps>Post Scriptum.</h2>
     <ol>
+      <li>
+        <h3>Клавиша SysRq — единственная прямая связь с ядром, которая работает всегда, если работает ядро, так как соответствующие комбинации напрямую перехватываются ядром и соответствующий код является частью драйвера клавиатуры. При помощи некоторых комбинаций клавиш можно заставить систему аварийно сбросить данные на диски, перемонтировать все файловые системы в режим «только чтение», перезагрузиться или перезапустить графическую подсистему даже при зависшей системе.</h3>
+        <p class=text>
+          Сочетания клавиш:
+        </p>
+        <ul>
+          <li>
+            <span class=text>
+              Alt+SysRq(PrintScreen)+REISUB.
+            </span>
+          </li>
+          <li>
+            <span class=text>
+              Alt+SysRq(PrintScreen)+r Забираем клавиатуру у Xorg.
+            </span>
+          </li>
+          <li>
+            <span class=text>
+              Alt+SysRq(PrintScreen)+e Запрашиваем завершение процесса, но запрос может
+              быть проигнорирован.
+            </span>
+          </li>
+          <li>
+            <span class=text>
+              Alt+SysRq(PrintScreen)+i Запрашиваем немедленное завершение процесса.
+            </span>
+          </li>
+          <li>
+            <span class=text>
+              Alt+SysRq(PrintScreen)+s Сбрасываем данные на диск.
+            </span>
+          </li>
+          <li>
+            <span class=text>
+              Alt+SysRq(PrintScreen)+u Монтируем все файловые системы только для чтения.
+            </span>
+          </li>
+          <li>
+            <span class=text>
+              Alt+SysRq(PrintScreen)+b Перезагружаем.
+            </span>
+          </li>
+        </ul>
+      </li>
       <li>
         <h3>Команды Pacman.</h3>
         <ol class=listB>
