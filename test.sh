@@ -318,7 +318,6 @@ pacman-key --populate archlinux
 pacman -Sy reflector --noconfirm
 pacman -Sy glibc --noconfirm
 pacman -Sy lib32-glibc --noconfirm
-pacman -Sy usbguard --noconfirm
 pacman -Sy sad --noconfirm
 pacman -Sy coreutils --noconfirm
 echo -e "Старый список зеркал."
@@ -1633,7 +1632,7 @@ arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspel
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus getty@tty1.service
-arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker rngd auto-cpufreq smartd smb saned.socket cups.socket x11vnc ufw auditd usbguard ntpd kmsconvt@tty1.service
+arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker rngd auto-cpufreq smartd smb saned.socket cups.socket x11vnc ufw auditd ntpd kmsconvt@tty1.service
 #
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
@@ -1730,6 +1729,12 @@ echo -e "\033[36mУстановка переменных окружения.\033
 sudo sh -c \047echo "ENABLE_VKBASALT=1
 GTK_USE_PORTAL=1" >> /etc/environment\047
 #
+#Настройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).
+echo -e "\033[36mНастройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).\033[0m"
+sudo usbguard generate-policy > /etc/usbguard/rules.conf
+sudo systemctl enable usbguard
+sudo systemctl start usbguard
+#
 #Включение службы redshift (Регулирует цветовую температуру вашего экрана).
 echo -e "\033[36mВключение службы redshift (Регулирует цветовую температуру вашего экрана).\033[0m"
 systemctl --user enable redshift-gtk
@@ -1781,10 +1786,6 @@ if [ -n "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq)" ]; the
 echo '[charger]
 scaling_max_freq = '$(("$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq)"/100*90))'' > /mnt/etc/auto-cpufreq.conf
 fi
-#
-#Настройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).
-echo -e "\033[36mНастройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).\033[0m"
-usbguard generate-policy > /mnt/etc/usbguard/rules.conf
 #
 #Ограничение на размер дампа.
 echo -e "\033[36mОграничение на размер дампа.\033[0m"
