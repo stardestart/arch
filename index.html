@@ -4673,7 +4673,7 @@ exec --no-startup-id sudo -E usbguard-applet-qt;
 #
 # Автозапуск neofetch и обновления.
 #exec --no-startup-id sh -c 'sleep 10; while [[ -z "$(ls /dev/pts/1)" ]]; do sleep 5; done; sleep 5; sudo rm /var/lib/pacman/db.lck > /dev/pts/1; sudo pacman -Suy --noconfirm > /dev/pts/1; sudo pacman -Sc --noconfirm > /dev/pts/1; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/1;'
-exec --no-startup-id sh -c 'sleep 10; while [[ 1 -ge "$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-1)}'\'')" ]]; do sleep 5; done; sleep 5; pts="$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-2)}'\'')"; neofetch > /dev/pts/$pts; pts="$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-1)}'\'')"; sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; sudo pacman -Suy --noconfirm > /dev/pts/$pts; sudo pacman -Sc --noconfirm > /dev/pts/$pts; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts'
+exec --no-startup-id sh -c 'sleep 10; while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-1)}'\'')" ]]; do sleep 5; done; sleep 5; pts="$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-2)}'\'')"; neofetch > /dev/pts/$pts; pts="$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-1)}'\'')"; sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; sudo pacman -Suy --noconfirm > /dev/pts/$pts; sudo pacman -Sc --noconfirm > /dev/pts/$pts; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts'
 #
 # Автозапуск numlockx.
 exec --no-startup-id numlockx;
