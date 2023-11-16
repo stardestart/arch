@@ -1733,7 +1733,10 @@ GTK_USE_PORTAL=1" >> /etc/environment\047
 #
 #Настройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).
 echo -e "\033[36mНастройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).\033[0m"
-sudo usbguard generate-policy > /etc/usbguard/rules.conf
+su -c \047usbguard generate-policy > /etc/usbguard/rules.conf\047<<EOF
+'$passroot'
+'$passroot'
+EOF
 sudo systemctl enable usbguard
 sudo systemctl start usbguard
 #
