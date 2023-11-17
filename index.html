@@ -2895,7 +2895,7 @@ XDG_VIDEOS_DIR="$HOME/Documents/Videos"
               Настройка usbguard, важный пункт, иначе после перезагрузки ВСЕ usb устройства не будут подключены.
             </p>
             <div class=term>
-              <span class=ps>$:</span> sudo usbguard generate-policy > /etc/usbguard/rules.conf
+              <span class=ps>$:</span> su -c 'usbguard generate-policy > /etc/usbguard/rules.conf'
             </div>
           </li>
           <li>
