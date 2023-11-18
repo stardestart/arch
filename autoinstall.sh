@@ -1646,21 +1646,21 @@ echo -e "\033[36mСоздание скрипта, который после пе
 echo -e '#!/bin/bash
 sleep 10
 nmcli device wifi connect "'"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)"'" password "'"$(grep Passphrase= /var/lib/iwd/"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | sed s/Passphrase=//)"'"
-echo -e "\033[36mЗавершение установки.\033[0m" > /dev/pts/1
+echo -e "\\033[36mЗавершение установки.\\033[0m" > /dev/pts/1
 #
 #Счетчик.
 while [[ -z "$(xwininfo -root -tree | grep -i firefox | grep -i mozilla)" ]]; do
-    echo "\033[31mПродолжение установки!\033[0m" > /dev/pts/1
+    echo "\\033[31mПродолжение установки!\\033[0m" > /dev/pts/1
     sleep 5
 done
 sleep 10
 #
 #Обнаружение кулеров.
-echo -e "\033[36mОбнаружение кулеров.\033[0m"
+echo -e "\\033[36mОбнаружение кулеров.\\033[0m"
 sudo sensors-detect --auto > /dev/pts/1
 #
 #Настройка браузера.
-echo -e "\033[36mНастройка браузера.\033[0m"
+echo -e "\\033[36mНастройка браузера.\\033[0m"
 ls ~/.mozilla/firefox/*.default-release
 echo -e \047user_pref("layout.css.devPixelsPerPx", "'"$fox"'");
 user_pref("accessibility.typeaheadfind", true);
@@ -1670,14 +1670,14 @@ user_pref("browser.startup.page", 3);
 user_pref("browser.download.useDownloadDir", false);\047 > $_/user.js
 #
 #Настройка picom (Автономный композитор для Xorg).
-echo -e "\033[36mНастройка picom (Автономный композитор для Xorg).\033[0m"
+echo -e "\\033[36mНастройка picom (Автономный композитор для Xorg).\\033[0m"
 if [ -n "$(clinfo -l)" ];
     then sed -i \047s/#TechnicalSymbol //\047 ~/.config/picom.conf
     else sed -i \047/#TechnicalSymbol /d\047 ~/.config/picom.conf
 fi
 #
 #Настройка звука.
-echo -e "\033[36mНастройка звука.\033[0m"
+echo -e "\\033[36mНастройка звука.\\033[0m"
 soundmass=($(pacmd list-sinks | grep -i name: | awk \047{print $2}\047))
 for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
             do
@@ -1690,7 +1690,7 @@ amixer -c "$j" sset "HP/Speaker Auto Detect" unmute > /dev/pts/1
 alsactl store
 #
 #Настройка внешнего вида программ.
-echo -e "\033[36mНастройка внешнего вида программ.\033[0m"
+echo -e "\\033[36mНастройка внешнего вида программ.\\033[0m"
 gsettings set org.gnome.desktop.interface icon-theme ePapirus-Dark
 gsettings set org.gnome.desktop.interface font-name \047Fantasque Sans Mono, '"$font"'\047
 gsettings set org.gnome.desktop.interface document-font-name \047Fantasque Sans Mono Bold Italic '"$font"'\047
@@ -1700,7 +1700,7 @@ gsettings set org.gnome.libgnomekbd.indicator font-size '"$font"'
 gsettings set org.gnome.meld custom-font \047monospace, '"$font"'\047
 #
 #Проверка наличия touchpad.
-echo -e "\033[36mПроверка наличия touchpad.\033[0m"
+echo -e "\\033[36mПроверка наличия touchpad.\\033[0m"
 if [ -n "$(xinput list | grep -i touchpad)" ]; then
 sudo pacman -S xf86-input-libinput --noconfirm > /dev/pts/1
 sudo tee -a /etc/X11/xorg.conf.d/00-keyboard.conf <<< \047
@@ -1714,7 +1714,7 @@ EndSection\047
 fi
 #
 #Настройка брандмауэра.
-echo -e "\033[36mНастройка брандмауэра.\033[0m"
+echo -e "\\033[36mНастройка брандмауэра.\\033[0m"
 sudo ufw default deny
 sudo ufw allow from 192.168.0.0/24
 sudo ufw allow Deluge
@@ -1727,12 +1727,12 @@ sudo sed -i \047s/#net\/ipv6\/conf\/default\/forwarding=1/net\/ipv6\/conf\/defau
 sudo sed -i \047s/#net\/ipv6\/conf\/all\/forwarding=1/net\/ipv6\/conf\/all\/forwarding=1/\047 /etc/ufw/sysctl.conf
 #
 #Установка переменных окружения.
-echo -e "\033[36mУстановка переменных окружения.\033[0m"
+echo -e "\\033[36mУстановка переменных окружения.\\033[0m"
 sudo sh -c \047echo "ENABLE_VKBASALT=1
 GTK_USE_PORTAL=1" >> /etc/environment\047
 #
 #Настройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).
-echo -e "\033[36mНастройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).\033[0m"
+echo -e "\\033[36mНастройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).\\033[0m"
 su -c \047usbguard generate-policy > /etc/usbguard/rules.conf\047<<EOF
 '$passroot'
 '$passroot'
@@ -1741,22 +1741,22 @@ sudo systemctl enable usbguard
 sudo systemctl start usbguard
 #
 #Включение службы redshift (Регулирует цветовую температуру вашего экрана).
-echo -e "\033[36mВключение службы redshift (Регулирует цветовую температуру вашего экрана).\033[0m"
+echo -e "\\033[36mВключение службы redshift (Регулирует цветовую температуру вашего экрана).\\033[0m"
 systemctl --user enable redshift-gtk
 systemctl --user start redshift-gtk
 #
 #Настройка wine (Позволяет запускать приложения Windows).
-echo -e "\033[36mНастройка wine (Позволяет запускать приложения Windows).\033[0m"
+echo -e "\\033[36mНастройка wine (Позволяет запускать приложения Windows).\\033[0m"
 WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/1
 #
 #Удаление временных файлов.
-echo -e "\033[36mУдаление временных файлов.\033[0m"
+echo -e "\\033[36mУдаление временных файлов.\\033[0m"
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 sed -i \047s/#TechnicalSymbol//\047 ~/.config/i3/config
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #Передача прав созданному пользователю.
-echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
+echo -e "\033[36mПередача прав созданному пользователю.\\033[0m"
 arch-chroot /mnt chown -R "$username" /home/"$username"/
 #
 #Настройка samba (Стандартный набор программ взаимодействия Windows для Linux и Unix).
