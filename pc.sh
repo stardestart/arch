@@ -318,6 +318,7 @@ pacman-key --populate archlinux
 pacman -Sy reflector --noconfirm
 pacman -Sy glibc --noconfirm
 pacman -Sy lib32-glibc --noconfirm
+pacman -Sy ntfs-3g --noconfirm
 pacman -Sy sad --noconfirm
 pacman -Sy coreutils --noconfirm
 echo -e "Старый список зеркал."
