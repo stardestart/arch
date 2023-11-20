@@ -4165,6 +4165,9 @@ export COLORTERM=truecolor #Включаем все 16 миллионов цве
 [[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
 export QT_QPA_PLATFORMTHEME=gnome #Изменение внешнего вида приложений использующих qt.
 export QT_STYLE_OVERRIDE=adwaita-dark #Использовать Adwaitа в качестве стиля Qt по умолчанию
+export XDG_CURRENT_DESKTOP=gtk
+export XCURSOR_THEME=Adwaita
+export XCURSOR_SIZE=32
 
 
 
@@ -4482,7 +4485,7 @@ xterm*scrollBar: false
 xterm*scrollKey: true
 !
 !Размер курсора.
-Xcursor.size: 36
+Xcursor.size: 32
 Xcursor.theme: Adwaita
 
 
