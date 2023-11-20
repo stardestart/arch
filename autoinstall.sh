@@ -749,7 +749,7 @@ export QT_QPA_PLATFORMTHEME=gnome #Изменение внешнего вида 
 export QT_STYLE_OVERRIDE=adwaita-dark #Использовать Adwaitа в качестве стиля Qt по умолчанию
 export XDG_CURRENT_DESKTOP=gtk
 export XCURSOR_THEME=Adwaita
-export XCURSOR_SIZE=32' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
+export XCURSOR_SIZE=24' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
 #
 #Создание конфига сервера уведомлений.
 echo -e "\033[36mСоздание конфига сервера уведомлений.\033[0m"
@@ -881,7 +881,7 @@ xterm*scrollBar: false
 xterm*scrollKey: true
 !
 !Размер курсора.
-Xcursor.size: 32
+Xcursor.size: 24
 Xcursor.theme: Adwaita' | tee /mnt/home/"$username"/.Xresources /mnt/root/.Xresources
 #
 #Создание директории и конфига i3-wm (Тайловый оконный менеджер).
