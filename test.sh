@@ -508,6 +508,8 @@ for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
             then
                 if [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "vfat" ];
                     then mount -o nodev,noexec,nosuid -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"${massparts[$j]}"
+                    elif [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "ntfs" ];
+                    then mount.ntfs -o nls=utf8,umask=000,dmask=027,fmask=137,uid=1000,gid=1000 "$@" --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"${massparts[$j]}"
                     else mount -o nodev,noexec,nosuid --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"${massparts[$j]}"
                 fi
 masslabel+='
@@ -516,6 +518,8 @@ ${execi 10 sudo smartctl -A /dev/'"${massparts[$j]}"' | grep -i temperature_cels
             else
                 if [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "vfat" ];
                     then mount -o nodev,noexec,nosuid -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
+                    elif [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "ntfs" ];
+                    then mount.ntfs -o nls=utf8,umask=000,dmask=027,fmask=137,uid=1000,gid=1000 "$@" --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
                     else mount -o nodev,noexec,nosuid --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
                 fi
 masslabel+='
