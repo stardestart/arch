@@ -531,7 +531,11 @@ ${execi 10 sudo smartctl -A /dev/'"${massparts[$j]}"' | grep -i temperature_cels
 #
 #Копирование файла автоматического монтирования разделов.
 echo -e "\033[36mКопирование файла автоматического монтирования разделов.\033[0m"
-genfstab -U -p /mnt >> /mnt/etc/fstab
+genfstab -L /mnt >> /mnt/etc/fstab
+#
+#Правка fstab для ntfs.
+echo -e "\033[36mПравка fstab для ntfs.\033[0m"
+sed -i "s/ntfs $PARTITION_COLUMN.*/ntfs-3g       nls=utf8,umask=000,dmask=027,fmask=137,uid=1000,gid=1000       0 0/" /mnt/etc/fstab
 #
 #Создание общего конфига загрузки оконного менеджера.
 echo -e "\033[36mСоздание общего конфига загрузки оконного менеджера.\033[0m"
