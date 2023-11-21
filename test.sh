@@ -320,6 +320,7 @@ pacman -Sy glibc --noconfirm
 pacman -Sy lib32-glibc --noconfirm
 pacman -Sy sad --noconfirm
 pacman -Sy coreutils --noconfirm
+pacman -Sy ntfs-3g --noconfirm
 echo -e "Старый список зеркал."
 cat /etc/pacman.d/mirrorlist
 reflector --latest 20 --protocol https --sort rate --download-timeout 2 --save /etc/pacman.d/mirrorlist
