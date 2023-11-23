@@ -262,6 +262,11 @@ mount -o nodev,nosuid --mkdir /dev/"$sysdisk""$p5" /mnt/var
 mount -o nodev,nosuid --mkdir /dev/"$sysdisk""$p6" /mnt/home
 swapon /dev/"$sysdisk""$p3"
     else
+        massefi=($(efibootmgr | grep -v "\.EFI" | awk '{print $1}' | grep "*" | cut -c 5-8 | xargs))
+for (( j=0, i=1; i<="${#massefi[*]}"; i++, j++ ))
+            do
+                efibootmgr -b "${massefi[$j]}" -B
+            done
         echo -e "\033[36mUEFI boot.\033[0m"
 fdisk /dev/"$sysdisk"<<EOF
 g
