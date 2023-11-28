@@ -371,6 +371,7 @@ arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "$username"
 #Установим дополнительное количество итераций для хеширование паролей.
 sed -i 's/nullok/nullok rounds=500000/' /mnt/etc/pam.d/passwd
 echo "SHA_CRYPT_MIN_ROUNDS 500000" >> /mnt/etc/login.defs
+sed -i "s/UMASK$PARTITION_COLUMN.*/UMASK   027/" /mnt/etc/login.defs
 #
 #Пароль пользователя.
 arch-chroot /mnt passwd "$username"<<EOF
@@ -502,7 +503,7 @@ elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then
 fi
 #Установка компонентов и программ ОС.
 echo -e "\033[36mУстановка компонентов и программ ОС.\033[0m"
-arch-chroot /mnt pacman -Sy xorg-server xorg-xinit xterm i3-wm i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux firefox firefox-i18n-ru firefox-spell-ru firefox-ublock-origin firefox-dark-reader firefox-adblock-plus xdg-desktop-portal-gtk network-manager-applet networkmanager-strongswan wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted gpart exfatprogs archlinux-xdg-menu ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en gimagereader-gtk tesseract-data-rus tesseract-data-eng kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite nss-mdns cups-pk-helper cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau ufw usbguard libpwquality kde-cli-tools ntp xdg-user-dirs geoclue rng-tools lib32-giflib gimp avidemux-qt kdenlive numlockx obs-studio blender transmission-qt discord meld kcolorchooser kontrast dmg2img telegram-desktop --noconfirm
+arch-chroot /mnt pacman -Sy xorg-server xorg-xinit xterm i3-wm i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux arch-audit rkhunter firefox firefox-i18n-ru firefox-spell-ru firefox-ublock-origin firefox-dark-reader firefox-adblock-plus xdg-desktop-portal-gtk network-manager-applet networkmanager-strongswan wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted gpart exfatprogs archlinux-xdg-menu ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en gimagereader-gtk tesseract-data-rus tesseract-data-eng kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite nss-mdns cups-pk-helper cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau ufw usbguard libpwquality kde-cli-tools ntp xdg-user-dirs geoclue rng-tools lib32-giflib gimp avidemux-qt kdenlive numlockx obs-studio blender transmission-qt discord meld kcolorchooser kontrast dmg2img telegram-desktop --noconfirm
 #
 #Поиск не смонтированных разделов, проверка наличия у них метки.
 echo -e "\033[36mПоиск не смонтированных разделов, проверка наличия у них метки.\033[0m"
@@ -703,7 +704,7 @@ echo '[[ $- != *i* ]] && return #Определяем интерактивнос
 alias grep="grep --color=always" #Раскрашиваем grep.
 alias ip="ip --color=always" #Раскрашиваем ip.
 alias diff="diff --color=always" #Раскрашиваем diff.
-alias ls="ls --color" #Раскрашиваем ls.
+alias ls="ls -alh --color" #Раскрашиваем ls.
 alias df="grc --colour=on df" #Раскрашиваем df.
 alias zgrep="grc --colour=on zgrep" #Раскрашиваем zgrep.
 alias cvs="grc --colour=on cvs" #Раскрашиваем cvs.
@@ -748,8 +749,7 @@ PS1="\[\e[48;2;249;43;43m\]\[\e[38;2;43;249;43m\] \$\[\e[48;2;249;249;43m\]\[\e[
 #\[\e[0m\] - Конец изменениям.
 #\[\e[38;2;43;249;43m\] - Зеленый цвет шрифта.
 #\[\e[0m\] - Конец изменениям.
-#Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
-export HISTCONTROL="ignoreboth"
+export HISTCONTROL="ignoreboth" #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
 export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' | tee /mnt/home/"$username"/.bashrc /mnt/root/.bashrc
 #
 #Создание конфига profile (Настройка Xorg).
@@ -1043,7 +1043,10 @@ for_window [class="gogglesmm"] floating enable
 ########### Автозапуск программ ###########
 #
 # Приветствие в течении 10 сек (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id notify-send -te 10000 "✊Доброго времени суток✊" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm.";
+exec --no-startup-id notify-send -te 10000 "☭ Доброго времени суток ☭" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm.";
+#
+# Сканер уязвимостей (--no-startup-id убирает курсор загрузки).
+exec --no-startup-id sh -c \047sudo rkhunter --propupd; sudo rkhunter --update; sudo rkhunter -c --sk --rwo; notify-send -w "✊ Сканер уязвимостей ✊" "$(sudo tail -n 17 /var/log/rkhunter.log)"\047
 #
 # Автозапуск conky.
 exec --no-startup-id conky;
@@ -1086,7 +1089,7 @@ exec --no-startup-id smb4k;
 exec --no-startup-id sudo -E usbguard-applet-qt;
 #
 # Автозапуск neofetch и обновления.
-#TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)" ]]; do sleep 5; done; sleep 5; pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-2)}\047\\\047\047)"; neofetch > /dev/pts/$pts; pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)"; sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; sudo pacman -Suy --noconfirm > /dev/pts/$pts; sudo pacman -Sc --noconfirm > /dev/pts/$pts; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts\047
+#TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)" ]]; do sleep 5; done; sleep 5; pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-2)}\047\\\047\047)"; neofetch > /dev/pts/$pts; arch-audit > /dev/pts/$pts; pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)"; sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; sudo pacman -Suy --noconfirm > /dev/pts/$pts; sudo pacman -Sc --noconfirm > /dev/pts/$pts; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts\047
 #
 # Автозапуск numlockx.
 exec --no-startup-id numlockx;

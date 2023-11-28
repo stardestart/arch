@@ -2722,17 +2722,22 @@ XDG_VIDEOS_DIR="$HOME/Documents/Videos"
               </li>
               <li>
                 <span class=text>
-                  flatpak — Платформа изолированной программной среды и распространения приложений Linux (ранее xdg-app).
-                </span>
-              </li>
-              <li>
-                <span class=text>
                   usbguard — Программная платформа для реализации политик авторизации USB-устройств.
                 </span>
               </li>
               <li>
                 <span class=text>
                   archlinux-xdg-menu — Генерирует меню программ.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  arch-audit — Инструмент проверки уязвимых пакетов в Arch Linux.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  rkhunter — Сканер уязвимостей.
                 </span>
               </li>
               <li>
@@ -2892,7 +2897,7 @@ XDG_VIDEOS_DIR="$HOME/Documents/Videos"
               </li>
             </ul>
             <div class=term>
-              <span class=ps>$:</span> sudo pacman -S firefox-i18n-ru firefox-spell-ru numlockx gparted gpart kwalletmanager kwallet-pam ark mc htop conky polkit dmg2img network-manager-applet rng-tools dbus-broker acpid giflib lib32-giflib perl-anyevent-i3 perl-json-xs flatpak usbguard archlinux-xdg-menu x11vnc neofetch aspell nuspell aspell-en aspell-ru ethtool hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en gimagereader-gtk tesseract-data-rus tesseract-data-eng xdg-desktop-portal-gtk networkmanager-strongswan wireless_tools krdc clinfo autocutsel openssh haveged unzip smartmontools nss-mdns ufw libpwquality ntp xdg-user-dirs
+              <span class=ps>$:</span> sudo pacman -S firefox-i18n-ru firefox-spell-ru numlockx gparted gpart kwalletmanager kwallet-pam ark mc htop conky polkit dmg2img network-manager-applet rng-tools dbus-broker acpid giflib lib32-giflib perl-anyevent-i3 perl-json-xs usbguard archlinux-xdg-menu arch-audit rkhunter x11vnc neofetch aspell nuspell aspell-en aspell-ru ethtool hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en gimagereader-gtk tesseract-data-rus tesseract-data-eng xdg-desktop-portal-gtk networkmanager-strongswan wireless_tools krdc clinfo autocutsel openssh haveged unzip smartmontools nss-mdns ufw libpwquality ntp xdg-user-dirs
             </div>
           </li>
           <li>
@@ -4051,7 +4056,7 @@ default=gtk
 alias grep="grep --color=always" #Раскрашиваем grep.
 alias ip="ip --color=always" #Раскрашиваем ip.
 alias diff="diff --color=always" #Раскрашиваем diff.
-alias ls="ls --color" #Раскрашиваем ls.
+alias ls="ls -alh --color" #Раскрашиваем ls.
 alias df="grc --colour=on df" #Раскрашиваем df.
 alias zgrep="grc --colour=on zgrep" #Раскрашиваем zgrep.
 alias cvs="grc --colour=on cvs" #Раскрашиваем cvs.
@@ -4096,8 +4101,7 @@ PS1="\[\e[48;2;249;43;43m\]\[\e[38;2;43;249;43m\] \$\[\e[48;2;249;249;43m\]\[\e[
 #\[\e[0m\] - Конец изменениям.
 #\[\e[38;2;43;249;43m\] - Зеленый цвет шрифта.
 #\[\e[0m\] - Конец изменениям.
-#Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
-export HISTCONTROL="ignoreboth"
+export HISTCONTROL="ignoreboth" #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
 export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.
 
 
@@ -4702,7 +4706,10 @@ for_window [class="gogglesmm"] floating enable
 ########### Автозапуск программ ###########
 #
 # Приветствие в течении 10 сек (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id notify-send -te 10000 "✊Доброго времени суток✊" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm.";
+exec --no-startup-id notify-send -te 10000 "☭  Доброго времени суток ☭" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm.";
+#
+# Сканер уязвимостей (--no-startup-id убирает курсор загрузки).
+exec --no-startup-id sh -c 'sudo rkhunter --propupd; sudo rkhunter --update; sudo rkhunter -c --sk --rwo; notify-send -w "✊ Сканер уязвимостей ✊" "$(sudo tail -n 17 /var/log/rkhunter.log)"'
 #
 # Автозапуск conky.
 exec --no-startup-id conky;
@@ -4746,7 +4753,7 @@ exec --no-startup-id sudo -E usbguard-applet-qt;
 #
 # Автозапуск neofetch и обновления.
 #exec --no-startup-id sh -c 'sleep 10; while [[ -z "$(ls /dev/pts/1)" ]]; do sleep 5; done; sleep 5; sudo rm /var/lib/pacman/db.lck > /dev/pts/1; sudo pacman -Suy --noconfirm > /dev/pts/1; sudo pacman -Sc --noconfirm > /dev/pts/1; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/1;'
-exec --no-startup-id sh -c 'sleep 10; while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-1)}'\'')" ]]; do sleep 5; done; sleep 5; pts="$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-2)}'\'')"; neofetch > /dev/pts/$pts; pts="$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-1)}'\'')"; sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; sudo pacman -Suy --noconfirm > /dev/pts/$pts; sudo pacman -Sc --noconfirm > /dev/pts/$pts; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts'
+exec --no-startup-id sh -c 'sleep 10; while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-1)}'\'')" ]]; do sleep 5; done; sleep 5; pts="$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-2)}'\'')"; neofetch > /dev/pts/$pts; arch-audit > /dev/pts/$pts; pts="$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-1)}'\'')"; sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; sudo pacman -Suy --noconfirm > /dev/pts/$pts; sudo pacman -Sc --noconfirm > /dev/pts/$pts; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts'
 #
 # Автозапуск numlockx.
 exec --no-startup-id numlockx;
@@ -6611,6 +6618,73 @@ Win+Alt-left+1 -- Восстановление рабочего стола №1.
 ...
 ...
 ...
+</pre>
+          <table>
+            <tr>
+              <td colspan="18">
+                <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+              </td>
+            </tr>
+            <tr>
+              <td><span class=nanocomm>Ctrl+G</span></td>
+              <td>Справка</td>
+              <td><span class=nanocomm>Ctrl+O</span></td>
+              <td>Записать</td>
+              <td><span class=nanocomm>Ctrl+W</span></td>
+              <td>Поиск</td>
+              <td><span class=nanocomm>Ctrl+K</span></td>
+              <td>Вырезать</td>
+              <td><span class=nanocomm>Ctrl+T</span></td>
+              <td>Выполнить</td>
+              <td><span class=nanocomm>Ctrl+C</span></td>
+              <td>Позиция</td>
+              <td><span class=nanocomm>Esc+U</span></td>
+              <td>Отмена</td>
+              <td><span class=nanocomm>Esc+A</span></td>
+              <td>Установить</td>
+              <td><span class=nanocomm>Esc+]</span></td>
+              <td>На скобку</td>
+            </tr>
+            <tr>
+              <td><span class=nanocomm>Ctrl+X</span></td>
+              <td>Выход</td>
+              <td><span class=nanocomm>Ctrl+R</span></td>
+              <td>ЧитФайл</td>
+              <td><span class=nanocomm>Ctrl+\</span></td>
+              <td>Замена</td>
+              <td><span class=nanocomm>Ctrl+U</span></td>
+              <td>Вставить</td>
+              <td><span class=nanocomm>Ctrl+J</span></td>
+              <td>Выровнять</td>
+              <td><span class=nanocomm>Ctrl+/</span></td>
+              <td>К строке</td>
+              <td><span class=nanocomm>Esc+E</span></td>
+              <td>Повтор</td>
+              <td><span class=nanocomm>Esc+6</span></td>
+              <td>Копировать</td>
+              <td><span class=nanocomm>Ctrl+Q</span></td>
+              <td>Обр. поиск</td>
+            </tr>
+          </table>
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Настройка сканера уязвимостей.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span> sudo nano /etc/rkhunter.conf
+        </div>
+        <div class=nano>
+          <pre class=pre>
+SCRIPTWHITELIST=/usr/bin/egrep
+SCRIPTWHITELIST=/usr/bin/fgrep
+SCRIPTWHITELIST=/usr/bin/ldd
+SCRIPTWHITELIST=/usr/bin/vendor_perl/GET
+
+
+
+
 </pre>
           <table>
             <tr>
