@@ -1167,7 +1167,7 @@ bar {
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
 }
 exec --no-startup-id firefox; #TechnicalString
-exec --no-startup-id sh -c "~/archinstall.sh; > /dev/pts/1;" #TechnicalString' > /mnt/home/"$username"/.config/i3/config
+exec --no-startup-id sh -c \047sleep 10; ~/archinstall.sh > /dev/pts/1\047 #TechnicalString' > /mnt/home/"$username"/.config/i3/config
 #
 #Создание конфига i3status (Панель рабочего стола i3-wm (Тайловый оконный менеджер)).
 echo -e "\033[36mСоздание конфига i3status (Панель рабочего стола i3-wm (Тайловый оконный менеджер)).\033[0m"
@@ -1785,7 +1785,8 @@ sudo debtap -u
 #
 #Настройка wine (Позволяет запускать приложения Windows).
 echo -e "\\033[36mНастройка wine (Позволяет запускать приложения Windows).\\033[0m"
-WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs
+WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140
+winetricks dxvk dotnet48 allcodecs
 #
 #Удаление временных файлов.
 echo -e "\\033[36mУдаление временных файлов.\\033[0m"

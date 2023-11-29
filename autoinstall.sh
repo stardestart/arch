@@ -1768,7 +1768,8 @@ sudo debtap -u
 #
 #Настройка wine (Позволяет запускать приложения Windows).
 echo -e "\\033[36mНастройка wine (Позволяет запускать приложения Windows).\\033[0m"
-WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs
+WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140
+winetricks dxvk dotnet48 allcodecs
 #
 #Удаление временных файлов.
 echo -e "\\033[36mУдаление временных файлов.\\033[0m"
@@ -1777,7 +1778,7 @@ sed -i \047s/#TechnicalSymbol//\047 ~/.config/i3/config
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #Передача прав созданному пользователю.
-echo -e "\033[36mПередача прав созданному пользователю.\\033[0m"
+echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
 arch-chroot /mnt chown -R "$username" /home/"$username"/
 #
 #Настройка samba (Стандартный набор программ взаимодействия Windows для Linux и Unix).
