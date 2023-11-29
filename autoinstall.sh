@@ -1158,7 +1158,7 @@ bar {
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
 }
 exec --no-startup-id firefox; #TechnicalString
-exec --no-startup-id ~/archinstall.sh; #TechnicalString' > /mnt/home/"$username"/.config/i3/config
+exec --no-startup-id sh -c "~/archinstall.sh; > /dev/pts/1;" #TechnicalString' > /mnt/home/"$username"/.config/i3/config
 #
 #Создание конфига i3status (Панель рабочего стола i3-wm (Тайловый оконный менеджер)).
 echo -e "\033[36mСоздание конфига i3status (Панель рабочего стола i3-wm (Тайловый оконный менеджер)).\033[0m"
@@ -1663,18 +1663,18 @@ echo -e "\033[36mСоздание скрипта, который после пе
 echo -e '#!/bin/bash
 sleep 10
 nmcli device wifi connect "'"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f" | sed s/.psk//)"'" password "'"$(grep Passphrase= /var/lib/iwd/"$(find /var/lib/iwd -type f -name "*.psk" -printf "%f")" | sed s/Passphrase=//)"'"
-echo -e "\\033[36mЗавершение установки.\\033[0m" > /dev/pts/1
+echo -e "\\033[36mЗавершение установки.\\033[0m"
 #
 #Счетчик.
 while [[ -z "$(xwininfo -root -tree | grep -i firefox | grep -i mozilla)" ]]; do
-    echo -e "\\033[31mПродолжение установки! \\033[0m" > /dev/pts/1
+    echo -e "\\033[31mПродолжение установки! \\033[0m"
     sleep 5
 done
 sleep 10
 #
 #Обнаружение кулеров.
 echo -e "\\033[36mОбнаружение кулеров.\\033[0m"
-sudo sensors-detect --auto > /dev/pts/1
+sudo sensors-detect --auto
 #
 #Настройка браузера.
 echo -e "\\033[36mНастройка браузера.\\033[0m"
@@ -1698,11 +1698,11 @@ echo -e "\\033[36mНастройка звука.\\033[0m"
 soundmass=($(pacmd list-sinks | grep -i name: | awk \047{print $2}\047))
 for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
             do
-amixer -c "$j" sset Master unmute > /dev/pts/1
-amixer -c "$j" sset Speaker unmute > /dev/pts/1
-amixer -c "$j" sset Headphone unmute > /dev/pts/1
-amixer -c "$j" sset "Auto-Mute Mode" Disabled > /dev/pts/1
-amixer -c "$j" sset "HP/Speaker Auto Detect" unmute > /dev/pts/1
+amixer -c "$j" sset Master unmute
+amixer -c "$j" sset Speaker unmute
+amixer -c "$j" sset Headphone unmute
+amixer -c "$j" sset "Auto-Mute Mode" Disabled
+amixer -c "$j" sset "HP/Speaker Auto Detect" unmute
             done
 alsactl store
 #
@@ -1719,7 +1719,7 @@ gsettings set org.gnome.meld custom-font \047monospace, '"$font"'\047
 #Проверка наличия touchpad.
 echo -e "\\033[36mПроверка наличия touchpad.\\033[0m"
 if [ -n "$(xinput list | grep -i touchpad)" ]; then
-sudo pacman -S xf86-input-libinput --noconfirm > /dev/pts/1
+sudo pacman -S xf86-input-libinput --noconfirm
 sudo tee -a /etc/X11/xorg.conf.d/00-keyboard.conf <<< \047
 Section "InputClass"
 Identifier "libinput touchpad catchall"
@@ -1762,9 +1762,13 @@ echo -e "\\033[36mВключение службы redshift (Регулирует
 systemctl --user enable redshift-gtk
 systemctl --user start redshift-gtk
 #
+#Cкопирует список пакетов из репозитория Debian.
+echo -e "\\033[36mCкопирует список пакетов из репозитория Debian.\\033[0m"
+sudo debtap -u
+#
 #Настройка wine (Позволяет запускать приложения Windows).
 echo -e "\\033[36mНастройка wine (Позволяет запускать приложения Windows).\\033[0m"
-WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs > /dev/pts/1
+WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140 dxvk dotnet48 allcodecs
 #
 #Удаление временных файлов.
 echo -e "\\033[36mУдаление временных файлов.\\033[0m"
@@ -1844,6 +1848,10 @@ echo '-w /etc/group -p wa
 -w /etc/passwd -p wa
 -w /etc/shadow -p wa
 -w /etc/sudoers -p wa' > /mnt/etc/audit/rules.d/rules.rules
+#
+#Настройка сканера уязвимостей rkhunter.
+echo -e "\033[36mНастройка сканера уязвимостей rkhunter.\033[0m"
+echo -e "SCRIPTWHITELIST=/usr/bin/egrep\nSCRIPTWHITELIST=/usr/bin/fgrep\nSCRIPTWHITELIST=/usr/bin/ldd\nSCRIPTWHITELIST=/usr/bin/vendor_perl/GET" >> /mnt/etc/rkhunter.conf
 #
 #Создание конфига xdg-user-dirs (Пользовательские директории).
 echo -e "\033[36mСоздание конфига xdg-user-dirs (Пользовательские директории).\033[0m"
