@@ -1167,7 +1167,7 @@ bar {
          bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
 }
 exec --no-startup-id firefox; #TechnicalString
-exec --no-startup-id sh -c "~/archinstall.sh > /dev/pts/1;" #TechnicalString' > /mnt/home/"$username"/.config/i3/config
+exec --no-startup-id sh -c \047sleep 10; ~/archinstall.sh > /dev/pts/1\047 #TechnicalString' > /mnt/home/"$username"/.config/i3/config
 #
 #Создание конфига i3status (Панель рабочего стола i3-wm (Тайловый оконный менеджер)).
 echo -e "\033[36mСоздание конфига i3status (Панель рабочего стола i3-wm (Тайловый оконный менеджер)).\033[0m"
