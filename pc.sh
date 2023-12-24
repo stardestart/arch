@@ -503,7 +503,7 @@ elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then
 fi
 #Установка компонентов и программ ОС.
 echo -e "\033[36mУстановка компонентов и программ ОС.\033[0m"
-arch-chroot /mnt pacman -Sy xorg-server xorg-xinit xterm i3-wm i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux arch-audit rkhunter firefox firefox-i18n-ru firefox-spell-ru firefox-ublock-origin firefox-dark-reader firefox-adblock-plus xdg-desktop-portal-gtk network-manager-applet networkmanager-strongswan wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano dhcpcd imagemagick acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted gpart exfatprogs archlinux-xdg-menu ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en gimagereader-gtk tesseract-data-rus tesseract-data-eng kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite nss-mdns cups-pk-helper cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau ufw usbguard libpwquality kde-cli-tools ntp xdg-user-dirs geoclue rng-tools lib32-giflib gimp avidemux-qt kdenlive numlockx obs-studio blender transmission-qt discord meld kcolorchooser kontrast dmg2img telegram-desktop --noconfirm
+arch-chroot /mnt pacman -Sy xorg-server xorg-xinit xterm i3-wm i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux arch-audit rkhunter firefox firefox-i18n-ru firefox-spell-ru firefox-ublock-origin firefox-dark-reader firefox-adblock-plus xdg-desktop-portal-gtk network-manager-applet networkmanager-strongswan wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano nano-syntax-highlighting dhcpcd imagemagick acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted gpart exfatprogs archlinux-xdg-menu ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en gimagereader-gtk tesseract-data-rus tesseract-data-eng kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite nss-mdns cups-pk-helper cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau ufw usbguard libpwquality kde-cli-tools ntp xdg-user-dirs geoclue rng-tools lib32-giflib gimp avidemux-qt kdenlive numlockx obs-studio blender transmission-qt discord meld kcolorchooser kontrast dmg2img telegram-desktop --noconfirm
 #
 #Поиск не смонтированных разделов, проверка наличия у них метки.
 echo -e "\033[36mПоиск не смонтированных разделов, проверка наличия у них метки.\033[0m"
@@ -767,7 +767,7 @@ echo '[global]
     gap_size = '"$font"'
     enable_posix_regex = true
     enable_recursive_icon_lookup = true
-    icon_theme = ePapirus-Dark
+    icon_theme = Papirus-Dark
 [urgency_low]
     background = "#2b2b2b"
     foreground = "#b2b2b2"
@@ -1378,12 +1378,12 @@ echo '[Settings]
 gtk-application-prefer-dark-theme=true
 gtk-cursor-theme-name=Adwaita
 gtk-font-name=Fantasque Sans Mono Bold Italic '"$font"'
-gtk-icon-theme-name=ePapirus-Dark
+gtk-icon-theme-name=Papirus-Dark
 gtk-theme-name=Adwaita-dark' | tee /mnt/home/"$username"/.config/gtk-3.0/settings.ini /mnt/home/"$username"/.config/gtk-4.0/settings.ini /mnt/root/.config/gtk-3.0/settings.ini /mnt/root/.config/gtk-4.0/settings.ini
 echo 'gtk-application-prefer-dark-theme="true"
 gtk-cursor-theme-name="Adwaita"
 gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'"
-gtk-icon-theme-name="ePapirus-Dark"
+gtk-icon-theme-name="Papirus-Dark"
 gtk-theme-name="Adwaita-dark"' > /mnt/usr/share/gtk-2.0/gtkrc
 #
 #Создание директории и конфига lxqt-panel (Панель рабочего стола LXQt).
@@ -1391,7 +1391,7 @@ echo -e "\033[36mСоздание конфига lxqt-panel (Панель раб
 mkdir -p /mnt/home/"$username"/.config/lxqt
 echo '[General]
 __userfile__=true
-iconTheme=ePapirus-Dark
+iconTheme=Papirus-Dark
 [customcommand]
 alignment=Right
 click="sh -c \"x=pidof picom; if [ -n x ]; then killall picom; else picom -b; fi\""
@@ -1439,7 +1439,7 @@ type=kbindicator
 [mainmenu]
 alignment=Left
 filterClear=true
-icon=/usr/share/icons/ePapirus-Dark/16x16/apps/distributor-logo-archlinux.svg
+icon=/usr/share/icons/Papirus-Dark/16x16/apps/distributor-logo-archlinux.svg
 menu_file=/etc/xdg/menus/arch-applications.menu
 ownIcon=true
 showText=false
@@ -1559,6 +1559,18 @@ ForceSmb1Protocol=true
 PreviewHiddenItems=true
 [UserInterface]
 StartMainWindowDocked=true' >> /mnt/home/"$username"/.config/smb4krc
+#
+#Редактирование конфига nanorc.
+echo -e "\033[36mРедактирование конфига nanorc.\033[0m"
+echo 'include "/usr/share/nano-syntax-highlighting/*.nanorc"' >> /mnt/etc/nanorc
+sed -i 's/# set autoindent/set autoindent/' /mnt/etc/nanorc
+sed -i 's/# set linenumbers/set linenumbers/' /mnt/etc/nanorc
+sed -i 's/# set minibar/set minibar/' /mnt/etc/nanorc
+sed -i 's/# set positionlog/set positionlog/' /mnt/etc/nanorc
+sed -i 's/# set softwrap/set softwrap/' /mnt/etc/nanorc
+sed -i 's/# set tabsize 8/set tabsize 4/' /mnt/etc/nanorc
+sed -i 's/# set tabstospaces/set tabstospaces/' /mnt/etc/nanorc
+sed -i 's/# set titlecolor bold,white,blue/set titlecolor bold,white,blue/' /mnt/etc/nanorc
 #
 #Установка шрифтов.
 echo -e "\033[36mУстановка шрифтов.\033[0m"
@@ -1724,7 +1736,7 @@ alsactl store
 #
 #Настройка внешнего вида программ.
 echo -e "\\033[36mНастройка внешнего вида программ.\\033[0m"
-gsettings set org.gnome.desktop.interface icon-theme ePapirus-Dark
+gsettings set org.gnome.desktop.interface icon-theme Papirus-Dark
 gsettings set org.gnome.desktop.interface font-name \047Fantasque Sans Mono, '"$font"'\047
 gsettings set org.gnome.desktop.interface document-font-name \047Fantasque Sans Mono Bold Italic '"$font"'\047
 gsettings set org.gnome.desktop.interface monospace-font-name \047Fantasque Sans Mono '"$font"'\047
