@@ -2190,6 +2190,7 @@ fi
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
 feh --bg-max --randomize --no-fehbg /usr/share/backgrounds/archlinux/ & #Автозапуск обоев рабочего стола.
 xautolock -time 50 -locker "systemctl hibernate" -notify 1800 -notifier "xlock -mode matrix -delay 10000 -echokeys -echokey '*'" -detectsleep -noclose & #Автозапуск заставки.
+canberra-gtk-play -i service-login & #Воспроизвести звуковое событие "Вход в систему".
 exec i3 #Автозапуск i3.
 
 
@@ -4329,6 +4330,7 @@ export XCURSOR_SIZE=24
     enable_posix_regex = true
     enable_recursive_icon_lookup = true
     icon_theme = ePapirus-Dark
+    script = ~/.config/notify_sound.sh
 [urgency_low]
     background = "#2b2b2b"
     foreground = "#b2b2b2"
@@ -4341,7 +4343,6 @@ export XCURSOR_SIZE=24
     background = "#2b2b2b"
     foreground = "#f92b2b"
     timeout = 0
-
 
 
 
@@ -4394,6 +4395,74 @@ export XCURSOR_SIZE=24
               <td>Обр. поиск</td>
             </tr>
           </table>
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Создаем аудиоконфиг сервера уведомлений.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span> nano ~/.config/notify_sound.sh
+        </div>
+        <div class=nano>
+          <pre class=pre>
+#!/bin/bash
+canberra-gtk-play -i message
+
+
+
+
+</pre>
+          <table>
+            <tr>
+              <td colspan="18">
+                <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+              </td>
+            </tr>
+            <tr>
+              <td><span class=nanocomm>Ctrl+G</span></td>
+              <td>Справка</td>
+              <td><span class=nanocomm>Ctrl+O</span></td>
+              <td>Записать</td>
+              <td><span class=nanocomm>Ctrl+W</span></td>
+              <td>Поиск</td>
+              <td><span class=nanocomm>Ctrl+K</span></td>
+              <td>Вырезать</td>
+              <td><span class=nanocomm>Ctrl+T</span></td>
+              <td>Выполнить</td>
+              <td><span class=nanocomm>Ctrl+C</span></td>
+              <td>Позиция</td>
+              <td><span class=nanocomm>Esc+U</span></td>
+              <td>Отмена</td>
+              <td><span class=nanocomm>Esc+A</span></td>
+              <td>Установить</td>
+              <td><span class=nanocomm>Esc+]</span></td>
+              <td>На скобку</td>
+            </tr>
+            <tr>
+              <td><span class=nanocomm>Ctrl+X</span></td>
+              <td>Выход</td>
+              <td><span class=nanocomm>Ctrl+R</span></td>
+              <td>ЧитФайл</td>
+              <td><span class=nanocomm>Ctrl+\</span></td>
+              <td>Замена</td>
+              <td><span class=nanocomm>Ctrl+U</span></td>
+              <td>Вставить</td>
+              <td><span class=nanocomm>Ctrl+J</span></td>
+              <td>Выровнять</td>
+              <td><span class=nanocomm>Ctrl+/</span></td>
+              <td>К строке</td>
+              <td><span class=nanocomm>Esc+E</span></td>
+              <td>Повтор</td>
+              <td><span class=nanocomm>Esc+6</span></td>
+              <td>Копировать</td>
+              <td><span class=nanocomm>Ctrl+Q</span></td>
+              <td>Обр. поиск</td>
+            </tr>
+          </table>
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> chmod +x ~/.config/notify_sound.sh
         </div>
       </li>
       <li>
@@ -4735,7 +4804,7 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 #
 # Выход из i3 (выходит из сеанса X).
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Вы действительно хотите выйти из i3? Это завершит вашу сессию X.' -b 'Да, выйти из i3' 'i3-msg exit'"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Вы действительно хотите выйти из i3? Это завершит вашу сессию X.' -b 'Да, выйти из i3' 'canberra-gtk-play -i service-logout; i3-msg exit'"
 #
 # Войти в режим изменения размеров окон.
 bindsym $mod+r mode "resize"
@@ -5873,7 +5942,7 @@ type=customcommand
 
 [customcommand4]
 alignment=Right
-click="sh -c \"i3-nagbar -t warning -m '\x412\x44b \x434\x435\x439\x441\x442\x432\x438\x442\x435\x43b\x44c\x43d\x43e \x445\x43e\x442\x438\x442\x435 \x432\x44b\x439\x442\x438 \x438\x437 i3? \x42d\x442\x43e \x437\x430\x432\x435\x440\x448\x438\x442 \x432\x430\x448\x443 \x441\x435\x441\x441\x438\x44e X.' -b '\x414\x430, \x432\x44b\x439\x442\x438 \x438\x437 i3' 'i3-msg exit'\""
+click="sh -c \"i3-nagbar -t warning -m '\x412\x44b \x434\x435\x439\x441\x442\x432\x438\x442\x435\x43b\x44c\x43d\x43e \x445\x43e\x442\x438\x442\x435 \x432\x44b\x439\x442\x438 \x438\x437 i3? \x42d\x442\x43e \x437\x430\x432\x435\x440\x448\x438\x442 \x432\x430\x448\x443 \x441\x435\x441\x441\x438\x44e X.' -b '\x414\x430, \x432\x44b\x439\x442\x438 \x438\x437 i3' 'canberra-gtk-play -i service-logout; i3-msg exit'\""
 command=echo \x2716
 maxWidth=36
 type=customcommand

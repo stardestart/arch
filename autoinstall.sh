@@ -569,6 +569,7 @@ fi
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
 feh --bg-max --randomize --no-fehbg /usr/share/backgrounds/archlinux/ & #Автозапуск обоев рабочего стола.
 xautolock -time 50 -locker "systemctl hibernate" -notify 1800 -notifier "xlock -mode matrix -delay 10000 -echokeys -echokey \047*\047" -detectsleep -noclose & #Автозапуск заставки.
+canberra-gtk-play -i service-login & #Воспроизвести звуковое событие "Вход в систему".
 exec i3 #Автозапуск i3.' | tee /mnt/home/"$username"/.xinitrc /mnt/root/.xinitrc
 #
 #Создание общего конфига клавиатуры.
@@ -768,6 +769,7 @@ echo '[global]
     enable_posix_regex = true
     enable_recursive_icon_lookup = true
     icon_theme = Papirus-Dark
+    script = ~/.config/notify_sound.sh
 [urgency_low]
     background = "#2b2b2b"
     foreground = "#b2b2b2"
@@ -780,6 +782,11 @@ echo '[global]
     background = "#2b2b2b"
     foreground = "#f92b2b"
     timeout = 0' > /mnt/etc/dunst/dunstrc
+#
+#Создание аудиоконфига сервера уведомлений.
+echo -e "\033[36mСоздание аудиоконфига сервера уведомлений.\033[0m"
+echo '#!/bin/bash
+canberra-gtk-play -i message' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
 #
 #Создание конфига picom (Автономный композитор для Xorg).
 echo -e "\033[36mСоздание конфига picom (Автономный композитор для Xorg).\033[0m"
@@ -983,7 +990,7 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 #
 # Выход из i3 (выходит из сеанса X).
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -b \047Да, выйти из i3\047 \047i3-msg exit\047"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -b \047Да, выйти из i3\047 \047canberra-gtk-play -i service-logout; i3-msg exit\047"
 #
 # Войти в режим изменения размеров окон.
 bindsym $mod+r mode "resize"
@@ -1403,7 +1410,7 @@ maxWidth='"$(($font*3))"'
 type=customcommand
 [customcommand4]
 alignment=Right
-click="sh -c \"i3-nagbar -t warning -m \047\x412\x44b \x434\x435\x439\x441\x442\x432\x438\x442\x435\x43b\x44c\x43d\x43e \x445\x43e\x442\x438\x442\x435 \x432\x44b\x439\x442\x438 \x438\x437 i3? \x42d\x442\x43e \x437\x430\x432\x435\x440\x448\x438\x442 \x432\x430\x448\x443 \x441\x435\x441\x441\x438\x44e X.\047 -b \047\x414\x430, \x432\x44b\x439\x442\x438 \x438\x437 i3\047 \047i3-msg exit\047\""
+click="sh -c \"i3-nagbar -t warning -m \047\x412\x44b \x434\x435\x439\x441\x442\x432\x438\x442\x435\x43b\x44c\x43d\x43e \x445\x43e\x442\x438\x442\x435 \x432\x44b\x439\x442\x438 \x438\x437 i3? \x42d\x442\x43e \x437\x430\x432\x435\x440\x448\x438\x442 \x432\x430\x448\x443 \x441\x435\x441\x441\x438\x44e X.\047 -b \047\x414\x430, \x432\x44b\x439\x442\x438 \x438\x437 i3\047 \047canberra-gtk-play -i service-logout; i3-msg exit\047\""
 command=echo \x2716
 maxWidth='"$(($font*3))"'
 type=customcommand
@@ -1849,7 +1856,7 @@ esac' > /mnt/etc/NetworkManager/dispatcher.d/09-timezone
 #
 #Делаем xinitrc, 09-timezone и archinstall.sh исполняемыми.
 echo -e "\033[36mДелаем xinitrc, 09-timezone и archinstall.sh исполняемыми.\033[0m"
-chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh /mnt/root/.xinitrc
+chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh /mnt/root/.xinitrc /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
 #
 #Удаленное включение компьютера с помощью Wake-on-LAN (WOL).
 echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"
