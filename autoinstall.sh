@@ -503,7 +503,7 @@ elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then
 fi
 #Установка компонентов и программ ОС.
 echo -e "\033[36mУстановка компонентов и программ ОС.\033[0m"
-arch-chroot /mnt pacman -Sy xorg-server xorg-xinit xterm i3-wm i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux arch-audit rkhunter firefox firefox-i18n-ru firefox-spell-ru firefox-ublock-origin firefox-dark-reader firefox-adblock-plus xdg-desktop-portal-gtk network-manager-applet networkmanager-strongswan wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano nano-syntax-highlighting dhcpcd imagemagick acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted gpart exfatprogs archlinux-xdg-menu ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en gimagereader-gtk tesseract-data-rus tesseract-data-eng kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite nss-mdns cups-pk-helper cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau ufw usbguard libpwquality kde-cli-tools ntp xdg-user-dirs geoclue rng-tools lib32-giflib gimp avidemux-qt kdenlive numlockx --noconfirm
+arch-chroot /mnt pacman -Sy xorg-server xorg-xinit xterm i3-wm i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux arch-audit rkhunter firefox firefox-i18n-ru firefox-spell-ru firefox-ublock-origin firefox-dark-reader firefox-adblock-plus thunderbird thunderbird-i18n-ru xdg-desktop-portal-gtk network-manager-applet networkmanager-strongswan wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano nano-syntax-highlighting dhcpcd imagemagick acpid clinfo avahi reflector go libnotify autocutsel openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted gpart exfatprogs archlinux-xdg-menu ark ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst gnome-themes-extra archlinux-wallpaper feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt libcanberra lib32-libcanberra sound-theme-freedesktop xbindkeys aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en gimagereader-gtk tesseract-data-rus tesseract-data-eng kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite nss-mdns cups-pk-helper cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-devel mesa lib32-mesa libva-mesa-driver mesa-vdpau ufw usbguard libpwquality kde-cli-tools ntp xdg-user-dirs geoclue rng-tools lib32-giflib gimp avidemux-qt kdenlive numlockx --noconfirm
 #
 #Поиск не смонтированных разделов, проверка наличия у них метки.
 echo -e "\033[36mПоиск не смонтированных разделов, проверка наличия у них метки.\033[0m"
@@ -786,7 +786,16 @@ echo '[global]
 #Создание аудиоконфига сервера уведомлений.
 echo -e "\033[36mСоздание аудиоконфига сервера уведомлений.\033[0m"
 echo '#!/bin/bash
-canberra-gtk-play -i message' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
+if [ -n "$(echo $@ | grep pa-notify)" ]; then
+    canberra-gtk-play -i audio-volume-change;
+    elif [ -n "$(echo $@ | grep nm-no-connection)" ]; then
+        canberra-gtk-play -i network-connectivity-lost;
+    elif [ -n "$(echo $@ | grep nm-device)" ]; then
+        canberra-gtk-play -i network-connectivity-established;
+    elif [ -n "$(echo $@ | grep -i critical)" ]; then
+        canberra-gtk-play -i window-attention;
+    else canberra-gtk-play -i message;
+fi' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
 #
 #Создание конфига picom (Автономный композитор для Xorg).
 echo -e "\033[36mСоздание конфига picom (Автономный композитор для Xorg).\033[0m"
@@ -1050,10 +1059,10 @@ for_window [class="gogglesmm"] floating enable
 ########### Автозапуск программ ###########
 #
 # Приветствие в течении 10 сек (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id notify-send -te 10000 "☭ Доброго времени суток ☭" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm.";
+exec --no-startup-id notify-send -te 10000 -i user-red-home "☭ Доброго времени суток ☭" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm.";
 #
 # Сканер уязвимостей (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id sh -c \047sudo rkhunter --propupd; sudo rkhunter --update; sudo rkhunter -c --sk --rwo; notify-send -w "✊ Сканер уязвимостей ✊" "$(sudo tail -n 17 /var/log/rkhunter.log)"\047
+exec --no-startup-id sh -c \047sudo rkhunter --propupd; sudo rkhunter --update; sudo rkhunter -c --sk --rwo; notify-send -u critical "✊ Сканер уязвимостей ✊" "$(sudo tail -n 17 /var/log/rkhunter.log)"\047
 #
 # Автозапуск conky.
 exec --no-startup-id conky;
@@ -1094,6 +1103,12 @@ exec --no-startup-id smb4k;
 #
 # Автозапуск usbguard.
 exec --no-startup-id sudo -E usbguard-applet-qt;
+#
+# Автозапуск xbindkeys.
+exec --no-startup-id xbindkeys;
+#
+# Автозапуск pa-notify.
+exec --no-startup-id pa-notify;
 #
 # Автозапуск neofetch и обновления.
 #TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)" ]]; do sleep 5; done; sleep 5; pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-2)}\047\\\047\047)"; neofetch > /dev/pts/$pts; arch-audit > /dev/pts/$pts; pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)"; sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; sudo pacman -Suy --noconfirm > /dev/pts/$pts; sudo pacman -Sc --noconfirm > /dev/pts/$pts; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts\047
@@ -1558,6 +1573,27 @@ PreviewHiddenItems=true
 [UserInterface]
 StartMainWindowDocked=true' >> /mnt/home/"$username"/.config/smb4krc
 #
+#Создание общего конфига xbindkeys (Настройка мультимедийных клавиш).
+echo -e "\033[36mСоздание общего конфига xbindkeys (Настройка мультимедийных клавиш).\033[0m"
+echo -e '# Увеличить громкость.
+    "pactl set-sink-volume @DEFAULT_SINK@ +1000"
+        XF86AudioRaiseVolume
+# Уменьшить громкость.
+    "pactl set-sink-volume @DEFAULT_SINK@ -1000"
+        XF86AudioLowerVolume
+# Отключить звук.
+    "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+        XF86AudioMute
+# Отключить микрофон.
+    "pactl set-source-mute @DEFAULT_SOURCE@ toggle"
+        XF86AudioMicMute
+# Открыть калькулятор.
+    "kalgebra"
+        Mod2 + XF86Calculator
+# Открыть почту.
+    "thunderbird"
+        Mod2 + XF86Mail' | tee /mnt/home/"$username"/.xbindkeysrc /mnt/root/.xbindkeysrc
+#
 #Редактирование конфига nanorc.
 echo -e "\033[36mРедактирование конфига nanorc.\033[0m"
 echo 'include "/usr/share/nano-syntax-highlighting/*.nanorc"' >> /mnt/etc/nanorc
@@ -1666,7 +1702,7 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR (Репозиторий пользователей).
 echo -e "\033[36mУстановка программ из AUR (Репозиторий пользователей).\033[0m"
-arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt vkbasalt kmscon qgnomeplatform-qt5-git --noconfirm --ask 4
+arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt pa-notify vkbasalt kmscon qgnomeplatform-qt5-git --noconfirm --ask 4
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
