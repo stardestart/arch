@@ -1082,9 +1082,8 @@ exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent;
 # Автозапуск flameshot.
 exec --no-startup-id flameshot;
 #
-# Автозапуск copyq и autocutsel.
+# Автозапуск copyq.
 exec --no-startup-id copyq;
-exec --no-startup-id autocutsel;
 #
 # Автозапуск dolphin.
 exec --no-startup-id dolphin --daemon;
@@ -1799,7 +1798,8 @@ sudo sed -i \047s/#net\/ipv6\/conf\/all\/forwarding=1/net\/ipv6\/conf\/all\/forw
 #Установка переменных окружения.
 echo -e "\\033[36mУстановка переменных окружения.\\033[0m"
 sudo sh -c \047echo "ENABLE_VKBASALT=1
-GTK_USE_PORTAL=1" >> /etc/environment\047
+GTK_USE_PORTAL=1
+XDG_MENU_PREFIX=arch-" >> /etc/environment\047
 #
 #Настройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).
 echo -e "\\033[36mНастройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).\\033[0m"
@@ -1819,10 +1819,14 @@ systemctl --user start redshift-gtk
 echo -e "\\033[36mCкопирует список пакетов из репозитория Debian.\\033[0m"
 sudo debtap -u
 #
+#Создание двоичного кэша данных, хранящихся в файлах.desktop и MIME, которые фреймворк KService использует для поиска плагинов, приложений и других сервисов.
+echo -e "\\033[36mСоздание двоичного кэша данных, хранящихся в файлах.desktop и MIME, которые фреймворк KService использует для поиска плагинов, приложений и других сервисов.\\033[0m"
+kbuildsycoca6
+#
 #Настройка wine (Позволяет запускать приложения Windows).
 echo -e "\\033[36mНастройка wine (Позволяет запускать приложения Windows).\\033[0m"
-WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140
-winetricks dxvk dotnet48 allcodecs
+WINEARCH=win32 winetricks d3dx9
+winetricks dxvk
 #
 #Удаление временных файлов.
 echo -e "\\033[36mУдаление временных файлов.\\033[0m"
