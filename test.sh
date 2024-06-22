@@ -1852,7 +1852,7 @@ arch-chroot /mnt systemctl enable vboxservice
 sed -i 's/exec i3 #Автозапуск i3./\/usr\/sbin\/VBoxClient-all \&\nexec i3 #Автозапуск i3./' /mnt/home/"$username"/.xinitrc
 arch-chroot /mnt gpasswd -a "$username" vboxsf
 else
-arch-chroot /mnt pacman -Sy virtualbox-host-dkms --noconfirm
+arch-chroot /mnt pacman -Sy virtualbox-host-dkms virtualbox --noconfirm
 arch-chroot /mnt sudo -u "$username" yay -S virtualbox-ext-oracle --noconfirm
 echo "vboxdrv
 vboxnetflt
