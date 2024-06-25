@@ -1634,6 +1634,7 @@ for (( i=0; i<"${#massfont[*]}"; i=i+2 ))
     do
         curl --create-dirs -o /mnt/usr/share/fonts/google/"${massfont[$i]}" "${massfont[($i+1)]}"
     done
+chmod o+rx /mnt/usr/share/fonts/google
 #
 #Определяем, есть ли ssd.
 echo -e "\033[36mОпределяем, есть ли ssd.\033[0m"
