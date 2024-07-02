@@ -788,26 +788,17 @@ export XDG_CURRENT_DESKTOP=gtk
 export XCURSOR_THEME=Adwaita
 export XCURSOR_SIZE=24' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
 #
-#Создание конфига сервера уведомлений.
-echo -e "\033[36mСоздание конфига сервера уведомлений.\033[0m"
-echo '[global]
-    gap_size = '"$font"'
-    enable_posix_regex = true
-    enable_recursive_icon_lookup = true
-    icon_theme = Papirus-Dark
-    script = ~/.config/notify_sound.sh
-[urgency_low]
-    background = "#2b2b2b"
-    foreground = "#b2b2b2"
-    timeout = 10
-[urgency_normal]
-    background = "#2b2b2b"
-    foreground = "#2bf92b"
-    timeout = 10
-[urgency_critical]
-    background = "#2b2b2b"
-    foreground = "#f92b2b"
-    timeout = 0' > /mnt/etc/dunst/dunstrc
+#Редактирование конфига сервера уведомлений.
+echo -e "\033[36mРедактирование конфига сервера уведомлений.\033[0m"
+sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[global\]' | grep -B9999 '\[urgency_low\]' | grep '  gap_size =' | awk '{print $1}')" s/.*/gap_size ='"$font"'/" /mnt/etc/dunst/dunstrc
+sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[global\]' | grep -B9999 '\[urgency_low\]' | grep '  icon_theme =' | awk '{print $1}')" s/.*/icon_theme = Papirus-Dark/" /mnt/etc/dunst/dunstrc
+sed -i ':a;s/\[global\]/\[global\]\nscript = ~\/.config\/notify_sound.sh/' /mnt/etc/dunst/dunstrc
+sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_low\]' | grep -B9999 '\[urgency_normal\]' | grep '  background =' | awk '{print $1}')" s/.*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
+sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_low\]' | grep -B9999 '\[urgency_normal\]' | grep '  foreground =' | awk '{print $1}')" s/.*/foreground = \"#b2b2b2\"/" /mnt/etc/dunst/dunstrc
+sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_normal\]' | grep -B9999 '\[urgency_critical\]' | grep  '  background =' | awk '{print $1}')" s/.*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
+sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_normal\]' | grep -B9999 '\[urgency_critical\]' | grep  '  foreground =' | awk '{print $1}')" s/.*/foreground = \"#2bf92b\"/" /mnt/etc/dunst/dunstrc
+sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_critical\]' | grep '  background =' | awk '{print $1}')" s/.*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
+sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_critical\]' | grep '  foreground =' | awk '{print $1}')" s/.*/foreground = \"#f92b2b\"/" /mnt/etc/dunst/dunstrc
 #
 #Создание аудиоконфига сервера уведомлений.
 echo -e "\033[36mСоздание аудиоконфига сервера уведомлений.\033[0m"
