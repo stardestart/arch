@@ -8,7 +8,7 @@ gpg-connect-agent reloadagent /bye
 rm /var/lib/pacman/db.lck
 rm -R /root/.gnupg/
 rm -R /etc/pacman.d/gnupg/
-mount -o remount,size=2G /run/archiso/cowspace
+mount -o remount,size=4G /run/archiso/cowspace
 sed -i '/= Required DatabaseOptional/c\SigLevel = Required DatabaseOptional TrustAll' /etc/pacman.conf
 pacman-key --init
 pacman-key --populate archlinux
