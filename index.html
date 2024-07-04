@@ -2863,11 +2863,6 @@ XDG_VIDEOS_DIR="$HOME/Documents/Videos"
               </li>
               <li>
                 <span class=text>
-                  autocutsel — Синхронизирует два буфера копирования/вставки.
-                </span>
-              </li>
-              <li>
-                <span class=text>
                   openssh — Реализация протокола SSH для удаленного входа в систему, выполнения команд и передачи файлов.
                 </span>
               </li>
@@ -2938,7 +2933,7 @@ XDG_VIDEOS_DIR="$HOME/Documents/Videos"
               </li>
             </ul>
             <div class=term>
-              <span class=ps>$:</span> sudo pacman -S firefox-i18n-ru firefox-spell-ru thunderbird thunderbird-i18n-ru numlockx gparted gpart kwalletmanager kwallet-pam ark p7zip mc htop conky polkit dmg2img network-manager-applet rng-tools dbus-broker acpid giflib lib32-giflib perl-anyevent-i3 perl-json-xs usbguard archlinux-xdg-menu arch-audit rkhunter x11vnc neofetch aspell nuspell aspell-en aspell-ru ethtool hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en gimagereader-gtk tesseract-data-rus tesseract-data-eng xdg-desktop-portal-gtk networkmanager-strongswan wireless_tools krdc clinfo autocutsel openssh haveged unzip smartmontools nss-mdns ufw libpwquality ntp xdg-user-dirs nano-syntax-highlighting libcanberra lib32-libcanberra sound-theme-freedesktop xbindkeys
+              <span class=ps>$:</span> sudo pacman -S firefox-i18n-ru firefox-spell-ru thunderbird thunderbird-i18n-ru numlockx gparted gpart kwalletmanager kwallet-pam ark p7zip mc htop conky polkit dmg2img network-manager-applet rng-tools dbus-broker acpid giflib lib32-giflib perl-anyevent-i3 perl-json-xs usbguard archlinux-xdg-menu arch-audit rkhunter x11vnc neofetch aspell nuspell aspell-en aspell-ru ethtool hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en gimagereader-gtk tesseract-data-rus tesseract-data-eng xdg-desktop-portal-gtk networkmanager-strongswan wireless_tools krdc clinfo openssh haveged unzip smartmontools nss-mdns ufw libpwquality ntp xdg-user-dirs nano-syntax-highlighting libcanberra lib32-libcanberra sound-theme-freedesktop xbindkeys
             </div>
           </li>
           <li>
@@ -3506,60 +3501,38 @@ include "/usr/share/nano-syntax-highlighting/*.nanorc"
           <span class=ps>$:</span> sudo pacman -S freetype2 ttf-fantasque-sans-mono
         </div>
         <p class=text>
-          Чтобы не скачивать все шрифты NOTO font от Google, скачаем нужные по одному.
+          Чтобы не скачивать все шрифты NOTO font от Google, скачаем только нужные.
         </p>
         <div class=term>
-          <span class=ps>$:</span><pre class=pre>sudo mkdir -p /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Emoji.zip https://fonts.google.com/download?family=Noto%20Emoji
-sudo unzip -o /usr/share/fonts/google/Emoji.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Symbols.zip https://fonts.google.com/download?family=Noto%20Sans%20Symbols
-sudo unzip -o /usr/share/fonts/google/Symbols.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Symbols2.zip https://fonts.google.com/download?family=Noto%20Sans%20Symbols%202
-sudo unzip -o /usr/share/fonts/google/Symbols2.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Duployan.zip https://fonts.google.com/download?family=Noto%20Sans%20Duployan
-sudo unzip -o /usr/share/fonts/google/Duployan.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Music.zip https://fonts.google.com/download?family=Noto%20Music
-sudo unzip -o /usr/share/fonts/google/Music.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Math.zip https://fonts.google.com/download?family=Noto%20Sans%20Math
-sudo unzip -o /usr/share/fonts/google/Math.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Sans.zip https://fonts.google.com/download?family=Noto%20Sans
-sudo unzip -o /usr/share/fonts/google/Sans.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Arabic.zip https://fonts.google.com/download?family=Noto%20Sans%20Arabic
-sudo unzip -o /usr/share/fonts/google/Arabic.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Serif.zip https://fonts.google.com/download?family=Noto%20Serif
-sudo unzip -o /usr/share/fonts/google/Serif.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/TC.zip https://fonts.google.com/download?family=Noto%20Serif%20TC
-sudo unzip -o /usr/share/fonts/google/TC.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Armenian.zip https://fonts.google.com/download?family=Noto%20Serif%20Armenian
-sudo unzip -o /usr/share/fonts/google/Armenian.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Gurmukhi.zip https://fonts.google.com/download?family=Noto%20Serif%20Gurmukhi
-sudo unzip -o /usr/share/fonts/google/Gurmukhi.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Gujarati.zip https://fonts.google.com/download?family=Noto%20Serif%20Gujarati
-sudo unzip -o /usr/share/fonts/google/Gujarati.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Tamil.zip https://fonts.google.com/download?family=Noto%20Serif%20Tamil
-sudo unzip -o /usr/share/fonts/google/Tamil.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Hebrew.zip https://fonts.google.com/download?family=Noto%20Serif%20Hebrew
-sudo unzip -o /usr/share/fonts/google/Hebrew.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/JP.zip https://fonts.google.com/download?family=Noto%20Serif%20JP
-sudo unzip -o /usr/share/fonts/google/JP.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/KR.zip https://fonts.google.com/download?family=Noto%20Serif%20KR
-sudo unzip -o /usr/share/fonts/google/KR.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Khmer.zip https://fonts.google.com/download?family=Noto%20Serif%20Khmer
-sudo unzip -o /usr/share/fonts/google/Khmer.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Georgian.zip https://fonts.google.com/download?family=Noto%20Serif%20Georgian
-sudo unzip -o /usr/share/fonts/google/Georgian.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Kannada.zip https://fonts.google.com/download?family=Noto%20Serif%20Kannada
-sudo unzip -o /usr/share/fonts/google/Kannada.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Thai.zip https://fonts.google.com/download?family=Noto%20Serif%20Thai
-sudo unzip -o /usr/share/fonts/google/Thai.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Devanagari.zip https://fonts.google.com/download?family=Noto%20Serif%20Devanagari
-sudo unzip -o /usr/share/fonts/google/Devanagari.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/Bengali.zip https://fonts.google.com/download?family=Noto%20Serif%20Bengali
-sudo unzip -o /usr/share/fonts/google/Bengali.zip -d /usr/share/fonts/google
-sudo curl -o /usr/share/fonts/google/SC.zip https://fonts.google.com/download?family=Noto%20Serif%20SC
-sudo unzip -o /usr/share/fonts/google/SC.zip -d /usr/share/fonts/google
-sudo rm /usr/share/fonts/google/*.zip
-sudo rm /usr/share/fonts/google/*.txt
+          <span class=ps>$:</span><pre class=pre>massfont=($(curl https://fonts.google.com/download/list?family=Noto%20Emoji \
+                 https://fonts.google.com/download/list?family=Noto%20Sans%20Symbols \
+                 https://fonts.google.com/download/list?family=Noto%20Sans%20Symbols%202 \
+                 https://fonts.google.com/download/list?family=Noto%20Sans%20Duployan \
+                 https://fonts.google.com/download/list?family=Noto%20Music \
+                 https://fonts.google.com/download/list?family=Noto%20Sans%20Math \
+                 https://fonts.google.com/download/list?family=Noto%20Sans \
+                 https://fonts.google.com/download/list?family=Noto%20Sans%20Arabic \
+                 https://fonts.google.com/download/list?family=Noto%20Serif \
+                 https://fonts.google.com/download/list?family=Noto%20Serif%20TC \
+                 https://fonts.google.com/download/list?family=Noto%20Serif%20Armenian \
+                 https://fonts.google.com/download/list?family=Noto%20Serif%20Gurmukhi \
+                 https://fonts.google.com/download/list?family=Noto%20Serif%20Gujarati \
+                 https://fonts.google.com/download/list?family=Noto%20Serif%20Tamil \
+                 https://fonts.google.com/download/list?family=Noto%20Serif%20Hebrew \
+                 https://fonts.google.com/download/list?family=Noto%20Serif%20JP \
+                 https://fonts.google.com/download/list?family=Noto%20Serif%20KR \
+                 https://fonts.google.com/download/list?family=Noto%20Serif%20Khmer \
+                 https://fonts.google.com/download/list?family=Noto%20Serif%20Georgian \
+                 https://fonts.google.com/download/list?family=Noto%20Serif%20Kannada \
+                 https://fonts.google.com/download/list?family=Noto%20Serif%20Thai \
+                 https://fonts.google.com/download/list?family=Noto%20Serif%20Devanagari \
+                 https://fonts.google.com/download/list?family=Noto%20Serif%20Bengali \
+                 https://fonts.google.com/download/list?family=Noto%20Serif%20SC \
+                 | grep --color=never '.ttf"' | awk '{print $2}' | sed 's/[,"]//g' | sed 's/static\///'))
+                 for (( i=0; i<"${#massfont[*]}"; i=i+2 ))
+                   do
+                     curl --create-dirs -o /mnt/usr/share/fonts/google/"${massfont[$i]}" "${massfont[($i+1)]}"
+                   done
 </pre>
         </div>
       </li>
@@ -4463,22 +4436,17 @@ export XCURSOR_SIZE=24
           <pre class=pre>
 [global]
     gap_size = 12
-    enable_posix_regex = true
-    enable_recursive_icon_lookup = true
-    icon_theme = ePapirus-Dark
+    icon_theme = Papirus-Dark
     script = ~/.config/notify_sound.sh
 [urgency_low]
     background = "#2b2b2b"
     foreground = "#b2b2b2"
-    timeout = 10
 [urgency_normal]
     background = "#2b2b2b"
     foreground = "#2bf92b"
-    timeout = 10
 [urgency_critical]
     background = "#2b2b2b"
     foreground = "#f92b2b"
-    timeout = 0
 
 
 
@@ -5032,9 +5000,8 @@ exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent;
 # Автозапуск flameshot.
 exec --no-startup-id flameshot;
 #
-# Автозапуск copyq и autocutsel.
+# Автозапуск copyq.
 exec --no-startup-id copyq;
-exec --no-startup-id autocutsel;
 #
 # Автозапуск dolphin.
 exec --no-startup-id dolphin --daemon;
@@ -5059,6 +5026,9 @@ exec --no-startup-id xbindkeys;
 #
 # Автозапуск pa-notify.
 exec --no-startup-id pa-notify;
+#
+# Автозапуск dunst.
+exec --no-startup-id dunst;
 #
 # Автозапуск neofetch и обновления.
 #exec --no-startup-id sh -c 'sleep 10; while [[ -z "$(ls /dev/pts/1)" ]]; do sleep 5; done; sleep 5; sudo rm /var/lib/pacman/db.lck > /dev/pts/1; sudo pacman -Suy --noconfirm > /dev/pts/1; sudo pacman -Sc --noconfirm > /dev/pts/1; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/1;'
@@ -5918,7 +5888,7 @@ ForegroundInactive=178,178,178
 gtk-application-prefer-dark-theme=true
 gtk-cursor-theme-name=Adwaita
 gtk-font-name=Fantasque Sans Mono Bold Italic 12
-gtk-icon-theme-name=ePapirus-Dark
+gtk-icon-theme-name=Papirus-Dark
 gtk-theme-name=Adwaita-dark
 
 
@@ -5998,7 +5968,7 @@ gtk-theme-name=Adwaita-dark
 gtk-application-prefer-dark-theme="true"
 gtk-cursor-theme-name="Adwaita"
 gtk-font-name="Fantasque Sans Mono Bold Italic 10"
-gtk-icon-theme-name="ePapirus-Dark"
+gtk-icon-theme-name="Papirus-Dark"
 gtk-theme-name="Adwaita-dark"
 
 
@@ -6068,7 +6038,7 @@ gtk-theme-name="Adwaita-dark"
           <pre class=pre>
 [General]
 __userfile__=true
-iconTheme=ePapirus-Dark
+iconTheme=Papirus-Dark
 
 [customcommand]
 alignment=Right
@@ -6124,7 +6094,7 @@ type=kbindicator
 [mainmenu]
 alignment=Left
 filterClear=true
-icon=/usr/share/icons/ePapirus-Dark/16x16/apps/distributor-logo-archlinux.svg
+icon=/usr/share/icons/Papirus-Dark/16x16/apps/distributor-logo-archlinux.svg
 menu_file=/etc/xdg/menus/arch-applications.menu
 ownIcon=true
 showText=false
@@ -6838,10 +6808,18 @@ Win+Alt-left+1 -- Восстановление рабочего стола №1.
       </li>
       <li>
         <p class=text>
+          Создание двоичного кэша данных, хранящихся в файлах.desktop и MIME, которые фреймворк KService использует для поиска плагинов, приложений и других сервисов.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span> kbuildsycoca6
+        </div>
+      </li>
+      <li>
+        <p class=text>
           Настройка внешнего вида программ.
         </p>
         <div class=term>
-          <span class=ps>$:</span> gsettings set org.gnome.desktop.interface icon-theme ePapirus-Dark
+          <span class=ps>$:</span> gsettings set org.gnome.desktop.interface icon-theme Papirus-Dark
         </div>
         <div class=term>
           <span class=ps>$:</span> gsettings set org.gnome.desktop.interface font-name 'Fantasque Sans Mono, 10'
@@ -6867,7 +6845,7 @@ Win+Alt-left+1 -- Восстановление рабочего стола №1.
           Установка переменных окружения.
         </p>
         <div class=term>
-          <span class=ps>$:</span> echo -e 'ENABLE_VKBASALT=1\nGTK_USE_PORTAL=1' | sudo tee -a /etc/environment
+          <span class=ps>$:</span> echo -e 'ENABLE_VKBASALT=1\nGTK_USE_PORTAL=1\nXDG_MENU_PREFIX=arch-' | sudo tee -a /etc/environment
         </div>
       </li>
       <li>
