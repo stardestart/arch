@@ -449,10 +449,6 @@ echo -e "\033[36mНастройка установщика pacman.\033[0m"
 sed -i "s/#Color/Color/" /mnt/etc/pacman.conf
 echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist\n[kde-unstable]\nInclude = /etc/pacman.d/mirrorlist" >> /mnt/etc/pacman.conf
 #
-#Настройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).
-echo -e "\033[36mНастройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).\033[0m"
-cp /mnt/usr/lib32/libstdc++.so.6 /usr/lib32/libstdc++.so.6
-usbguard generate-policy > /mnt/etc/usbguard/rules.conf
 #Настройка sysctl (Параметры ядра).
 echo -e "\033[36mНастройка sysctl (Параметры ядра).\033[0m"
 echo "kernel.sysrq=1
@@ -569,6 +565,11 @@ genfstab -L /mnt >> /mnt/etc/fstab
 #Правка fstab для ntfs.
 echo -e "\033[36mПравка fstab для ntfs.\033[0m"
 sed -i "s/ntfs $PARTITION_COLUMN.*/ntfs-3g       nls=utf8,umask=000,dmask=027,fmask=137,uid=1000,gid=1000       0 0/" /mnt/etc/fstab
+#
+#Настройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).
+echo -e "\033[36mНастройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).\033[0m"
+cp /mnt/usr/lib32/libstdc++.so.6 /usr/lib32/libstdc++.so.6
+usbguard generate-policy > /mnt/etc/usbguard/rules.conf
 #
 #Создание общего конфига загрузки оконного менеджера.
 echo -e "\033[36mСоздание общего конфига загрузки оконного менеджера.\033[0m"
