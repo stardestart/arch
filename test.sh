@@ -571,6 +571,7 @@ echo -e "\033[36mНастройка usbguard (Помогает защитить 
 cp /mnt/usr/lib32/libstdc++.so.6 /usr/lib32/libstdc++.so.6
 usbguard generate-policy > /mnt/etc/usbguard/rules.conf
 #
+read -p "Нажмите ENTER для продолжения"
 #Создание общего конфига загрузки оконного менеджера.
 echo -e "\033[36mСоздание общего конфига загрузки оконного менеджера.\033[0m"
 echo -e '#Указание на конфигурационные файлы.
