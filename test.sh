@@ -568,14 +568,11 @@ sed -i "s/ntfs $PARTITION_COLUMN.*/ntfs-3g       nls=utf8,umask=000,dmask=027,fm
 #
 #Настройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).
 echo -e "\033[36mНастройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).\033[0m"
-#rm /usr/lib32/libstdc++.so.6
 ln -sf /mnt/usr/lib32/libstdc++.so.6 /usr/lib32/libstdc++.so.6
 ln -sf /mnt/usr/lib/libstdc++.so.6 /usr/lib/libstdc++.so.6
-read -p "Нажмите ENTER для продолжения"
+ln -sf /mnt/usr/lib32/libstdc++.so /usr/lib32/libstdc++.so
+ln -sf /mnt/usr/lib/libstdc++.so /usr/lib/libstdc++.so
 usbguard generate-policy > /mnt/etc/usbguard/rules.conf
-ls -li /usr/lib32 | grep libstdc
-ls -li /usr/lib | grep libstdc
-read -p "Нажмите ENTER для продолжения"
 #
 #Создание общего конфига загрузки оконного менеджера.
 echo -e "\033[36mСоздание общего конфига загрузки оконного менеджера.\033[0m"

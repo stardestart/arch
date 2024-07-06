@@ -352,6 +352,7 @@ pacman -Sy glibc --noconfirm
 pacman -Sy lib32-glibc --noconfirm
 pacman -Sy sad --noconfirm
 pacman -Sy coreutils --noconfirm
+pacman -Sy usbguard --noconfirm
 echo -e "Старый список зеркал."
 cat /etc/pacman.d/mirrorlist
 reflector --latest 20 --protocol https --sort rate --download-timeout 2 --save /etc/pacman.d/mirrorlist
@@ -564,6 +565,14 @@ genfstab -L /mnt >> /mnt/etc/fstab
 #Правка fstab для ntfs.
 echo -e "\033[36mПравка fstab для ntfs.\033[0m"
 sed -i "s/ntfs $PARTITION_COLUMN.*/ntfs-3g       nls=utf8,umask=000,dmask=027,fmask=137,uid=1000,gid=1000       0 0/" /mnt/etc/fstab
+#
+#Настройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).
+echo -e "\033[36mНастройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).\033[0m"
+ln -sf /mnt/usr/lib32/libstdc++.so.6 /usr/lib32/libstdc++.so.6
+ln -sf /mnt/usr/lib/libstdc++.so.6 /usr/lib/libstdc++.so.6
+ln -sf /mnt/usr/lib32/libstdc++.so /usr/lib32/libstdc++.so
+ln -sf /mnt/usr/lib/libstdc++.so /usr/lib/libstdc++.so
+usbguard generate-policy > /mnt/etc/usbguard/rules.conf
 #
 #Создание общего конфига загрузки оконного менеджера.
 echo -e "\033[36mСоздание общего конфига загрузки оконного менеджера.\033[0m"
@@ -1690,7 +1699,7 @@ arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspel
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus getty@tty1.service
-arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker rngd auto-cpufreq smartd smb saned.socket cups.socket x11vnc ufw auditd ntpd kmsconvt@tty1.service
+arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker rngd auto-cpufreq smartd smb saned.socket cups.socket x11vnc ufw auditd usbguard ntpd kmsconvt@tty1.service
 #
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
@@ -1794,15 +1803,6 @@ echo -e "\\033[36mУстановка переменных окружения.\\0
 sudo sh -c \047echo "ENABLE_VKBASALT=1
 GTK_USE_PORTAL=1
 XDG_MENU_PREFIX=arch-" >> /etc/environment\047
-#
-#Настройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).
-echo -e "\\033[36mНастройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).\\033[0m"
-su -c \047usbguard generate-policy > /etc/usbguard/rules.conf\047<<EOF
-'$passroot'
-'$passroot'
-EOF
-sudo systemctl enable usbguard
-sudo systemctl start usbguard
 #
 #Включение службы redshift (Регулирует цветовую температуру вашего экрана).
 echo -e "\\033[36mВключение службы redshift (Регулирует цветовую температуру вашего экрана).\\033[0m"
