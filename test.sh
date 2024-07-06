@@ -558,6 +558,7 @@ ${execi 10 sudo smartctl -A /dev/'"${massparts[$j]}"' | grep -i temperature_cels
         fi
     done
 #
+read -p "Нажмите ENTER для продолжения"
 #Копирование файла автоматического монтирования разделов.
 echo -e "\033[36mКопирование файла автоматического монтирования разделов.\033[0m"
 genfstab -L /mnt >> /mnt/etc/fstab
@@ -615,6 +616,7 @@ MatchIsKeyboard "on"
 Option "XkbLayout" "us,ru"
 Option "XkbOptions" "grp:alt_shift_toggle,terminate:ctrl_alt_bksp"
 EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
+read -p "Нажмите ENTER для продолжения"
 #
 #Создание общего конфига сканера.
 echo -e "\033[36mСоздание общего конфига сканера.\033[0m"
