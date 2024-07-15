@@ -109,8 +109,8 @@ echo -e "\033[36mПроцессор:"$(lscpu | grep -i "model name")"\033[0m"
 #
 #Определяем часовой пояс.
 echo -e "\033[36mОпределяем часовой пояс.\033[0m"
-timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
-echo -e "\033[36mЧасовой пояс:"$(curl https://ipapi.co/timezone)"\033[0m"
+timedatectl set-timezone "$(curl -f https://ipapi.co/timezone)"
+echo -e "\033[36mЧасовой пояс:"$(curl -f https://ipapi.co/timezone)"\033[0m"
 #
 #Определяем физический диск на который будет установлена ОС.
 echo -e "\033[36mОпределяем физический диск на который будет установлена ОС.\033[32m"
@@ -1884,7 +1884,7 @@ echo -e "\033[36mОбновление часового пояса после п�
 echo '#!/bin/sh
 case "$2" in
     up)
-        timedatectl set-timezone "$(curl --fail https://ipapi.co/timezone)"
+        timedatectl set-timezone "$(curl -f https://ipapi.co/timezone)"
     ;;
 esac' > /mnt/etc/NetworkManager/dispatcher.d/09-timezone
 #

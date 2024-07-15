@@ -1141,7 +1141,8 @@ exec --no-startup-id dunst;
 # Автозапуск neofetch и обновления.
 #TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; \\
 while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)" ]]; \\
-do sleep 5; \\
+do \\
+sleep 5; \\
 done; \\
 sleep 5; \\
 pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-2)}\047\\\047\047)"; \\
