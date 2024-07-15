@@ -109,8 +109,8 @@ echo -e "\033[36mПроцессор:"$(lscpu | grep -i "model name")"\033[0m"
 #
 #Определяем часовой пояс.
 echo -e "\033[36mОпределяем часовой пояс.\033[0m"
-timedatectl set-timezone "$(curl https://ipapi.co/timezone)"
-echo -e "\033[36mЧасовой пояс:"$(curl https://ipapi.co/timezone)"\033[0m"
+timedatectl set-timezone "$(curl -f https://ipapi.co/timezone)"
+echo -e "\033[36mЧасовой пояс:"$(curl -f https://ipapi.co/timezone)"\033[0m"
 #
 #Определяем физический диск на который будет установлена ОС.
 echo -e "\033[36mОпределяем физический диск на который будет установлена ОС.\033[32m"
@@ -799,15 +799,15 @@ export XCURSOR_SIZE=24' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
 #
 #Редактирование конфига сервера уведомлений.
 echo -e "\033[36mРедактирование конфига сервера уведомлений.\033[0m"
-sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[global\]' | grep -B9999 '\[urgency_low\]' | grep '  gap_size =' | awk '{print $1}')" s/.*/gap_size ='"$font"'/" /mnt/etc/dunst/dunstrc
-sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[global\]' | grep -B9999 '\[urgency_low\]' | grep '  icon_theme =' | awk '{print $1}')" s/.*/icon_theme = Papirus-Dark/" /mnt/etc/dunst/dunstrc
-sed -i ':a;s/\[global\]/\[global\]\nscript = ~\/.config\/notify_sound.sh/' /mnt/etc/dunst/dunstrc
-sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_low\]' | grep -B9999 '\[urgency_normal\]' | grep '  background =' | awk '{print $1}')" s/.*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
-sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_low\]' | grep -B9999 '\[urgency_normal\]' | grep '  foreground =' | awk '{print $1}')" s/.*/foreground = \"#b2b2b2\"/" /mnt/etc/dunst/dunstrc
-sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_normal\]' | grep -B9999 '\[urgency_critical\]' | grep  '  background =' | awk '{print $1}')" s/.*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
-sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_normal\]' | grep -B9999 '\[urgency_critical\]' | grep  '  foreground =' | awk '{print $1}')" s/.*/foreground = \"#2bf92b\"/" /mnt/etc/dunst/dunstrc
-sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_critical\]' | grep '  background =' | awk '{print $1}')" s/.*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
-sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_critical\]' | grep '  foreground =' | awk '{print $1}')" s/.*/foreground = \"#f92b2b\"/" /mnt/etc/dunst/dunstrc
+sed -i "/\[global\]/,/^\[.*\]/ s/gap_size = .*/gap_size = ${font}/" /mnt/etc/dunst/dunstrc
+sed -i "/\[global\]/,/^\[.*\]/ s/icon_theme = .*/icon_theme = Papirus-Dark/" /mnt/etc/dunst/dunstrc
+sed -i "/\[global\]/ a script = ~/.config/notify_sound.sh/" /mnt/etc/dunst/dunstrc
+sed -i "/\[urgency_low\]/,/^\[.*\]/ s/background = .*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
+sed -i "/\[urgency_low\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#b2b2b2\"/" /mnt/etc/dunst/dunstrc
+sed -i "/\[urgency_normal\]/,/^\[.*\]/ s/background = .*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
+sed -i "/\[urgency_normal\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#2bf92b\"/" /mnt/etc/dunst/dunstrc
+sed -i "/\[urgency_critical\]/,/^\[.*\]/ s/background = .*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
+sed -i "/\[urgency_critical\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#f92b2b\"/" /mnt/etc/dunst/dunstrc
 #
 #Создание аудиоконфига сервера уведомлений.
 echo -e "\033[36mСоздание аудиоконфига сервера уведомлений.\033[0m"
@@ -1139,7 +1139,19 @@ exec --no-startup-id pa-notify;
 exec --no-startup-id dunst;
 #
 # Автозапуск neofetch и обновления.
-#TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)" ]]; do sleep 5; done; sleep 5; pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-2)}\047\\\047\047)"; neofetch > /dev/pts/$pts; arch-audit > /dev/pts/$pts; pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)"; sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; sudo pacman -Suy --noconfirm > /dev/pts/$pts; sudo pacman -Sc --noconfirm > /dev/pts/$pts; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts\047
+#TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; \\
+while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)" ]]; \\
+do sleep 5; \\
+done; \\
+sleep 5; \\
+pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-2)}\047\\\047\047)"; \\
+neofetch > /dev/pts/$pts; \\
+arch-audit > /dev/pts/$pts; \\
+pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)"; \\
+sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; \\
+sudo pacman -Suy --noconfirm > /dev/pts/$pts; \\
+sudo pacman -Sc --noconfirm > /dev/pts/$pts; \\
+sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts\047
 #
 # Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u;
@@ -1686,7 +1698,9 @@ arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspel
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus getty@tty1.service
-arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker rngd auto-cpufreq smartd smb saned.socket cups.socket x11vnc ufw auditd usbguard ntpd kmsconvt@tty1.service
+arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
+xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker rngd auto-cpufreq smartd smb \
+saned.socket cups.socket x11vnc ufw auditd usbguard ntpd kmsconvt@tty1.service
 #
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
@@ -1862,7 +1876,7 @@ echo -e "\033[36mОбновление часового пояса после п�
 echo '#!/bin/sh
 case "$2" in
     up)
-        timedatectl set-timezone "$(curl --fail https://ipapi.co/timezone)"
+        timedatectl set-timezone "$(curl -f https://ipapi.co/timezone)"
     ;;
 esac' > /mnt/etc/NetworkManager/dispatcher.d/09-timezone
 #
