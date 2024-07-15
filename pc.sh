@@ -799,15 +799,15 @@ export XCURSOR_SIZE=24' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
 #
 #Редактирование конфига сервера уведомлений.
 echo -e "\033[36mРедактирование конфига сервера уведомлений.\033[0m"
-sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[global\]' | grep -B9999 '\[urgency_low\]' | grep '  gap_size =' | awk '{print $1}')" s/.*/gap_size ='"$font"'/" /mnt/etc/dunst/dunstrc
-sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[global\]' | grep -B9999 '\[urgency_low\]' | grep '  icon_theme =' | awk '{print $1}')" s/.*/icon_theme = Papirus-Dark/" /mnt/etc/dunst/dunstrc
-sed -i ':a;s/\[global\]/\[global\]\nscript = ~\/.config\/notify_sound.sh/' /mnt/etc/dunst/dunstrc
-sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_low\]' | grep -B9999 '\[urgency_normal\]' | grep '  background =' | awk '{print $1}')" s/.*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
-sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_low\]' | grep -B9999 '\[urgency_normal\]' | grep '  foreground =' | awk '{print $1}')" s/.*/foreground = \"#b2b2b2\"/" /mnt/etc/dunst/dunstrc
-sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_normal\]' | grep -B9999 '\[urgency_critical\]' | grep  '  background =' | awk '{print $1}')" s/.*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
-sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_normal\]' | grep -B9999 '\[urgency_critical\]' | grep  '  foreground =' | awk '{print $1}')" s/.*/foreground = \"#2bf92b\"/" /mnt/etc/dunst/dunstrc
-sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_critical\]' | grep '  background =' | awk '{print $1}')" s/.*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
-sed -i ""$(cat -n /mnt/etc/dunst/dunstrc | grep -A9999 '\[urgency_critical\]' | grep '  foreground =' | awk '{print $1}')" s/.*/foreground = \"#f92b2b\"/" /mnt/etc/dunst/dunstrc
+sed -i "/\[global\]/,/^\[.*\]/ s/gap_size = .*/gap_size = ${font}/" /mnt/etc/dunst/dunstrc
+sed -i "/\[global\]/,/^\[.*\]/ s/icon_theme = .*/icon_theme = Papirus-Dark/" /mnt/etc/dunst/dunstrc
+sed -i "/\[global\]/ a script = ~/.config/notify_sound.sh/" /mnt/etc/dunst/dunstrc
+sed -i "/\[urgency_low\]/,/^\[.*\]/ s/background = .*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
+sed -i "/\[urgency_low\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#b2b2b2\"/" /mnt/etc/dunst/dunstrc
+sed -i "/\[urgency_normal\]/,/^\[.*\]/ s/background = .*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
+sed -i "/\[urgency_normal\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#2bf92b\"/" /mnt/etc/dunst/dunstrc
+sed -i "/\[urgency_critical\]/,/^\[.*\]/ s/background = .*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
+sed -i "/\[urgency_critical\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#f92b2b\"/" /mnt/etc/dunst/dunstrc
 #
 #Создание аудиоконфига сервера уведомлений.
 echo -e "\033[36mСоздание аудиоконфига сервера уведомлений.\033[0m"
@@ -1140,7 +1140,20 @@ exec --no-startup-id pa-notify;
 exec --no-startup-id dunst;
 #
 # Автозапуск neofetch и обновления.
-#TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)" ]]; do sleep 5; done; sleep 5; pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-2)}\047\\\047\047)"; neofetch > /dev/pts/$pts; arch-audit > /dev/pts/$pts; pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)"; sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; sudo pacman -Suy --noconfirm > /dev/pts/$pts; sudo pacman -Sc --noconfirm > /dev/pts/$pts; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts\047
+#TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; \\
+#TechnicalSymbolexec while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)" ]]; \\
+#TechnicalSymbolexec do \\
+#TechnicalSymbolexec sleep 5; \\
+#TechnicalSymbolexec done; \\
+#TechnicalSymbolexec sleep 5; \\
+#TechnicalSymbolexec pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-2)}\047\\\047\047)"; \\
+#TechnicalSymbolexec neofetch > /dev/pts/$pts; \\
+#TechnicalSymbolexec arch-audit > /dev/pts/$pts; \\
+#TechnicalSymbolexec pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)"; \\
+#TechnicalSymbolexec sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; \\
+#TechnicalSymbolexec sudo pacman -Suy --noconfirm > /dev/pts/$pts; \\
+#TechnicalSymbolexec sudo pacman -Sc --noconfirm > /dev/pts/$pts; \\
+#TechnicalSymbolexec sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts\047
 #
 # Автозапуск numlockx.
 exec --no-startup-id numlockx;
