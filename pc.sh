@@ -74,7 +74,7 @@ varsize=""
 #Переменная сохранит кулеры.
 fanconky=""
 #Массив, хранит шрифты.
-massfont=($(curl https://fonts.google.com/download/list?family=Noto%20Emoji \
+massfont=(30144_PostIndex.ttf https://ttfonts.net/ru/download/31252.htm $(curl https://fonts.google.com/download/list?family=Noto%20Emoji \
                  https://fonts.google.com/download/list?family=Noto%20Sans%20Symbols \
                  https://fonts.google.com/download/list?family=Noto%20Sans%20Symbols%202 \
                  https://fonts.google.com/download/list?family=Noto%20Sans%20Duployan \
