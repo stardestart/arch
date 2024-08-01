@@ -14,44 +14,52 @@ snap install cqlsh
 #
 #systemctl status docker
 #
-echo '
-networks:
+echo 'networks:
   host-network:
+    name: host-network
     driver: bridge
     ipam:
      config:
        - subnet: 192.168.1.0/24
+
 services:
-  cass-db-1:
-    image: cassandra:latest
-    container_name: cass-db-1
+  cass-db-seed:
+    image: cassandra:5
+    container_name: cass-db-seed
     ports:
-      - "9042:9042"
+      - 9042:9042 # cqlsh
     networks:
       host-network:
         ipv4_address: 192.168.1.200
+    restart: always
 
-  cass-db-2:
-    container_name: cass-db-2
-    image: cassandra:latest
+  cass-db-1:
+    container_name: cass-db-1
+    image: cassandra:5
     ports:
-      - "9043:9042"
+      - 9043:9042
+    environment:
+      - CASSANDRA_SEEDS=cass-db-seed
     networks:
       host-network:
         ipv4_address: 192.168.1.201
     depends_on:
-      - cass-db-1
+      - cass-db-seed
+    restart: always
 
-  cass-db-3:
-    container_name: cass-db-3
-    image: cassandra:latest
+  cass-db-2:
+    container_name: cass-db-2
+    image: cassandra:5
     ports:
-      - "9044:9042"
+      - 9044:9042
+    environment:
+      - CASSANDRA_SEEDS=cass-db-seed
     networks:
       host-network:
         ipv4_address: 192.168.1.202
     depends_on:
-      - cass-db-2' | tee "$HOME/docker-compose.yml"
+      - cass-db-seed
+    restart: always' | tee "$HOME/docker-compose.yml"
 #
 docker-compose up  -d
 #
@@ -62,4 +70,4 @@ exit 0' > /etc/rc.local
 chmod +x /etc/rc.local
 #
 systemctl enable rc-local
-echo $HOME
+echo "$HOME/docker-compose.yml"
