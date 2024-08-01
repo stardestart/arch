@@ -59,7 +59,7 @@ services:
         ipv4_address: 192.168.1.202
     depends_on:
       - cass-db-seed
-    restart: always' | tee "$HOME/docker-compose.yml"
+    restart: always' > docker-compose.yml
 #
 docker-compose up  -d
 #
@@ -70,4 +70,3 @@ exit 0' > /etc/rc.local
 chmod +x /etc/rc.local
 #
 systemctl enable rc-local
-echo "$HOME/docker-compose.yml"
