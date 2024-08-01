@@ -1,17 +1,17 @@
 #!/bin/bash
 #
 #apt install docker-ce -y
-apt-get install docker-compose-plugin
+sudo apt-get install docker-compose-plugin
 #
-sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+#sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 #
-chmod +x /usr/local/bin/docker-compose
+#chmod +x /usr/local/bin/docker-compose
 #
 #docker-compose
 #
-apt install snapd
+sudo apt install snapd
 #
-snap install cqlsh
+sudo snap install cqlsh
 #
 #systemctl status docker
 #
@@ -62,12 +62,12 @@ services:
       - cass-db-seed
     restart: always' > docker-compose.yml
 #
-docker-compose up  -d
+sudo docker-compose up  -d
 #
 echo '
 docker-compose up  -d
 exit 0' > /etc/rc.local
 #
-chmod +x /etc/rc.local
+sudo chmod +x /etc/rc.local
 #
-systemctl enable rc-local
+sudo systemctl enable rc-local
