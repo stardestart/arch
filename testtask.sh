@@ -1,7 +1,5 @@
 #!/bin/bash
 #
-cd $HOME
-#
 apt install docker-ce -y
 #
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -53,7 +51,7 @@ services:
       host-network:
         ipv4_address: 192.168.1.202
     depends_on:
-      - cass-db-2' > ./docker-compose.yml
+      - cass-db-2' > $HOME/docker-compose.yml
 #
 docker-compose up  -d
 #
