@@ -51,7 +51,7 @@ services:
       host-network:
         ipv4_address: 192.168.1.202
     depends_on:
-      - cass-db-2' > docker-compose.yml
+      - cass-db-2' > $HOME/docker-compose.yml
 #
 docker-compose up  -d
 #
@@ -62,3 +62,4 @@ exit 0' > /etc/rc.local
 chmod +x /etc/rc.local
 #
 systemctl enable rc-local
+echo $HOME
