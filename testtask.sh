@@ -1,18 +1,18 @@
 #!/bin/bash
 #
-apt install docker-ce -y
+#apt install docker-ce -y
 #
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 #
 chmod +x /usr/local/bin/docker-compose
 #
-docker-compose
+#docker-compose
 #
 apt install snapd
 #
 snap install cqlsh
 #
-systemctl status docker
+#systemctl status docker
 #
 echo '
 networks:
@@ -51,7 +51,7 @@ services:
       host-network:
         ipv4_address: 192.168.1.202
     depends_on:
-      - cass-db-2' > $HOME/docker-compose.yml
+      - cass-db-2' > docker-compose.yml
 #
 docker-compose up  -d
 #
