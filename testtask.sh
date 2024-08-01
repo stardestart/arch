@@ -2,7 +2,7 @@
 #
 cd $HOME
 #
-#apt install docker-ce -y
+apt install docker-ce -y
 #
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 #
@@ -14,7 +14,7 @@ apt install snapd
 #
 snap install cqlsh
 #
-#systemctl status docker
+systemctl status docker
 #
 echo '
 networks:
