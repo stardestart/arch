@@ -3,13 +3,14 @@
 #apt install docker-ce -y
 #sudo apt install docker-compose -y
 #
-sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+#sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 #
-sudo chmod +x /usr/local/bin/docker-compose
+#sudo chmod +x /usr/local/bin/docker-compose
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin snapd -y
 #
 #docker-compose
 #
-sudo apt install snapd -y
+#sudo apt install snapd -y
 #
 sudo snap install cqlsh
 #
@@ -53,9 +54,9 @@ services:
     depends_on:
       - cass-db-2' > docker-compose.yml
 #
-sudo docker-compose up -d
+sudo docker-compose up
 #
-echo 'docker-compose up  -d
+echo 'docker-compose up
 exit 0' | sudo tee /etc/rc.local
 #
 sudo chmod +x /etc/rc.local
