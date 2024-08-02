@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 #apt install docker-ce -y
-sudo apt install docker-compose -y
+sudo apt install docker-compose-v2 -y
 #
 #sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 #
@@ -53,7 +53,7 @@ services:
     depends_on:
       - cass-db-2' > docker-compose.yml
 #
-sudo docker-compose up  -d
+sudo docker-compose up -d
 #
 echo 'docker-compose up  -d
 exit 0' | sudo tee /etc/rc.local
