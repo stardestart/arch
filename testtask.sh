@@ -6,16 +6,7 @@
 #
 #sudo snap install cqlsh
 #
-echo '# Определение сети
-networks:
-  cassandra-net:
-    driver: macvlan
-    ipam:
-      config:
-        - subnet: 192.168.1.0/24
-          gateway: 192.168.1.1
-
-# Определение сервисов
+echo '# Определение сервисов
 services:
   # Сервис для узла Cassandra 1
   cass-db-1:
@@ -23,7 +14,7 @@ services:
     image: cassandra:latest
     # Установка имени контейнера
     container_name: cass-db-1
-    #Cassandra слушает на правильном IP-адресе
+    # Cassandra слушает на правильном IP-адресе
     volumes:
       - ./cassandra-1.yaml:/etc/cassandra/cassandra.yaml
     # Пропуск порта 9042 на хосте к порту 9042 в контейнере (для CQLSH)
@@ -40,7 +31,7 @@ services:
     container_name: cass-db-2
     # Использование последнего образа Cassandra
     image: cassandra:latest
-    #Cassandra слушает на правильном IP-адресе
+    # Cassandra слушает на правильном IP-адресе
     volumes:
       - ./cassandra-2.yaml:/etc/cassandra/cassandra.yaml
     # Пропуск порта 9043 на хосте к порту 9042 в контейнере (для CQLSH)
@@ -57,7 +48,7 @@ services:
     container_name: cass-db-3
     # Использование последнего образа Cassandra
     image: cassandra:latest
-    #Cassandra слушает на правильном IP-адресе
+    # Cassandra слушает на правильном IP-адресе
     volumes:
       - ./cassandra-3.yaml:/etc/cassandra/cassandra.yaml
     # Пропуск порта 9044 на хосте к порту 9042 в контейнере (для CQLSH)
@@ -81,13 +72,28 @@ services:
       - cass-db-3
     networks:
       - cassandra-net' > docker-compose.yml
-echo '#Cassandra-1 слушает на правильном IP-адресе
+echo 'cluster_name: my_cluster
+seed_provider:
+  - class_name: org.apache.cassandra.locator.SimpleSeedProvider
+    parameters:
+      - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
+#Cassandra-1 слушает на правильном IP-адресе
 cassandra:
   listen_address: 192.168.1.200' > cassandra-1.yaml
-echo '#Cassandra-2 слушает на правильном IP-адресе
+echo 'cluster_name: my_cluster
+seed_provider:
+  - class_name: org.apache.cassandra.locator.SimpleSeedProvider
+    parameters:
+      - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
+#Cassandra-2 слушает на правильном IP-адресе
 cassandra:
   listen_address: 192.168.1.201' > cassandra-2.yaml
-echo '#Cassandra-3 слушает на правильном IP-адресе
+echo 'cluster_name: my_cluster
+seed_provider:
+  - class_name: org.apache.cassandra.locator.SimpleSeedProvider
+    parameters:
+      - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
+#Cassandra-3 слушает на правильном IP-адресе
 cassandra:
   listen_address: 192.168.1.202' > cassandra-3.yaml
 echo 'http {
