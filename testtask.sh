@@ -9,7 +9,7 @@
 echo '# Определение сети
 networks:
   cassandra-net:
-    driver: bridge
+    driver: macvlan
     ipam:
       config:
         - subnet: 192.168.1.0/24
@@ -66,7 +66,19 @@ services:
     # Подключение к сети cassandra-net
     networks:
       cassandra-net:
-        ipv4_address: 192.168.1.202' > docker-compose.yml
+        ipv4_address: 192.168.1.202
+    nginx:
+    image: nginx:latest
+    volumes:
+      -./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - cass-db-1
+      - cass-db-2
+      - cass-db-3
+    networks:
+      - cassandra-net' > docker-compose.yml
 echo '#Cassandra-1 слушает на правильном IP-адресе
 cassandra:
   listen_address: 192.168.1.200' > cassandra-1.yaml
@@ -76,6 +88,22 @@ cassandra:
 echo '#Cassandra-1 слушает на правильном IP-адресе
 cassandra:
   listen_address: 192.168.1.202' > cassandra-3.yaml
+echo 'http {
+    upstream cassandra {
+        server cass-db-1:9042;
+        server cass-db-2:9042;
+        server cass-db-3:9042;
+    }
+
+    server {
+        listen 80;
+        location / {
+            proxy_pass http://cassandra;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+    }
+}' > nginx.conf
 
 #
 #sudo docker-compose up
