@@ -67,6 +67,8 @@ services:
     networks:
       cassandra-net:
         ipv4_address: 192.168.1.202
+
+  # Сервис для обратного прокси
   nginx:
     image: nginx:latest
     volumes:
