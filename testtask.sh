@@ -71,7 +71,7 @@ echo '#Cassandra слушает на правильном IP-адресе
 cassandra:
   listen_address: 192.168.1.200
   listen_address: 192.168.1.201
-  listen_address: 192.168.1.202' > docker-compose.yml
+  listen_address: 192.168.1.202' > cassandra.yaml
 
 #
 #sudo docker-compose up
