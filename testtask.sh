@@ -9,7 +9,7 @@
 echo '# Определение сети
 networks:
   cassandra-net:
-    driver: ipvlan
+    driver: host
     ipam:
       config:
         - subnet: 192.168.1.0/24
