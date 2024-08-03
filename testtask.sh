@@ -23,6 +23,9 @@ services:
     image: cassandra:latest
     # Установка имени контейнера
     container_name: cass-db-1
+    #Cassandra слушает на правильном IP-адресе
+    volumes:
+      - ./cassandra.yaml:/etc/cassandra/cassandra.yaml
     # Пропуск порта 9042 на хосте к порту 9042 в контейнере (для CQLSH)
     ports:
       - "9042:9042"
@@ -37,6 +40,9 @@ services:
     container_name: cass-db-2
     # Использование последнего образа Cassandra
     image: cassandra:latest
+    #Cassandra слушает на правильном IP-адресе
+    volumes:
+      - ./cassandra.yaml:/etc/cassandra/cassandra.yaml
     # Пропуск порта 9043 на хосте к порту 9042 в контейнере (для CQLSH)
     ports:
       - "9043:9042"
@@ -51,6 +57,9 @@ services:
     container_name: cass-db-3
     # Использование последнего образа Cassandra
     image: cassandra:latest
+    #Cassandra слушает на правильном IP-адресе
+    volumes:
+      - ./cassandra.yaml:/etc/cassandra/cassandra.yaml
     # Пропуск порта 9044 на хосте к порту 9042 в контейнере (для CQLSH)
     ports:
       - "9044:9042"
@@ -58,5 +67,11 @@ services:
     networks:
       cassandra-net:
         ipv4_address: 192.168.1.202' > docker-compose.yml
+echo '#Cassandra слушает на правильном IP-адресе
+cassandra:
+  listen_address: 192.168.1.200
+  listen_address: 192.168.1.201
+  listen_address: 192.168.1.202' > docker-compose.yml
+
 #
 #sudo docker-compose up
