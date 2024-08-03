@@ -72,7 +72,7 @@ services:
   nginx:
     image: nginx:latest
     volumes:
-      /./nginx.conf:/etc/nginx/nginx.conf:ro
+      ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "80:80"
     depends_on:
@@ -81,13 +81,28 @@ services:
       - cass-db-3
     networks:
       - cassandra-net' > docker-compose.yml
-echo '#Cassandra-1 слушает на правильном IP-адресе
+echo 'cluster_name: my_cluster
+seed_provider:
+  - class_name: org.apache.cassandra.locator.SimpleSeedProvider
+    parameters:
+      - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
+#Cassandra-1 слушает на правильном IP-адресе
 cassandra:
   listen_address: 192.168.1.200' > cassandra-1.yaml
-echo '#Cassandra-1 слушает на правильном IP-адресе
+echo 'cluster_name: my_cluster
+seed_provider:
+  - class_name: org.apache.cassandra.locator.SimpleSeedProvider
+    parameters:
+      - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
+#Cassandra-1 слушает на правильном IP-адресе
 cassandra:
   listen_address: 192.168.1.201' > cassandra-2.yaml
-echo '#Cassandra-1 слушает на правильном IP-адресе
+echo 'cluster_name: my_cluster
+seed_provider:
+  - class_name: org.apache.cassandra.locator.SimpleSeedProvider
+    parameters:
+      - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
+#Cassandra-1 слушает на правильном IP-адресе
 cassandra:
   listen_address: 192.168.1.202' > cassandra-3.yaml
 echo 'http {
