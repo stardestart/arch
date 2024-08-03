@@ -7,7 +7,7 @@
 #sudo snap install cqlsh
 #
 echo 'networks:
-  host-network:
+  cassandra-net:
     driver: bridge
     ipam:
       config:
@@ -20,7 +20,7 @@ services:
     ports:
       - "9042:9042" # for cqlsh
     networks:
-      host-network:
+      cassandra-net:
         ipv4_address: 192.168.1.200
 
   cass-db-2:
@@ -29,7 +29,7 @@ services:
     ports:
       - "9043:9042" # for cqlsh
     networks:
-      host-network:
+      cassandra-net:
         ipv4_address: 192.168.1.201
     depends_on:
       - cass-db-1
@@ -40,7 +40,7 @@ services:
     ports:
       - "9044:9042" # for cqlsh
     networks:
-      host-network:
+      cassandra-net:
         ipv4_address: 192.168.1.202
     depends_on:
       - cass-db-2' > docker-compose.yml
