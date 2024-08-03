@@ -9,7 +9,11 @@
 echo '# Определение сети
 networks:
   cassandra-net:
-    driver: host
+    driver: ipvlan
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+          gateway: 192.168.1.1
 
 # Определение сервисов
 services:
@@ -25,6 +29,7 @@ services:
     # Подключение к сети cassandra-net
     networks:
       cassandra-net:
+        ipv4_address: 192.168.1.200
 
   # Сервис для узла Cassandra 2
   cass-db-2:
@@ -38,6 +43,7 @@ services:
     # Подключение к сети cassandra-net
     networks:
       cassandra-net:
+        ipv4_address: 192.168.1.201
 
   # Сервис для узла Cassandra 3
   cass-db-3:
@@ -50,6 +56,7 @@ services:
       - "9044:9042"
     # Подключение к сети cassandra-net
     networks:
-      cassandra-net:' > docker-compose.yml
+      cassandra-net:
+        ipv4_address: 192.168.1.202' > docker-compose.yml
 #
 #sudo docker-compose up
