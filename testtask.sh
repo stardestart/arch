@@ -7,6 +7,14 @@
 #sudo snap install cqlsh
 #
 echo '---
+# Определение сети
+networks:
+  cassandra-net:
+    driver: macvlan
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+          gateway: 192.168.1.1
 # Определение сервисов
 services:
   # Сервис для узла Cassandra 1
