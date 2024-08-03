@@ -19,8 +19,9 @@ echo 'networks:
   host-network:
     driver: bridge
     ipam:
-     config:
-       - subnet: 192.168.1.0/24
+      config:
+        - subnet: 192.168.1.0/24
+
 services:
   cass-db-1:
     image: cassandra:latest
@@ -30,7 +31,6 @@ services:
     networks:
       host-network:
         ipv4_address: 192.168.1.200
-      network_mode: "host"
 
   cass-db-2:
     container_name: cass-db-2
@@ -40,7 +40,6 @@ services:
     networks:
       host-network:
         ipv4_address: 192.168.1.201
-    network_mode: "host"
     depends_on:
       - cass-db-1
 
@@ -48,11 +47,10 @@ services:
     container_name: cass-db-3
     image: cassandra:latest
     ports:
-      - "9044:9042"# for cqlsh
+      - "9044:9042" # for cqlsh
     networks:
       host-network:
         ipv4_address: 192.168.1.202
-    network_mode: "host"
     depends_on:
       - cass-db-2' > docker-compose.yml
 #
