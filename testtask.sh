@@ -1,19 +1,10 @@
 #!/bin/bash
 #
-#apt install docker-ce -y
 #sudo apt install docker-compose -y
 #
-#sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+#sudo apt install snapd -y
 #
-#sudo chmod +x /usr/local/bin/docker-compose
-#
-#docker-compose
-#
-sudo apt install snapd -y
-#
-sudo snap install cqlsh
-#
-#systemctl status docker
+#sudo snap install cqlsh
 #
 echo 'networks:
   host-network:
