@@ -26,19 +26,21 @@ services:
     image: cassandra:latest
     container_name: cass-db-1
     ports:
-      - "9042:9042"
+      - "9042:9042" # for cqlsh
     networks:
       host-network:
         ipv4_address: 192.168.1.200
+      network_mode: "host"
 
   cass-db-2:
     container_name: cass-db-2
     image: cassandra:latest
     ports:
-      - "9043:9042"
+      - "9043:9042" # for cqlsh
     networks:
       host-network:
         ipv4_address: 192.168.1.201
+    network_mode: "host"
     depends_on:
       - cass-db-1
 
@@ -46,18 +48,12 @@ services:
     container_name: cass-db-3
     image: cassandra:latest
     ports:
-      - "9044:9042"
+      - "9044:9042"# for cqlsh
     networks:
       host-network:
         ipv4_address: 192.168.1.202
+    network_mode: "host"
     depends_on:
       - cass-db-2' > docker-compose.yml
 #
-sudo docker-compose up
-#
-echo 'docker-compose up
-exit 0' | sudo tee /etc/rc.local
-#
-sudo chmod +x /etc/rc.local
-#
-sudo systemctl enable rc-local
+#sudo docker-compose up
