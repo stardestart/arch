@@ -72,7 +72,7 @@ services:
   nginx:
     image: nginx:latest
     volumes:
-      ./nginx.conf:/etc/nginx/nginx.conf:ro
+      -./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "80:80"
     depends_on:
