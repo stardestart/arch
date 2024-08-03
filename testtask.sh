@@ -6,7 +6,8 @@
 #
 #sudo snap install cqlsh
 #
-echo '# Определение сервисов
+echo '---
+# Определение сервисов
 services:
   # Сервис для узла Cassandra 1
   cass-db-1:
@@ -72,7 +73,8 @@ services:
       - cass-db-3
     networks:
       - cassandra-net' > docker-compose.yml
-echo 'cluster_name: my_cluster
+echo '---
+cluster_name: my_cluster
 seed_provider:
   - class_name: org.apache.cassandra.locator.SimpleSeedProvider
     parameters:
@@ -80,7 +82,8 @@ seed_provider:
 #Cassandra-1 слушает на правильном IP-адресе
 cassandra:
   listen_address: 192.168.1.200' > cassandra-1.yaml
-echo 'cluster_name: my_cluster
+echo '---
+cluster_name: my_cluster
 seed_provider:
   - class_name: org.apache.cassandra.locator.SimpleSeedProvider
     parameters:
@@ -88,7 +91,8 @@ seed_provider:
 #Cassandra-2 слушает на правильном IP-адресе
 cassandra:
   listen_address: 192.168.1.201' > cassandra-2.yaml
-echo 'cluster_name: my_cluster
+echo '---
+cluster_name: my_cluster
 seed_provider:
   - class_name: org.apache.cassandra.locator.SimpleSeedProvider
     parameters:
@@ -96,7 +100,8 @@ seed_provider:
 #Cassandra-3 слушает на правильном IP-адресе
 cassandra:
   listen_address: 192.168.1.202' > cassandra-3.yaml
-echo 'http {
+echo '---
+http {
     upstream cassandra {
         server cass-db-1:9042;
         server cass-db-2:9042;
