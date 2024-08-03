@@ -67,7 +67,7 @@ services:
     networks:
       cassandra-net:
         ipv4_address: 192.168.1.202
-    nginx:
+  nginx:
     image: nginx:latest
     volumes:
       -./nginx.conf:/etc/nginx/nginx.conf:ro
