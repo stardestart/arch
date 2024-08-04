@@ -52,9 +52,10 @@ networks:
       config:
         - subnet: 192.168.1.0/24
           gateway: 192.168.1.1' > docker-compose.yml
-sudo echo '{
+sudo mkdir /etc/docker/
+echo '{
   "bip": "192.168.1.1/24"
-}' > /etc/docker/daemon.json
+}' | sudo tee /etc/docker/daemon.json
 #
 sudo systemctl restart docker
 sudo docker-compose up -d
