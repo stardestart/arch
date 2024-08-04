@@ -1,62 +1,60 @@
 #!/bin/bash
-#
+
 sudo apt install docker-compose -y
-#
-sudo apt install snapd -y
-#
-sudo snap install cqlsh
-#
+# Установка docker-compose с помощью apt, флаг -y указывает на автоматическое подтверждение установки
+
 echo '---
-services:
-  cassandra-1:
-    image: cassandra:latest
-    container_name: cassandra-1
-    ports:
-      - "9042:9042"
-    networks:
-      cassandra-net:
-        ipv4_address: 10.10.10.200
-    environment:
-      - CASSANDRA_BROADCAST_ADDRESS=10.10.10.200
-      - CASSANDRA_SEEDS=10.10.10.200,10.10.10.201,10.10.10.202
-
-  cassandra-2:
-    image: cassandra:latest
-    container_name: cassandra-2
-    ports:
-      - "9043:9042"
-    networks:
-      cassandra-net:
-        ipv4_address: 10.10.10.201
-    environment:
-      - CASSANDRA_BROADCAST_ADDRESS=10.10.10.201
-      - CASSANDRA_SEEDS=10.10.10.200,10.10.10.201,10.10.10.202
-
-  cassandra-3:
-    image: cassandra:latest
-    container_name: cassandra-3
-    ports:
-      - "9044:9042"
-    networks:
-      cassandra-net:
-        ipv4_address: 10.10.10.202
-    environment:
-      - CASSANDRA_BROADCAST_ADDRESS=10.10.10.202
-      - CASSANDRA_SEEDS=10.10.10.200,10.10.10.201,10.10.10.202
-
 networks:
-  cassandra-net:
+  host-network:
+    name: host-network
     driver: bridge
-    name: cassandra-net
     ipam:
-      driver: default
-      config:
-        - subnet: 10.10.10.0/24
-          gateway: 10.10.10.1' > docker-compose.yml
+     config:
+       - subnet: 192.168.1.0/24
+# Определение сети host-network с диапазоном адресов 192.168.1.0/24
+
+services:
+  cass-db-seed:
+    image: cassandra:5
+    container_name: cass-db-seed
+    ports:
+      - 9042:9042
+    networks:
+      host-network:
+        ipv4_address: 192.168.1.200
+    restart: always
+# Определение сервиса cass-db-seed, который будет использовать образ cassandra:5, порт 9042 и адрес 192.168.1.200
+
+  cass-db-1:
+    container_name: cass-db-1
+    image: cassandra:5
+    ports:
+      - 9043:9042
+    environment:
+      - CASSANDRA_SEEDS=cass-db-seed
+    networks:
+      host-network:
+        ipv4_address: 192.168.1.201
+    depends_on:
+      - cass-db-seed
+    restart: always
+# Определение сервиса cass-db-1, который будет использовать образ cassandra:5, порт 9043, адрес 192.168.1.201 и зависеть от сервиса cass-db-seed
+
+  cass-db-2:
+    container_name: cass-db-2
+    image: cassandra:5
+    ports:
+      - 9044:9042
+    environment:
+      - CASSANDRA_SEEDS=cass-db-seed
+    networks:
+      host-network:
+        ipv4_address: 192.168.1.202
+    depends_on:
+      - cass-db-seed
+    restart: always
+# Определение сервиса cass-db-2, который будет использовать образ cassandra:5, порт 9044, адрес 192.168.1.202 и зависеть от сервиса cass-db-seed
+' > docker-compose.yml
+
 sudo docker-compose up -d
-sudo mkdir /etc/cassandra/
-echo '[connection]
-hostname = 10.10.10.200
-port = 9042' | sudo tee /etc/cassandra/cqlshrc
-sudo docker-compose exec cassandra-1 cqlsh -f /etc/cassandra/cqlshrc
-#
+# Запуск docker-compose в фоновом режиме
