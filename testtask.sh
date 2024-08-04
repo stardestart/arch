@@ -108,7 +108,9 @@ seed_provider:
 #Cassandra-3 слушает на правильном IP-адресе
 cassandra:
   listen_address: 192.168.1.202' > cassandra-3.yaml
-echo '---
+echo 'events {
+    worker_connections 1024;
+}
 http {
     upstream cassandra {
         server cass-db-1:9042;
