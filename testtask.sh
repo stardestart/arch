@@ -2,9 +2,9 @@
 #
 sudo apt install docker-compose -y
 #
-#sudo apt install snapd -y
+sudo apt install snapd -y
 #
-#sudo snap install cqlsh
+sudo snap install cqlsh
 #
 echo '---
 services:
@@ -47,15 +47,16 @@ services:
 networks:
   cassandra-net:
     driver: bridge
+    name: cassandra-net
     ipam:
       driver: default
       config:
         - subnet: 192.168.1.0/24
           gateway: 192.168.1.1' > docker-compose.yml
-sudo mkdir /etc/docker/
-echo '{
-  "bip": "192.168.1.1/24"
-}' | sudo tee /etc/docker/daemon.json
-#
-sudo systemctl restart docker
 sudo docker-compose up -d
+sudo mkdir /etc/cassandra/
+echo '[connection]
+hostname = 192.168.1.200
+port = 9042' | sudo tee /etc/cassandra/cqlshrc
+sudo docker-compose exec cassandra-1 cqlsh -f /etc/cassandra/cqlshrc
+#
