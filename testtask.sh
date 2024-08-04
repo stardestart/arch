@@ -15,10 +15,10 @@ services:
       - "9042:9042"
     networks:
       cassandra-net:
-        ipv4_address: 192.168.1.200
+        ipv4_address: 10.10.10.200
     environment:
-      - CASSANDRA_BROADCAST_ADDRESS=192.168.1.200
-      - CASSANDRA_SEEDS=192.168.1.200,192.168.1.201,192.168.1.202
+      - CASSANDRA_BROADCAST_ADDRESS=10.10.10.200
+      - CASSANDRA_SEEDS=10.10.10.200,10.10.10.201,10.10.10.202
 
   cassandra-2:
     image: cassandra:latest
@@ -27,10 +27,10 @@ services:
       - "9043:9042"
     networks:
       cassandra-net:
-        ipv4_address: 192.168.1.201
+        ipv4_address: 10.10.10.201
     environment:
-      - CASSANDRA_BROADCAST_ADDRESS=192.168.1.201
-      - CASSANDRA_SEEDS=192.168.1.200,192.168.1.201,192.168.1.202
+      - CASSANDRA_BROADCAST_ADDRESS=10.10.10.201
+      - CASSANDRA_SEEDS=10.10.10.200,10.10.10.201,10.10.10.202
 
   cassandra-3:
     image: cassandra:latest
@@ -39,10 +39,10 @@ services:
       - "9044:9042"
     networks:
       cassandra-net:
-        ipv4_address: 192.168.1.202
+        ipv4_address: 10.10.10.202
     environment:
-      - CASSANDRA_BROADCAST_ADDRESS=192.168.1.202
-      - CASSANDRA_SEEDS=192.168.1.200,192.168.1.201,192.168.1.202
+      - CASSANDRA_BROADCAST_ADDRESS=10.10.10.202
+      - CASSANDRA_SEEDS=10.10.10.200,10.10.10.201,10.10.10.202
 
 networks:
   cassandra-net:
@@ -51,12 +51,12 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 192.168.1.0/24
-          gateway: 192.168.1.1' > docker-compose.yml
+        - subnet: 10.10.10.0/24
+          gateway: 10.10.10.1' > docker-compose.yml
 sudo docker-compose up -d
 sudo mkdir /etc/cassandra/
 echo '[connection]
-hostname = 192.168.1.200
+hostname = 10.10.10.200
 port = 9042' | sudo tee /etc/cassandra/cqlshrc
 sudo docker-compose exec cassandra-1 cqlsh -f /etc/cassandra/cqlshrc
 #
