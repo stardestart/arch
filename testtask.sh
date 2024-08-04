@@ -13,6 +13,7 @@ services:
     container_name: cassandra-1
     ports:
       - "192.168.1.200:9042:9042"
+      - "host.docker.internal:host-gateway"
     environment:
       - CASSANDRA_BROADCAST_ADDRESS=192.168.1.200
       - CASSANDRA_LISTEN_ADDRESS=192.168.1.200
@@ -25,6 +26,7 @@ services:
     container_name: cassandra-2
     ports:
       - "192.168.1.201:9042:9042"
+      - "host.docker.internal:host-gateway"
     environment:
       - CASSANDRA_BROADCAST_ADDRESS=192.168.1.201
       - CASSANDRA_LISTEN_ADDRESS=192.168.1.201
@@ -37,6 +39,7 @@ services:
     container_name: cassandra-3
     ports:
       - "192.168.1.202:9042:9042"
+      - "host.docker.internal:host-gateway"
     environment:
       - CASSANDRA_BROADCAST_ADDRESS=192.168.1.202
       - CASSANDRA_LISTEN_ADDRESS=192.168.1.202
