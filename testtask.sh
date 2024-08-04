@@ -7,135 +7,59 @@
 #sudo snap install cqlsh
 #
 echo '---
-# Определение сети
-networks:
-  cassandra-net:
-    driver: macvlan
-    ipam:
-      config:
-        - subnet: 192.168.1.0/24
-          gateway: 192.168.1.1
-# Определение сервисов
+version: '3'
+
 services:
-  # Сервис для узла Cassandra 1
-  cass-db-1:
-    # Использование последнего образа Cassandra
-    image: cassandra:latest
-    # Установка имени контейнера
-    container_name: cass-db-1
-    # Cassandra слушает на правильном IP-адресе
-    volumes:
-      - ./cassandra-1.yaml:/etc/cassandra/cassandra.yaml
-    # Пропуск порта 9042 на хосте к порту 9042 в контейнере (для CQLSH)
+  cassandra-1:
+    image: cassandra:3.11
+    container_name: cassandra-1
     ports:
-      - "9042:9042"
-    # Подключение к сети cassandra-net
-    networks:
-      cassandra-net:
-        ipv4_address: 192.168.1.200
+      - "192.168.1.200:9042:9042"
+    environment:
+      - CASSANDRA_BROADCAST_ADDRESS=192.168.1.200
+      - CASSANDRA_LISTEN_ADDRESS=192.168.1.200
+      - CASSANDRA_RPC_ADDRESS=192.168.1.200
+    volumes:
+      -./cassandra-1.yaml:/etc/cassandra/cassandra.yaml
 
-  # Сервис для узла Cassandra 2
-  cass-db-2:
-    # Установка имени контейнера
-    container_name: cass-db-2
-    # Использование последнего образа Cassandra
-    image: cassandra:latest
-    # Cassandra слушает на правильном IP-адресе
-    volumes:
-      - ./cassandra-2.yaml:/etc/cassandra/cassandra.yaml
-    # Пропуск порта 9043 на хосте к порту 9042 в контейнере (для CQLSH)
+  cassandra-2:
+    image: cassandra:3.11
+    container_name: cassandra-2
     ports:
-      - "9043:9042"
-    # Подключение к сети cassandra-net
-    networks:
-      cassandra-net:
-        ipv4_address: 192.168.1.201
+      - "192.168.1.201:9042:9042"
+    environment:
+      - CASSANDRA_BROADCAST_ADDRESS=192.168.1.201
+      - CASSANDRA_LISTEN_ADDRESS=192.168.1.201
+      - CASSANDRA_RPC_ADDRESS=192.168.1.201
+    volumes:
+      -./cassandra-2.yaml:/etc/cassandra/cassandra.yaml
 
-  # Сервис для узла Cassandra 3
-  cass-db-3:
-    # Установка имени контейнера
-    container_name: cass-db-3
-    # Использование последнего образа Cassandra
-    image: cassandra:latest
-    # Cassandra слушает на правильном IP-адресе
-    volumes:
-      - ./cassandra-3.yaml:/etc/cassandra/cassandra.yaml
-    # Пропуск порта 9044 на хосте к порту 9042 в контейнере (для CQLSH)
+  cassandra-3:
+    image: cassandra:3.11
+    container_name: cassandra-3
     ports:
-      - "9044:9042"
-    # Подключение к сети cassandra-net
-    networks:
-      cassandra-net:
-        ipv4_address: 192.168.1.202
-
-  # Сервис для обратного прокси
-  nginx:
-    image: nginx:latest
+      - "192.168.1.202:9042:9042"
+    environment:
+      - CASSANDRA_BROADCAST_ADDRESS=192.168.1.202
+      - CASSANDRA_LISTEN_ADDRESS=192.168.1.202
+      - CASSANDRA_RPC_ADDRESS=192.168.1.202
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    ports:
-      - "80:80"
-    depends_on:
-      - cass-db-1
-      - cass-db-2
-      - cass-db-3
-    networks:
-      - cassandra-net' > docker-compose.yml
+      -./cassandra-3.yaml:/etc/cassandra/cassandra.yaml' > docker-compose.yml
 echo '---
 cluster_name: my_cluster
 seed_provider:
   - class_name: org.apache.cassandra.locator.SimpleSeedProvider
     parameters:
       - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
-listen_address: 192.168.1.200
+listen_address: ${CASSANDRA_LISTEN_ADDRESS}
+rpc_address: ${CASSANDRA_RPC_ADDRESS}
 endpoint_snitch: SimpleSnitch
 data_file_directories:
   - /var/lib/cassandra/data
 commitlog_directory: /var/lib/cassandra/commitlog
 saved_caches_directory: /var/lib/cassandra/saved_caches' > cassandra-1.yaml
-echo '---
-cluster_name: my_cluster
-seed_provider:
-  - class_name: org.apache.cassandra.locator.SimpleSeedProvider
-    parameters:
-      - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
-listen_address: 192.168.1.201
-endpoint_snitch: SimpleSnitch
-data_file_directories:
-  - /var/lib/cassandra/data
-commitlog_directory: /var/lib/cassandra/commitlog
-saved_caches_directory: /var/lib/cassandra/saved_caches' > cassandra-2.yaml
-echo '---
-cluster_name: my_cluster
-seed_provider:
-  - class_name: org.apache.cassandra.locator.SimpleSeedProvider
-    parameters:
-      - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
-listen_address: 192.168.1.202
-endpoint_snitch: SimpleSnitch
-data_file_directories:
-  - /var/lib/cassandra/data
-commitlog_directory: /var/lib/cassandra/commitlog
-saved_caches_directory: /var/lib/cassandra/saved_caches' > cassandra-3.yaml
-echo 'events {
-    worker_connections 1024;
-}
-http {
-    upstream cassandra {
-        server cass-db-1:9042;
-        server cass-db-2:9042;
-        server cass-db-3:9042;
-    }
-
-    server {
-        listen 80;
-        location / {
-            proxy_pass http://cassandra;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-        }
-    }
-}' > nginx.conf
+cp cassandra-1.yaml cassandra-2.yaml
+cp cassandra-1.yaml cassandra-3.yaml
 
 #
 #sudo docker-compose up
