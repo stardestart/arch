@@ -7,8 +7,6 @@
 #sudo snap install cqlsh
 #
 echo '---
-version: '3'
-
 services:
   cassandra-1:
     image: cassandra:3.11
@@ -20,7 +18,7 @@ services:
       - CASSANDRA_LISTEN_ADDRESS=192.168.1.200
       - CASSANDRA_RPC_ADDRESS=192.168.1.200
     volumes:
-      -./cassandra-1.yaml:/etc/cassandra/cassandra.yaml:ro
+      - ./cassandra-1.yaml:/etc/cassandra/cassandra.yaml:ro
 
   cassandra-2:
     image: cassandra:3.11
@@ -32,7 +30,7 @@ services:
       - CASSANDRA_LISTEN_ADDRESS=192.168.1.201
       - CASSANDRA_RPC_ADDRESS=192.168.1.201
     volumes:
-      -./cassandra-2.yaml:/etc/cassandra/cassandra.yaml:ro
+      - ./cassandra-2.yaml:/etc/cassandra/cassandra.yaml:ro
 
   cassandra-3:
     image: cassandra:3.11
@@ -44,7 +42,8 @@ services:
       - CASSANDRA_LISTEN_ADDRESS=192.168.1.202
       - CASSANDRA_RPC_ADDRESS=192.168.1.202
     volumes:
-      -./cassandra-3.yaml:/etc/cassandra/cassandra.yaml:ro' > docker-compose.yml
+      - ./cassandra-3.yaml:/etc/cassandra/cassandra.yaml:ro
+      ' > docker-compose.yml
 echo '---
 cluster_name: my_cluster
 seed_provider:
