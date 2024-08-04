@@ -88,7 +88,11 @@ seed_provider:
     parameters:
       - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
 listen_address: 192.168.1.200
-endpoint_snitch: SimpleSnitch' > cassandra-1.yaml
+endpoint_snitch: SimpleSnitch
+data_file_directories:
+  - /var/lib/cassandra/data
+commitlog_directory: /var/lib/cassandra/commitlog
+saved_caches_directory: /var/lib/cassandra/saved_caches' > cassandra-1.yaml
 echo '---
 cluster_name: my_cluster
 seed_provider:
@@ -96,7 +100,11 @@ seed_provider:
     parameters:
       - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
 listen_address: 192.168.1.201
-endpoint_snitch: SimpleSnitch' > cassandra-2.yaml
+endpoint_snitch: SimpleSnitch
+data_file_directories:
+  - /var/lib/cassandra/data
+commitlog_directory: /var/lib/cassandra/commitlog
+saved_caches_directory: /var/lib/cassandra/saved_caches' > cassandra-2.yaml
 echo '---
 cluster_name: my_cluster
 seed_provider:
@@ -104,7 +112,11 @@ seed_provider:
     parameters:
       - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
 listen_address: 192.168.1.202
-endpoint_snitch: SimpleSnitch' > cassandra-3.yaml
+endpoint_snitch: SimpleSnitch
+data_file_directories:
+  - /var/lib/cassandra/data
+commitlog_directory: /var/lib/cassandra/commitlog
+saved_caches_directory: /var/lib/cassandra/saved_caches' > cassandra-3.yaml
 echo 'events {
     worker_connections 1024;
 }
