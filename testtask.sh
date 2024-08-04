@@ -8,38 +8,32 @@
 #
 echo '---
 services:
-  cassandra1:
+  cassandra-1:
     image: cassandra:latest
-    container_name: cassandra1
+    container_name: cassandra-1
     ports:
       - "9042:9042"
-    environment:
-      - CASSANDRA_BROADCAST_ADDRESS=192.168.1.200
-      - CASSANDRA_SEEDS=192.168.1.200
     networks:
-      - cassandra-net
+      cassandra-net:
+        ipv4_address: 172.16.1.200
 
-  cassandra2:
+  cassandra-2:
     image: cassandra:latest
-    container_name: cassandra2
+    container_name: cassandra-2
     ports:
       - "9043:9042"
-    environment:
-      - CASSANDRA_BROADCAST_ADDRESS=192.168.1.201
-      - CASSANDRA_SEEDS=192.168.1.200,192.168.1.201
     networks:
-      - cassandra-net
+      cassandra-net:
+        ipv4_address: 172.16.1.201
 
-  cassandra3:
+  cassandra-3:
     image: cassandra:latest
-    container_name: cassandra3
+    container_name: cassandra-3
     ports:
       - "9044:9042"
-    environment:
-      - CASSANDRA_BROADCAST_ADDRESS=192.168.1.202
-      - CASSANDRA_SEEDS=192.168.1.200,192.168.1.201,192.168.1.202
     networks:
-      - cassandra-net
+      cassandra-net:
+        ipv4_address: 172.16.1.202
 
 networks:
   cassandra-net:
@@ -48,8 +42,9 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 192.168.1.0/24
-          gateway: 192.168.1.1' > docker-compose.yml
+        - subnet: 172.16.1.0/24' > docker-compose.yml
+
+sudo docker network create --driver bridge --gateway 192.168.1.1 --subnet 172.16.1.0/24 cassandra-net
 
 #
 #sudo docker-compose up
