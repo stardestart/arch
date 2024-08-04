@@ -43,13 +43,13 @@ services:
 
 networks:
   cassandra-net:
+    name: cassandra-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 192.168.1.0/24
-          gateway: 192.168.1.1
-        ' > docker-compose.yml
+          gateway: 192.168.1.1' > docker-compose.yml
 
 #
 #sudo docker-compose up
