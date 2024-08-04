@@ -43,7 +43,9 @@ services:
       cassandra-net:' > docker-compose.yml
 
 sudo docker-compose up -d
+sudo ip link add cassandra-net type macvlan
 sudo ip addr add 172.16.1.200/24 brd 172.16.1.255 dev cassandra-net
 sudo ip addr add 172.16.1.201/24 brd 172.16.1.255 dev cassandra-net
 sudo ip addr add 172.16.1.202/24 brd 172.16.1.255 dev cassandra-net
+sudo ip link set cassandra-net up
 # Запуск docker-compose в фоновом режиме
