@@ -23,7 +23,6 @@ services:
       - "9042:9042"
     networks:
       cassandra-net:
-        ipv4_address: 172.16.1.200
 
   cassandra-2:
     image: cassandra:latest
@@ -33,7 +32,6 @@ services:
       - "9043:9042"
     networks:
       cassandra-net:
-        ipv4_address: 172.16.1.201
 
   cassandra-3:
     image: cassandra:latest
@@ -42,8 +40,10 @@ services:
     ports:
       - "9044:9042"
     networks:
-      cassandra-net:
-        ipv4_address: 172.16.1.202' > docker-compose.yml
+      cassandra-net:' > docker-compose.yml
 
 sudo docker-compose up -d
+sudo ip addr add 172.16.1.200/24 brd 172.16.1.255 dev cassandra-net
+sudo ip addr add 172.16.1.201/24 brd 172.16.1.255 dev cassandra-net
+sudo ip addr add 172.16.1.202/24 brd 172.16.1.255 dev cassandra-net
 # Запуск docker-compose в фоновом режиме
