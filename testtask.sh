@@ -57,4 +57,4 @@ sudo echo '{
 }' > /etc/docker/daemon.json
 #
 sudo systemctl restart docker
-sudo docker-compose up
+sudo docker-compose up -d
