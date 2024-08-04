@@ -87,21 +87,24 @@ seed_provider:
   - class_name: org.apache.cassandra.locator.SimpleSeedProvider
     parameters:
       - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
-listen_address: 192.168.1.200' > cassandra-1.yaml
+listen_address: 192.168.1.200
+endpoint_snitch: SimpleSnitch' > cassandra-1.yaml
 echo '---
 cluster_name: my_cluster
 seed_provider:
   - class_name: org.apache.cassandra.locator.SimpleSeedProvider
     parameters:
       - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
-listen_address: 192.168.1.201' > cassandra-2.yaml
+listen_address: 192.168.1.201
+endpoint_snitch: SimpleSnitch' > cassandra-2.yaml
 echo '---
 cluster_name: my_cluster
 seed_provider:
   - class_name: org.apache.cassandra.locator.SimpleSeedProvider
     parameters:
       - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
-listen_address: 192.168.1.202' > cassandra-3.yaml
+listen_address: 192.168.1.202
+endpoint_snitch: SimpleSnitch' > cassandra-3.yaml
 echo 'events {
     worker_connections 1024;
 }
