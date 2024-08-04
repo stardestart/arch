@@ -87,27 +87,21 @@ seed_provider:
   - class_name: org.apache.cassandra.locator.SimpleSeedProvider
     parameters:
       - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
-#Cassandra-1 слушает на правильном IP-адресе
-cassandra:
-  listen_address: 192.168.1.200' > cassandra-1.yaml
+listen_address: 192.168.1.200' > cassandra-1.yaml
 echo '---
 cluster_name: my_cluster
 seed_provider:
   - class_name: org.apache.cassandra.locator.SimpleSeedProvider
     parameters:
       - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
-#Cassandra-2 слушает на правильном IP-адресе
-cassandra:
-  listen_address: 192.168.1.201' > cassandra-2.yaml
+listen_address: 192.168.1.201' > cassandra-2.yaml
 echo '---
 cluster_name: my_cluster
 seed_provider:
   - class_name: org.apache.cassandra.locator.SimpleSeedProvider
     parameters:
       - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
-#Cassandra-3 слушает на правильном IP-адресе
-cassandra:
-  listen_address: 192.168.1.202' > cassandra-3.yaml
+listen_address: 192.168.1.202' > cassandra-3.yaml
 echo 'events {
     worker_connections 1024;
 }
