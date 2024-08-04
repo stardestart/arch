@@ -8,60 +8,46 @@
 #
 echo '---
 services:
-  cassandra-1:
-    image: cassandra:3.11
-    container_name: cassandra-1
+  cassandra1:
+    image: cassandra:latest
+    container_name: cassandra1
     ports:
-      - "192.168.1.200:9042:9042"
-      - "host.docker.internal:host-gateway"
+      - "9042:9042"
     environment:
       - CASSANDRA_BROADCAST_ADDRESS=192.168.1.200
-      - CASSANDRA_LISTEN_ADDRESS=192.168.1.200
-      - CASSANDRA_RPC_ADDRESS=192.168.1.200
-    volumes:
-      - ./cassandra-1.yaml:/etc/cassandra/cassandra.yaml:ro
+      - CASSANDRA_SEEDS=192.168.1.200
+    networks:
+      - cassandra-net
 
-  cassandra-2:
-    image: cassandra:3.11
-    container_name: cassandra-2
+  cassandra2:
+    image: cassandra:latest
+    container_name: cassandra2
     ports:
-      - "192.168.1.201:9042:9042"
-      - "host.docker.internal:host-gateway"
+      - "9043:9042"
     environment:
       - CASSANDRA_BROADCAST_ADDRESS=192.168.1.201
-      - CASSANDRA_LISTEN_ADDRESS=192.168.1.201
-      - CASSANDRA_RPC_ADDRESS=192.168.1.201
-    volumes:
-      - ./cassandra-2.yaml:/etc/cassandra/cassandra.yaml:ro
+      - CASSANDRA_SEEDS=192.168.1.200,192.168.1.201
+    networks:
+      - cassandra-net
 
-  cassandra-3:
-    image: cassandra:3.11
-    container_name: cassandra-3
+  cassandra3:
+    image: cassandra:latest
+    container_name: cassandra3
     ports:
-      - "192.168.1.202:9042:9042"
-      - "host.docker.internal:host-gateway"
+      - "9044:9042"
     environment:
       - CASSANDRA_BROADCAST_ADDRESS=192.168.1.202
-      - CASSANDRA_LISTEN_ADDRESS=192.168.1.202
-      - CASSANDRA_RPC_ADDRESS=192.168.1.202
-    volumes:
-      - ./cassandra-3.yaml:/etc/cassandra/cassandra.yaml:ro
-      ' > docker-compose.yml
-echo '---
-cluster_name: my_cluster
-seed_provider:
-  - class_name: org.apache.cassandra.locator.SimpleSeedProvider
-    parameters:
-      - seeds: "192.168.1.200,192.168.1.201,192.168.1.202"
-listen_address: ${CASSANDRA_LISTEN_ADDRESS}
-rpc_address: ${CASSANDRA_RPC_ADDRESS}
-endpoint_snitch: SimpleSnitch
-data_file_directories:
-  - /var/lib/cassandra/data
-commitlog_directory: /var/lib/cassandra/commitlog
-saved_caches_directory: /var/lib/cassandra/saved_caches' > cassandra-1.yaml
-cp cassandra-1.yaml cassandra-2.yaml
-cp cassandra-1.yaml cassandra-3.yaml
+      - CASSANDRA_SEEDS=192.168.1.200,192.168.1.201,192.168.1.202
+    networks:
+      - cassandra-net
+
+networks:
+  cassandra-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.1.0/24' > docker-compose.yml
 
 #
 #sudo docker-compose up
