@@ -16,6 +16,9 @@ services:
     networks:
       cassandra-net:
         ipv4_address: 192.168.1.200
+    environment:
+      - CASSANDRA_BROADCAST_ADDRESS=192.168.1.200
+      - CASSANDRA_SEEDS=192.168.1.200,192.168.1.201,192.168.1.202
 
   cassandra-2:
     image: cassandra:latest
@@ -25,6 +28,9 @@ services:
     networks:
       cassandra-net:
         ipv4_address: 192.168.1.201
+    environment:
+      - CASSANDRA_BROADCAST_ADDRESS=192.168.1.201
+      - CASSANDRA_SEEDS=192.168.1.200,192.168.1.201,192.168.1.202
 
   cassandra-3:
     image: cassandra:latest
@@ -34,17 +40,21 @@ services:
     networks:
       cassandra-net:
         ipv4_address: 192.168.1.202
+    environment:
+      - CASSANDRA_BROADCAST_ADDRESS=192.168.1.202
+      - CASSANDRA_SEEDS=192.168.1.200,192.168.1.201,192.168.1.202
 
 networks:
   cassandra-net:
-    name: cassandra-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 192.168.1.0/24
-          gateway: 192.168.1.197' > docker-compose.yml
-
-sudo docker network create --driver bridge --gateway 192.168.1.197 --subnet 192.168.1.0/24 cassandra-net
+          gateway: 192.168.1.1' > docker-compose.yml
+sudo echo '{
+  "bip": "192.168.1.1/24"
+}' > /etc/docker/daemon.json
 #
-#sudo docker-compose up
+sudo systemctl restart docker
+sudo docker-compose up
