@@ -9,10 +9,15 @@ echo '---
 networks:
   cassandra-net:
     name: cassandra-net
-    driver: macvlan
+    driver: bridge
+    networks:
+  default:
+    external:
+      name: br0
     ipam:
      config:
-       - subnet: 172.16.1.0/24
+       - subnet: 192.168.1.0/24
+         gateway: 192.168.1.1
 
 services:
   cassandra-1:
@@ -23,6 +28,7 @@ services:
       - "9042:9042"
     networks:
       cassandra-net:
+        ipv4_address: 192.168.1.200
 
   cassandra-2:
     image: cassandra:latest
@@ -32,6 +38,7 @@ services:
       - "9043:9042"
     networks:
       cassandra-net:
+        ipv4_address: 192.168.1.201
 
   cassandra-3:
     image: cassandra:latest
@@ -40,12 +47,19 @@ services:
     ports:
       - "9044:9042"
     networks:
-      cassandra-net:' > docker-compose.yml
-
+      cassandra-net:
+        ipv4_address: 192.168.1.202' > docker-compose.yml
+sudo ip link add br0 type bridge
+sudo ip addr add 192.168.1.100/24 brd 192.168.1.255 dev br0
+sudo ip link set br0 up
+sudo systemctl restart docker
 sudo docker-compose up -d
-sudo ip link add cassandra-net type macvlan
-sudo ip addr add 172.16.1.200/24 brd 172.16.1.255 dev cassandra-net
-sudo ip addr add 172.16.1.201/24 brd 172.16.1.255 dev cassandra-net
-sudo ip addr add 172.16.1.202/24 brd 172.16.1.255 dev cassandra-net
-sudo ip link set cassandra-net up
+ping -c3 192.168.1.200
+ping -c3 192.168.1.201
+ping -c3 192.168.1.202
+#sudo ip link add cassandra-net type macvlan
+#sudo ip addr add 172.16.1.200/24 brd 172.16.1.255 dev cassandra-net
+#sudo ip addr add 172.16.1.201/24 brd 172.16.1.255 dev cassandra-net
+#sudo ip addr add 172.16.1.202/24 brd 172.16.1.255 dev cassandra-net
+#sudo ip link set cassandra-net up
 # Запуск docker-compose в фоновом режиме
