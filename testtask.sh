@@ -45,15 +45,16 @@ services:
     networks:
       cassandra-net:
         ipv4_address: 192.168.1.202' > docker-compose.yml
-#sudo ip link add br0 type bridge
-#sudo ip addr add 192.168.1.100/24 brd 192.168.1.255 dev br0
-#sudo ip link set br0 up
-#sudo systemctl restart docker
 sudo docker-compose up -d
 sudo ip route change 192.168.1.0/24 via 192.168.1.254
 ping -c3 192.168.1.200
 ping -c3 192.168.1.201
 ping -c3 192.168.1.202
+#sudo ip link add br0 type bridge
+#sudo ip addr add 192.168.1.100/24 brd 192.168.1.255 dev br0
+#sudo ip link set br0 up
+#sudo systemctl restart docker
+
 #sudo ip link add cassandra-net type macvlan
 #sudo ip addr add 172.16.1.200/24 brd 172.16.1.255 dev cassandra-net
 #sudo ip addr add 172.16.1.201/24 brd 172.16.1.255 dev cassandra-net
