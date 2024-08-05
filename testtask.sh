@@ -47,6 +47,7 @@ services:
         ipv4_address: 192.168.1.202' > docker-compose.yml
 sudo docker-compose up -d
 sudo ip route change 192.168.1.0/24 via 192.168.1.254
+sudo iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o enp0s3 -j MASQUERADE
 ping -c3 192.168.1.200
 ping -c3 192.168.1.201
 ping -c3 192.168.1.202
