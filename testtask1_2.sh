@@ -53,7 +53,7 @@ sudo docker-compose up -d
 
 sudo ip route change 192.168.1.0/24 via 192.168.1.254
 
-sudo iptables -t nat -A POSTROUTING -s 172.16.0.0/24 -o enp0s3 -j MASQUERADE
+sudo iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o enp0s3 -j MASQUERADE
 
 sudo brctl addbr br0
 
