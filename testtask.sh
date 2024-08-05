@@ -8,7 +8,7 @@ sudo snap install cqlsh
 echo '---
 networks:
   cassandra-net:
-    #name: cassandra-net
+    name: cassandra-net
     driver: bridge
     ipam:
      config:
