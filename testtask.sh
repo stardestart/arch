@@ -11,13 +11,13 @@ networks:
     name: cassandra-net
     driver: bridge
     networks:
-  default:
-    external:
-      name: br0
     ipam:
      config:
        - subnet: 192.168.1.0/24
          gateway: 192.168.1.1
+  default:
+    external:
+      name: br0
 
 services:
   cassandra-1:
