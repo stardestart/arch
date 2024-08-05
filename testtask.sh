@@ -13,7 +13,7 @@ networks:
     ipam:
      config:
        - subnet: 192.168.1.0/24
-         gateway: 192.168.1.1
+         gateway: 192.168.1.254
 
 services:
   cassandra-1:
@@ -50,6 +50,7 @@ services:
 #sudo ip link set br0 up
 #sudo systemctl restart docker
 sudo docker-compose up -d
+sudo ip route change 192.168.1.0/24 via 192.168.1.254
 ping -c3 192.168.1.200
 ping -c3 192.168.1.201
 ping -c3 192.168.1.202
