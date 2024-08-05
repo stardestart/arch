@@ -10,11 +10,13 @@ echo '---
 networks:
   cassandra-net:
     name: cassandra-net
-    driver: bridge
+    driver: macvlan
+    driver_opts:
+      parent: eth0
     ipam:
      config:
-       - subnet: 172.16.0.0/24
-         gateway: 172.16.0.254
+       - subnet: 192.168.1.0/24
+         gateway: 192.168.1.254
 
 services:
   cassandra-1:
@@ -25,7 +27,7 @@ services:
       - "9042:9042"
     networks:
       cassandra-net:
-        ipv4_address: 172.16.0.200
+        ipv4_address: 192.168.1.200
 
   cassandra-2:
     image: cassandra:latest
@@ -35,9 +37,9 @@ services:
       - "9043:9042"
     networks:
       cassandra-net:
-        ipv4_address: 172.16.0.201
+        ipv4_address: 192.168.1.201
 
-  cassandra-3
+  cassandra-3:
     image: cassandra:latest
     container_name: cassandra-3
     restart: always
@@ -45,10 +47,18 @@ services:
       - "9044:9042"
     networks:
       cassandra-net:
-        ipv4_address: 172.16.0.202' > docker-compose.yml
+        ipv4_address: 192.168.1.202' > docker-compose.yml
 
 sudo docker-compose up -d
 
-sudo ip route change 172.16.0.0/24 via 172.16.0.254
+sudo ip route change 192.168.1.0/24 via 192.168.1.254
 
 sudo iptables -t nat -A POSTROUTING -s 172.16.0.0/24 -o enp0s3 -j MASQUERADE
+
+sudo brctl addbr br0
+
+sudo brctl addif br0 enp0s3
+
+sudo brctl addif br0 eth0
+
+sudo ip link up br0
