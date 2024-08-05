@@ -12,7 +12,7 @@ networks:
     name: cassandra-net
     driver: macvlan
     driver_opts:
-      parent: eth0
+      parent: eth0.01
     ipam:
      config:
        - subnet: 192.168.1.0/24
@@ -59,6 +59,6 @@ sudo brctl addbr br0
 
 sudo brctl addif br0 enp0s3
 
-sudo brctl addif br0 eth0
+sudo brctl addif br0 eth0.01
 
 sudo ip link up br0
