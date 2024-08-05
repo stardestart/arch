@@ -7,13 +7,18 @@ sudo snap install cqlsh
 
 echo '---
 networks:
-  cassandra-net:
-    #name: cassandra-net
-    driver: bridge
+  host-network:
+    name: host-network
+    driver: macvlan
+    driver_opts:
+      parent: enp0s3
     ipam:
      config:
-       - subnet: 192.168.1.0/24
-         gateway: 192.168.1.254
+       - subnet: 192.168.0.0/24
+         gateway: 192.168.0.1
+         ip_range: 192.168.0.192/27
+         aux_addresses:
+            router: 192.168.0.223
 
 services:
   cassandra-1:
@@ -45,19 +50,7 @@ services:
     networks:
       cassandra-net:
         ipv4_address: 192.168.1.202' > docker-compose.yml
-sudo docker-compose up -d
-sudo ip route change 192.168.1.0/24 via 192.168.1.254
-ping -c3 192.168.1.200
-ping -c3 192.168.1.201
-ping -c3 192.168.1.202
-#sudo ip link add br0 type bridge
-#sudo ip addr add 192.168.1.100/24 brd 192.168.1.255 dev br0
-#sudo ip link set br0 up
-#sudo systemctl restart docker
-
-#sudo ip link add cassandra-net type macvlan
-#sudo ip addr add 172.16.1.200/24 brd 172.16.1.255 dev cassandra-net
-#sudo ip addr add 172.16.1.201/24 brd 172.16.1.255 dev cassandra-net
-#sudo ip addr add 172.16.1.202/24 brd 172.16.1.255 dev cassandra-net
-#sudo ip link set cassandra-net up
-# Запуск docker-compose в фоновом режиме
+sudo ip link add docker-lan link enp0s3 type macvlan  mode bridge
+sudo ip addr add 192.168.0.223/32 dev docker-lan
+sudo ip link set docker-lan up
+sudo ip route add 192.168.0.192/27 dev docker-lan
