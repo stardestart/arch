@@ -24,7 +24,5 @@ sudo ip link set enp0s3 master br0
 sudo ip addr add 192.168.1.66/24 dev br0
 sudo docker network create -d bridge --attachable --subnet=192.168.1.0/24 --gateway=192.168.1.66 -o "com.docker.network.bridge.name"="br0" cassandra-net
 sudo docker network connect cassandra-net br0
-
+sudo sysctl -w net.ipv4.ip_forward=1
 sudo systemctl restart docker
-sudo ip link show br0
-sudo docker network inspect cassandra-net
