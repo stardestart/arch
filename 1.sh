@@ -19,10 +19,18 @@
 #sudo ip route add default via 192.168.1.1 dev br0
 #sudo systemctl restart docker
 
-sudo ip link add br0 type bridge
-sudo ip link set enp0s3 master br0
-sudo ip addr add 192.168.1.66/24 dev br0
-sudo docker network create -d bridge --attachable --subnet=192.168.1.0/24 --gateway=192.168.1.66 -o "com.docker.network.bridge.name"="br0" cassandra-net
-sudo docker network connect cassandra-net br0
-sudo sysctl -w net.ipv4.ip_forward=1
-sudo systemctl restart docker
+#sudo ip link add br0 type bridge
+#sudo ip link set enp0s3 master br0
+#sudo ip addr add 192.168.1.66/24 dev br0
+#sudo docker network create -d bridge --attachable --subnet=192.168.1.0/24 --gateway=192.168.1.66 -o "com.docker.network.bridge.name"="br0" cassandra-net
+#sudo docker network connect cassandra-net br0
+#sudo sysctl -w net.ipv4.ip_forward=1
+#sudo systemctl restart docker
+
+
+
+sudo docker network create -d ipvlan --subnet=192.168.1.0/24 --gateway=192.168.1.66 -o parent=enp0s3 cassandra-net
+sudo ip link add cassandra-net link enp0s3 type ipvlan mode bridge
+#sudo ip addr add 192.168.0.223/32 dev cassandra-net
+sudo ip link set cassandra-net up
+#sudo ip route add 192.168.0.192/27 dev cassandra-net
