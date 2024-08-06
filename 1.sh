@@ -7,9 +7,9 @@ sudo apt install docker-compose -y
 
 echo -e "\033[47m\033[30mВведите имя пользователя cassandra-1:\033[0m\033[32m";read -p ">" username1
 echo -e "\033[47m\033[30mВведите пароль для "$username1" cassandra-1:\033[0m\033[32m";read -p ">" passuser1
-echo -e "\033[47m\033[30mВведите имя пользователя cassandra-1:\033[0m\033[32m";read -p ">" username2
+echo -e "\033[47m\033[30mВведите имя пользователя cassandra-2:\033[0m\033[32m";read -p ">" username2
 echo -e "\033[47m\033[30mВведите пароль для "$username2" cassandra-2:\033[0m\033[32m";read -p ">" passuser2
-echo -e "\033[47m\033[30mВведите имя пользователя cassandra-1:\033[0m\033[32m";read -p ">" username3
+echo -e "\033[47m\033[30mВведите имя пользователя cassandra-3:\033[0m\033[32m";read -p ">" username3
 echo -e "\033[47m\033[30mВведите пароль для "$username3" cassandra-3:\033[0m\033[32m";read -p ">" passuser3
 
 # Создание файла docker-compose.yml с конфигурацией для развертки кластера Cassandra
