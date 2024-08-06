@@ -11,17 +11,20 @@
 #sudo ip route add default via 192.168.1.1 dev br0
 #&&sudo ip route add 192.168.1.0/24 via 192.168.1.254 dev br0
 #sudo iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o enp0s3 -j MASQUERADE
+#sudo brctl addbr br0
+#sudo brctl addif br0 enp0s3
+#sudo ip addr add 192.168.1.1/24 dev enp0s3
+#sudo docker network create -d bridge --attachable --subnet=192.168.1.0/24 --gateway=192.168.1.254 cassandra-net
+#sudo ip addr add 192.168.1.254/24 dev br0
+#sudo ip route add default via 192.168.1.1 dev br0
+#sudo systemctl restart docker
 
-sudo brctl addbr br0
-
-sudo brctl addif br0 enp0s3
-
-sudo ip addr add 192.168.1.1/24 dev enp0s3
-
-sudo docker network create -d bridge --attachable --subnet=192.168.1.0/24 --gateway=192.168.1.254 cassandra-net
-
-sudo ip addr add 192.168.1.254/24 dev br0
-
-sudo ip route add default via 192.168.1.1 dev br0
+sudo ip link add br0 type bridge
+sudo ip link set enp0s3 master br0
+sudo ip addr add 192.168.1.66/24 dev br0
+sudo docker network create -d bridge --attachable --subnet=192.168.1.0/24 --gateway=192.168.1.66 -o "com.docker.network.bridge.name"="br0" cassandra-net
+sudo docker network connect cassandra-net br0
 
 sudo systemctl restart docker
+sudo ip link show br0
+sudo docker network inspect cassandra-net
