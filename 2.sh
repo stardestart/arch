@@ -10,6 +10,4 @@ sudo apt install snapd
 sudo snap install cqlsh
 
 
-# После установки cqlsh вы можете использовать его для подключения к кластеру Cassandra, который был развернут с помощью docker-compose. Например:
-
-cqlsh 192.168.1.200 9042
+echo -e "После установки cqlsh вы можете использовать его для подключения к кластеру Cassandra, который был развернут с помощью docker-compose. Например: cqlsh 192.168.1.200 -u \$user -p \$password"
