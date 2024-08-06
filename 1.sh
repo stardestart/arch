@@ -3,7 +3,9 @@
 #sudo ip link set vlan0 up
 #sudo ip addr add 192.168.1.100/24 dev vlan0
 #sudo docker network create -d ipvlan --subnet=192.168.1.0/24 --gateway=192.168.1.254 -o parent=vlan0 cassandra-net
+
 #sudo docker run -d --name cassandra-1 --restart always -p 9042:9042 --net cassandra-net --ip 192.168.1.200 cassandra:latest
+
 #sudo brctl addbr br0
 #sudo brctl addif br0 vlan0
 #sudo brctl addif br0 enp0s3
@@ -30,7 +32,7 @@
 
 
 sudo docker network create -d ipvlan --subnet=192.168.1.0/24 --gateway=192.168.1.66 -o parent=enp0s3 cassandra-net
-sudo ip link add cassandra-net link enp0s3 type ipvlan mode bridge
+sudo ip link add cassandra-net link enp0s3 type ipvlan mode l2
 #sudo ip addr add 192.168.0.223/32 dev cassandra-net
 sudo ip link set cassandra-net up
 #sudo ip route add 192.168.0.192/27 dev cassandra-net
