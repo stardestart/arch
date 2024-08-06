@@ -16,9 +16,9 @@ sudo brctl addbr br0
 
 sudo brctl addif br0 enp0s3
 
-sudo docker network create -d bridge --attachable --subnet=192.168.1.0/24 --gateway=192.168.1.254 cassandra-net
+sudo ip addr add 192.168.1.1/24 dev enp0s3
 
-sudo ip addr add 192.168.1.254/24 dev br0
+sudo docker network create -d bridge --attachable --subnet=192.168.1.0/24 --gateway=192.168.1.254 cassandra-net
 
 sudo ip addr add 192.168.1.254/24 dev br0
 
