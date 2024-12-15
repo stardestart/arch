@@ -435,7 +435,7 @@ EOF' >> /mnt/etc/grub.d/00_header
         arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
         arch-chroot /mnt bootctl install
         echo -e "default arch\ntimeout 2\neditor yes\nconsole-mode max" > /mnt/boot/loader/loader.conf
-        echo -e "title Arch Linux\nlinux /vmlinuz-linux-zen"$microcode"\ninitrd /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw\noptions resume=/dev/"$sysdisk""$p2"" > /mnt/boot/loader/entries/arch.conf
+        echo -e "title Arch Linux\nlinux /vmlinuz-linux-zen"$microcode"\ninitrd /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw resume=/dev/"$sysdisk""$p2" fbcon=rotate:1" > /mnt/boot/loader/entries/arch.conf #fbcon=rotate:1
 fi
 #
 #Установка микроинструкции для процессора.
