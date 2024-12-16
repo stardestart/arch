@@ -795,7 +795,9 @@ export QT_QPA_PLATFORMTHEME=gnome #Изменение внешнего вида 
 export QT_STYLE_OVERRIDE=adwaita-dark #Использовать Adwaitа в качестве стиля Qt по умолчанию
 export XDG_CURRENT_DESKTOP=gtk
 export XCURSOR_THEME=Adwaita
-export XCURSOR_SIZE=24' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
+export XCURSOR_SIZE=24
+export GTK_CSD=0
+export LD_PRELOAD=/usr/lib/libgtk3-nocsd.so.0' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
 #
 #Редактирование конфига сервера уведомлений.
 echo -e "\033[36mРедактирование конфига сервера уведомлений.\033[0m"
@@ -1437,18 +1439,20 @@ Win+Alt-left+1 -- Восстановление рабочего стола №1.
 #
 #Создание директории и конфига gtk (Внешний вид gtk программ).
 echo -e "\033[36mСоздание конфига gtk (Внешний вид gtk программ).\033[0m"
-mkdir -p /mnt/home/"$username"/.config/{gtk-3.0,gtk-4.0} /mnt/root/.config/{gtk-3.0,gtk-4.0}
+mkdir -p /mnt/etc/{gtk-3.0,gtk-4.0}
 echo '[Settings]
 gtk-application-prefer-dark-theme=true
 gtk-cursor-theme-name=Adwaita
 gtk-font-name=Fantasque Sans Mono Bold Italic '"$font"'
 gtk-icon-theme-name=Papirus-Dark
-gtk-theme-name=Adwaita-dark' | tee /mnt/home/"$username"/.config/gtk-3.0/settings.ini /mnt/home/"$username"/.config/gtk-4.0/settings.ini /mnt/root/.config/gtk-3.0/settings.ini /mnt/root/.config/gtk-4.0/settings.ini
+gtk-theme-name=Adwaita-dark
+gtk-decoration-layout=menu:' | tee /mnt/etc/gtk-3.0/settings.ini /mnt/etc/gtk-4.0/settings.ini
 echo 'gtk-application-prefer-dark-theme="true"
 gtk-cursor-theme-name="Adwaita"
 gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'"
 gtk-icon-theme-name="Papirus-Dark"
-gtk-theme-name="Adwaita-dark"' > /mnt/usr/share/gtk-2.0/gtkrc
+gtk-theme-name="Adwaita-dark"
+gtk-decoration-layout=menu:' > /mnt/usr/share/gtk-2.0/gtkrc
 #
 #Создание директории и конфига lxqt-panel (Панель рабочего стола LXQt).
 echo -e "\033[36mСоздание конфига lxqt-panel (Панель рабочего стола LXQt).\033[0m"
@@ -1707,7 +1711,7 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR (Репозиторий пользователей).
 echo -e "\033[36mУстановка программ из AUR (Репозиторий пользователей).\033[0m"
-arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-qt pa-notify vkbasalt kmscon qgnomeplatform-qt5-git qgnomeplatform-qt6-git cups-xerox-b2xx --noconfirm --ask 4
+arch-chroot /mnt sudo -u "$username" yay -S gtk3-nocsd hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-qt pa-notify vkbasalt kmscon qgnomeplatform-qt5-git qgnomeplatform-qt6-git cups-xerox-b2xx --noconfirm --ask 4
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
