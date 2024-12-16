@@ -530,7 +530,7 @@ elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then
 fi
 #Установка компонентов и программ ОС.
 echo -e "\033[36mУстановка компонентов и программ ОС.\033[0m"
-arch-chroot /mnt pacman -Sy xorg-server xorg-xinit xterm i3-wm i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux arch-audit rkhunter firefox firefox-i18n-ru firefox-spell-ru firefox-ublock-origin firefox-dark-reader firefox-adblock-plus thunderbird thunderbird-i18n-ru xdg-desktop-portal-gtk network-manager-applet networkmanager-strongswan wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano nano-syntax-highlighting dhcpcd imagemagick acpid clinfo avahi reflector go libnotify openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted gpart exfatprogs archlinux-xdg-menu ark p7zip ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst archlinux-wallpaper xdg-desktop-portal xdg-desktop-portal-kde feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt libcanberra lib32-libcanberra sound-theme-freedesktop xbindkeys aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en gimagereader-gtk tesseract-data-rus tesseract-data-eng kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite nss-mdns cups-pk-helper cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-utility-libraries vulkan-tools vulkan-extra-tools vulkan-extra-layers mesa lib32-mesa libva-mesa-driver mesa-vdpau ufw usbguard libpwquality kde-cli-tools ntp xdg-user-dirs geoclue rng-tools discord meld kcolorchooser kontrast telegram-desktop gcompris-qt --noconfirm
+arch-chroot /mnt pacman -Sy xorg-server xorg-xinit xterm i3-wm i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux arch-audit rkhunter firefox firefox-i18n-ru firefox-spell-ru firefox-ublock-origin firefox-dark-reader firefox-adblock-plus thunderbird thunderbird-i18n-ru xdg-desktop-portal-gtk network-manager-applet networkmanager-strongswan wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano nano-syntax-highlighting dhcpcd imagemagick acpid clinfo avahi reflector go libnotify openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted gpart exfatprogs archlinux-xdg-menu ark p7zip ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst gnome-themes-extra archlinux-wallpaper xdg-desktop-portal xdg-desktop-portal-kde feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt libcanberra lib32-libcanberra sound-theme-freedesktop xbindkeys aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en gimagereader-gtk tesseract-data-rus tesseract-data-eng kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite nss-mdns cups-pk-helper cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-utility-libraries vulkan-tools vulkan-extra-tools vulkan-extra-layers mesa lib32-mesa libva-mesa-driver mesa-vdpau ufw usbguard libpwquality kde-cli-tools ntp xdg-user-dirs geoclue rng-tools discord meld kcolorchooser kontrast telegram-desktop gcompris-qt --noconfirm
 #
 #Поиск не смонтированных разделов, проверка наличия у них метки.
 echo -e "\033[36mПоиск не смонтированных разделов, проверка наличия у них метки.\033[0m"
@@ -792,9 +792,9 @@ export COLORTERM=truecolor #Включаем все 16 миллионов цве
 echo -e "\033[36mСоздание конфига profile (Настройка Xorg).\033[0m"
 echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
 export QT_QPA_PLATFORMTHEME=gnome #Изменение внешнего вида приложений использующих qt.
-export QT_STYLE_OVERRIDE=Adwaita-Dark #Использовать Adwaita-Dark в качестве стиля Qt по умолчанию
+export QT_STYLE_OVERRIDE=adwaita-dark #Использовать Adwaitа в качестве стиля Qt по умолчанию
 export XDG_CURRENT_DESKTOP=gtk
-export XCURSOR_THEME=Adwaita-Dark
+export XCURSOR_THEME=Adwaita
 export XCURSOR_SIZE=24' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
 #
 #Редактирование конфига сервера уведомлений.
@@ -934,7 +934,7 @@ xterm*scrollKey: true
 !
 !Размер курсора.
 Xcursor.size: 24
-Xcursor.theme: Adwaita-Dark' | tee /mnt/home/"$username"/.Xresources /mnt/root/.Xresources
+Xcursor.theme: Adwaita' | tee /mnt/home/"$username"/.Xresources /mnt/root/.Xresources
 #
 #Создание директории и конфига i3-wm (Тайловый оконный менеджер).
 echo -e "\033[36mСоздание конфига i3-wm (Тайловый оконный менеджер).\033[0m"
@@ -1424,18 +1424,18 @@ Win+Alt-left+1 -- Восстановление рабочего стола №1.
 #
 #Создание директории и конфига gtk (Внешний вид gtk программ).
 echo -e "\033[36mСоздание конфига gtk (Внешний вид gtk программ).\033[0m"
-mkdir -p /etc/{gtk-2.0,gtk-3.0,gtk-4.0}
+mkdir -p /mnt/etc/{gtk-3.0,gtk-4.0}
 echo '[Settings]
 gtk-application-prefer-dark-theme=true
-gtk-cursor-theme-name=Adwaita-Dark
+gtk-cursor-theme-name=Adwaita
 gtk-font-name=Fantasque Sans Mono Bold Italic '"$font"'
 gtk-icon-theme-name=Papirus-Dark
-gtk-theme-name=Adwaita-Dark' | tee /mnt/etc/gtk-3.0/settings.ini /etc/gtk-4.0/settings.ini
+gtk-theme-name=Adwaita-dark' | tee /mnt/etc/gtk-3.0/settings.ini /mnt/etc/gtk-4.0/settings.ini
 echo 'gtk-application-prefer-dark-theme="true"
-gtk-cursor-theme-name="Adwaita-Dark"
+gtk-cursor-theme-name="Adwaita"
 gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'"
 gtk-icon-theme-name="Papirus-Dark"
-gtk-theme-name="Adwaita-Dark"' > /mnt/usr/share/gtk-2.0/gtkrc
+gtk-theme-name="Adwaita-dark"' > /mnt/usr/share/gtk-2.0/gtkrc
 #
 #Создание директории и конфига lxqt-panel (Панель рабочего стола LXQt).
 echo -e "\033[36mСоздание конфига lxqt-panel (Панель рабочего стола LXQt).\033[0m"

@@ -1128,7 +1128,7 @@ exec --no-startup-id blueman-applet;
 exec --no-startup-id smb4k;
 #
 # Автозапуск usbguard.
-exec --no-startup-id sudo -E usbguard-applet-qt;
+exec --no-startup-id sudo -E usbguard-qt;
 #
 # Автозапуск xbindkeys.
 exec --no-startup-id xbindkeys;
@@ -1707,7 +1707,7 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR (Репозиторий пользователей).
 echo -e "\033[36mУстановка программ из AUR (Репозиторий пользователей).\033[0m"
-arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-applet-qt pa-notify vkbasalt kmscon qgnomeplatform-qt5-git qgnomeplatform-qt6-git cups-xerox-b2xx --noconfirm --ask 4
+arch-chroot /mnt sudo -u "$username" yay -S gtk3-classic hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-qt pa-notify vkbasalt kmscon qgnomeplatform-qt5-git qgnomeplatform-qt6-git cups-xerox-b2xx --noconfirm --ask 4
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
