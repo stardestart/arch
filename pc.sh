@@ -937,7 +937,13 @@ xterm*scrollKey: true
 !
 !Размер курсора.
 Xcursor.size: 24
-Xcursor.theme: Adwaita' | tee /mnt/home/"$username"/.Xresources /mnt/root/.Xresources
+Xcursor.theme: Adwaita
+!
+!Включаем Ctrl+V,Ctrl+C.
+XTerm*VT100*selectToClipboard: true
+XTerm*VT100*translations: #override \
+    Ctrl <Key>V: insert-selection(CLIPBOARD) \n\
+    Ctrl <Key>C: copy-selection(CLIPBOARD)' | tee /mnt/home/"$username"/.Xresources /mnt/root/.Xresources
 #
 #Создание директории и конфига i3-wm (Тайловый оконный менеджер).
 echo -e "\033[36mСоздание конфига i3-wm (Тайловый оконный менеджер).\033[0m"
