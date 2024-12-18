@@ -785,6 +785,7 @@ usbguard generate-policy > /mnt/etc/usbguard/rules.conf
 #
 #Создание общего конфига загрузки оконного менеджера.
 echo -e "\033[36mСоздание общего конфига загрузки оконного менеджера.\033[0m"
+mkdir /mnt/root/.config/
 echo -e '#Указание на конфигурационные файлы.
 userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
@@ -1898,8 +1899,6 @@ for (( i=0; i<"${#massallaurprog[*]}"; i++ ))
                 fi
             done
 arch-chroot /mnt sudo -u "$username" yay -S "${massaurprog[@]}" --noconfirm --ask 4
-echo ${massaurprog[@]}
-read -p "Нажмите ENTER для продолжения"
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
