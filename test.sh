@@ -1891,14 +1891,13 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR (Репозиторий пользователей).
 echo -e "\033[36mУстановка программ из AUR (Репозиторий пользователей).\033[0m"
-for (( i=0; i<"${#massallprog[*]}"; i++ ))
+for (( i=0; i<"${#massallaurprog[*]}"; i++ ))
             do
-                if [ -n "$(pacman -Ssq "${massallprog[$i]}" | grep --color=never ^"${massallprog[$i]}" | head -n 1)" ];
-                    then massprog+=( "$(pacman -Ssq "${massallprog[$i]}" | grep --color=never ^"${massallprog[$i]}" | head -n 1)" )
-                    else massallaurprog+=( "${massallprog[$i]}" )
+                if [ -n "$(yay -Ssq "${massallaurprog[$i]}" | grep --color=never ^"${massallaurprog[$i]}" | tail -n 1)" ];
+                    then massaurprog+=( "$(yay -Ssq "${massallaurprog[$i]}" | grep --color=never ^"${massallaurprog[$i]}" | tail -n 1)" )
                 fi
             done
-arch-chroot /mnt pacman -Sy "${massprog[@]}" --noconfirm
+arch-chroot /mnt sudo -u "$username" yay -S "${massaurprog[@]}" --noconfirm --ask 4
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
