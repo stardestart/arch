@@ -282,7 +282,7 @@ dmg2img \
 telegram-desktop \
 gcompris-qt \
 gtk3-nocsd \
-hardinfo2 \
+hardinfo \
 debtap \
 hunspell-ru-aot \
 hyphen-ru \
