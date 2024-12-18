@@ -99,6 +99,208 @@ massfont=(30144_PostIndex.ttf https://ttfonts.net/ru/download/31252.htm $(curl h
                  https://fonts.google.com/download/list?family=Noto%20Serif%20Bengali \
                  https://fonts.google.com/download/list?family=Noto%20Serif%20SC \
                  | grep --color=never '.ttf"' | awk '{print $2}' | sed 's/[,"]//g' | sed 's/static\///'))
+massallprog=( xorg-server \
+xorg-xinit \
+xterm \
+i3-wm \
+i3status \
+perl-anyevent-i3 \
+perl-json-xs \
+dmenu \
+xdm-archlinux \
+arch-audit \
+rkhunter \
+firefox \
+firefox-i18n-ru \
+firefox-spell-ru \
+firefox-ublock-origin \
+firefox-dark-reader \
+firefox-adblock-plus \
+thunderbird \
+thunderbird-i18n-ru \
+xdg-desktop-portal-gtk \
+network-manager-applet \
+networkmanager-strongswan \
+wireless_tools \
+krdc \
+blueman \
+bluez \
+bluez-utils \
+bluez-qt \
+git \
+mc \
+htop \
+nano \
+nano-syntax-highlighting \
+dhcpcd \
+imagemagick \
+acpid \
+clinfo \
+avahi \
+reflector \
+go \
+libnotify \
+openssh \
+haveged \
+dbus-broker \
+x11vnc \
+polkit \
+kwalletmanager \
+kwallet-pam \
+xlockmore \
+xautolock \
+gparted \
+gpart \
+exfatprogs \
+archlinux-xdg-menu \
+ark \
+p7zip \
+ntfs-3g \
+dosfstools \
+unzip \
+smartmontools \
+dolphin \
+kdf \
+filelight \
+ifuse \
+usbmuxd \
+libplist \
+libimobiledevice \
+curlftpfs \
+samba \
+kimageformats \
+ffmpegthumbnailer \
+kdegraphics-thumbnailers \
+qt5-imageformats \
+kdesdk-thumbnailers \
+ffmpegthumbs \
+kdenetwork-filesharing \
+smb4k \
+papirus-icon-theme \
+picom \
+redshift \
+lxqt-panel \
+grc \
+flameshot \
+dunst \
+gnome-themes-extra \
+archlinux-wallpaper \
+xdg-desktop-portal \
+xdg-desktop-portal-kde \
+feh \
+conky \
+freetype2 \
+ttf-fantasque-sans-mono \
+neofetch \
+alsa-utils \
+alsa-plugins \
+lib32-alsa-plugins \
+alsa-firmware \
+alsa-card-profiles \
+pulseaudio \
+pulseaudio-alsa \
+pulseaudio-bluetooth \
+pavucontrol-qt \
+libcanberra \
+lib32-libcanberra \
+sound-theme-freedesktop \
+xbindkeys \
+aspell \
+nuspell \
+xed \
+cheese \
+aspell-en \
+aspell-ru \
+ethtool \
+pinta \
+vlc \
+libreoffice-still-ru \
+hunspell \
+hunspell-en_us \
+hyphen \
+hyphen-en \
+libmythes \
+mythes-en \
+gimagereader-gtk \
+tesseract-data-rus \
+tesseract-data-eng \
+kalgebra \
+copyq \
+kamera \
+gwenview \
+xreader \
+gogglesmm \
+sane \
+skanlite \
+nss-mdns \
+cups-pk-helper \
+cups \
+cups-pdf \
+system-config-printer \
+steam \
+wine \
+winetricks \
+wine-mono \
+wine-gecko \
+gamemode \
+lib32-gamemode \
+mpg123 \
+lib32-mpg123 \
+openal \
+lib32-openal \
+ocl-icd \
+lib32-ocl-icd \
+gstreamer \
+lib32-gstreamer \
+vkd3d \
+lib32-vkd3d \
+vulkan-icd-loader \
+lib32-vulkan-icd-loader \
+python-glfw \
+lib32-vulkan-validation-layers \
+vulkan-utility-libraries \
+vulkan-tools \
+vulkan-extra-tools \
+vulkan-extra-layers \
+mesa \
+lib32-mesa \
+libva-mesa-driver \
+mesa-vdpau \
+ufw \
+usbguard \
+libpwquality \
+kde-cli-tools \
+ntp \
+xdg-user-dirs \
+geoclue \
+rng-tools \
+discord \
+meld \
+kcolorchooser \
+kontrast \
+dmg2img \
+telegram-desktop \
+gcompris-qt \
+gtk3-nocsd \
+hardinfo2 \
+debtap \
+hunspell-ru-aot \
+hyphen-ru \
+mythes-ru \
+minq-ananicy-git \
+auto-cpufreq \
+kde-cdemu-manager \
+usbguard-qt \
+pa-notify \
+kmscon \
+qgnomeplatform-qt5 \
+adwaita-qt5 \
+qgnomeplatform-qt6 \
+adwaita-qt6 \
+cups-xerox-b2xx )
+massprog=()
+massallaurprog=()
+massaurprog=()
 #
 #Определяем процессор.
 echo -e "\033[36mОпределяем процессор.\033[0m"
@@ -530,7 +732,14 @@ elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then
 fi
 #Установка компонентов и программ ОС.
 echo -e "\033[36mУстановка компонентов и программ ОС.\033[0m"
-arch-chroot /mnt pacman -Sy xorg-server xorg-xinit xterm i3-wm i3status perl-anyevent-i3 perl-json-xs dmenu xdm-archlinux arch-audit rkhunter firefox firefox-i18n-ru firefox-spell-ru firefox-ublock-origin firefox-dark-reader firefox-adblock-plus thunderbird thunderbird-i18n-ru xdg-desktop-portal-gtk network-manager-applet networkmanager-strongswan wireless_tools krdc blueman bluez bluez-utils bluez-qt git mc htop nano nano-syntax-highlighting dhcpcd imagemagick acpid clinfo avahi reflector go libnotify openssh haveged dbus-broker x11vnc polkit kwalletmanager kwallet-pam xlockmore xautolock gparted gpart exfatprogs archlinux-xdg-menu ark p7zip ntfs-3g dosfstools unzip smartmontools dolphin kdf filelight ifuse usbmuxd libplist libimobiledevice curlftpfs samba kimageformats ffmpegthumbnailer kdegraphics-thumbnailers qt5-imageformats kdesdk-thumbnailers ffmpegthumbs kdenetwork-filesharing smb4k papirus-icon-theme picom redshift lxqt-panel grc flameshot dunst gnome-themes-extra archlinux-wallpaper xdg-desktop-portal xdg-desktop-portal-kde feh conky freetype2 ttf-fantasque-sans-mono neofetch alsa-utils alsa-plugins lib32-alsa-plugins alsa-firmware alsa-card-profiles pulseaudio pulseaudio-alsa pulseaudio-bluetooth pavucontrol-qt libcanberra lib32-libcanberra sound-theme-freedesktop xbindkeys aspell nuspell xed audacity cheese aspell-en aspell-ru ethtool pinta vlc libreoffice-still-ru hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en gimagereader-gtk tesseract-data-rus tesseract-data-eng kalgebra copyq kamera gwenview xreader gogglesmm sane skanlite nss-mdns cups-pk-helper cups cups-pdf system-config-printer steam wine winetricks wine-mono wine-gecko gamemode lib32-gamemode mpg123 lib32-mpg123 openal lib32-openal ocl-icd lib32-ocl-icd gstreamer lib32-gstreamer vkd3d lib32-vkd3d vulkan-icd-loader lib32-vulkan-icd-loader python-glfw lib32-vulkan-validation-layers vulkan-utility-libraries vulkan-tools vulkan-extra-tools vulkan-extra-layers mesa lib32-mesa libva-mesa-driver mesa-vdpau ufw usbguard libpwquality kde-cli-tools ntp xdg-user-dirs geoclue rng-tools discord meld kcolorchooser kontrast telegram-desktop gcompris-qt --noconfirm
+for (( i=0; i<"${#massallprog[*]}"; i++ ))
+            do
+                if [ -n "$(pacman -Ssq "${massallprog[$i]}" | grep --color=never ^"${massallprog[$i]}" | head -n 1)" ];
+                    then massprog+=( "$(pacman -Ssq "${massallprog[$i]}" | grep --color=never ^"${massallprog[$i]}" | head -n 1)" )
+                    else massallaurprog+=( "${massallprog[$i]}" )
+                fi
+            done
+arch-chroot /mnt pacman -Sy "${massprog[@]}" --noconfirm
 #
 #Поиск не смонтированных разделов, проверка наличия у них метки.
 echo -e "\033[36mПоиск не смонтированных разделов, проверка наличия у них метки.\033[0m"
@@ -1682,7 +1891,14 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR (Репозиторий пользователей).
 echo -e "\033[36mУстановка программ из AUR (Репозиторий пользователей).\033[0m"
-arch-chroot /mnt sudo -u "$username" yay -S gtk3-nocsd hardinfo2 debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-qt pa-notify kmscon qgnomeplatform-qt5 qgnomeplatform-qt6 adwaita-qt5 adwaita-qt6 cups-xerox-b2xx --noconfirm --ask 4
+for (( i=0; i<"${#massallprog[*]}"; i++ ))
+            do
+                if [ -n "$(pacman -Ssq "${massallprog[$i]}" | grep --color=never ^"${massallprog[$i]}" | head -n 1)" ];
+                    then massprog+=( "$(pacman -Ssq "${massallprog[$i]}" | grep --color=never ^"${massallprog[$i]}" | head -n 1)" )
+                    else massallaurprog+=( "${massallprog[$i]}" )
+                fi
+            done
+arch-chroot /mnt pacman -Sy "${massprog[@]}" --noconfirm
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
