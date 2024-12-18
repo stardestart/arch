@@ -1561,9 +1561,6 @@ timezonePosition=below
 type=worldclock
 useAdvancedManualFormat=false' > /mnt/home/"$username"/.config/lxqt/panel.conf
 #
-#Создание конфига kdeglobals (Внешний вид kde программ).
-
-#
 #Создание пользовательских директорий.
 echo -e "\033[36mСоздание пользовательских директорий.\033[0m"
 mkdir -p /mnt/home/"$username"/Documents/{Downloads,Public,Desktop,Music,Pictures,Templates,Videos} /mnt/root/Documents/{Downloads,Public,Desktop,Music,Pictures,Templates,Videos}

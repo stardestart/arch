@@ -1574,29 +1574,6 @@ timezonePosition=below
 type=worldclock
 useAdvancedManualFormat=false' > /mnt/home/"$username"/.config/lxqt/panel.conf
 #
-#Создание конфига kdeglobals (Внешний вид kde программ).
-echo -e "\033[36mСоздание конфига kdeglobals (Внешний вид kde программ).\033[0m"
-echo '[Colors:Button]
-BackgroundNormal=53,53,53
-BackgroundAlternate=50,50,50
-ForegroundNormal=238,238,238
-ForegroundInactive=178,178,178
-[Colors:Tooltip]
-BackgroundNormal=53,53,53
-BackgroundAlternate=50,50,50
-ForegroundNormal=238,238,238
-ForegroundInactive=178,178,178
-[Colors:View]
-BackgroundNormal=43,43,43
-BackgroundAlternate=50,50,50
-ForegroundNormal=238,238,238
-ForegroundInactive=178,178,178
-[Colors:Window]
-BackgroundNormal=56,56,56
-BackgroundAlternate=50,50,50
-ForegroundNormal=238,238,238
-ForegroundInactive=178,178,178' | tee /mnt/home/"$username"/.config/kdeglobals /mnt/root/.config/kdeglobals
-#
 #Создание пользовательских директорий.
 echo -e "\033[36mСоздание пользовательских директорий.\033[0m"
 mkdir -p /mnt/home/"$username"/Documents/{Downloads,Public,Desktop,Music,Pictures,Templates,Videos} /mnt/root/Documents/{Downloads,Public,Desktop,Music,Pictures,Templates,Videos}
