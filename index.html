@@ -2813,6 +2813,11 @@ XDG_VIDEOS_DIR="$HOME/Documents/Videos"
               </li>
               <li>
                 <span class=text>
+                  hyphen-ru — Правила расстановки переносов в русском языке.
+                </span>
+              </li>
+              <li>
+                <span class=text>
                   libmythes — Простой тезаурус.
                 </span>
               </li>
@@ -2933,7 +2938,7 @@ XDG_VIDEOS_DIR="$HOME/Documents/Videos"
               </li>
             </ul>
             <div class=term>
-              <span class=ps>$:</span> sudo pacman -S firefox-i18n-ru firefox-spell-ru thunderbird thunderbird-i18n-ru numlockx gparted gpart kwalletmanager kwallet-pam ark p7zip mc htop conky polkit dmg2img network-manager-applet rng-tools dbus-broker acpid giflib lib32-giflib perl-anyevent-i3 perl-json-xs usbguard archlinux-xdg-menu arch-audit rkhunter x11vnc neofetch aspell nuspell aspell-en aspell-ru ethtool hunspell hunspell-en_us hyphen hyphen-en libmythes mythes-en gimagereader-gtk tesseract-data-rus tesseract-data-eng xdg-desktop-portal-gtk networkmanager-strongswan wireless_tools krdc clinfo openssh haveged unzip smartmontools nss-mdns ufw libpwquality ntp xdg-user-dirs nano-syntax-highlighting libcanberra lib32-libcanberra sound-theme-freedesktop xbindkeys
+              <span class=ps>$:</span> sudo pacman -S firefox-i18n-ru firefox-spell-ru thunderbird thunderbird-i18n-ru numlockx gparted gpart kwalletmanager kwallet-pam ark p7zip mc htop conky polkit dmg2img network-manager-applet rng-tools dbus-broker acpid giflib lib32-giflib perl-anyevent-i3 perl-json-xs usbguard archlinux-xdg-menu arch-audit rkhunter x11vnc neofetch aspell nuspell aspell-en aspell-ru ethtool hunspell hunspell-en_us hyphen hyphen-en hyphen-ru libmythes mythes-en gimagereader-gtk tesseract-data-rus tesseract-data-eng xdg-desktop-portal-gtk networkmanager-strongswan wireless_tools krdc clinfo openssh haveged unzip smartmontools nss-mdns ufw libpwquality ntp xdg-user-dirs nano-syntax-highlighting libcanberra lib32-libcanberra sound-theme-freedesktop xbindkeys
             </div>
           </li>
           <li>
@@ -3116,7 +3121,7 @@ include "/usr/share/nano-syntax-highlighting/*.nanorc"
             <ul>
               <li>
                 <span class=text>
-                  gtk3-classic — Классический gtk.
+                  gtk3-nocsd — Классический gtk.
                 </span>
               </li>
               <li>
@@ -3126,7 +3131,7 @@ include "/usr/share/nano-syntax-highlighting/*.nanorc"
               </li>
               <li>
                 <span class=text>
-                  usbguard-applet-qt — Графический интерфейс USBguard.
+                  usbguard-qt — Графический интерфейс USBguard.
                 </span>
               </li>
               <li>
@@ -3147,11 +3152,6 @@ include "/usr/share/nano-syntax-highlighting/*.nanorc"
               <li>
                 <span class=text>
                   hunspell-ru-aot — Словарь проверки правописания русского языка.
-                </span>
-              </li>
-              <li>
-                <span class=text>
-                  hyphen-ru — Правила расстановки переносов в русском языке.
                 </span>
               </li>
               <li>
@@ -3196,7 +3196,7 @@ include "/usr/share/nano-syntax-highlighting/*.nanorc"
               </li>
             </ul>
             <div class=term>
-              <span class=ps>$:</span> yay -S gtk3-classic hardinfo usbguard-applet-qt pa-notify debtap auto-cpufreq hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git kde-cdemu-manager qgnomeplatform-qt5 adwaita-qt5 qgnomeplatform-qt6 adwaita-qt6 kmscon
+              <span class=ps>$:</span> yay -S gtk3-nocsd hardinfo2 usbguard-qt pa-notify debtap auto-cpufreq hunspell-ru-aot mythes-ru minq-ananicy-git kde-cdemu-manager qgnomeplatform-qt5 adwaita-qt5 qgnomeplatform-qt6 adwaita-qt6 kmscon
             </div>
           </li>
         </ol>
@@ -4376,6 +4376,8 @@ export QT_STYLE_OVERRIDE=adwaita-dark #Использовать Adwaitа в ка
 export XDG_CURRENT_DESKTOP=gtk
 export XCURSOR_THEME=Adwaita
 export XCURSOR_SIZE=24
+export GTK_CSD=0
+export LD_PRELOAD=/usr/lib/libgtk3-nocsd.so.0
 
 
 
@@ -4767,6 +4769,11 @@ xterm*scrollKey: true
 !Размер курсора.
 Xcursor.size: 24
 Xcursor.theme: Adwaita
+!Включаем Ctrl+V,Ctrl+C.
+XTerm*VT100*selectToClipboard: true
+XTerm*VT100*translations: #override \
+    Ctrl <Key>V: insert-selection(CLIPBOARD) \n\
+    Ctrl <Key>C: copy-selection(CLIPBOARD)
 
 
 
@@ -5879,13 +5886,10 @@ ForegroundInactive=178,178,178
           Создание конфига gtk+ (Внешний вид gtk+ программ).
         </p>
         <div class=term>
-          <span class=ps>$:</span> mkdir -p ~/.config/{gtk-3.0,gtk-4.0}
+          <span class=ps>$:</span> mkdir -p /etc/{gtk-3.0,gtk-4.0}
         </div>
         <div class=term>
-          <span class=ps>$:</span> sudo mkdir -p /root/.config/{gtk-3.0,gtk-4.0}
-        </div>
-        <div class=term>
-          <span class=ps>$:</span> nano ~/.config/gtk-3.0/settings.ini
+          <span class=ps>$:</span> sudo nano /etc/gtk-3.0/settings.ini
         </div>
         <div class=nano>
           <pre class=pre>
@@ -5895,6 +5899,7 @@ gtk-cursor-theme-name=Adwaita
 gtk-font-name=Fantasque Sans Mono Bold Italic 12
 gtk-icon-theme-name=Papirus-Dark
 gtk-theme-name=Adwaita-dark
+gtk-decoration-layout=menu:
 
 
 
@@ -5952,13 +5957,7 @@ gtk-theme-name=Adwaita-dark
           Копируем конфиг.
         </p>
         <div class=term>
-          <span class=ps>$:</span> cp ~/.config/gtk-3.0/settings.ini ~/.config/gtk-4.0/settings.ini
-        </div>
-        <div class=term>
-          <span class=ps>$:</span> sudo cp ~/.config/gtk-3.0/settings.ini /root/.config/gtk-3.0/settings.ini
-        </div>
-        <div class=term>
-          <span class=ps>$:</span> sudo cp ~/.config/gtk-3.0/settings.ini /root/.config/gtk-4.0/settings.ini
+          <span class=ps>$:</span> sudo cp /etc/gtk-3.0/settings.ini /etc/gtk-4.0/settings.ini
         </div>
       </li>
       <li>
@@ -5975,6 +5974,7 @@ gtk-cursor-theme-name="Adwaita"
 gtk-font-name="Fantasque Sans Mono Bold Italic 10"
 gtk-icon-theme-name="Papirus-Dark"
 gtk-theme-name="Adwaita-dark"
+gtk-decoration-layout=menu:
 
 
 
