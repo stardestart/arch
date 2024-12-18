@@ -1893,16 +1893,10 @@ rm -Rf /mnt/home/"$username"/yay
 echo -e "\033[36mУстановка программ из AUR (Репозиторий пользователей).\033[0m"
 for (( i=0; i<"${#massallaurprog[*]}"; i++ ))
             do
-                if [ -n "$(yay -Ssq "${massallaurprog[$i]}" | grep --color=never ^"${massallaurprog[$i]}" | tail -n 1)" ];
-                    then massaurprog+=( "$(yay -Ssq "${massallaurprog[$i]}" | grep --color=never ^"${massallaurprog[$i]}" | tail -n 1)" )
+                if [ -n "$(arch-chroot /mnt sudo -u "$username" yay -Ssq "${massallaurprog[$i]}" | grep --color=never ^"${massallaurprog[$i]}" | tail -n 1)" ];
+                    then massaurprog+=( "$(arch-chroot /mnt sudo -u "$username" yay -Ssq "${massallaurprog[$i]}" | grep --color=never ^"${massallaurprog[$i]}" | tail -n 1)" )
                 fi
             done
-            echo ${massaurprog[@]}
-            read -p "Нажмите ENTER для продолжения"
-            echo ${massprog[@]}
-            read -p "Нажмите ENTER для продолжения"
-            echo ${massallprog[@]}
-            read -p "Нажмите ENTER для продолжения"
 arch-chroot /mnt sudo -u "$username" yay -S "${massaurprog[@]}" --noconfirm --ask 4
 #
 #Автозапуск служб.
