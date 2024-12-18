@@ -1562,27 +1562,7 @@ type=worldclock
 useAdvancedManualFormat=false' > /mnt/home/"$username"/.config/lxqt/panel.conf
 #
 #Создание конфига kdeglobals (Внешний вид kde программ).
-echo -e "\033[36mСоздание конфига kdeglobals (Внешний вид kde программ).\033[0m"
-echo '[Colors:Button]
-BackgroundNormal=53,53,53
-BackgroundAlternate=50,50,50
-ForegroundNormal=238,238,238
-ForegroundInactive=178,178,178
-[Colors:Tooltip]
-BackgroundNormal=53,53,53
-BackgroundAlternate=50,50,50
-ForegroundNormal=238,238,238
-ForegroundInactive=178,178,178
-[Colors:View]
-BackgroundNormal=43,43,43
-BackgroundAlternate=50,50,50
-ForegroundNormal=238,238,238
-ForegroundInactive=178,178,178
-[Colors:Window]
-BackgroundNormal=56,56,56
-BackgroundAlternate=50,50,50
-ForegroundNormal=238,238,238
-ForegroundInactive=178,178,178' | tee /mnt/home/"$username"/.config/kdeglobals /mnt/root/.config/kdeglobals
+
 #
 #Создание пользовательских директорий.
 echo -e "\033[36mСоздание пользовательских директорий.\033[0m"
@@ -1705,7 +1685,7 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR (Репозиторий пользователей).
 echo -e "\033[36mУстановка программ из AUR (Репозиторий пользователей).\033[0m"
-arch-chroot /mnt sudo -u "$username" yay -S gtk3-nocsd hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-qt pa-notify vkbasalt kmscon qgnomeplatform-qt5 qgnomeplatform-qt6 adwaita-qt5 adwaita-qt6 cups-xerox-b2xx --noconfirm --ask 4
+arch-chroot /mnt sudo -u "$username" yay -S gtk3-nocsd hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-qt pa-notify kmscon qgnomeplatform-qt5 qgnomeplatform-qt6 adwaita-qt5 adwaita-qt6 cups-xerox-b2xx --noconfirm --ask 4
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
@@ -1806,8 +1786,7 @@ sudo sed -i \047s/#net\/ipv6\/conf\/all\/forwarding=1/net\/ipv6\/conf\/all\/forw
 #
 #Установка переменных окружения.
 echo -e "\\033[36mУстановка переменных окружения.\\033[0m"
-sudo sh -c \047echo "ENABLE_VKBASALT=1
-GTK_USE_PORTAL=1
+sudo sh -c \047echo "GTK_USE_PORTAL=1
 XDG_MENU_PREFIX=arch-" >> /etc/environment\047
 #
 #Включение службы redshift (Регулирует цветовую температуру вашего экрана).

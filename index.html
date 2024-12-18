@@ -3171,17 +3171,22 @@ include "/usr/share/nano-syntax-highlighting/*.nanorc"
               </li>
               <li>
                 <span class=text>
-                  vkbasalt — Слой постобработки Vulkan.
+                  qgnomeplatform-qt5 — Смена внешнего вида QT5 приложений.
                 </span>
               </li>
               <li>
                 <span class=text>
-                  qgnomeplatform-qt5-git — Смена внешнего вида QT5 приложений.
+                  adwaita-qt5 — Тема внешнего вида QT6 приложений.
                 </span>
               </li>
               <li>
                 <span class=text>
-                  qgnomeplatform-qt6-git — Смена внешнего вида QT6 приложений.
+                  qgnomeplatform-qt6 — Смена внешнего вида QT6 приложений.
+                </span>
+              </li>
+              <li>
+                <span class=text>
+                  adwaita-qt6 — Тема внешнего вида QT6 приложений.
                 </span>
               </li>
               <li>
@@ -3191,7 +3196,7 @@ include "/usr/share/nano-syntax-highlighting/*.nanorc"
               </li>
             </ul>
             <div class=term>
-              <span class=ps>$:</span> yay -S gtk3-classic hardinfo usbguard-applet-qt pa-notify debtap auto-cpufreq hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git kde-cdemu-manager vkbasalt qgnomeplatform-qt5-git qgnomeplatform-qt6-git kmscon
+              <span class=ps>$:</span> yay -S gtk3-classic hardinfo usbguard-applet-qt pa-notify debtap auto-cpufreq hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git kde-cdemu-manager qgnomeplatform-qt5 adwaita-qt5 qgnomeplatform-qt6 adwaita-qt6 kmscon
             </div>
           </li>
         </ol>
@@ -5038,7 +5043,7 @@ exec --no-startup-id sh -c 'sleep 10; while [[ 1 -gt "$(ls -m /dev/pts | awk -F 
 exec --no-startup-id numlockx;
 #
 # Автозапуск steam.
-exec --no-startup-id ENABLE_VKBASALT=1 gamemoderun steam -silent %U;
+exec --no-startup-id gamemoderun steam -silent %U;
 #
 ########### Горячие клавиши запуска программ ###########
 #
@@ -6845,7 +6850,7 @@ Win+Alt-left+1 -- Восстановление рабочего стола №1.
           Установка переменных окружения.
         </p>
         <div class=term>
-          <span class=ps>$:</span> echo -e 'ENABLE_VKBASALT=1\nGTK_USE_PORTAL=1\nXDG_MENU_PREFIX=arch-' | sudo tee -a /etc/environment
+          <span class=ps>$:</span> echo -e 'GTK_USE_PORTAL=1\nXDG_MENU_PREFIX=arch-' | sudo tee -a /etc/environment
         </div>
       </li>
       <li>

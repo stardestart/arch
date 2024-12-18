@@ -1167,7 +1167,7 @@ exec --no-startup-id dunst;
 exec --no-startup-id numlockx;
 #
 # Автозапуск steam.
-exec --no-startup-id ENABLE_VKBASALT=1 gamemoderun steam -silent %U;
+exec --no-startup-id gamemoderun steam -silent %U;
 #
 # Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u;
@@ -1718,7 +1718,7 @@ rm -Rf /mnt/home/"$username"/yay
 #
 #Установка программ из AUR (Репозиторий пользователей).
 echo -e "\033[36mУстановка программ из AUR (Репозиторий пользователей).\033[0m"
-arch-chroot /mnt sudo -u "$username" yay -S gtk3-nocsd hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-qt pa-notify vkbasalt kmscon qgnomeplatform-qt5 qgnomeplatform-qt6 adwaita-qt5 adwaita-qt6 cups-xerox-b2xx --noconfirm --ask 4
+arch-chroot /mnt sudo -u "$username" yay -S gtk3-nocsd hardinfo debtap hunspell-ru-aot hyphen-ru mythes-ru minq-ananicy-git auto-cpufreq kde-cdemu-manager usbguard-qt pa-notify kmscon qgnomeplatform-qt5 qgnomeplatform-qt6 adwaita-qt5 adwaita-qt6 cups-xerox-b2xx --noconfirm --ask 4
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
@@ -1826,8 +1826,7 @@ sudo sed -i \047s/#net\/ipv6\/conf\/all\/forwarding=1/net\/ipv6\/conf\/all\/forw
 #
 #Установка переменных окружения.
 echo -e "\\033[36mУстановка переменных окружения.\\033[0m"
-sudo sh -c \047echo "ENABLE_VKBASALT=1
-GTK_USE_PORTAL=1
+sudo sh -c \047echo "GTK_USE_PORTAL=1
 XDG_MENU_PREFIX=arch-" >> /etc/environment\047
 #
 #Включение службы redshift (Регулирует цветовую температуру вашего экрана).
