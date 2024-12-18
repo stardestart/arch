@@ -1898,6 +1898,8 @@ for (( i=0; i<"${#massallaurprog[*]}"; i++ ))
                 fi
             done
 arch-chroot /mnt sudo -u "$username" yay -S "${massaurprog[@]}" --noconfirm --ask 4
+echo ${massaurprog[@]}
+read -p "Нажмите ENTER для продолжения"
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
