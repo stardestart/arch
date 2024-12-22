@@ -49,6 +49,12 @@ passroot=""
 font=0
 #Переменная сохранит размер окна терминала для дальнейшей установки/настройки/расчета.
 xterm=""
+#Переменная сохранит ширину экрана.
+w=0
+#Переменная сохранит диагональ экрана.
+d=0
+#Переменная сохранит соотношение ширины и диагонали экрана.
+px=0
 #Переменная сохранит количество ОЗУ для дальнейшей установки/настройки/расчета.
 ram=0
 #Переменная сохранит размер swap раздела для дальнейшей установки/настройки/расчета.
@@ -377,7 +383,8 @@ echo -e "\033[47m\033[30mВведите имя компьютера:\033[0m\033[
 echo -e "\033[47m\033[30mВведите имя пользователя:\033[0m\033[32m";read -p ">" username
 echo -e "\033[47m\033[30mВведите пароль для "$username":\033[0m\033[32m";read -p ">" passuser
 echo -e "\033[47m\033[30mВведите пароль для root:\033[0m\033[32m";read -p ">" passroot
-echo -e "\033[36mВыберите разрешение монитора:\033[32m"
+echo -e "\033[36mРасчет размера шрифта и окон.\033[0m"
+echo -e "\033[36mВыберите диапазон разрешения монитора:\033[32m"
 PS3="$(echo -e "\033[47m\033[30mПункт №:\033[0m\n\033[32m>")"
 select menuscreen in "~480p." "~720p-1080p." "~4K."
 do
@@ -442,11 +449,15 @@ echo -e "\033[36mРазмер SWAP раздела: $swap\033[0m"
 #
 #Вычисление var и root разделов.
 echo -e "\033[36mВычисление var и root разделов.\033[0m"
-rootsize="$(fdisk -l /dev/"$sysdisk" | head -n1 | awk '{print $3}')"
+rootsize1="$(fdisk -l /dev/"$sysdisk" | head -n1 | awk '{print $3}')"
 rootsize=$(bc << EOF
-$rootsize/5*2
+$rootsize1/5*2
 EOF
 )
+echo $rootsize
+rootsize=$(echo "$rootsize1/5*2" | bc)
+echo $rootsize
+read -p "Нажмите ENTER для продолжения"
 varsize=$(bc << EOF
 $rootsize/2
 EOF
@@ -659,7 +670,7 @@ EOF' >> /mnt/etc/grub.d/00_header
         arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
         arch-chroot /mnt bootctl install
         echo -e "default arch\ntimeout 2\neditor yes\nconsole-mode max" > /mnt/boot/loader/loader.conf
-        echo -e "title Arch Linux\nlinux /vmlinuz-linux-zen"$microcode"\ninitrd /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw resume=/dev/"$sysdisk""$p2" fbcon=rotate:1" > /mnt/boot/loader/entries/arch.conf
+        echo -e "title Arch Linux\nlinux /vmlinuz-linux-zen"$microcode"\ninitrd /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw resume=/dev/"$sysdisk""$p2"" > /mnt/boot/loader/entries/arch.conf
 fi
 #
 #Установка микроинструкции для процессора.

@@ -381,19 +381,19 @@ select menuscreen in "~480p." "~720p-1080p." "~4K."
 do
     case "$menuscreen" in
         "~480p.")
-            font=10
-            xterm="700 350"
+            w=100
+            xterm="500 350"
             fox=0.0
             break
             ;;
         "~720p-1080p.")
-            font=10
+            w=200
             xterm="1000 500"
             fox=1.0
             break
             ;;
         "~4K.")
-            font=12
+            w=400
             xterm="2000 1000"
             fox=1.5
             break
@@ -401,6 +401,28 @@ do
         *) echo -e "\033[41m\033[30mЧто значит - "$REPLY"? До трёх посчитать не можешь и Arch Linux ставишь?\033[0m\033[32m";;
     esac
 done
+echo -e "\033[47m\033[30mДиагональ экрана в дюймах, только натуральное число:\033[0m\033[32m";read -p ">" d
+while true
+    do
+        if [[ "$d" =~ ^[0-9]+$ ]];
+            then
+                break
+            else
+                echo -e "\033[41m\033[30mЧто значит - "$d"? Только НАТУРАЛЬНОЕ число\033[0m\033[32m"
+                read d
+        fi
+    done
+px=$(echo "3^($w/$d)" | bc)
+while true
+    do
+        if [[ $(echo "$px>0" | bc) == 0 ]];
+            then
+                break
+            else
+                px=$(echo "$px/3" | bc)
+                (( font++ ))
+            fi
+    done
 #
 #Вычисление swap.
 echo -e "\033[36mВычисление swap.\033[0m"
