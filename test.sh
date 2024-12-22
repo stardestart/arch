@@ -384,8 +384,8 @@ echo -e "\033[47m\033[30mВведите имя пользователя:\033[0m\
 echo -e "\033[47m\033[30mВведите пароль для "$username":\033[0m\033[32m";read -p ">" passuser
 echo -e "\033[47m\033[30mВведите пароль для root:\033[0m\033[32m";read -p ">" passroot
 echo -e "\033[36mРасчет размера шрифта и окон.\033[0m"
-echo -e "\033[36mВыберите диапазон разрешения монитора:\033[32m"
-PS3="$(echo -e "\033[47m\033[30mПункт №:\033[0m\n\033[32m>")"
+echo -e "\033[47m\033[30mВыберите диапазон разрешения монитора:\033[0m\033[32m"
+PS3="$(echo -e ">")"
 select menuscreen in "~480p." "~720p-1080p." "~4K."
 do
     case "$menuscreen" in
@@ -449,19 +449,9 @@ echo -e "\033[36mРазмер SWAP раздела: $swap\033[0m"
 #
 #Вычисление var и root разделов.
 echo -e "\033[36mВычисление var и root разделов.\033[0m"
-rootsize1="$(fdisk -l /dev/"$sysdisk" | head -n1 | awk '{print $3}')"
-rootsize=$(bc << EOF
-$rootsize1/5*2
-EOF
-)
-echo $rootsize
-rootsize=$(echo "$rootsize1/5*2" | bc)
-echo $rootsize
-read -p "Нажмите ENTER для продолжения"
-varsize=$(bc << EOF
-$rootsize/2
-EOF
-)
+rootsize="$(fdisk -l /dev/"$sysdisk" | head -n1 | awk '{print $3}')"
+rootsize=$(echo "$rootsize/5*2" | bc)
+varsize=$(echo "$rootsize/2" | bc)
 if [ $rootsize -lt 20 ]; then rootsize=20; fi
 varsize="$varsize"G
 echo -e "\033[36mРазмер var-раздела: $varsize\033[0m"
