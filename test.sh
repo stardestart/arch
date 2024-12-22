@@ -1036,7 +1036,7 @@ export LD_PRELOAD=/usr/lib/libgtk3-nocsd.so.0' | tee /mnt/home/"$username"/.prof
 echo -e "\033[36mРедактирование конфига сервера уведомлений.\033[0m"
 sed -i "/\[global\]/,/^\[.*\]/ s/gap_size = .*/gap_size = ${font}/" /mnt/etc/dunst/dunstrc
 sed -i "/\[global\]/,/^\[.*\]/ s/icon_theme = .*/icon_theme = Papirus-Dark/" /mnt/etc/dunst/dunstrc
-sed -i "/\[global\]/ a script = ~/.config/notify_sound.sh/" /mnt/etc/dunst/dunstrc
+sed -i "/\[global\]/ a script = ~/.config/notify_sound.sh" /mnt/etc/dunst/dunstrc
 sed -i "/\[urgency_low\]/,/^\[.*\]/ s/background = .*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
 sed -i "/\[urgency_low\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#b2b2b2\"/" /mnt/etc/dunst/dunstrc
 sed -i "/\[urgency_normal\]/,/^\[.*\]/ s/background = .*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
@@ -1373,9 +1373,6 @@ exec --no-startup-id sudo -E usbguard-qt;
 # Автозапуск xbindkeys.
 exec --no-startup-id xbindkeys;
 #
-# Автозапуск pa-notify.
-exec --no-startup-id pa-notify;
-#
 # Автозапуск dunst.
 exec --no-startup-id dunst;
 #
@@ -1394,6 +1391,9 @@ exec --no-startup-id dunst;
 #TechnicalSymbolexec sudo pacman -Suy --noconfirm > /dev/pts/$pts; \\
 #TechnicalSymbolexec sudo pacman -Sc --noconfirm > /dev/pts/$pts; \\
 #TechnicalSymbolexec sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts\047
+#
+# Автозапуск pa-notify.
+exec --no-startup-id pa-notify;
 #
 # Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u;
