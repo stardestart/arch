@@ -667,7 +667,7 @@ EOF' >> /mnt/etc/grub.d/00_header
         arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
         arch-chroot /mnt bootctl install
         echo -e "default arch\ntimeout 2\neditor yes\nconsole-mode max" > /mnt/boot/loader/loader.conf
-        echo -e "title Arch Linux\nlinux /vmlinuz-linux-zen"$microcode"\ninitrd /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw resume=/dev/"$sysdisk""$p2" fbcon=rotate:1" > /mnt/boot/loader/entries/arch.conf
+        echo -e "title Arch Linux\nlinux /vmlinuz-linux-zen"$microcode"\ninitrd /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw resume=/dev/"$sysdisk""$p2"" > /mnt/boot/loader/entries/arch.conf
 fi
 #
 #Установка микроинструкции для процессора.
@@ -841,13 +841,11 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
  done
  unset f
 fi
-xrandr -o right
 xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
 feh --bg-max --randomize --no-fehbg /usr/share/backgrounds/archlinux/ & #Автозапуск обоев рабочего стола.
 xautolock -time 50 -locker "systemctl hibernate" -notify 1800 -notifier "xlock -mode matrix -delay 10000 -echokeys -echokey \047*\047" -detectsleep -noclose & #Автозапуск заставки.
 canberra-gtk-play -i service-login & #Воспроизвести звуковое событие "Вход в систему".
 exec i3 #Автозапуск i3.' | tee /mnt/home/"$username"/.xinitrc /mnt/root/.xinitrc
-echo -e 'xrandr -o right' >> /mnt/etc/X11/xdm/archlinux/Xsetup
 #
 #Создание общего конфига клавиатуры.
 echo -e "\033[36mСоздание общего конфига клавиатуры.\033[0m"
