@@ -7256,10 +7256,10 @@ SCRIPTWHITELIST=/usr/bin/vendor_perl/GET
           </li>
           <li>
             <p class=text>
-              Все JPEG в каталоге в HEIC с помощью ImageMagick.
+              Все JPEG в каталоге в HEIC с помощью ImageMagick, флаг -strip удаляет метаданные.
             </p>
             <div class=term>
-              <span class=ps>$:</span> find . -name "*.jpg" -exec mogrify -format heic {} \; -exec rm -v {} \;
+              <span class=ps>$:</span> find . -name "*.jpg" -exec mogrify -strip -format heic {} \; -exec rm -v {} \;
             </div>
           </li>
           <li>
