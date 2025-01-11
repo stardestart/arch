@@ -3501,9 +3501,14 @@ include "/usr/share/nano-syntax-highlighting/*.nanorc"
               ttf-fantasque-sans-mono — Семейство шрифтов с отличным моноширинным вариантом для программистов.
             </span>
           </li>
+          <li>
+            <span class=text>
+              gnome-font-viewer — Утилита для просмотра шрифтов.
+            </span>
+          </li>
         </ul>
         <div class=term>
-          <span class=ps>$:</span> sudo pacman -S freetype2 ttf-fantasque-sans-mono
+          <span class=ps>$:</span> sudo pacman -S freetype2 ttf-fantasque-sans-mono gnome-font-viewer
         </div>
         <p class=text>
           Чтобы не скачивать все шрифты NOTO font от Google, скачаем только нужные.
@@ -3611,7 +3616,7 @@ include "/usr/share/nano-syntax-highlighting/*.nanorc"
               </li>
               <li>
                 <span class=text>
-                  gwenview — Быстрый и простой в использовании просмотрщик изображений.
+                  geeqie — Быстрый и простой в использовании просмотрщик изображений.
                 </span>
               </li>
               <li>
@@ -3636,7 +3641,7 @@ include "/usr/share/nano-syntax-highlighting/*.nanorc"
               </li>
             </ul>
             <div class=term>
-              <span class=ps>$:</span> sudo pacman -S audacity kdenlive cheese pinta gimp vlc libreoffice-still-ru kalgebra avidemux-qt copyq kamera gwenview imagemagick xreader xed geoclue gogglesmm
+              <span class=ps>$:</span> sudo pacman -S audacity kdenlive cheese pinta gimp vlc libreoffice-still-ru kalgebra avidemux-qt copyq kamera geeqie imagemagick xreader xed geoclue gogglesmm
             </div>
           </li>
         </ol>
@@ -7045,6 +7050,89 @@ SCRIPTWHITELIST=/usr/bin/vendor_perl/GET
         </p>
         <div class=term>
           <span class=ps>$:</span> systemctl --user enable redshift-gtk
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Устанавливаем приложения по умолчанию.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default vlc.desktop video/mp4
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default vlc.desktop video/x-matroska
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default vlc.desktop video/x-msvideo
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default vlc.desktop video/quicktime
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default vlc.desktop x-flv
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default vlc.desktop x-ms-wmv
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default org.geeqie.Geeqie.desktop image/jpeg
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default org.geeqie.Geeqie.desktop image/png
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default org.geeqie.Geeqie.desktop image/gif
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default org.geeqie.Geeqie.desktop image/bmp
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default org.geeqie.Geeqie.desktop image/svg+xml
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default gogglesmm.desktop audio/mpeg
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default gogglesmm.desktop audio/wav
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default gogglesmm.desktop audio/ogg
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default gogglesmm.desktop audio/x-flac
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default audacity.desktop audio/x-ms-wma
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default audacity.desktop audio/wav
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default org.gnome.font-viewer.desktop font/ttf
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default org.gnome.font-viewer.desktop font/otf
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default org.x.editor.desktop text/plain
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default firefox.desktop text/html
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default xreader.desktop application/pdf
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default org.kde.ark.desktop application/zip
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default org.kde.ark.desktop application/x-tar
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default org.kde.ark.desktop application/x-gzip
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> xdg-mime default org.kde.ark.desktop application/x-bzip2
         </div>
       </li>
       <li>

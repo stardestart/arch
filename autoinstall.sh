@@ -197,6 +197,7 @@ feh \
 conky \
 freetype2 \
 ttf-fantasque-sans-mono \
+gnome-font-viewer \
 neofetch \
 alsa-utils \
 alsa-plugins \
@@ -233,7 +234,7 @@ tesseract-data-eng \
 kalgebra \
 copyq \
 kamera \
-gwenview \
+geeqiettf \
 xreader \
 gogglesmm \
 sane \
@@ -2042,6 +2043,34 @@ kbuildsycoca6
 echo -e "\\033[36mНастройка wine (Позволяет запускать приложения Windows).\\033[0m"
 WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140
 winetricks dxvk dotnet48 allcodecs
+#
+#Устанавливаем приложения по умолчанию.
+xdg-mime default vlc.desktop video/mp4
+xdg-mime default vlc.desktop video/x-matroska
+xdg-mime default vlc.desktop video/x-msvideo
+xdg-mime default vlc.desktop video/quicktime
+xdg-mime default vlc.desktop x-flv
+xdg-mime default vlc.desktop x-ms-wmv
+xdg-mime default org.geeqie.Geeqie.desktop image/jpeg
+xdg-mime default org.geeqie.Geeqie.desktop image/png
+xdg-mime default org.geeqie.Geeqie.desktop image/gif
+xdg-mime default org.geeqie.Geeqie.desktop image/bmp
+xdg-mime default org.geeqie.Geeqie.desktop image/svg+xml
+xdg-mime default gogglesmm.desktop audio/mpeg
+xdg-mime default gogglesmm.desktop audio/wav
+xdg-mime default gogglesmm.desktop audio/ogg
+xdg-mime default gogglesmm.desktop audio/x-flac
+xdg-mime default audacity.desktop audio/x-ms-wma
+xdg-mime default audacity.desktop audio/wav
+xdg-mime default org.gnome.font-viewer.desktop font/ttf
+xdg-mime default org.gnome.font-viewer.desktop font/otf
+xdg-mime default org.x.editor.desktop text/plain
+xdg-mime default firefox.desktop text/html
+xdg-mime default xreader.desktop application/pdf
+xdg-mime default org.kde.ark.desktop application/zip
+xdg-mime default org.kde.ark.desktop application/x-tar
+xdg-mime default org.kde.ark.desktop application/x-gzip
+xdg-mime default org.kde.ark.desktop application/x-bzip2
 #
 #Удаление временных файлов.
 echo -e "\\033[36mУдаление временных файлов.\\033[0m"
