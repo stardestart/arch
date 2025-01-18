@@ -1671,14 +1671,14 @@ mkdir -p /mnt/etc/{gtk-3.0,gtk-4.0}
 echo '[Settings]
 gtk-application-prefer-dark-theme=true
 gtk-cursor-theme-name=Adwaita
-gtk-font-name=Fantasque Sans Mono Bold Italic '"$font"'
+gtk-font-name=Fantasque Sans Mono Bold Italic '"$font"', Noto Emoji SemiBold '"$font"'
 gtk-icon-theme-name=Papirus-Dark
 gtk-theme-name=Adwaita-dark
 gtk-decoration-layout=menu:
 gtk-overlay-scrolling=false' | tee /mnt/etc/gtk-3.0/settings.ini /mnt/etc/gtk-4.0/settings.ini
 echo 'gtk-application-prefer-dark-theme="true"
 gtk-cursor-theme-name="Adwaita"
-gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'"
+gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'", "Noto Emoji SemiBold '"$font"'"
 gtk-icon-theme-name="Papirus-Dark"
 gtk-theme-name="Adwaita-dark"
 gtk-decoration-layout=menu:' > /mnt/usr/share/gtk-2.0/gtkrc
