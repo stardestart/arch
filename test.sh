@@ -197,6 +197,7 @@ feh \
 conky \
 freetype2 \
 ttf-fantasque-sans-mono \
+#xorg-mkfontscale \
 gnome-font-viewer \
 neofetch \
 alsa-utils \
@@ -578,6 +579,7 @@ pacman -Sy glibc --noconfirm
 pacman -Sy lib32-glibc --noconfirm
 pacman -Sy sad --noconfirm
 pacman -Sy coreutils --noconfirm
+pacman -Sy xorg-mkfontscale --noconfirm
 pacman -Sy usbguard --noconfirm
 echo -e "Старый список зеркал."
 cat /etc/pacman.d/mirrorlist
@@ -1873,6 +1875,8 @@ for (( i=0; i<"${#massfont[*]}"; i=i+2 ))
         curl --create-dirs -o /mnt/usr/share/fonts/google/"${massfont[$i]}" "${massfont[($i+1)]}"
     done
 chmod o+rx /mnt/usr/share/fonts/google
+mkfontdir /usr/share/fonts/google
+mkfontdir /usr/share/fonts/TTF
 #
 #Определяем, есть ли ssd.
 echo -e "\033[36mОпределяем, есть ли ssd.\033[0m"
