@@ -286,7 +286,6 @@ discord \
 meld \
 kcolorchooser \
 kontrast \
-dmg2img \
 telegram-desktop \
 gcompris-qt \
 gtk3-nocsd \
