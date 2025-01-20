@@ -234,7 +234,7 @@ tesseract-data-eng \
 kalgebra \
 copyq \
 kamera \
-geeqiettf \
+geeqie \
 xreader \
 gogglesmm \
 sane \
@@ -576,6 +576,7 @@ pacman -Sy glibc --noconfirm
 pacman -Sy lib32-glibc --noconfirm
 pacman -Sy sad --noconfirm
 pacman -Sy coreutils --noconfirm
+pacman -Sy xorg-mkfontscale --noconfirm
 pacman -Sy usbguard --noconfirm
 echo -e "Старый список зеркал."
 cat /etc/pacman.d/mirrorlist
@@ -1223,7 +1224,7 @@ bindsym button3 floating toggle
 bindsym button2 move scratchpad
 #
 # Определяем имена для рабочих областей по умолчанию.
-set $ws1 "1: ⛏️"
+set $ws1 "1: 🏠"
 set $ws2 "2: 🌍"
 set $ws3 "3: 🎮"
 set $ws4 "4"
@@ -1874,6 +1875,8 @@ for (( i=0; i<"${#massfont[*]}"; i=i+2 ))
         curl --create-dirs -o /mnt/usr/share/fonts/google/"${massfont[$i]}" "${massfont[($i+1)]}"
     done
 chmod o+rx /mnt/usr/share/fonts/google
+mkfontdir /mnt/usr/share/fonts/google
+mkfontdir /mnt/usr/share/fonts/TTF
 #
 #Определяем, есть ли ssd.
 echo -e "\033[36mОпределяем, есть ли ssd.\033[0m"
@@ -2072,6 +2075,8 @@ xdg-mime default org.kde.ark.desktop application/x-tar
 xdg-mime default org.kde.ark.desktop application/x-gzip
 xdg-mime default org.kde.ark.desktop application/x-bzip2
 #
+xset +fp /usr/share/fonts/TTF
+xset +fp /usr/share/fonts/google
 #Удаление временных файлов.
 echo -e "\\033[36mУдаление временных файлов.\\033[0m"
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
