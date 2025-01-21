@@ -1404,8 +1404,8 @@ exec --no-startup-id gamemoderun steam -silent %U;
 ########### Горячие клавиши запуска программ ###########
 #
 #Восстановление рабочего стола №1.
-bindsym $mod+mod1+1 exec --no-startup-id "i3-msg \047workspace 1: ⛏️; append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; exec dolphin; exec xed\047"
-exec --no-startup-id "i3-msg \047workspace 1: ⛏️; append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; exec dolphin; exec xed\047"
+bindsym $mod+mod1+1 exec --no-startup-id "i3-msg \047workspace 1: 🏠; append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; exec dolphin; exec xed\047"
+exec --no-startup-id "i3-msg \047workspace 1: 🏠; append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; exec dolphin; exec xed\047"
 #
 # Используйте mod+enter, чтобы запустить терминал ("i3-sensible-terminal" можно заменить "xterm", "terminator" или любым другим на выбор).
 bindsym $mod+Return exec xterm
