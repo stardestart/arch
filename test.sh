@@ -80,7 +80,8 @@ varsize=""
 #Переменная сохранит кулеры.
 fanconky=""
 #Массив, хранит шрифты.
-massfont=(30144_PostIndex.ttf https://ttfonts.net/ru/download/31252.htm $(curl https://fonts.google.com/download/list?family=Noto%20Emoji \
+massfont=(30144_PostIndex.ttf https://ttfonts.net/ru/download/31252.htm $(curl https://fonts.google.com/download/list?family=Stalinist+One \
+                 https://fonts.google.com/download/list?family=Noto%20Emoji \
                  https://fonts.google.com/download/list?family=Noto%20Sans%20Symbols \
                  https://fonts.google.com/download/list?family=Noto%20Sans%20Symbols%202 \
                  https://fonts.google.com/download/list?family=Noto%20Sans%20Duployan \
@@ -2047,6 +2048,8 @@ WINEARCH=win32 winetricks d3dx9
 winetricks dxvk
 #
 #Устанавливаем приложения по умолчанию.
+xdg-mime default org.kde.dolphin.desktop inode/directory application/x-directory
+xdg-mime default org.mozilla.Thunderbird.desktop x-scheme-handler/mailto
 xdg-mime default vlc.desktop video/mp4
 xdg-mime default vlc.desktop video/x-matroska
 xdg-mime default vlc.desktop video/x-msvideo
@@ -2067,6 +2070,7 @@ xdg-mime default audacity.desktop audio/wav
 xdg-mime default org.gnome.font-viewer.desktop font/ttf
 xdg-mime default org.gnome.font-viewer.desktop font/otf
 xdg-mime default org.x.editor.desktop text/plain
+xdg-settings set default-web-browser firefox.desktop
 xdg-mime default firefox.desktop text/html
 xdg-mime default xreader.desktop application/pdf
 xdg-mime default org.kde.ark.desktop application/zip
