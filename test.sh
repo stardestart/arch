@@ -1397,6 +1397,9 @@ exec --no-startup-id dunst;
 # Автозапуск pa-notify.
 exec --no-startup-id pa-notify;
 #
+# Автозапуск thunderbird.
+exec --no-startup-id thunderbird --headless
+#
 # Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u;
 #

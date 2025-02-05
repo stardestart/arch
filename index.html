@@ -5047,6 +5047,9 @@ exec --no-startup-id pa-notify;
 # Автозапуск dunst.
 exec --no-startup-id dunst;
 #
+# Автозапуск thunderbird.
+exec --no-startup-id thunderbird --headless
+#
 # Автозапуск neofetch и обновления.
 #exec --no-startup-id sh -c 'sleep 10; while [[ -z "$(ls /dev/pts/1)" ]]; do sleep 5; done; sleep 5; sudo rm /var/lib/pacman/db.lck > /dev/pts/1; sudo pacman -Suy --noconfirm > /dev/pts/1; sudo pacman -Sc --noconfirm > /dev/pts/1; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/1;'
 exec --no-startup-id sh -c 'sleep 10; while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-1)}'\'')" ]]; do sleep 5; done; sleep 5; pts="$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-2)}'\'')"; neofetch > /dev/pts/$pts; arch-audit > /dev/pts/$pts; pts="$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-1)}'\'')"; sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; sudo pacman -Suy --noconfirm > /dev/pts/$pts; sudo pacman -Sc --noconfirm > /dev/pts/$pts; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts'

@@ -1405,6 +1405,9 @@ exec --no-startup-id dunst;
 # Автозапуск pa-notify.
 exec --no-startup-id pa-notify;
 #
+# Автозапуск thunderbird.
+exec --no-startup-id thunderbird --headless
+#
 # Автозапуск numlockx.
 exec --no-startup-id numlockx;
 #
