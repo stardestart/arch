@@ -306,6 +306,7 @@ auto-cpufreq \
 kde-cdemu-manager \
 usbguard-qt \
 pa-notify \
+birdtray \
 kmscon \
 qgnomeplatform-qt5 \
 adwaita-qt5 \
@@ -1066,7 +1067,9 @@ if [ -n "$(echo $@ | grep pa-notify)" ]; then
         canberra-gtk-play -i window-attention;
     else canberra-gtk-play -i message;
 fi
-echo $@ > /dev/pts/0;' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
+echo "1 - $(date "+%Y-%m-%d %H:%M:%S") - $@" >> ~/noti.txt;
+echo -e "2 - $(date "+%Y-%m-%d %H:%M:%S") - $1 \n" >> ~/noti.txt;
+' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
 #
 #Создание конфига picom (Автономный композитор для Xorg).
 echo -e "\033[36mСоздание конфига picom (Автономный композитор для Xorg).\033[0m"
@@ -1406,7 +1409,7 @@ exec --no-startup-id dunst;
 exec --no-startup-id pa-notify;
 #
 # Автозапуск thunderbird.
-exec --no-startup-id thunderbird --headless
+exec --no-startup-id birdtray
 #
 # Автозапуск numlockx.
 exec --no-startup-id numlockx;

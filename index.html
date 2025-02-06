@@ -3141,6 +3141,11 @@ include "/usr/share/nano-syntax-highlighting/*.nanorc"
               </li>
               <li>
                 <span class=text>
+                  birdtray — Запуск Thunderbird с помощью значка на панели задач.
+                </span>
+              </li>
+              <li>
+                <span class=text>
                   debtap — Скрипт для преобразования пакетов .deb в пакеты Arch Linux. Не используйте его для преобразования пакетов, которые уже существуют в официальных репозиториях или могут быть собраны из AUR!
                 </span>
               </li>
@@ -3196,7 +3201,7 @@ include "/usr/share/nano-syntax-highlighting/*.nanorc"
               </li>
             </ul>
             <div class=term>
-              <span class=ps>$:</span> yay -S gtk3-nocsd hardinfo2 usbguard-qt pa-notify debtap auto-cpufreq hunspell-ru-aot mythes-ru minq-ananicy-git kde-cdemu-manager qgnomeplatform-qt5 adwaita-qt5 qgnomeplatform-qt6 adwaita-qt6 kmscon
+              <span class=ps>$:</span> yay -S gtk3-nocsd hardinfo2 usbguard-qt pa-notify birdtray debtap auto-cpufreq hunspell-ru-aot mythes-ru minq-ananicy-git kde-cdemu-manager qgnomeplatform-qt5 adwaita-qt5 qgnomeplatform-qt6 adwaita-qt6 kmscon
             </div>
           </li>
         </ol>
@@ -5048,7 +5053,7 @@ exec --no-startup-id pa-notify;
 exec --no-startup-id dunst;
 #
 # Автозапуск thunderbird.
-exec --no-startup-id thunderbird --headless
+exec --no-startup-id birdtray
 #
 # Автозапуск neofetch и обновления.
 #exec --no-startup-id sh -c 'sleep 10; while [[ -z "$(ls /dev/pts/1)" ]]; do sleep 5; done; sleep 5; sudo rm /var/lib/pacman/db.lck > /dev/pts/1; sudo pacman -Suy --noconfirm > /dev/pts/1; sudo pacman -Sc --noconfirm > /dev/pts/1; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/1;'

@@ -299,6 +299,7 @@ auto-cpufreq \
 kde-cdemu-manager \
 usbguard-qt \
 pa-notify \
+birdtray \
 kmscon \
 qgnomeplatform-qt5 \
 adwaita-qt5 \
@@ -1398,7 +1399,7 @@ exec --no-startup-id dunst;
 exec --no-startup-id pa-notify;
 #
 # Автозапуск thunderbird.
-exec --no-startup-id thunderbird --headless
+exec --no-startup-id birdtray
 #
 # Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u;
