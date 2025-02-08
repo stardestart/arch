@@ -80,7 +80,8 @@ varsize=""
 #Переменная сохранит кулеры.
 fanconky=""
 #Массив, хранит шрифты.
-massfont=(30144_PostIndex.ttf https://ttfonts.net/ru/download/31252.htm $(curl https://fonts.google.com/download/list?family=Noto%20Emoji \
+massfont=(30144_PostIndex.ttf https://ttfonts.net/ru/download/31252.htm $(curl https://fonts.google.com/download/list?family=Stalinist+One \
+                 https://fonts.google.com/download/list?family=Noto%20Emoji \
                  https://fonts.google.com/download/list?family=Noto%20Sans%20Symbols \
                  https://fonts.google.com/download/list?family=Noto%20Sans%20Symbols%202 \
                  https://fonts.google.com/download/list?family=Noto%20Sans%20Duployan \
@@ -182,6 +183,8 @@ kdesdk-thumbnailers \
 ffmpegthumbs \
 kdenetwork-filesharing \
 smb4k \
+kclock \
+calindori \
 papirus-icon-theme \
 picom \
 redshift \
@@ -1067,8 +1070,7 @@ if [ -n "$(echo $@ | grep pa-notify)" ]; then
         canberra-gtk-play -i window-attention;
     else canberra-gtk-play -i message;
 fi
-echo "1 - $(date "+%Y-%m-%d %H:%M:%S") - $@" >> ~/noti.txt;
-echo -e "2 - $(date "+%Y-%m-%d %H:%M:%S") - $1 \n" >> ~/noti.txt;
+echo "$(date "+%Y-%m-%d %H:%M:%S") - $@" >> ~/noti.txt;
 ' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
 #
 #Создание конфига picom (Автономный композитор для Xorg).
@@ -1336,6 +1338,12 @@ for_window [class="XTerm"] resize set '"$xterm"'
 # Включить плавающий режим для всех окон gogglesmm.
 for_window [class="gogglesmm"] floating enable
 #
+# Включить плавающий режим для всех окон calindori.
+for_window [class="calindori"] floating enable
+#
+# Включить плавающий режим для всех окон kclock.
+for_window [class="kclock"] floating enable
+#
 ########### Автозапуск программ ###########
 #
 # Приветствие в течении 10 сек (--no-startup-id убирает курсор загрузки).
@@ -1409,7 +1417,13 @@ exec --no-startup-id dunst;
 exec --no-startup-id pa-notify;
 #
 # Автозапуск thunderbird.
-exec --no-startup-id birdtray
+exec --no-startup-id birdtray;
+#
+# Автозапуск часов-напоминалки.
+exec --no-startup-id kclockd;
+#
+# Автозапуск календаря.
+exec --no-startup-id calindac;
 #
 # Автозапуск numlockx.
 exec --no-startup-id numlockx;

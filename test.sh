@@ -183,6 +183,8 @@ kdesdk-thumbnailers \
 ffmpegthumbs \
 kdenetwork-filesharing \
 smb4k \
+kclock \
+calindori \
 papirus-icon-theme \
 picom \
 redshift \
@@ -1326,6 +1328,12 @@ for_window [class="XTerm"] resize set '"$xterm"'
 # Включить плавающий режим для всех окон gogglesmm.
 for_window [class="gogglesmm"] floating enable
 #
+# Включить плавающий режим для всех окон calindori.
+for_window [class="calindori"] floating enable
+#
+# Включить плавающий режим для всех окон kclock.
+for_window [class="kclock"] floating enable
+#
 ########### Автозапуск программ ###########
 #
 # Приветствие в течении 10 сек (--no-startup-id убирает курсор загрузки).
@@ -1399,7 +1407,13 @@ exec --no-startup-id dunst;
 exec --no-startup-id pa-notify;
 #
 # Автозапуск thunderbird.
-exec --no-startup-id birdtray
+exec --no-startup-id birdtray;
+#
+# Автозапуск часов-напоминалки.
+exec --no-startup-id kclockd;
+#
+# Автозапуск календаря.
+exec --no-startup-id calindac;
 #
 # Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u;
