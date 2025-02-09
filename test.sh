@@ -292,7 +292,6 @@ telegram-desktop \
 gcompris-qt \
 gtk3-nocsd \
 hardinfo2 \
-debtap \
 hunspell-ru-aot \
 hyphen-ru \
 mythes-ru \
