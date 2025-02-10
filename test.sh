@@ -124,6 +124,8 @@ firefox-spell-ru \
 firefox-ublock-origin \
 firefox-dark-reader \
 firefox-adblock-plus \
+i2pd \
+links \
 thunderbird \
 thunderbird-i18n-ru \
 xdg-desktop-portal-gtk \
@@ -2145,7 +2147,7 @@ echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus getty@tty1.service
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
 xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker rngd auto-cpufreq smartd smb \
-saned.socket cups.socket x11vnc ufw auditd usbguard ntpd kmsconvt@tty1.service
+saned.socket cups.socket x11vnc ufw auditd usbguard i2pd ntpd kmsconvt@tty1.service
 #
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
