@@ -1457,7 +1457,7 @@ exec --no-startup-id sh -c \047sleep 10; ~/archinstall.sh > /dev/pts/1\047 #Tech
 mkdir -p /mnt/home/"$username"/.config/polybar
 mkdir -p /mnt/root/.config/polybar
 echo -e "\033[36mСоздание конфига Polybar (Панель рабочего стола).\033[0m"
-echo '[bar/upbar]
+echo -e '[bar/upbar]
 background = #2b2b2b
 foreground = #b2b2b2
 font-0 = Fantasque Sans Mono:size='"$font"'
@@ -1470,7 +1470,7 @@ modules-left = jgmenu inetbrowser1 inetbrowser2 filebrowser1 filebrowser2 libreo
 modules-center = title
 modules-right = date1 date2 date3 date4 pulseaudio printscreen help poweroff
 dpi = 0
-height = '"$(($font*4))"'
+height = '"$(($font*3))"'
 enable-ipc = true
 
 [module/jgmenu]
@@ -1699,7 +1699,7 @@ locale = ru_RU.UTF-8
 modules-left = i3
 modules-right = cpu memory netline xkeyboard tray battery
 dpi = 0
-height = '"$(($font*4))"'
+height = '"$(($font*3))"'
 enable-ipc = true
 bottom = true
 scroll-up = "#i3.prev"
@@ -2002,9 +2002,9 @@ color_sel_bg = #283544
 color_sel_fg = "#ffffff"' | tee /mnt/home/"$username"/.config/jgmenu/left /mnt/root/.config/jgmenu/left /mnt/home/"$username"/.config/jgmenu/right /mnt/root/.config/jgmenu/right
 sed -i 's/menu_halign = left/menu_halign = right/' /mnt/home/"$username"/.config/jgmenu/right
 sed -i 's/menu_halign = left/menu_halign = right/' /mnt/root/.config/jgmenu/right
-echo -e 'Выход из i3wm,i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -b \047Да! выйти из i3\047 \047canberra-gtk-play -i service-logout; i3-msg exit\047,/usr/share/icons/Papirus-Dark/16x16/actions/application-exit.svg
-Перезагрузка,systemctl reboot,/usr/share/icons/Papirus/16x16/apps/system-reboot.svg
-Завершение работы,systemctl poweroff,/usr/share/icons/Papirus-Dark/16x16/apps/system-shutdown.sv' | tee /mnt/home/"$username"/.config/jgmenu/help.csv /mnt/root/.config/jgmenu/help.csv
+echo -e 'Графические эффекты,bash -c \047if [ -n "$(pidof picom)" ]; then killall picom; else picom -b; fi\047,/usr/share/icons/Papirus-Dark/16x16/apps/blackmagicraw-speedtest.svg
+Системный монитор,sh -c "sed -i \047s/own_window_type/--own_window_type/\047 ~/.config/conky/conky.conf; sed -i \047s/----//\047 ~/.config/conky/conky.conf",/usr/share/icons/Papirus-Dark/16x16/apps/conky.svg
+Подсказка,xed /help.txt,/usr/share/icons/Papirus/16x16/apps/help-browser.svg' | tee /mnt/home/"$username"/.config/jgmenu/help.csv /mnt/root/.config/jgmenu/help.csv
 echo -e 'Выход из i3wm,i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -b \047Да! выйти из i3\047 \047canberra-gtk-play -i service-logout; i3-msg exit\047,/usr/share/icons/Papirus-Dark/16x16/actions/application-exit.svg
 Перезагрузка,systemctl reboot,/usr/share/icons/Papirus/16x16/apps/system-reboot.svg
 Завершение работы,systemctl poweroff,/usr/share/icons/Papirus-Dark/16x16/apps/system-shutdown.svg' | tee /mnt/home/"$username"/.config/jgmenu/poweroff.csv /mnt/root/.config/jgmenu/poweroff.csv
