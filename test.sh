@@ -1598,7 +1598,7 @@ format-1-foreground = #ffffff
 [module/i2p1]
 type = custom/script
 exec = echo " 🥷"
-click-left = polybar-msg action i2p1 module_hide; polybar-msg action i2p2 hook 1; sleep 0.1; polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show; xlinks -g 127.0.0.1:7070
+click-left = polybar-msg action i2p1 module_hide; polybar-msg action i2p2 hook 1; sleep 0.1; polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show; xlinks -g -socks-proxy 127.0.0.1:4447 http://flibusta.i2p/
 
 [module/i2p2]
 type = custom/ipc
