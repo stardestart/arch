@@ -286,12 +286,6 @@ ntp \
 xdg-user-dirs \
 geoclue \
 rng-tools \
-discord \
-meld \
-kcolorchooser \
-kontrast \
-telegram-desktop \
-gcompris-qt \
 gtk3-nocsd \
 hardinfo2 \
 hunspell-ru-aot \
@@ -308,7 +302,13 @@ qgnomeplatform-qt5 \
 adwaita-qt5 \
 qgnomeplatform-qt6 \
 adwaita-qt6 \
-cups-xerox-b2xx )
+discord \
+meld \
+kcolorchooser \
+kontrast \
+telegram-desktop \
+cups-xerox-b2xx \
+gcompris-qt)
 massprog=()
 massallaurprog=()
 massaurprog=()
@@ -1339,7 +1339,7 @@ for_window [class="kclock"] floating enable
 ########### Автозапуск программ ###########
 #
 # Приветствие в течении 10 сек (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id notify-send -te 10000 -i user-red-home "☭ Доброго времени суток ☭" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm.";
+exec --no-startup-id notify-send -t 10000 -i user-red-home "☭ Доброго времени суток ☭" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm.";
 #
 # Сканер уязвимостей (--no-startup-id убирает курсор загрузки).
 exec --no-startup-id sh -c \047sudo rkhunter --propupd; sudo rkhunter --update; sudo rkhunter -c --sk --rwo; notify-send -u critical "✊ Сканер уязвимостей ✊" "$(sudo tail -n 17 /var/log/rkhunter.log)"\047
@@ -1483,7 +1483,7 @@ format-0 = <label>
 format-0-foreground = #f92b2b
 format-1 = <label>
 format-1-background = #283544
-format-1-foreground = #ffffff
+format-1-foreground = #2bf92b
 initial = 1
 click-left = polybar-msg action jgmenu hook 1; sleep 0.1; polybar-msg action jgmenu hook 0; jgmenu --config-file=~/.config/jgmenu/left
 
@@ -1498,7 +1498,7 @@ hook-0 =
 hook-1 = echo " 🌐"
 format-1 = <label>
 format-1-background = #283544
-format-1-foreground = #ffffff
+format-1-foreground = #2bf92b
 initial = 1
 
 [module/filebrowser1]
@@ -1512,7 +1512,7 @@ hook-0 =
 hook-1 = echo " 🗂"
 format-1 = <label>
 format-1-background = #283544
-format-1-foreground = #ffffff
+format-1-foreground = #2bf92b
 initial = 1
 
 [module/libreoffice1]
@@ -1526,7 +1526,7 @@ hook-0 =
 hook-1 = echo " 🗋"
 format-1 = <label>
 format-1-background = #283544
-format-1-foreground = #ffffff
+format-1-foreground = #2bf92b
 initial = 1
 
 [module/xed1]
@@ -1540,7 +1540,7 @@ hook-0 =
 hook-1 = echo " 📃"
 format-1 = <label>
 format-1-background = #283544
-format-1-foreground = #ffffff
+format-1-foreground = #2bf92b
 initial = 1
 
 [module/calculator1]
@@ -1554,7 +1554,7 @@ hook-0 =
 hook-1 = echo " 🖩"
 format-1 = <label>
 format-1-background = #283544
-format-1-foreground = #ffffff
+format-1-foreground = #2bf92b
 
 [module/pinta1]
 type = custom/script
@@ -1567,7 +1567,7 @@ hook-0 =
 hook-1 = echo " 🎨"
 format-1 = <label>
 format-1-background = #283544
-format-1-foreground = #ffffff
+format-1-foreground = #2bf92b
 
 [module/cheese1]
 type = custom/script
@@ -1580,7 +1580,7 @@ hook-0 =
 hook-1 = echo " 📸"
 format-1 = <label>
 format-1-background = #283544
-format-1-foreground = #ffffff
+format-1-foreground = #2bf92b
 
 [module/skanlite1]
 type = custom/script
@@ -1593,27 +1593,29 @@ hook-0 =
 hook-1 = echo " 🖨️"
 format-1 = <label>
 format-1-background = #283544
-format-1-foreground = #ffffff
+format-1-foreground = #2bf92b
 
 [module/i2p1]
 type = custom/script
-exec = echo " 🥷"
-click-left = polybar-msg action i2p1 module_hide; polybar-msg action i2p2 hook 1; sleep 0.1; polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show; xlinks -g -socks-proxy 127.0.0.1:4447 http://flibusta.i2p/
+exec = echo " I2P"; if [ -n "$(pidof i2pd)" ]; then polybar-msg action i2p1 module_hide; polybar-msg action i2p2 hook 1; else polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show; fi
+click-left = i2pd --daemon; while ! curl -s --socks5-hostname 127.0.0.1:4447 http://flibusta.i2p/; do notify-send -t 5000 -i network-transmit-receive "Настраиваются I2P туннели" "Ожидайте открытия браузера"; sleep 5; done; xlinks -g -socks-proxy 127.0.0.1:4447 http://flibusta.i2p/
 
 [module/i2p2]
 type = custom/ipc
 hook-0 =
-hook-1 = echo " 🥷"
+hook-1 = echo " I2P"
 format-1 = <label>
 format-1-background = #283544
-format-1-foreground = #ffffff
+format-1-foreground = #2bf92b
+click-left = kill "$(pidof i2pd)"; polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show
 
 [module/title]
 type = internal/xwindow
-label = %{F#f92b2b}☭ %{F#ffa500}%class% %{F#f92b2b}➤%{F#ffa500} %title%%{F#f92b2b} ☭%{F-}
-format-foreground = #FFA500
-format-margin = 4
-label-maxlen = 100
+format = ☭ <label> %{F#f92b2b}☭
+label = %{F#ffa500}%class%%{F#f92b2b} ➤%{F#ffa500} %title%
+format-foreground = #f92b2b
+format-margin = 1
+label-maxlen = '"$(($font*10))"'
 
 [module/date1]
 type = custom/script
@@ -1629,7 +1631,7 @@ hook-1 = date "+%H:%M:%S"
 format-0-margin = 1
 format-1 = <label>
 format-1-background = #283544
-format-1-foreground = #ffffff
+format-1-foreground = #2bf92b
 format-1-margin = 1
 initial = 1
 
@@ -1645,7 +1647,7 @@ hook-0 =
 hook-1 = date "+%A, %d %B %Y"
 format-1 = <label>
 format-1-background = #283544
-format-1-foreground = #ffffff
+format-1-foreground = #2bf92b
 initial = 1
 
 [module/pulseaudio]
@@ -1665,7 +1667,7 @@ hook-0 = echo ⎙
 hook-1 = echo ⎙
 format-1 = <label>
 format-1-background = #283544
-format-1-foreground = #ffffff
+format-1-foreground = #2bf92b
 initial = 1
 click-left = polybar-msg action printscreen hook 1; sleep 0.1; import ~/screenshot_$(date +%Y-%m-%d_%H-%M-%S).png; polybar-msg action printscreen hook 0
 
@@ -1675,7 +1677,7 @@ hook-0 = echo " 🛈"
 hook-1 = echo " 🛈"
 format-1 = <label>
 format-1-background = #283544
-format-1-foreground = #ffffff
+format-1-foreground = #2bf92b
 initial = 1
 click-left = polybar-msg action help hook 1; sleep 0.1; polybar-msg action help hook 0; jgmenu --csv-file=~/.config/jgmenu/help.csv --config-file=~/.config/jgmenu/right
 
@@ -1685,7 +1687,7 @@ hook-0 = echo " ⏻ "
 hook-1 = echo " ⏻ "
 format-1 = <label>
 format-1-background = #283544
-format-1-foreground = #ffffff
+format-1-foreground = #2bf92b
 initial = 1
 click-left = polybar-msg action poweroff hook 1; sleep 0.1; polybar-msg action poweroff hook 0; jgmenu --csv-file=~/.config/jgmenu/poweroff.csv --config-file=~/.config/jgmenu/right
 
@@ -1710,7 +1712,7 @@ scroll-down = "#i3.next"
 [module/i3]
 type = internal/i3
 show-urgent = true
-label-focused-foreground = #ffffff
+label-focused-foreground = #2bf92b
 label-focused-background = #283544
 label-focused-underline = #f92b2b
 label-urgent-foreground = #2b2b2b

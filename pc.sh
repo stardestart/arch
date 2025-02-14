@@ -110,7 +110,8 @@ massallprog=( xorg-server \
 xorg-xinit \
 xterm \
 i3-wm \
-i3status \
+polybar \
+jgmenu \
 perl-anyevent-i3 \
 perl-json-xs \
 dmenu \
@@ -123,6 +124,8 @@ firefox-spell-ru \
 firefox-ublock-origin \
 firefox-dark-reader \
 firefox-adblock-plus \
+i2pd \
+links \
 thunderbird \
 thunderbird-i18n-ru \
 xdg-desktop-portal-gtk \
@@ -188,7 +191,6 @@ calindori \
 papirus-icon-theme \
 picom \
 redshift \
-lxqt-panel \
 grc \
 flameshot \
 dunst \
@@ -284,23 +286,8 @@ ntp \
 xdg-user-dirs \
 geoclue \
 rng-tools \
-lib32-giflib \
-gimp \
-avidemux-qt \
-kdenlive \
-numlockx \
-obs-studio \
-blender \
-transmission-qt \
-discord \
-meld \
-kcolorchooser \
-kontrast \
-dmg2img \
-telegram-desktop \
 gtk3-nocsd \
 hardinfo2 \
-debtap \
 hunspell-ru-aot \
 hyphen-ru \
 mythes-ru \
@@ -315,7 +302,22 @@ qgnomeplatform-qt5 \
 adwaita-qt5 \
 qgnomeplatform-qt6 \
 adwaita-qt6 \
-cups-xerox-b2xx )
+lib32-giflib \
+gimp \
+avidemux-qt \
+kdenlive \
+numlockx \
+dmg2img \
+obs-studio \
+blender \
+transmission-qt \
+discord \
+meld \
+kcolorchooser \
+kontrast \
+telegram-desktop \
+cups-xerox-b2xx \
+debtap)
 massprog=()
 massallaurprog=()
 massaurprog=()
@@ -970,7 +972,7 @@ ${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature_celsius | aw
 (${fs_type /var})${fs_bar '"$font"','"$(($font*6))"' /var} $alignr${color #f92b2b}${fs_used /var} / $color${fs_free /var} / ${color #b2b2b2}${fs_size /var}
 ${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature: | awk \047{print $2}\047}°C ${color #f92b2b}/home${hr 1}$color
 (${fs_type /home})${fs_bar '"$font"','"$(($font*6))"' /home} $alignr${color #f92b2b}${fs_used /home} / $color${fs_free /home} / ${color #b2b2b2}${fs_size /home}'"${masslabel[@]}"'
-]]' > /mnt/home/"$username"/.config/conky/conky.conf
+]]' | tee /mnt/home/"$username"/.config/conky/conky.conf /mnt/root/.config/conky/conky.conf
 #
 #Создание конфига bash_profile (Настройка Xorg).
 echo -e "\033[36mСоздание конфига bash_profile (Настройка Xorg).\033[0m"
@@ -1070,8 +1072,7 @@ if [ -n "$(echo $@ | grep pa-notify)" ]; then
         canberra-gtk-play -i window-attention;
     else canberra-gtk-play -i message;
 fi
-echo "$(date "+%Y-%m-%d %H:%M:%S") - $@" >> ~/noti.txt;
-' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
+echo "$(date "+%Y-%m-%d %H:%M:%S") - $@" >> ~/noti.txt;' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
 #
 #Создание конфига picom (Автономный композитор для Xorg).
 echo -e "\033[36mСоздание конфига picom (Автономный композитор для Xorg).\033[0m"
@@ -1195,6 +1196,7 @@ XTerm*VT100*translations: #override \
 #Создание директории и конфига i3-wm (Тайловый оконный менеджер).
 echo -e "\033[36mСоздание конфига i3-wm (Тайловый оконный менеджер).\033[0m"
 mkdir -p /mnt/home/"$username"/.config/i3
+mkdir -p /mnt/root/.config/i3
 echo -e '########### Основные настройки ###########
 #
 # Назначаем клавишу MOD, Mod4 - это клавиша WIN.
@@ -1347,7 +1349,7 @@ for_window [class="kclock"] floating enable
 ########### Автозапуск программ ###########
 #
 # Приветствие в течении 10 сек (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id notify-send -te 10000 -i user-red-home "☭ Доброго времени суток ☭" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm.";
+exec --no-startup-id notify-send -t 10000 -i user-red-home "☭ Доброго времени суток ☭" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm.";
 #
 # Сканер уязвимостей (--no-startup-id убирает курсор загрузки).
 exec --no-startup-id sh -c \047sudo rkhunter --propupd; sudo rkhunter --update; sudo rkhunter -c --sk --rwo; notify-send -u critical "✊ Сканер уязвимостей ✊" "$(sudo tail -n 17 /var/log/rkhunter.log)"\047
@@ -1355,8 +1357,9 @@ exec --no-startup-id sh -c \047sudo rkhunter --propupd; sudo rkhunter --update; 
 # Автозапуск conky.
 exec --no-startup-id conky;
 #
-# Автозапуск lxqt-panel.
-exec --no-startup-id lxqt-panel;
+# Автозапуск polybar.
+exec --no-startup-id polybar upbar;
+exec --no-startup-id polybar downbar;
 #
 # Автозапуск picom.
 exec --no-startup-id picom -b;
@@ -1471,77 +1474,343 @@ assign [class="firefox"] "2: 🌍"
 #
 # Steam будет запускаться на 3 рабочем столе.
 assign [title="Steam"] "3: 🎮"
-#
-########### Настройка панели задач ###########
-#
-bar {
-        # Назначить панели задач.
-        status_command i3status
-        #
-        # Разделитель.
-        separator_symbol "☭"
-        #
-        # Назначить шрифт.
-        font pango:Fantasque Sans Mono '"$font"'
-        #
-        # Назначить цвета.
-        colors {
-            # Цвет фона i3status.
-            background #2b2b2b
-            # Цвет текста в i3status.
-            statusline #b2b2b2
-            # Цвет разделителя в i3status.
-            separator #f92b2b
-            # Цвет границы, фона и текста для кнопки активного рабочего стола.
-            focused_workspace  #4c7899 #285577 #f92b2b
-            # Цвет границы, фона и текста для кнопки не активного рабочего стола.
-            inactive_workspace #333333 #222222 #2bf92b
-            }
-         # Сделайте снимок экрана, щелкнув правой кнопкой мыши на панели (--no-startup-id убирает курсор загрузки).
-         bindsym --release button3 exec --no-startup-id import ~/latest-screenshot.png
-}
 exec --no-startup-id firefox; #TechnicalString
-exec --no-startup-id sh -c \047sleep 10; ~/archinstall.sh > /dev/pts/1\047 #TechnicalString' > /mnt/home/"$username"/.config/i3/config
+exec --no-startup-id sh -c \047sleep 10; ~/archinstall.sh > /dev/pts/1\047 #TechnicalString' | tee /mnt/home/"$username"/.config/i3/config /mnt/root/.config/i3/config
 #
-#Создание конфига i3status (Панель рабочего стола i3-wm (Тайловый оконный менеджер)).
-echo -e "\033[36mСоздание конфига i3status (Панель рабочего стола i3-wm (Тайловый оконный менеджер)).\033[0m"
-echo 'general { #Основные настройки.
-    colors = true #Включение/выключение поддержки цветов.
-    color_good = "#2bf92b" #Цвет OK.
-    color_bad = "#f92b2b" #Цвет ошибки.
-    interval = 1 #Интервал обновления строки статуса.
-    output_format = "i3bar" } #Формат вывода.
-order += "tztime 0" #0 модуль - пробел.
-order += "ethernet _first_" #1 модуль - rj45.
-order += "wireless _first_" #2 модуль - Wi-Fi.
-order += "battery all" #3 модуль - батарея.
-order += "cpu_usage" #5 модуль - использование ЦП.
-order += "cpu_temperature 0" #6 модуль - температура ЦП.
-order += "tztime 0" #0 модуль - пробел.
-ethernet _first_ { #Индикатор rj45.
-    format_up = "🌐: %ip " #Формат вывода.
-    format_down = "" } #При неактивном процессе блок будет отсутствовать.
-wireless _first_ { #Индикатор WI-FI.
-    format_up = "📶: %quality | %frequency | %essid: %ip " #Формат вывода.
-    format_down = "" } #При неактивном процессе блок будет отсутствовать.
-battery all { #Индикатор батареи
-    format = "%status %percentage" #Формат вывода.
-    last_full_capacity = true #Процент заряда.
-    format_down = "" #При неактивном процессе блок будет отсутствовать.
-    status_chr = "🔌" #Подзарядка.
-    status_bat = "🔋" #Режим работы от батареи.
-    path = "/sys/class/power_supply/BAT%d/uevent" #Путь данных.
-    low_threshold = 10 } #Нижний порог заряда.
-cpu_usage { #Использование ЦП.
-    format = "🧠: %usage/"
-    separator_block_width = 0 } #Формат вывода.
-cpu_temperature 0 { #Температура ЦП.
-    format = "%degrees°C" #Формат вывода.
-    max_threshold = "70" #Красный порог.
-    format_above_threshold = "%degrees°C" #Формат вывода красного порога.
-    path = "/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp*_input" } #Путь данных.path: /sys/devices/platform/coretemp.0/temp1_input
-tztime 0 { #Вывод разделителя.
-    format = "|" } #Формат вывода.' | tee /mnt/home/"$username"/.i3status.conf /mnt/root/.i3status.conf
+#Создание конфига Polybar (Панель рабочего стола).
+mkdir -p /mnt/home/"$username"/.config/polybar
+mkdir -p /mnt/root/.config/polybar
+echo -e "\033[36mСоздание конфига Polybar (Панель рабочего стола).\033[0m"
+echo -e '[bar/upbar]
+background = #2b2b2b
+foreground = #b2b2b2
+font-0 = Fantasque Sans Mono:size='"$font"'
+font-1 = Noto Sans Symbols:size='"$font"'
+font-2 = Noto Sans Symbols2:size='"$font"'
+font-3 = Noto Emoji SemiBold:size='"$font"'
+font-4 = Stalinist One:size='"$font"'
+locale = ru_RU.UTF-8
+modules-left = jgmenu inetbrowser1 inetbrowser2 filebrowser1 filebrowser2 libreoffice1 libreoffice2 xed1 xed2 calculator1 calculator2 pinta1 pinta2 cheese1 cheese2 skanlite1 skanlite2 i2p1 i2p2
+modules-center = title
+modules-right = date1 date2 date3 date4 pulseaudio printscreen help poweroff
+dpi = 0
+height = '"$(($font*3))"'
+enable-ipc = true
+
+[module/jgmenu]
+type = custom/ipc
+hook-0 = echo %{T5} Arch Linux ☭ %{T-}
+hook-1 = echo %{T5} Arch Linux ☭ %{T-}
+format-0 = <label>
+format-0-foreground = #f92b2b
+format-1 = <label>
+format-1-background = #283544
+format-1-foreground = #2bf92b
+initial = 1
+click-left = polybar-msg action jgmenu hook 1; sleep 0.1; polybar-msg action jgmenu hook 0; jgmenu --config-file=~/.config/jgmenu/left
+
+[module/inetbrowser1]
+type = custom/script
+exec = echo " 🌐"
+click-left = polybar-msg action inetbrowser1 module_hide; polybar-msg action inetbrowser2 hook 1; sleep 0.1; polybar-msg action inetbrowser2 hook 0; polybar-msg action inetbrowser1 module_show; xdg-open "about:blank"
+
+[module/inetbrowser2]
+type = custom/ipc
+hook-0 =
+hook-1 = echo " 🌐"
+format-1 = <label>
+format-1-background = #283544
+format-1-foreground = #2bf92b
+initial = 1
+
+[module/filebrowser1]
+type = custom/script
+exec = echo " 🗂"
+click-left = polybar-msg action filebrowser1 module_hide; polybar-msg action filebrowser2 hook 1; sleep 0.1; polybar-msg action filebrowser2 hook 0; polybar-msg action filebrowser1 module_show; xdg-open .
+
+[module/filebrowser2]
+type = custom/ipc
+hook-0 =
+hook-1 = echo " 🗂"
+format-1 = <label>
+format-1-background = #283544
+format-1-foreground = #2bf92b
+initial = 1
+
+[module/libreoffice1]
+type = custom/script
+exec = echo " 🗋"
+click-left = polybar-msg action libreoffice1 module_hide; polybar-msg action libreoffice2 hook 1; sleep 0.1; polybar-msg action libreoffice2 hook 0; polybar-msg action libreoffice1 module_show; libreoffice
+
+[module/libreoffice2]
+type = custom/ipc
+hook-0 =
+hook-1 = echo " 🗋"
+format-1 = <label>
+format-1-background = #283544
+format-1-foreground = #2bf92b
+initial = 1
+
+[module/xed1]
+type = custom/script
+exec = echo " 📃"
+click-left = polybar-msg action xed1 module_hide; polybar-msg action xed2 hook 1; sleep 0.1; polybar-msg action xed2 hook 0; polybar-msg action xed1 module_show; xed
+
+[module/xed2]
+type = custom/ipc
+hook-0 =
+hook-1 = echo " 📃"
+format-1 = <label>
+format-1-background = #283544
+format-1-foreground = #2bf92b
+initial = 1
+
+[module/calculator1]
+type = custom/script
+exec = echo " 🖩"
+click-left = polybar-msg action calculator1 module_hide; polybar-msg action calculator2 hook 1; sleep 0.1; polybar-msg action calculator2 hook 0; polybar-msg action calculator1 module_show; kalgebra
+
+[module/calculator2]
+type = custom/ipc
+hook-0 =
+hook-1 = echo " 🖩"
+format-1 = <label>
+format-1-background = #283544
+format-1-foreground = #2bf92b
+
+[module/pinta1]
+type = custom/script
+exec = echo " 🎨"
+click-left = polybar-msg action pinta1 module_hide; polybar-msg action pinta2 hook 1; sleep 0.1; polybar-msg action pinta2 hook 0; polybar-msg action pinta1 module_show; pinta
+
+[module/pinta2]
+type = custom/ipc
+hook-0 =
+hook-1 = echo " 🎨"
+format-1 = <label>
+format-1-background = #283544
+format-1-foreground = #2bf92b
+
+[module/cheese1]
+type = custom/script
+exec = echo " 📸"
+click-left = polybar-msg action cheese1 module_hide; polybar-msg action cheese2 hook 1; sleep 0.1; polybar-msg action cheese2 hook 0; polybar-msg action cheese1 module_show; cheese
+
+[module/cheese2]
+type = custom/ipc
+hook-0 =
+hook-1 = echo " 📸"
+format-1 = <label>
+format-1-background = #283544
+format-1-foreground = #2bf92b
+
+[module/skanlite1]
+type = custom/script
+exec = echo " 🖨️"
+click-left = polybar-msg action skanlite1 module_hide; polybar-msg action skanlite2 hook 1; sleep 0.1; polybar-msg action skanlite2 hook 0; polybar-msg action skanlite1 module_show; skanlite
+
+[module/skanlite2]
+type = custom/ipc
+hook-0 =
+hook-1 = echo " 🖨️"
+format-1 = <label>
+format-1-background = #283544
+format-1-foreground = #2bf92b
+
+[module/i2p1]
+type = custom/script
+exec = echo " I2P"; if [ -n "$(pidof i2pd)" ]; then polybar-msg action i2p1 module_hide; polybar-msg action i2p2 hook 1; else polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show; fi
+click-left = i2pd --daemon; while ! curl -s --socks5-hostname 127.0.0.1:4447 http://flibusta.i2p/; do notify-send -t 5000 -i network-transmit-receive "Настраиваются I2P туннели" "Ожидайте открытия браузера"; sleep 5; done; xlinks -g -socks-proxy 127.0.0.1:4447 http://flibusta.i2p/
+
+[module/i2p2]
+type = custom/ipc
+hook-0 =
+hook-1 = echo " I2P"
+format-1 = <label>
+format-1-background = #283544
+format-1-foreground = #2bf92b
+click-left = kill "$(pidof i2pd)"; polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show
+
+[module/title]
+type = internal/xwindow
+format = ☭ <label> %{F#f92b2b}☭
+label = %{F#ffa500}%class%%{F#f92b2b} ➤%{F#ffa500} %title%
+format-foreground = #f92b2b
+format-margin = 1
+label-maxlen = '"$(($font*10))"'
+
+[module/date1]
+type = custom/script
+format-margin = 1
+exec = date "+%H:%M:%S"
+interval = 0.3
+click-left = polybar-msg action date1 module_hide; polybar-msg action date2 hook 1; sleep 0.1; polybar-msg action date2 hook 0; polybar-msg action date1 module_show; kclock
+
+[module/date2]
+type = custom/ipc
+hook-0 =
+hook-1 = date "+%H:%M:%S"
+format-0-margin = 1
+format-1 = <label>
+format-1-background = #283544
+format-1-foreground = #2bf92b
+format-1-margin = 1
+initial = 1
+
+[module/date3]
+type = custom/script
+exec = date "+%A, %d %B %Y"
+interval = 0.3
+click-left = polybar-msg action date3 module_hide; polybar-msg action date4 hook 1; sleep 0.1; polybar-msg action date4 hook 0; polybar-msg action date3 module_show; calindori
+
+[module/date4]
+type = custom/ipc
+hook-0 =
+hook-1 = date "+%A, %d %B %Y"
+format-1 = <label>
+format-1-background = #283544
+format-1-foreground = #2bf92b
+initial = 1
+
+[module/pulseaudio]
+type = internal/pulseaudio
+reverse-scroll = false
+format-volume = %{F#f92b2b} ☭ %{F-}<ramp-volume><label-volume>%{F#f92b2b} ☭ %{F-}
+label-muted = %{F#f92b2b} ☭ %{F-}🔇00%%{F#f92b2b} ☭ %{F-}
+label-muted-foreground = #666
+ramp-volume-0 = 🔈
+ramp-volume-1 = 🔉
+ramp-volume-2 = 🔊
+click-right = pavucontrol-qt
+
+[module/printscreen]
+type = custom/ipc
+hook-0 = echo ⎙
+hook-1 = echo ⎙
+format-1 = <label>
+format-1-background = #283544
+format-1-foreground = #2bf92b
+initial = 1
+click-left = polybar-msg action printscreen hook 1; sleep 0.1; import ~/screenshot_$(date +%Y-%m-%d_%H-%M-%S).png; polybar-msg action printscreen hook 0
+
+[module/help]
+type = custom/ipc
+hook-0 = echo " 🛈"
+hook-1 = echo " 🛈"
+format-1 = <label>
+format-1-background = #283544
+format-1-foreground = #2bf92b
+initial = 1
+click-left = polybar-msg action help hook 1; sleep 0.1; polybar-msg action help hook 0; jgmenu --csv-file=~/.config/jgmenu/help.csv --config-file=~/.config/jgmenu/right
+
+[module/poweroff]
+type = custom/ipc
+hook-0 = echo " ⏻ "
+hook-1 = echo " ⏻ "
+format-1 = <label>
+format-1-background = #283544
+format-1-foreground = #2bf92b
+initial = 1
+click-left = polybar-msg action poweroff hook 1; sleep 0.1; polybar-msg action poweroff hook 0; jgmenu --csv-file=~/.config/jgmenu/poweroff.csv --config-file=~/.config/jgmenu/right
+
+[bar/downbar]
+background = #2b2b2b
+foreground = #b2b2b2
+font-0 = Fantasque Sans Mono:size='"$font"'
+font-1 = Noto Sans Symbols:size='"$font"'
+font-2 = Noto Sans Symbols2:size='"$font"'
+font-3 = Noto Emoji SemiBold:size='"$font"'
+separator = "%{F#f92b2b} ☭ %{F-}"
+locale = ru_RU.UTF-8
+modules-left = i3
+modules-right = cpu memory netline xkeyboard tray battery
+dpi = 0
+height = '"$(($font*3))"'
+enable-ipc = true
+bottom = true
+scroll-up = "#i3.prev"
+scroll-down = "#i3.next"
+
+[module/i3]
+type = internal/i3
+show-urgent = true
+label-focused-foreground = #2bf92b
+label-focused-background = #283544
+label-focused-underline = #f92b2b
+label-urgent-foreground = #2b2b2b
+label-urgent-background = #f92b2b
+label-separator = |
+label-separator-foreground = #f92b2b
+
+[module/cpu]
+type = internal/cpu
+interval = 0.5
+warn-percentage = 95
+label = %percentage%% CPU
+label-warn = %{F#000000}%{B#f92b2b}%percentage%%CPU%{F-}%{B-}
+
+[module/memory]
+type = internal/memory
+interval = 3
+warn-percentage = 95
+label = 💾: %gb_used%/%gb_free%
+label-warn = %{F#000000}%{B#f92b2b}💾: %gb_used%/%gb_free%%{F-}%{B-}
+
+[module/netline]
+type = custom/script
+exec = netline="| "; netmas="$(nmcli -f GENERAL.DEVICE device show | awk \047!/lo/ && !/^$/ {print $2}\047)"; for word in $netmas; do netline+="$word: "$(nmcli -f IP4.ADDRESS device show "$word" | awk \047{print $2}\047)" | "; done; echo $netline
+interval = 1
+
+[module/xkeyboard]
+type = internal/xkeyboard
+format = <label-layout><label-indicator>
+format-spacing = 0
+label-layout = %icon%
+label-layout-padding = 1
+label-layout-background = #283544
+label-layout-foreground = #ffffff
+layout-icon-0 = ru;RU
+layout-icon-1 = us;EN
+label-indicator-on-capslock = %{F#ffffff}%{B#283544}C%{F-}%{B-}
+label-indicator-off-capslock = %{B#283544}c%{B-}
+label-indicator-on-numlock = %{F#ffffff}%{B#283544}N%{F-}%{B-}
+label-indicator-off-numlock = %{B#283544}n%{B-}
+label-indicator-on-scrolllock = %{F#ffffff}%{B#283544}S%{F-}%{B-}
+label-indicator-off-scrolllock = %{B#283544}s%{B-}
+
+[module/tray]
+type = internal/tray
+
+[module/battery]
+type = internal/battery
+full-at = 99
+low-at = 5
+; $ ls -1 /sys/class/power_supply/
+battery = BAT0
+adapter = ADP1
+format-charging = <animation-charging> <label-charging>
+format-discharging = <ramp-capacity> <label-discharging>
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
+bar-capacity-width = 10
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-3 = 
+animation-charging-4 = 
+animation-charging-framerate = 750
+animation-discharging-0 = 
+animation-discharging-1 = 
+animation-discharging-2 = 
+animation-discharging-3 = 
+animation-discharging-4 = 
+animation-discharging-framerate = 500
+animation-low-0 = !
+animation-low-1 =
+animation-low-framerate = 200' | tee /mnt/home/"$username"/.config/polybar/config.ini /mnt/root/.config/polybar/config.ini
 #
 #Создание конфига redshift (Регулирует цветовую температуру вашего экрана).
 echo -e "\033[36mСоздание конфига redshift (Регулирует цветовую температуру вашего экрана).\033[0m"
@@ -1645,7 +1914,7 @@ echo '{
             ]
         }
     ]
-}' > /mnt/home/"$username"/.config/i3/workspace_1.json
+}' | tee /mnt/home/"$username"/.config/i3/workspace_1.json /mnt/root/.config/i3/workspace_1.json
 #
 #Создание подсказки.
 echo -e "\033[36mСоздание подсказки.\033[0m"
@@ -1723,118 +1992,48 @@ gtk-icon-theme-name="Papirus-Dark"
 gtk-theme-name="Adwaita-dark"
 gtk-decoration-layout=menu:' > /mnt/usr/share/gtk-2.0/gtkrc
 #
-#Создание директории и конфига lxqt-panel (Панель рабочего стола LXQt).
-echo -e "\033[36mСоздание конфига lxqt-panel (Панель рабочего стола LXQt).\033[0m"
-mkdir -p /mnt/home/"$username"/.config/lxqt
-echo '[General]
-__userfile__=true
-iconTheme=Papirus-Dark
-[customcommand]
-alignment=Right
-click="sh -c \"x=pidof picom; if [ -n x ]; then killall picom; else picom -b; fi\""
-command=echo \xd83d\xde80
-maxWidth='"$(($font*3))"'
-type=customcommand
-[customcommand2]
-alignment=Right
-click="sh -c \"sed -i \047s/own_window_type/--own_window_type/\047 ~/.config/conky/conky.conf; sed -i \047s/----//\047 ~/.config/conky/conky.conf\""
-command=echo \xd83d\xdec8
-maxWidth='"$(($font*3))"'
-type=customcommand
-[customcommand3]
-alignment=Right
-click=xed /help.txt
-command=echo \x2753
-maxWidth='"$(($font*3))"'
-type=customcommand
-[customcommand4]
-alignment=Right
-click="sh -c \"i3-nagbar -t warning -m \047\x412\x44b \x434\x435\x439\x441\x442\x432\x438\x442\x435\x43b\x44c\x43d\x43e \x445\x43e\x442\x438\x442\x435 \x432\x44b\x439\x442\x438 \x438\x437 i3? \x42d\x442\x43e \x437\x430\x432\x435\x440\x448\x438\x442 \x432\x430\x448\x443 \x441\x435\x441\x441\x438\x44e X.\047 -b \047\x414\x430, \x432\x44b\x439\x442\x438 \x438\x437 i3\047 \047canberra-gtk-play -i service-logout; i3-msg exit\047\""
-command=echo \x2716
-maxWidth='"$(($font*3))"'
-type=customcommand
-[customcommand5]
-alignment=Right
-click=reboot
-command=echo \x2b6f
-maxWidth='"$(($font*3))"'
-type=customcommand
-[customcommand6]
-alignment=Right
-click=poweroff
-command=echo \x23fb
-maxWidth='"$(($font*3))"'
-type=customcommand
-[kbindicator]
-alignment=Right
-keeper_type=window
-show_caps_lock=true
-show_layout=true
-show_num_lock=true
-show_scroll_lock=true
-type=kbindicator
-[mainmenu]
-alignment=Left
-filterClear=true
-icon=/usr/share/icons/Papirus-Dark/16x16/apps/distributor-logo-archlinux.svg
-menu_file=/etc/xdg/menus/arch-applications.menu
-ownIcon=true
-showText=false
-type=mainmenu
-[panel1]
-alignment=0
-animation-duration=0
-background-color=@Variant(\0\0\0\x43\x1\xff\xff++++++\0\0)
-desktop=0
-font-color=@Variant(\0\0\0\x43\0\xff\xff\0\0\0\0\0\0\0\0)
-hidable=false
-hide-on-overlap=false
-iconSize='"$(($font*3))"'
-lineCount=1
-lockPanel=false
-opacity=90
-panelSize='"$(($font*3))"'
-plugins=mainmenu, spacer, quicklaunch, kbindicator, worldclock, volume, customcommand, customcommand2, customcommand3, customcommand4, customcommand5, customcommand6
-position=Top
-reserve-space=true
-show-delay=0
-visible-margin=true
-width=100
-width-percent=true
-[quicklaunch]
-alignment=Left
-type=quicklaunch
-[spacer]
-alignment=Left
-type=spacer
-[volume]
-alignment=Right
-audioEngine=PulseAudio
-type=volume
-[worldclock]
-alignment=Right
-autoRotate=true
-customFormat="\047<b>\047HH:mm:ss\047</b><br/><font size=\"-2\">\047ddd, d MMM yyyy\047<br/>\047TT\047</font>\047"
-dateFormatType=custom
-dateLongNames=false
-datePadDay=false
-datePosition=below
-dateShowDoW=false
-dateShowYear=false
-defaultTimeZone=
-formatType=long-timeonly
-showDate=false
-showTimezone=false
-showTooltip=false
-showWeekNumber=true
-timeAMPM=false
-timePadHour=true
-timeShowSeconds=true
-timeZones\size=0
-timezoneFormatType=iana
-timezonePosition=below
-type=worldclock
-useAdvancedManualFormat=false' > /mnt/home/"$username"/.config/lxqt/panel.conf
+#Создание директории и конфига jgmenu.
+echo -e "\033[36mСоздание конфига jgmenu.\033[0m"
+mkdir -p /mnt/home/"$username"/.config/jgmenu
+mkdir -p /mnt/root/.config/jgmenu
+echo '# Оставлять меню открытым при потере фокуса (0 - false, 1 - true)
+stay_alive = 0
+# Команда для запуска терминала
+terminal_exec = xterm
+# Аргументы для запуска терминала
+terminal_args = -e
+# Количество столбцов в меню
+columns = 1
+# Горизонтальное выравнивание меню (left, center, right)
+menu_halign = left
+# Вертикальное выравнивание меню (top, center, bottom)
+menu_valign = top
+# Вертикальный отступ меню
+menu_margin_y = '"$(($font*4))"'
+# Тема иконок
+icon_theme = Papirus-Dark
+#Размер иконок в пикселях
+icon_size = '"$(($font*2))"'
+# Открывать подменю по клику (true/false)
+click_to_open = false
+# Шрифт для текста в меню
+font = Fantasque Sans Mono '"$font"'
+# Цвет фона меню
+color_menu_bg = #2b2b2b
+# Цвет текста в меню
+color_norm_fg = #b2b2b2
+# Цвет фона для выделенного элемента
+color_sel_bg = #283544
+# Цвет текста для выделенного элемента
+color_sel_fg = "#ffffff"' | tee /mnt/home/"$username"/.config/jgmenu/left /mnt/root/.config/jgmenu/left /mnt/home/"$username"/.config/jgmenu/right /mnt/root/.config/jgmenu/right
+sed -i 's/menu_halign = left/menu_halign = right/' /mnt/home/"$username"/.config/jgmenu/right
+sed -i 's/menu_halign = left/menu_halign = right/' /mnt/root/.config/jgmenu/right
+echo -e 'Графические эффекты,bash -c \047if [ -n "$(pidof picom)" ]; then killall picom; else picom -b; fi\047,/usr/share/icons/Papirus-Dark/16x16/apps/blackmagicraw-speedtest.svg
+Системный монитор,sh -c "sed -i \047s/own_window_type/--own_window_type/\047 ~/.config/conky/conky.conf; sed -i \047s/----//\047 ~/.config/conky/conky.conf",/usr/share/icons/Papirus-Dark/16x16/apps/conky.svg
+Подсказка,xed /help.txt,/usr/share/icons/Papirus/16x16/apps/help-browser.svg' | tee /mnt/home/"$username"/.config/jgmenu/help.csv /mnt/root/.config/jgmenu/help.csv
+echo -e 'Выход из i3wm,i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -b \047Да! выйти из i3\047 \047canberra-gtk-play -i service-logout; i3-msg exit\047,/usr/share/icons/Papirus-Dark/16x16/actions/application-exit.svg
+Перезагрузка,systemctl reboot,/usr/share/icons/Papirus/16x16/apps/system-reboot.svg
+Завершение работы,systemctl poweroff,/usr/share/icons/Papirus-Dark/16x16/apps/system-shutdown.svg' | tee /mnt/home/"$username"/.config/jgmenu/poweroff.csv /mnt/root/.config/jgmenu/poweroff.csv
 #
 #Создание пользовательских директорий.
 echo -e "\033[36mСоздание пользовательских директорий.\033[0m"
@@ -1972,7 +2171,7 @@ echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus getty@tty1.service
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
 xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker rngd auto-cpufreq smartd smb \
-saned.socket cups.socket x11vnc ufw auditd usbguard ntpd kmsconvt@tty1.service
+saned.socket cups.socket x11vnc ufw auditd usbguard i2pd ntpd kmsconvt@tty1.service
 #
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
