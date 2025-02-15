@@ -196,6 +196,9 @@ flameshot \
 dunst \
 gnome-themes-extra \
 archlinux-wallpaper \
+cutefish-wallpapers \
+cosmic-wallpapers \
+elementary-wallpapers \
 xdg-desktop-portal \
 xdg-desktop-portal-kde \
 feh \
@@ -473,7 +476,7 @@ g
 n
 1
 2048
-+512M
++1G
 n
 2
 
@@ -530,7 +533,7 @@ g
 n
 1
 2048
-+512M
++1G
 t
 1
 n
@@ -820,6 +823,7 @@ userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
 sysresources=/etc/X11/xinit/.Xresources
 sysmodmap=/etc/X11/xinit/.Xmodmap
+#
 #Объединить значения по умолчанию и раскладки клавиш.
 if [ -f $sysresources ]; then
     xrdb -merge $sysresources
@@ -833,6 +837,7 @@ fi
 if [ -f "$usermodmap" ]; then
     xmodmap "$usermodmap"
 fi
+#
 #Запуск программ.
 if [ -d /etc/X11/xinit/xinitrc.d ] ; then
  for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
@@ -840,11 +845,27 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
  done
  unset f
 fi
-xhost +si:localuser:root #Позволяет пользователю root получить доступ к работающему X-серверу.
-feh --bg-max --randomize --no-fehbg /usr/share/backgrounds/archlinux/ & #Автозапуск обоев рабочего стола.
-xautolock -time 50 -locker "systemctl hibernate" -notify 1800 -notifier "xlock -mode matrix -delay 10000 -echokeys -echokey \047*\047" -detectsleep -noclose & #Автозапуск заставки.
-canberra-gtk-play -i service-login & #Воспроизвести звуковое событие "Вход в систему".
-exec i3 #Автозапуск i3.' | tee /mnt/home/"$username"/.xinitrc /mnt/root/.xinitrc
+#
+#Позволяет пользователю root получить доступ к работающему X-серверу.
+xhost +si:localuser:root
+#
+#Автозапуск обоев рабочего стола.
+while true; \
+do \
+feh --bg-fill --randomize --no-fehbg /usr/share/backgrounds/* /usr/share/backgrounds/; \
+sleep 300; \
+done &
+#
+#Автозапуск заставки.
+xautolock -time 50 -locker "systemctl hibernate" \
+-notify 1800 -notifier \
+"xlock -mode matrix -delay 10000 -echokeys -echokey '*'" -detectsleep -noclose &
+#
+#Воспроизведения звука входа в систему.
+canberra-gtk-play -i service-login &
+#
+#Автозапуск i3.
+exec i3' | tee /mnt/home/"$username"/.xinitrc /mnt/root/.xinitrc
 #
 #Создание общего конфига клавиатуры.
 echo -e "\033[36mСоздание общего конфига клавиатуры.\033[0m"
@@ -1089,8 +1110,8 @@ wintypes: { # Отключить прозрачность выпадающего
             # Отключить прозрачность всплывающего меню.
             popup_menu = { opacity = 1; }; };
 #
-# Прозрачность i3status, dmenu, XTerm и заголовков окон.
-opacity-rule = [ "90:class_g = \047i3bar\047",
+# Прозрачность Polybar, dmenu, XTerm и заголовков окон.
+opacity-rule = [ "80:class_g = \047Polybar\047",
                  "90:class_g = \047dmenu\047",
                  "80:class_g = \047XTerm\047",
                  "100:class_g = \047vlc\047",
@@ -1296,7 +1317,7 @@ mode "resize" {
 #
 ########### Внешний вид ###########
 #
-# Шрифт для заголовков окон. Также будет использоваться ibar, если не выбран другой шрифт.
+# Шрифт для заголовков окон.
 font pango:Fantasque Sans Mono Bold '"$font"'
 #
 # Просветы между окнами.
@@ -1342,7 +1363,7 @@ for_window [class="kclock"] floating enable
 exec --no-startup-id notify-send -t 10000 -i user-red-home "☭ Доброго времени суток ☭" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm.";
 #
 # Сканер уязвимостей (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id sh -c \047sudo rkhunter --propupd; sudo rkhunter --update; sudo rkhunter -c --sk --rwo; notify-send -u critical "✊ Сканер уязвимостей ✊" "$(sudo tail -n 17 /var/log/rkhunter.log)"\047
+exec --no-startup-id bash -c \047sudo rkhunter --propupd; sudo rkhunter --update; sudo rkhunter -c --sk --rwo; notify-send -u critical "✊ Сканер уязвимостей ✊" "$(sudo tail -n 17 /var/log/rkhunter.log)"\047
 #
 # Автозапуск conky.
 exec --no-startup-id conky;
@@ -1391,7 +1412,7 @@ exec --no-startup-id xbindkeys;
 exec --no-startup-id dunst;
 #
 # Автозапуск neofetch и обновления.
-#TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; \\
+#TechnicalSymbolexec --no-startup-id bash -c \047sleep 10; \\
 #TechnicalSymbolexec while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)" ]]; \\
 #TechnicalSymbolexec do \\
 #TechnicalSymbolexec sleep 5; \\
@@ -1456,7 +1477,7 @@ assign [class="firefox"] "2: 🌍"
 # Steam будет запускаться на 3 рабочем столе.
 assign [title="Steam"] "3: 🎮"
 exec --no-startup-id firefox; #TechnicalString
-exec --no-startup-id sh -c \047sleep 10; ~/archinstall.sh > /dev/pts/1\047 #TechnicalString' | tee /mnt/home/"$username"/.config/i3/config /mnt/root/.config/i3/config
+exec --no-startup-id bash -c \047sleep 10; ~/archinstall.sh > /dev/pts/1\047 #TechnicalString' | tee /mnt/home/"$username"/.config/i3/config /mnt/root/.config/i3/config
 #
 #Создание конфига Polybar (Панель рабочего стола).
 mkdir -p /mnt/home/"$username"/.config/polybar
@@ -1905,10 +1926,18 @@ Win+D -- Запуск dmenu (программа запуска).
 Win+F1 -- Запустить firefox.
 Win+Shift+Q -- Закрыть окно в фокусе.
 Print Screen -- Снимок экрана.
+#
+🌐 -- Запустить firefox.
+🗂 -- Запустить Dolphin.
+🗋 -- Запустить office.
+📃 -- Запустить блокнота.
+🖩 -- Запустить калькулятор.
+🎨 -- Запустить pinta.
+📸 -- Запустить cheese.
+🖨️ -- Запустить skanlite.
+I2P -- Запуск I2Pd (ПКМ открытие браузера).
 ⎙ -- Снимок экрана/Ножницы.
-#
 🛈 -- Эффекты и мониторинг.
-#
 ⏻ -- Управление сессией.
 #
 ScrollUp на заголовке -- Развернуть окно во весь экран.
@@ -1946,8 +1975,7 @@ Right -- Сдвинуть границу вправо.
 Win+Shift+Minus -- Сделать текущее окно черновиком/блокнотом.
 Win+Minus -- Показать первое окно черновика/блокнота.
 #
-Win+Alt-left+1 -- Восстановление рабочего стола №1.
-#' > /mnt/help.txt
+Win+Alt-left+1 -- Восстановление рабочего стола №1.' > /mnt/help.txt
 #
 #Создание директории и конфига gtk (Внешний вид gtk программ).
 echo -e "\033[36mСоздание конфига gtk (Внешний вид gtk программ).\033[0m"
@@ -2004,7 +2032,7 @@ color_sel_fg = "#ffffff"' | tee /mnt/home/"$username"/.config/jgmenu/left /mnt/r
 sed -i 's/menu_halign = left/menu_halign = right/' /mnt/home/"$username"/.config/jgmenu/right
 sed -i 's/menu_halign = left/menu_halign = right/' /mnt/root/.config/jgmenu/right
 echo -e 'Графические эффекты,bash -c \047if [ -n "$(pidof picom)" ]; then killall picom; else picom -b; fi\047,/usr/share/icons/Papirus-Dark/16x16/apps/blackmagicraw-speedtest.svg
-Системный монитор,sh -c "sed -i \047s/own_window_type/--own_window_type/\047 ~/.config/conky/conky.conf; sed -i \047s/----//\047 ~/.config/conky/conky.conf",/usr/share/icons/Papirus-Dark/16x16/apps/conky.svg
+Системный монитор,bash -c "sed -i \047s/own_window_type/--own_window_type/\047 ~/.config/conky/conky.conf; sed -i \047s/----//\047 ~/.config/conky/conky.conf",/usr/share/icons/Papirus-Dark/16x16/apps/conky.svg
 Подсказка,xed /help.txt,/usr/share/icons/Papirus/16x16/apps/help-browser.svg' | tee /mnt/home/"$username"/.config/jgmenu/help.csv /mnt/root/.config/jgmenu/help.csv
 echo -e 'Выход из i3wm,i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -b \047Да! выйти из i3\047 \047canberra-gtk-play -i service-logout; i3-msg exit\047,/usr/share/icons/Papirus-Dark/16x16/actions/application-exit.svg
 Перезагрузка,systemctl reboot,/usr/share/icons/Papirus/16x16/apps/system-reboot.svg
@@ -2125,7 +2153,7 @@ WantedBy=graphical.target' > /mnt/etc/systemd/system/x11vnc.service
 #
 #Установка помощника yay для работы с AUR (Репозиторий пользователей).
 echo -e "\033[36mУстановка помощника yay для работы с AUR (Репозиторий пользователей).\033[0m"
-arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
+arch-chroot /mnt/ sudo -u "$username" bash -c 'cd /home/'"$username"'/
 git clone https://aur.archlinux.org/yay.git
 cd /home/'"$username"'/yay
 BUILDDIR=/tmp/makepkg makepkg -i --noconfirm'
@@ -2239,7 +2267,7 @@ sudo sed -i \047s/#net\/ipv6\/conf\/all\/forwarding=1/net\/ipv6\/conf\/all\/forw
 #
 #Установка переменных окружения.
 echo -e "\\033[36mУстановка переменных окружения.\\033[0m"
-sudo sh -c \047echo "GTK_USE_PORTAL=1
+sudo bash -c \047echo "GTK_USE_PORTAL=1
 XDG_MENU_PREFIX=arch-" >> /etc/environment\047
 #
 #Включение службы redshift (Регулирует цветовую температуру вашего экрана).
