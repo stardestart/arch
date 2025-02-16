@@ -4924,10 +4924,10 @@ bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 #
-# Следующее открытое окно разделит экран по горизонтали (такое деление установленно по умолчанию). Легко запомнить по первой букве Horizontal.
+# Следующее открытое окно разделит экран по горизонтали.
 bindsym $mod+h split h
 #
-# Следующее открытое окно разделит экран по вертикали. Легко запомнить по первой букве Vertical.
+# Следующее открытое окно разделит экран по вертикали.
 bindsym $mod+v split v
 #
 # Развернуть окно во весь экран. Легко запомнить по первой букве Fullscreen.
@@ -4990,7 +4990,9 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 #
 # Выход из i3 (выходит из сеанса X).
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Вы действительно хотите выйти из i3? Это завершит вашу сессию X.' -b 'Да, выйти из i3' 'canberra-gtk-play -i service-logout; i3-msg exit'"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning \
+-m 'Вы действительно хотите выйти из i3? Это завершит вашу сессию X.' \
+-b 'Да, выйти из i3' 'canberra-gtk-play -i service-logout; i3-msg exit'"
 #
 # Войти в режим изменения размеров окон.
 bindsym $mod+r mode "resize"
@@ -5056,10 +5058,13 @@ for_window [class="kclock"] floating enable
 ########### Автозапуск программ ###########
 #
 # Приветствие в течении 10 сек (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id notify-send -te 10000 "☭  Доброго времени суток ☭" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm.";
+exec --no-startup-id notify-send -te 10000 "☭  Доброго времени суток ☭" \
+"В меню 🛈 -- Шпаргалка по i3wm.";
 #
 # Сканер уязвимостей (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id sh -c 'sudo rkhunter --propupd; sudo rkhunter --update; sudo rkhunter -c --sk --rwo; notify-send -w "✊ Сканер уязвимостей ✊" "$(sudo tail -n 17 /var/log/rkhunter.log)"'
+exec --no-startup-id sh -c 'sudo rkhunter --propupd; sudo rkhunter --update; \
+sudo rkhunter -c --sk --rwo; notify-send -w "✊ Сканер уязвимостей ✊" \
+"$(sudo tail -n 17 /var/log/rkhunter.log)"'
 #
 # Автозапуск conky.
 exec --no-startup-id conky;
@@ -5108,8 +5113,20 @@ exec --no-startup-id xbindkeys;
 exec --no-startup-id dunst;
 #
 # Автозапуск neofetch и обновления.
-#exec --no-startup-id sh -c 'sleep 10; while [[ -z "$(ls /dev/pts/1)" ]]; do sleep 5; done; sleep 5; sudo rm /var/lib/pacman/db.lck > /dev/pts/1; sudo pacman -Suy --noconfirm > /dev/pts/1; sudo pacman -Sc --noconfirm > /dev/pts/1; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/1;'
-exec --no-startup-id sh -c 'sleep 10; while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-1)}'\'')" ]]; do sleep 5; done; sleep 5; pts="$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-2)}'\'')"; neofetch > /dev/pts/$pts; arch-audit > /dev/pts/$pts; pts="$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-1)}'\'')"; sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; sudo pacman -Suy --noconfirm > /dev/pts/$pts; sudo pacman -Sc --noconfirm > /dev/pts/$pts; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts'
+exec --no-startup-id bash -c 'sleep 10; \
+while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-1)}'\'')" ]]; \
+do \
+sleep 5; \
+done; \
+sleep 5; \
+pts="$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-2)}'\'')"; \
+neofetch > /dev/pts/$pts; \
+arch-audit > /dev/pts/$pts; \
+pts="$(ls -m /dev/pts | awk -F ", " '\''{print $(NF-1)}'\'')"; \
+sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; \
+sudo pacman -Suy --noconfirm > /dev/pts/$pts; \
+sudo pacman -Sc --noconfirm > /dev/pts/$pts; \
+sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts'
 #
 # Автозапуск pa-notify.
 exec --no-startup-id pa-notify;
@@ -5132,14 +5149,18 @@ exec --no-startup-id gamemoderun steam -silent %U;
 ########### Горячие клавиши запуска программ ###########
 #
 #Восстановление рабочего стола №1.
-bindsym $mod+mod1+1 exec --no-startup-id "i3-msg 'workspace 1: 🏠; append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; exec dolphin; exec xed'"
-exec --no-startup-id "i3-msg 'workspace 1: 🏠; append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; exec dolphin; exec xed'"
+bindsym $mod+mod1+1 exec --no-startup-id "i3-msg 'workspace 1: 🏠; \
+append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; \
+exec dolphin; exec xed'"
+exec --no-startup-id "i3-msg 'workspace 1: 🏠; append_layout ~/.config/i3/workspace_1.json; \
+exec xterm; exec xterm; exec dolphin; exec xed'"
 #
-# Используйте mod+enter, чтобы запустить терминал ("i3-sensible-terminal" можно заменить "xterm", "terminator" или любым другим на выбор).
+# Используйте mod+enter, чтобы запустить терминал.
 bindsym $mod+Return exec xterm
 #
 # Запуск dmenu (программа запуска) с параметрами шрифта, приглашения, цвета фона.
-bindsym $mod+d exec --no-startup-id dmenu_run -fn "Fantasque Sans Mono:style=bold:size=18" -p "Поиск программы:" -nb "#2b2b2b" -sf "#2b2bf9" -nf "#2bf92b" -sb "#f92b2b"
+bindsym $mod+d exec --no-startup-id dmenu_run -fn "Fantasque Sans Mono:style=bold:size=18" \
+-p "Поиск программы:" -nb "#2b2b2b" -sf "#2b2bf9" -nf "#2bf92b" -sb "#f92b2b"
 #
 # Используйте mod+f1, чтобы запустить firefox.
 bindsym $mod+F1 exec --no-startup-id firefox

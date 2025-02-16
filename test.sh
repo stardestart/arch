@@ -1228,10 +1228,10 @@ bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 #
-# Следующее открытое окно разделит экран по горизонтали (такое деление установленно по умолчанию). Легко запомнить по первой букве Horizontal.
+# Следующее открытое окно разделит экран по горизонтали.
 bindsym $mod+h split h
 #
-# Следующее открытое окно разделит экран по вертикали. Легко запомнить по первой букве Vertical.
+# Следующее открытое окно разделит экран по вертикали.
 bindsym $mod+v split v
 #
 # Развернуть окно во весь экран. Легко запомнить по первой букве Fullscreen.
@@ -1294,7 +1294,9 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 #
 # Выход из i3 (выходит из сеанса X).
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -b \047Да, выйти из i3\047 \047canberra-gtk-play -i service-logout; i3-msg exit\047"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning \\
+-m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 \\
+-b \047Да, выйти из i3\047 \047canberra-gtk-play -i service-logout; i3-msg exit\047"
 #
 # Войти в режим изменения размеров окон.
 bindsym $mod+r mode "resize"
@@ -1360,10 +1362,13 @@ for_window [class="kclock"] floating enable
 ########### Автозапуск программ ###########
 #
 # Приветствие в течении 10 сек (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id notify-send -t 10000 -i user-red-home "☭ Доброго времени суток ☭" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm.";
+exec --no-startup-id notify-send -t 10000 -i user-red-home "☭ Доброго времени суток ☭" \\
+"В меню 🛈 -- Шпаргалка по i3wm.";
 #
 # Сканер уязвимостей (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id sh -c \047sudo rkhunter --propupd; sudo rkhunter --update; sudo rkhunter -c --sk --rwo; notify-send -u critical "✊ Сканер уязвимостей ✊" "$(sudo tail -n 17 /var/log/rkhunter.log)"\047
+exec --no-startup-id sh -c \047sudo rkhunter --propupd; sudo rkhunter --update; \\
+sudo rkhunter -c --sk --rwo; notify-send -u critical "✊ Сканер уязвимостей ✊" \\
+"$(sudo tail -n 17 /var/log/rkhunter.log)"\047
 #
 # Автозапуск conky.
 exec --no-startup-id conky;
@@ -1445,14 +1450,19 @@ exec --no-startup-id telegram-desktop -startintray -- %u;
 ########### Горячие клавиши запуска программ ###########
 #
 #Восстановление рабочего стола №1.
-bindsym $mod+mod1+1 exec --no-startup-id "i3-msg \047workspace 1: 🏠; append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; exec dolphin; exec xed\047"
-exec --no-startup-id "i3-msg \047workspace 1: 🏠; append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; exec dolphin; exec xed\047"
+bindsym $mod+mod1+1 exec --no-startup-id "i3-msg \047workspace 1: 🏠; \\
+append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; \\
+exec dolphin; exec xed\047"
+exec --no-startup-id "i3-msg \047workspace 1: 🏠; \\
+append_layout ~/.config/i3/workspace_1.json; \\
+exec xterm; exec xterm; exec dolphin; exec xed\047"
 #
-# Используйте mod+enter, чтобы запустить терминал ("i3-sensible-terminal" можно заменить "xterm", "terminator" или любым другим на выбор).
+# Используйте mod+enter, чтобы запустить терминал.
 bindsym $mod+Return exec xterm
 #
 # Запуск dmenu (программа запуска) с параметрами шрифта, приглашения, цвета фона.
-bindsym $mod+d exec --no-startup-id dmenu_run -fn "Fantasque Sans Mono:style=bold:size='"$(($font/2+$font))"'" -p "Поиск программы:" -nb "#2b2b2b" -sf "#2b2bf9" -nf "#2bf92b" -sb "#f92b2b"
+bindsym $mod+d exec --no-startup-id dmenu_run -fn "Fantasque Sans Mono:style=bold:size='"$(($font/2+$font))"'" \\
+-p "Поиск программы:" -nb "#2b2b2b" -sf "#2b2bf9" -nf "#2bf92b" -sb "#f92b2b"
 #
 # Используйте mod+f1, чтобы запустить firefox.
 bindsym $mod+F1 exec --no-startup-id firefox
