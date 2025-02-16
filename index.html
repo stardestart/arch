@@ -1946,7 +1946,7 @@ Include = /etc/pacman.d/mirrorlist
               <ul>
                 <li>
                   <p class=text>
-                    Включение вашего сетевого интерфейса, например sudo ip link set enp0s31f6 up.
+                    Включение вашего сетевого интерфейса, например sudo ip link set ВашСетевойИнтерфейс up.
                   </p>
                   <div class=term>
                     <span class=ps>$:</span> sudo ip link set ВашСетевойИнтерфейс up
@@ -1954,7 +1954,7 @@ Include = /etc/pacman.d/mirrorlist
                 </li>
                 <li>
                   <p class=text>
-                    Настройка dhcpcd, например sudo dhcpcd enp0s31f6.
+                    Настройка dhcpcd, например sudo dhcpcd ВашСетевойИнтерфейс.
                   </p>
                   <div class=term>
                     <span class=ps>$:</span> sudo dhcpcd ВашСетевойИнтерфейс
@@ -4112,18 +4112,36 @@ ${color #f92b2b}SWAP${hr 3}$color
 $swapperc% ${swapbar 12,72} $alignr${color #f92b2b}$swap / $color$swapfree / ${color #b2b2b2}$swapmax
 #Блок "Сеть".
 ${color #f92b2b}NET${hr 3}$color
-${color #b2b2b2}IP:$alignr${curl eth0.me}$color↑${upspeedf enp0s31f6} ${upspeedgraph enp0s31f6 12,72 b2b2b2 f92b2b -t} $alignr↓${downspeedf enp0s31f6} ${downspeedgraph enp0s31f6 12,72 b2b2b2 f92b2b -t}
+${color #b2b2b2}IP:$alignr${curl eth0.me}$color↑${upspeedf ВашСетевойИнтерфейс} \
+${upspeedgraph ВашСетевойИнтерфейс 12,72 b2b2b2 f92b2b -t} $alignr↓${downspeedf ВашСетевойИнтерфейс} \
+${downspeedgraph ВашСетевойИнтерфейс 12,72 b2b2b2 f92b2b -t}
 #Блок "Системный диск".
 ${color #f92b2b}HDD/SSD${hr 3}$color
-${color #b2b2b2}${execi 10 sudo smartctl -A /dev/nvme0n1 | grep -i temperature_celsius | awk -F '-' '{print $NF}' | awk '{print $1}'}${execi 10 sudo smartctl -A /dev/nvme0n1 | grep -i temperature: | awk '{print $2}'}°C ${color #f92b2b}/root${hr 1}$color
-(${fs_type /root})${fs_bar 12,72 /root} $alignr${color #f92b2b}${fs_used /root} / $color${fs_free /root} / ${color #b2b2b2}${fs_size /root}
-${execi 10 sudo smartctl -A /dev/nvme0n1 | grep -i temperature_celsius | awk -F '-' '{print $NF}' | awk '{print $1}'}${execi 10 sudo smartctl -A /dev/nvme0n1 | grep -i temperature: | awk '{print $2}'}°C ${color #f92b2b}/var${hr 1}$color
-(${fs_type /var})${fs_bar 12,72 /var} $alignr${color #f92b2b}${fs_used /var} / $color${fs_free /var} / ${color #b2b2b2}${fs_size /var}
-${execi 10 sudo smartctl -A /dev/nvme0n1 | grep -i temperature_celsius | awk -F '-' '{print $NF}' | awk '{print $1}'}${execi 10 sudo smartctl -A /dev/nvme0n1 | grep -i temperature: | awk '{print $2}'}°C ${color #f92b2b}/home${hr 1}$color
-(${fs_type /home})${fs_bar 12,72 /home} $alignr${color #f92b2b}${fs_used /home} / $color${fs_free /home} / ${color #b2b2b2}${fs_size /home}
+${color #b2b2b2}\
+${execi 10 sudo smartctl -A /dev/sda1 | grep -i temperature_celsius | awk -F '-' '{print $NF}' | awk '{print $1}'}\
+${execi 10 sudo smartctl -A /dev/sda1 | grep -i temperature: | awk '{print $2}'}°C \
+${color #f92b2b}/root${hr 1}$color
+(${fs_type /root})${fs_bar 12,72 /root} $alignr\
+${color #f92b2b}${fs_used /root} / $color${fs_free /root} / ${color #b2b2b2}${fs_size /root}
+${execi 10 sudo smartctl -A /dev/sda1 | grep -i temperature_celsius | awk -F '-' '{print $NF}' | awk '{print $1}'}\
+${execi 10 sudo smartctl -A /dev/sda1 | grep -i temperature: | awk '{print $2}'}°C \
+${color #f92b2b}/var${hr 1}$color
+(${fs_type /var})${fs_bar 12,72 /var} $alignr\
+${color #f92b2b}${fs_used /var} / $color${fs_free /var} / ${color #b2b2b2}${fs_size /var}
+${execi 10 sudo smartctl -A /dev/sda1 | grep -i temperature_celsius | awk -F '-' '{print $NF}' | awk '{print $1}'}\
+${execi 10 sudo smartctl -A /dev/sda1 | grep -i temperature: | awk '{print $2}'}°C \
+${color #f92b2b}/home${hr 1}$color
+(${fs_type /home})${fs_bar 12,72 /home} $alignr\
+${color #f92b2b}${fs_used /home} / $color${fs_free /home} / ${color #b2b2b2}${fs_size /home}
 #Блок "Диски и разделы".
-${execi 10 sudo smartctl -A /dev/sda | grep -i temperature_celsius | awk -F '-' '{print $NF}' | awk '{print $1}'}${execi 10 sudo smartctl -A /dev/sda | grep -i temperature: | awk '{print $2}'}°C ${color #f92b2b}~/Documents/Devices/data${hr 1}$color
-(${fs_type /home/ИмяПользователя/Documents/Devices/data})${fs_bar 12,72 /home/ИмяПользователя/Documents/Devices/data}$alignr${fs_used /home/ИмяПользователя/Documents/Devices/data} / ${color #f92b2b}${fs_free /home/ИмяПользователя/Documents/Devices/data} / ${color #b2b2b2}${fs_size /home/ИмяПользователя/Documents/Devices/data}
+${execi 10 sudo smartctl -A /dev/sda | grep -i temperature_celsius | awk -F '-' '{print $NF}' | awk '{print $1}'}\
+${execi 10 sudo smartctl -A /dev/sda | grep -i temperature: | awk '{print $2}'}°C \
+${color #f92b2b}~/Documents/Devices/data${hr 1}$color
+(${fs_type /home/ИмяПользователя/Documents/Devices/data})\
+${fs_bar 12,72 /home/ИмяПользователя/Documents/Devices/data}$alignr$\
+{fs_used /home/ИмяПользователя/Documents/Devices/data} / ${color #f92b2b}\
+${fs_free /home/ИмяПользователя/Documents/Devices/data} / ${color #b2b2b2}\
+${fs_size /home/ИмяПользователя/Documents/Devices/data}
 ]]
 
 
@@ -4345,7 +4363,11 @@ alias gcc="grc --colour=on gcc" #Раскрашиваем gcc.
 alias mount="grc --colour=on mount" #Раскрашиваем mount.
 alias ps="grc --colour=on ps" #Раскрашиваем ps.
 #Изменяем вид приглашения командной строки.
-PS1="\[\e[48;2;249;43;43m\]\[\e[38;2;43;249;43m\] \$\[\e[48;2;249;249;43m\]\[\e[38;2;249;43;43m\]\[\e[48;2;249;249;43m\]\[\e[38;2;43;43;249m\]\A\[\e[48;2;43;43;249m\]\[\e[38;2;249;249;43m\] \u@\h\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;249m\]\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;43m\]\W\[\e[48;2;43;43;43m\]\[\e[0m\]\[\e[38;2;43;249;43m\] \[\e[0m\]"
+PS1="\[\e[48;2;249;43;43m\]\[\e[38;2;43;249;43m\] \$\[\e[48;2;249;249;43m\]\
+\[\e[38;2;249;43;43m\]\[\e[48;2;249;249;43m\]\[\e[38;2;43;43;249m\]\A\[\e[48;2;43;43;249m\]\
+\[\e[38;2;249;249;43m\] \u@\h\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;249m\]\
+\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;43m\]\W\[\e[48;2;43;43;43m\]\[\e[0m\]\
+\[\e[38;2;43;249;43m\] \[\e[0m\]"
 #\[\e[48;2;249;43;43m\] - Красный цвет фона.
 #\[\e[38;2;43;249;43m\] - Зеленый цвет шрифта.
 #\$ - Символ приглашения (# для root, $ для обычных пользователей).
