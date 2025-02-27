@@ -542,7 +542,7 @@ g
 n
 1
 2048
-+512M
++1G
 t
 1
 n
@@ -984,15 +984,30 @@ ${color #f92b2b}SWAP${hr 3}$color
 $swapperc% ${swapbar '"$font"','"$(($font*6))"'} $alignr${color #f92b2b}$swap / $color$swapfree / ${color #b2b2b2}$swapmax
 #Блок "Сеть".
 ${color #f92b2b}NET${hr 3}$color
-${color #b2b2b2}IP:$alignr${curl eth0.me}$color↑${upspeedf '"$netdev"'} ${upspeedgraph '"$netdev"' '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t} $alignr↓${downspeedf '"$netdev"'} ${downspeedgraph '"$netdev"' '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t}
+${color #b2b2b2}IP:$alignr${curl eth0.me}$color↑${upspeedf '"$netdev"'} \\
+${upspeedgraph '"$netdev"' '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t} \\
+$alignr↓${downspeedf '"$netdev"'} \\
+${downspeedgraph '"$netdev"' '"$font"','"$(($font*6))"' b2b2b2 f92b2b -t}
 #Блок "Системный диск".
 ${color #f92b2b}HDD/SSD${hr 3}$color
-${color #b2b2b2}${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature: | awk \047{print $2}\047}°C ${color #f92b2b}/root${hr 1}$color
-(${fs_type /root})${fs_bar '"$font"','"$(($font*6))"' /root} $alignr${color #f92b2b}${fs_used /root} / $color${fs_free /root} / ${color #b2b2b2}${fs_size /root}
-${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature: | awk \047{print $2}\047}°C ${color #f92b2b}/var${hr 1}$color
-(${fs_type /var})${fs_bar '"$font"','"$(($font*6))"' /var} $alignr${color #f92b2b}${fs_used /var} / $color${fs_free /var} / ${color #b2b2b2}${fs_size /var}
-${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature: | awk \047{print $2}\047}°C ${color #f92b2b}/home${hr 1}$color
-(${fs_type /home})${fs_bar '"$font"','"$(($font*6))"' /home} $alignr${color #f92b2b}${fs_used /home} / $color${fs_free /home} / ${color #b2b2b2}${fs_size /home}'"${masslabel[@]}"'
+${color #b2b2b2}\\
+${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}\\
+${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature: | awk \047{print $2}\047}°C \\
+${color #f92b2b}/root${hr 1}$color
+(${fs_type /root})${fs_bar '"$font"','"$(($font*6))"' /root} \\
+$alignr${color #f92b2b}${fs_used /root} / $color${fs_free /root} / ${color #b2b2b2}\\
+${fs_size /root}
+${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}\\
+${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature: | awk \047{print $2}\047}°C \\
+${color #f92b2b}/var${hr 1}$color
+(${fs_type /var})${fs_bar '"$font"','"$(($font*6))"' /var} \\
+$alignr${color #f92b2b}${fs_used /var} / $color${fs_free /var} / ${color #b2b2b2}\\
+${fs_size /var}
+${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}\\
+${execi 10 sudo smartctl -A /dev/'"$sysdisk"' | grep -i temperature: | awk \047{print $2}\047}°C \\
+${color #f92b2b}/home${hr 1}$color
+(${fs_type /home})${fs_bar '"$font"','"$(($font*6))"' /home} \\
+$alignr${color #f92b2b}${fs_used /home} / $color${fs_free /home} / ${color #b2b2b2}${fs_size /home}'"${masslabel[@]}"'
 ]]' | tee /mnt/home/"$username"/.config/conky/conky.conf /mnt/root/.config/conky/conky.conf
 #
 #Создание конфига bash_profile (Настройка Xorg).
@@ -1033,7 +1048,11 @@ alias gcc="grc --colour=on gcc" #Раскрашиваем gcc.
 alias mount="grc --colour=on mount" #Раскрашиваем mount.
 alias ps="grc --colour=on ps" #Раскрашиваем ps.
 #Изменяем вид приглашения командной строки.
-PS1="\[\e[48;2;249;43;43m\]\[\e[38;2;43;249;43m\] \$\[\e[48;2;249;249;43m\]\[\e[38;2;249;43;43m\]\[\e[48;2;249;249;43m\]\[\e[38;2;43;43;249m\]\A\[\e[48;2;43;43;249m\]\[\e[38;2;249;249;43m\] \u@\h\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;249m\]\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;43m\]\W\[\e[48;2;43;43;43m\]\[\e[0m\]\[\e[38;2;43;249;43m\] \[\e[0m\]"
+PS1="\[\e[48;2;249;43;43m\]\[\e[38;2;43;249;43m\] \$\[\e[48;2;249;249;43m\]\
+\[\e[38;2;249;43;43m\]\[\e[48;2;249;249;43m\]\[\e[38;2;43;43;249m\]\A\[\e[48;2;43;43;249m\]\
+\[\e[38;2;249;249;43m\] \u@\h\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;249m\]\
+\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;43m\]\W\[\e[48;2;43;43;43m\]\[\e[0m\]\
+\[\e[38;2;43;249;43m\] \[\e[0m\]"
 #\[\e[48;2;249;43;43m\] - Красный цвет фона.
 #\[\e[38;2;43;249;43m\] - Зеленый цвет шрифта.
 #\$ - Символ приглашения (# для root, $ для обычных пользователей).
@@ -1238,10 +1257,10 @@ bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 #
-# Следующее открытое окно разделит экран по горизонтали (такое деление установленно по умолчанию). Легко запомнить по первой букве Horizontal.
+# Следующее открытое окно разделит экран по горизонтали.
 bindsym $mod+h split h
 #
-# Следующее открытое окно разделит экран по вертикали. Легко запомнить по первой букве Vertical.
+# Следующее открытое окно разделит экран по вертикали.
 bindsym $mod+v split v
 #
 # Развернуть окно во весь экран. Легко запомнить по первой букве Fullscreen.
@@ -1304,7 +1323,9 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 #
 # Выход из i3 (выходит из сеанса X).
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -b \047Да, выйти из i3\047 \047canberra-gtk-play -i service-logout; i3-msg exit\047"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning \\
+-m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 \\
+-b \047Да, выйти из i3\047 \047canberra-gtk-play -i service-logout; i3-msg exit\047"
 #
 # Войти в режим изменения размеров окон.
 bindsym $mod+r mode "resize"
@@ -1370,10 +1391,13 @@ for_window [class="kclock"] floating enable
 ########### Автозапуск программ ###########
 #
 # Приветствие в течении 10 сек (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id notify-send -t 10000 -i user-red-home "☭ Доброго времени суток ☭" "ЛКМ на кнопке 🛈 -- Шпаргалка по i3wm.";
+exec --no-startup-id notify-send -t 10000 -i user-red-home "☭ Доброго времени суток ☭" \\
+"В меню 🛈 -- Шпаргалка по i3wm.";
 #
 # Сканер уязвимостей (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id sh -c \047sudo rkhunter --propupd; sudo rkhunter --update; sudo rkhunter -c --sk --rwo; notify-send -u critical "✊ Сканер уязвимостей ✊" "$(sudo tail -n 17 /var/log/rkhunter.log)"\047
+exec --no-startup-id bash -c \047sudo rkhunter --propupd; sudo rkhunter --update; \\
+sudo rkhunter -c --sk --rwo; notify-send -u critical "✊ Сканер уязвимостей ✊" \\
+"$(sudo tail -n 17 /var/log/rkhunter.log)"\047
 #
 # Автозапуск conky.
 exec --no-startup-id conky;
@@ -1422,7 +1446,7 @@ exec --no-startup-id xbindkeys;
 exec --no-startup-id dunst;
 #
 # Автозапуск neofetch и обновления.
-#TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; \\
+#TechnicalSymbolexec --no-startup-id bash -c \047sleep 10; \\
 #TechnicalSymbolexec while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)" ]]; \\
 #TechnicalSymbolexec do \\
 #TechnicalSymbolexec sleep 5; \\
@@ -1467,14 +1491,19 @@ exec --no-startup-id obs;
 ########### Горячие клавиши запуска программ ###########
 #
 #Восстановление рабочего стола №1.
-bindsym $mod+mod1+1 exec --no-startup-id "i3-msg \047workspace 1: 🏠; append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; exec dolphin; exec xed\047"
-exec --no-startup-id "i3-msg \047workspace 1: 🏠; append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; exec dolphin; exec xed\047"
+bindsym $mod+mod1+1 exec --no-startup-id "i3-msg \047workspace 1: 🏠; \\
+append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; \\
+exec dolphin; exec xed\047"
+exec --no-startup-id "i3-msg \047workspace 1: 🏠; \\
+append_layout ~/.config/i3/workspace_1.json; \\
+exec xterm; exec xterm; exec dolphin; exec xed\047"
 #
-# Используйте mod+enter, чтобы запустить терминал ("i3-sensible-terminal" можно заменить "xterm", "terminator" или любым другим на выбор).
+# Используйте mod+enter, чтобы запустить терминал.
 bindsym $mod+Return exec xterm
 #
 # Запуск dmenu (программа запуска) с параметрами шрифта, приглашения, цвета фона.
-bindsym $mod+d exec --no-startup-id dmenu_run -fn "Fantasque Sans Mono:style=bold:size='"$(($font/2+$font))"'" -p "Поиск программы:" -nb "#2b2b2b" -sf "#2b2bf9" -nf "#2bf92b" -sb "#f92b2b"
+bindsym $mod+d exec --no-startup-id dmenu_run -fn "Fantasque Sans Mono:style=bold:size='"$(($font/2+$font))"'" \\
+-p "Поиск программы:" -nb "#2b2b2b" -sf "#2b2bf9" -nf "#2bf92b" -sb "#f92b2b"
 #
 # Используйте mod+f1, чтобы запустить firefox.
 bindsym $mod+F1 exec --no-startup-id firefox
@@ -1496,7 +1525,7 @@ assign [class="firefox"] "2: 🌍"
 # Steam будет запускаться на 3 рабочем столе.
 assign [title="Steam"] "3: 🎮"
 exec --no-startup-id firefox; #TechnicalString
-exec --no-startup-id sh -c \047sleep 10; ~/archinstall.sh > /dev/pts/1\047 #TechnicalString' | tee /mnt/home/"$username"/.config/i3/config /mnt/root/.config/i3/config
+exec --no-startup-id bash -c \047sleep 10; ~/archinstall.sh > /dev/pts/1\047 #TechnicalString' | tee /mnt/home/"$username"/.config/i3/config /mnt/root/.config/i3/config
 #
 #Создание конфига Polybar (Панель рабочего стола).
 mkdir -p /mnt/home/"$username"/.config/polybar
@@ -1651,6 +1680,7 @@ format-1 = <label>
 format-1-background = #283544
 format-1-foreground = #2bf92b
 click-left = kill "$(pidof i2pd)"; polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show
+click-right = xlinks -g -socks-proxy 127.0.0.1:4447 http://inr.i2p/browse/
 
 [module/title]
 type = internal/xwindow
@@ -2051,7 +2081,7 @@ color_sel_fg = "#ffffff"' | tee /mnt/home/"$username"/.config/jgmenu/left /mnt/r
 sed -i 's/menu_halign = left/menu_halign = right/' /mnt/home/"$username"/.config/jgmenu/right
 sed -i 's/menu_halign = left/menu_halign = right/' /mnt/root/.config/jgmenu/right
 echo -e 'Графические эффекты,bash -c \047if [ -n "$(pidof picom)" ]; then killall picom; else picom -b; fi\047,/usr/share/icons/Papirus-Dark/16x16/apps/blackmagicraw-speedtest.svg
-Системный монитор,sh -c "sed -i \047s/own_window_type/--own_window_type/\047 ~/.config/conky/conky.conf; sed -i \047s/----//\047 ~/.config/conky/conky.conf",/usr/share/icons/Papirus-Dark/16x16/apps/conky.svg
+Системный монитор,bash -c "sed -i \047s/own_window_type/--own_window_type/\047 ~/.config/conky/conky.conf; sed -i \047s/----//\047 ~/.config/conky/conky.conf",/usr/share/icons/Papirus-Dark/16x16/apps/conky.svg
 Подсказка,xed /help.txt,/usr/share/icons/Papirus/16x16/apps/help-browser.svg' | tee /mnt/home/"$username"/.config/jgmenu/help.csv /mnt/root/.config/jgmenu/help.csv
 echo -e 'Выход из i3wm,i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -b \047Да! выйти из i3\047 \047canberra-gtk-play -i service-logout; i3-msg exit\047,/usr/share/icons/Papirus-Dark/16x16/actions/application-exit.svg
 Перезагрузка,systemctl reboot,/usr/share/icons/Papirus/16x16/apps/system-reboot.svg
@@ -2172,7 +2202,7 @@ WantedBy=graphical.target' > /mnt/etc/systemd/system/x11vnc.service
 #
 #Установка помощника yay для работы с AUR (Репозиторий пользователей).
 echo -e "\033[36mУстановка помощника yay для работы с AUR (Репозиторий пользователей).\033[0m"
-arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
+arch-chroot /mnt/ sudo -u "$username" bash -c 'cd /home/'"$username"'/
 git clone https://aur.archlinux.org/yay.git
 cd /home/'"$username"'/yay
 BUILDDIR=/tmp/makepkg makepkg -i --noconfirm'
@@ -2193,7 +2223,7 @@ echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus getty@tty1.service
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
 xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker rngd auto-cpufreq smartd smb \
-saned.socket cups.socket x11vnc ufw auditd usbguard i2pd ntpd kmsconvt@tty1.service
+saned.socket cups.socket x11vnc ufw auditd usbguard ntpd kmsconvt@tty1.service
 #
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
@@ -2294,7 +2324,7 @@ sudo sed -i \047s/#net\/ipv6\/conf\/all\/forwarding=1/net\/ipv6\/conf\/all\/forw
 #
 #Установка переменных окружения.
 echo -e "\\033[36mУстановка переменных окружения.\\033[0m"
-sudo sh -c \047echo "GTK_USE_PORTAL=1
+sudo bash -c \047echo "GTK_USE_PORTAL=1
 XDG_MENU_PREFIX=arch-" >> /etc/environment\047
 #
 #Включение службы redshift (Регулирует цветовую температуру вашего экрана).

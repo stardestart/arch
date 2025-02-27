@@ -533,7 +533,7 @@ g
 n
 1
 2048
-+512M
++1G
 t
 1
 n
@@ -1225,8 +1225,7 @@ XTerm*VT100*translations: #override \
 #
 #Создание директории и конфига i3-wm (Тайловый оконный менеджер).
 echo -e "\033[36mСоздание конфига i3-wm (Тайловый оконный менеджер).\033[0m"
-mkdir -p /mnt/home/"$username"/.config/i3
-mkdir -p /mnt/root/.config/i3
+mkdir -p /mnt/home/"$username"/.config/i3 /mnt/root/.config/i3
 echo -e '########### Основные настройки ###########
 #
 # Назначаем клавишу MOD, Mod4 - это клавиша WIN.
@@ -1436,7 +1435,7 @@ exec --no-startup-id xbindkeys;
 exec --no-startup-id dunst;
 #
 # Автозапуск neofetch и обновления.
-#TechnicalSymbolexec --no-startup-id sh -c \047sleep 10; \\
+#TechnicalSymbolexec --no-startup-id bash -c \047sleep 10; \\
 #TechnicalSymbolexec while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)" ]]; \\
 #TechnicalSymbolexec do \\
 #TechnicalSymbolexec sleep 5; \\
@@ -1503,11 +1502,10 @@ assign [class="firefox"] "2: 🌍"
 # Steam будет запускаться на 3 рабочем столе.
 assign [title="Steam"] "3: 🎮"
 exec --no-startup-id firefox; #TechnicalString
-exec --no-startup-id sh -c \047sleep 10; ~/archinstall.sh > /dev/pts/1\047 #TechnicalString' | tee /mnt/home/"$username"/.config/i3/config /mnt/root/.config/i3/config
+exec --no-startup-id bash -c \047sleep 10; ~/archinstall.sh > /dev/pts/1\047 #TechnicalString' | tee /mnt/home/"$username"/.config/i3/config /mnt/root/.config/i3/config
 #
 #Создание конфига Polybar (Панель рабочего стола).
-mkdir -p /mnt/home/"$username"/.config/polybar
-mkdir -p /mnt/root/.config/polybar
+mkdir -p /mnt/home/"$username"/.config/polybar /mnt/root/.config/polybar
 echo -e "\033[36mСоздание конфига Polybar (Панель рабочего стола).\033[0m"
 echo -e '[bar/upbar]
 background = #2b2b2b
@@ -1648,7 +1646,7 @@ format-1-foreground = #2bf92b
 [module/i2p1]
 type = custom/script
 exec = echo " I2P"; if [ -n "$(pidof i2pd)" ]; then polybar-msg action i2p1 module_hide; polybar-msg action i2p2 hook 1; else polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show; fi
-click-left = i2pd --daemon; while ! curl -s --socks5-hostname 127.0.0.1:4447 http://flibusta.i2p/; do notify-send -t 5000 -i network-transmit-receive "Настраиваются I2P туннели" "Ожидайте открытия браузера"; sleep 5; done; xlinks -g -socks-proxy 127.0.0.1:4447 http://flibusta.i2p/
+click-left = ~/.config/i2p/index_i2p.sh
 
 [module/i2p2]
 type = custom/ipc
@@ -1657,7 +1655,8 @@ hook-1 = echo " I2P"
 format-1 = <label>
 format-1-background = #283544
 format-1-foreground = #2bf92b
-click-left = kill "$(pidof i2pd)"; polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show
+click-left = xlinks -g -socks-proxy 127.0.0.1:4447 ~/.config/i2p/index.html
+click-right = kill "$(pidof i2pd)"; polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show
 
 [module/title]
 type = internal/xwindow
@@ -1839,6 +1838,46 @@ animation-discharging-framerate = 500
 animation-low-0 = !
 animation-low-1 =
 animation-low-framerate = 200' | tee /mnt/home/"$username"/.config/polybar/config.ini /mnt/root/.config/polybar/config.ini
+#
+#Создание скрипта который запускает i2p сеть и введет локальную адресную книгу.
+mkdir -p /mnt/home/"$username"/.config/i2p /mnt/root/.config/i2p
+echo '# Запускаем I2P Daemon в фоновом режиме
+i2pd --daemon
+# Цикл, который будет выполняться, пока не будет успешного ответа от указанного URL
+while ! curl -s --socks5-hostname 127.0.0.1:4447 http://flibusta.i2p/; do
+    # Отправляем уведомление о том, что I2P туннели настраиваются
+    notify-send -t 5000 -i network-transmit-receive "Настраиваются I2P туннели" "Ожидайте открытия браузера"
+    # Ждем 5 секунд перед следующей попыткой
+    sleep 5
+done
+# Открываем браузер xlinks с прокси-сервером I2P
+xlinks -g -socks-proxy 127.0.0.1:4447 ~/.config/i2p/index.html &
+# Объявляем массив для адресной книги
+declare -a addressbook
+# Загружаем список хостов из двух источников и обрабатываем их
+mapfile -t addressbook < <(
+    cat <(curl -s -x http://127.0.0.1:4444 http://identiguy.i2p/hosts.txt) \
+        <(curl -s -x http://127.0.0.1:4444 http://isitup.i2p/hosts.txt) |
+    # Удаляем строки с "=" и комментарии
+    sed -e "s/=\(.*\)//" -e "/^#/d" | sort -u
+)
+# Удаляем ненужные строки из index.html
+sed -i "/<\/ol>\|<\/body>\|<\/html>/d" ~/.config/i2p/index.html
+# Перебираем все адреса в адресной книге
+for i in "${!addressbook[@]}"; do
+    # Проверяем, есть ли адрес уже в index.html
+    if ! grep --color=never -q -E "${addressbook[i]}" ~/.config/i2p/index.html; then
+        # Если адреса нет, добавляем его в index.html
+        echo -e "<li><a href=\"http://${addressbook[i]}\">http://${addressbook[i]}</a> — "$(curl --max-time 30 -s -x http://127.0.0.1:4444 -H "Range: bytes=0-500" http://"${addressbook[i]}" | grep --color=never -E "<title>([^<]*)</title>" | sed -n "s/.*<title>\(.*\)<\/title>.*/\1/p")"</li>" >> ~/.config/i2p/index.html
+    elif grep --color=never -q -E "http://${addressbook[i]}</a> — </li>" ~/.config/i2p/index.html; then
+        # Если адрес уже есть, проверяем, нужно ли обновить его заголовок
+        sed -i "/http:\/\/${addressbook[i]}<\/a> — <\/li>/d" ~/.config/i2p/index.html
+        echo -e "<li><a href=\"http://${addressbook[i]}\">http://${addressbook[i]}</a> — "$(curl --max-time 30 -s -x http://127.0.0.1:4444 -H "Range: bytes=0-500" "http://${addressbook[i]}" | grep --color=never -E "<title>([^<]*)</title>" | sed -n "s/.*<title>\(.*\)<\/title>.*/\1/p")"</li>" >> ~/.config/i2p/index.html
+    fi
+done
+# Добавляем закрывающие теги в index.html
+echo -e "</ol>\n</body>\n</html>" >> ~/.config/i2p/index.html' | tee /mnt/home/"$username"/.config/i2p/index_i2p.sh /mnt/root/.config/i2p/index_i2p.sh
+echo -e "<html>\n<head>\n<title>Index I2P</title>\n</head>\n<body>\n<ol>\n</ol>\n</body>\n</html>" | tee /mnt/home/"$username"/.config/i2p/index.html /mnt/root/.config/i2p/index.html
 #
 #Создание конфига redshift (Регулирует цветовую температуру вашего экрана).
 echo -e "\033[36mСоздание конфига redshift (Регулирует цветовую температуру вашего экрана).\033[0m"
@@ -2023,8 +2062,7 @@ gtk-decoration-layout=menu:' > /mnt/usr/share/gtk-2.0/gtkrc
 #
 #Создание директории и конфига jgmenu.
 echo -e "\033[36mСоздание конфига jgmenu.\033[0m"
-mkdir -p /mnt/home/"$username"/.config/jgmenu
-mkdir -p /mnt/root/.config/jgmenu
+mkdir -p /mnt/home/"$username"/.config/jgmenu /mnt/root/.config/jgmenu
 echo '# Оставлять меню открытым при потере фокуса (0 - false, 1 - true)
 stay_alive = 0
 # Команда для запуска терминала
@@ -2058,7 +2096,7 @@ color_sel_fg = "#ffffff"' | tee /mnt/home/"$username"/.config/jgmenu/left /mnt/r
 sed -i 's/menu_halign = left/menu_halign = right/' /mnt/home/"$username"/.config/jgmenu/right
 sed -i 's/menu_halign = left/menu_halign = right/' /mnt/root/.config/jgmenu/right
 echo -e 'Графические эффекты,bash -c \047if [ -n "$(pidof picom)" ]; then killall picom; else picom -b; fi\047,/usr/share/icons/Papirus-Dark/16x16/apps/blackmagicraw-speedtest.svg
-Системный монитор,sh -c "sed -i \047s/own_window_type/--own_window_type/\047 ~/.config/conky/conky.conf; sed -i \047s/----//\047 ~/.config/conky/conky.conf",/usr/share/icons/Papirus-Dark/16x16/apps/conky.svg
+Системный монитор,bash -c "sed -i \047s/own_window_type/--own_window_type/\047 ~/.config/conky/conky.conf; sed -i \047s/----//\047 ~/.config/conky/conky.conf",/usr/share/icons/Papirus-Dark/16x16/apps/conky.svg
 Подсказка,xed /help.txt,/usr/share/icons/Papirus/16x16/apps/help-browser.svg' | tee /mnt/home/"$username"/.config/jgmenu/help.csv /mnt/root/.config/jgmenu/help.csv
 echo -e 'Выход из i3wm,i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -b \047Да! выйти из i3\047 \047canberra-gtk-play -i service-logout; i3-msg exit\047,/usr/share/icons/Papirus-Dark/16x16/actions/application-exit.svg
 Перезагрузка,systemctl reboot,/usr/share/icons/Papirus/16x16/apps/system-reboot.svg
@@ -2179,7 +2217,7 @@ WantedBy=graphical.target' > /mnt/etc/systemd/system/x11vnc.service
 #
 #Установка помощника yay для работы с AUR (Репозиторий пользователей).
 echo -e "\033[36mУстановка помощника yay для работы с AUR (Репозиторий пользователей).\033[0m"
-arch-chroot /mnt/ sudo -u "$username" sh -c 'cd /home/'"$username"'/
+arch-chroot /mnt/ sudo -u "$username" bash -c 'cd /home/'"$username"'/
 git clone https://aur.archlinux.org/yay.git
 cd /home/'"$username"'/yay
 BUILDDIR=/tmp/makepkg makepkg -i --noconfirm'
@@ -2200,7 +2238,7 @@ echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus getty@tty1.service
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
 xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker rngd auto-cpufreq smartd smb \
-saned.socket cups.socket x11vnc ufw auditd usbguard i2pd ntpd kmsconvt@tty1.service
+saned.socket cups.socket x11vnc ufw auditd usbguard ntpd kmsconvt@tty1.service
 #
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
@@ -2294,7 +2332,7 @@ sudo sed -i \047s/#net\/ipv6\/conf\/all\/forwarding=1/net\/ipv6\/conf\/all\/forw
 #
 #Установка переменных окружения.
 echo -e "\\033[36mУстановка переменных окружения.\\033[0m"
-sudo sh -c \047echo "GTK_USE_PORTAL=1
+sudo bash -c \047echo "GTK_USE_PORTAL=1
 XDG_MENU_PREFIX=arch-" >> /etc/environment\047
 #
 #Включение службы redshift (Регулирует цветовую температуру вашего экрана).
@@ -2414,7 +2452,7 @@ esac' > /mnt/etc/NetworkManager/dispatcher.d/09-timezone
 #
 #Делаем xinitrc, 09-timezone и archinstall.sh исполняемыми.
 echo -e "\033[36mДелаем xinitrc, 09-timezone и archinstall.sh исполняемыми.\033[0m"
-chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh /mnt/root/.xinitrc /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
+chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh /mnt/root/.xinitrc /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh /mnt/home/"$username"/.config/i2p/index_i2p.sh /mnt/root/.config/i2p/index_i2p.sh
 #
 #Удаленное включение компьютера с помощью Wake-on-LAN (WOL).
 echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"

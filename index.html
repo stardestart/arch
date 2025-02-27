@@ -5084,7 +5084,7 @@ exec --no-startup-id notify-send -te 10000 "☭  Доброго времени �
 "В меню 🛈 -- Шпаргалка по i3wm.";
 #
 # Сканер уязвимостей (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id sh -c 'sudo rkhunter --propupd; sudo rkhunter --update; \
+exec --no-startup-id bash -c 'sudo rkhunter --propupd; sudo rkhunter --update; \
 sudo rkhunter -c --sk --rwo; notify-send -w "✊ Сканер уязвимостей ✊" \
 "$(sudo tail -n 17 /var/log/rkhunter.log)"'
 #
@@ -5419,6 +5419,7 @@ format-1 = <label>
 format-1-background = #283544
 format-1-foreground = #2bf92b
 click-left = kill "$(pidof i2pd)"; polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show
+click-right = xlinks -g -socks-proxy 127.0.0.1:4447 http://inr.i2p/browse/
 
 [module/title]
 type = internal/xwindow
@@ -6436,7 +6437,7 @@ color_sel_fg = "#ffffff"
         <div class=nano>
           <pre class=pre>
 Графические эффекты,bash -c 'if [ -n "$(pidof picom)" ]; then killall picom; else picom -b; fi',/usr/share/icons/Papirus-Dark/16x16/apps/blackmagicraw-speedtest.svg
-Системный монитор,sh -c "sed -i 's/own_window_type/--own_window_type/' ~/.config/conky/conky.conf; sed -i 's/----//' ~/.config/conky/conky.conf",/usr/share/icons/Papirus-Dark/16x16/apps/conky.svg
+Системный монитор,bash -c "sed -i 's/own_window_type/--own_window_type/' ~/.config/conky/conky.conf; sed -i 's/----//' ~/.config/conky/conky.conf",/usr/share/icons/Papirus-Dark/16x16/apps/conky.svg
 Подсказка,xed /help.txt,/usr/share/icons/Papirus/16x16/apps/help-browser.svg
 
 
