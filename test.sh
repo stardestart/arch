@@ -1841,41 +1841,62 @@ animation-low-framerate = 200' | tee /mnt/home/"$username"/.config/polybar/confi
 #
 #Создание скрипта который запускает i2p сеть и введет локальную адресную книгу.
 mkdir -p /mnt/home/"$username"/.config/i2p /mnt/root/.config/i2p
-echo '# Запускаем I2P Daemon в фоновом режиме
+echo '#!/bin/bash
+# Запускаем I2P Daemon в фоновом режиме.
 i2pd --daemon
-# Цикл, который будет выполняться, пока не будет успешного ответа от указанного URL
+#
+# Цикл, который будет выполняться, пока не будет успешного ответа от указанного URL.
 while ! curl -s --socks5-hostname 127.0.0.1:4447 http://flibusta.i2p/; do
-    # Отправляем уведомление о том, что I2P туннели настраиваются
-    notify-send -t 5000 -i network-transmit-receive "Настраиваются I2P туннели" "Ожидайте открытия браузера"
-    # Ждем 5 секунд перед следующей попыткой
+    # Отправляем уведомление о том, что I2P туннели настраиваются.
+    notify-send --replace-id=9696 -t 5000 -i network-transmit-receive "Настройка I2P туннелей" "Пожалуйста, подождите, идет настройка соединения..."
+    # Ждем 5 секунд перед следующей попыткой.
     sleep 5
 done
-# Открываем браузер xlinks с прокси-сервером I2P
-xlinks -g -socks-proxy 127.0.0.1:4447 ~/.config/i2p/index.html &
-# Объявляем массив для адресной книги
+#
+# Уведомление о загрузке списка хостов.
+notify-send --replace-id=9696 -i document-open "Загрузка списка хостов" "Пожалуйста, подождите, идет загрузка данных..."
+# Объявляем массив для адресной книги.
 declare -a addressbook
-# Загружаем список хостов из двух источников и обрабатываем их
+#
+# Загружаем список хостов из двух источников и обрабатываем их.
 mapfile -t addressbook < <(
     cat <(curl -s -x http://127.0.0.1:4444 http://identiguy.i2p/hosts.txt) \
         <(curl -s -x http://127.0.0.1:4444 http://isitup.i2p/hosts.txt) |
-    # Удаляем строки с "=" и комментарии
+    # Удаляем строки с "=" и комментарии.
     sed -e "s/=\(.*\)//" -e "/^#/d" | sort -u
 )
-# Удаляем ненужные строки из index.html
+#
+# Уведомление об открытии браузера.
+notify-send --replace-id=9696 -t 5000 -i browser "Открытие браузера" "Запускаем браузер xlinks для доступа к I2P..."
+sleep 50; xlinks -g -socks-proxy 127.0.0.1:4447 ~/.config/i2p/index.html &
+#
+# Уведомление о создании адресной книги I2P.
+notify-send --replace-id=9696 -t 5000 -i document-new "Создание адресной книги I2P" "Обновите страницу браузера с помощью CTRL+R после завершения."
+# Удаляем ненужные строки из index.html.
 sed -i "/<\/ol>\|<\/body>\|<\/html>/d" ~/.config/i2p/index.html
-# Перебираем все адреса в адресной книге
+#
+# Перебираем все адреса в адресной книге.
 for i in "${!addressbook[@]}"; do
-    # Проверяем, есть ли адрес уже в index.html
-    if ! grep --color=never -q -E "${addressbook[i]}" ~/.config/i2p/index.html; then
-        # Если адреса нет, добавляем его в index.html
-        echo -e "<li><a href=\"http://${addressbook[i]}\">http://${addressbook[i]}</a> — "$(curl --max-time 30 -s -x http://127.0.0.1:4444 -H "Range: bytes=0-500" http://"${addressbook[i]}" | grep --color=never -E "<title>([^<]*)</title>" | sed -n "s/.*<title>\(.*\)<\/title>.*/\1/p")"</li>" >> ~/.config/i2p/index.html
-    elif grep --color=never -q -E "http://${addressbook[i]}</a> — </li>" ~/.config/i2p/index.html; then
-        # Если адрес уже есть, проверяем, нужно ли обновить его заголовок
-        sed -i "/http:\/\/${addressbook[i]}<\/a> — <\/li>/d" ~/.config/i2p/index.html
-        echo -e "<li><a href=\"http://${addressbook[i]}\">http://${addressbook[i]}</a> — "$(curl --max-time 30 -s -x http://127.0.0.1:4444 -H "Range: bytes=0-500" "http://${addressbook[i]}" | grep --color=never -E "<title>([^<]*)</title>" | sed -n "s/.*<title>\(.*\)<\/title>.*/\1/p")"</li>" >> ~/.config/i2p/index.html
+    # Проверяем, есть ли адрес уже в index.html.
+    if ! grep --color=never -q -E "${addressbook[i]}" ~/.config/i2p/index.html || grep --color=never -q -E "http://${addressbook[i]}</a> — </li>" ~/.config/i2p/index.html; then
+        # Если адреса нет, добавляем его в index.html.
+        if curl --max-time 30 -s -x http://127.0.0.1:4444 -H "Range: bytes=0-1000" "http://${addressbook[i]}" |
+        grep --color=never -E "<title>([^<]*)</title>" && ! curl --max-time 30 -s -x http://127.0.0.1:4444 -I "http://${addressbook[i]}" |
+        grep --color=never -E "Server Error"; then
+            echo -e "<li><a href=\"http://${addressbook[i]}\">http://${addressbook[i]}</a> — \
+"$(curl --max-time 100 -s -x http://127.0.0.1:4444 -H "Range: bytes=0-1000" http://"${addressbook[i]}" |
+            grep --color=never -E "<title>([^<]*)</title>" |
+            sed -n "s/.*<title>\(.*\)<\/title>.*/\1/p")"</li>" >> ~/.config/i2p/index.html
+            notify-send --replace-id=9696 -i document-new "${addressbook[i]}" "Добавлено в адресную книгу"
+        else
+            notify-send --replace-id=9696 -i dialog-warning "${addressbook[i]}" "Не удалось получить заголовок"
+        fi
+    else
+        # Если адрес не добавляется, выводим сообщение.
+        notify-send --replace-id=9696 -i dialog-information "${addressbook[i]}" "Уже есть в адресной книге"
     fi
 done
-# Добавляем закрывающие теги в index.html
+# Добавляем закрывающие теги в index.html.
 echo -e "</ol>\n</body>\n</html>" >> ~/.config/i2p/index.html' | tee /mnt/home/"$username"/.config/i2p/index_i2p.sh /mnt/root/.config/i2p/index_i2p.sh
 echo -e "<html>\n<head>\n<title>Index I2P</title>\n</head>\n<body>\n<ol>\n</ol>\n</body>\n</html>" | tee /mnt/home/"$username"/.config/i2p/index.html /mnt/root/.config/i2p/index.html
 #
