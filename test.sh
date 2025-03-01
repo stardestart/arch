@@ -1384,7 +1384,7 @@ exec --no-startup-id notify-send -t 10000 -i user-red-home "☭ Доброго �
 "В меню 🛈 -- Шпаргалка по i3wm.";
 #
 # Сканер уязвимостей (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id sh -c \047sudo rkhunter --propupd; sudo rkhunter --update; \\
+exec --no-startup-id bash -c \047sudo rkhunter --propupd; sudo rkhunter --update; \\
 sudo rkhunter -c --sk --rwo; notify-send -u critical "✊ Сканер уязвимостей ✊" \\
 "$(sudo tail -n 17 /var/log/rkhunter.log)"\047
 #
