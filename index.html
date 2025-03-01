@@ -5409,7 +5409,7 @@ format-1-foreground = #2bf92b
 [module/i2p1]
 type = custom/script
 exec = echo " I2P"; if [ -n "$(pidof i2pd)" ]; then polybar-msg action i2p1 module_hide; polybar-msg action i2p2 hook 1; else polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show; fi
-click-left = i2pd --daemon; while ! curl -s --socks5-hostname 127.0.0.1:4447 http://flibusta.i2p/; do notify-send -t 5000 -i network-transmit-receive "Настраиваются I2P туннели" "Ожидайте открытия браузера"; sleep 5; done; xlinks -g -socks-proxy 127.0.0.1:4447 http://flibusta.i2p/
+click-left = ~/.config/i2p/index_i2p.sh
 
 [module/i2p2]
 type = custom/ipc
@@ -5418,8 +5418,8 @@ hook-1 = echo " I2P"
 format-1 = <label>
 format-1-background = #283544
 format-1-foreground = #2bf92b
-click-left = kill "$(pidof i2pd)"; polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show
-click-right = xlinks -g -socks-proxy 127.0.0.1:4447 http://inr.i2p/browse/
+click-left = xlinks -g -socks-proxy 127.0.0.1:4447 ~/.config/i2p/index.html
+click-right = kill "$(pidof i2pd)"; polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show
 
 [module/title]
 type = internal/xwindow
@@ -5602,6 +5602,131 @@ animation-low-0 = !
 animation-low-1 =
 animation-low-framerate = 200
 
+
+
+
+</pre>
+          <table>
+            <tr>
+              <td colspan="18">
+                <span class=nanocomm>[ Добро пожаловать в nano. Базовая справка доступна по нажатию Ctrl+G. ]</span>
+              </td>
+            </tr>
+            <tr>
+              <td><span class=nanocomm>Ctrl+G</span></td>
+              <td>Справка</td>
+              <td><span class=nanocomm>Ctrl+O</span></td>
+              <td>Записать</td>
+              <td><span class=nanocomm>Ctrl+W</span></td>
+              <td>Поиск</td>
+              <td><span class=nanocomm>Ctrl+K</span></td>
+              <td>Вырезать</td>
+              <td><span class=nanocomm>Ctrl+T</span></td>
+              <td>Выполнить</td>
+              <td><span class=nanocomm>Ctrl+C</span></td>
+              <td>Позиция</td>
+              <td><span class=nanocomm>Esc+U</span></td>
+              <td>Отмена</td>
+              <td><span class=nanocomm>Esc+A</span></td>
+              <td>Установить</td>
+              <td><span class=nanocomm>Esc+]</span></td>
+              <td>На скобку</td>
+            </tr>
+            <tr>
+              <td><span class=nanocomm>Ctrl+X</span></td>
+              <td>Выход</td>
+              <td><span class=nanocomm>Ctrl+R</span></td>
+              <td>ЧитФайл</td>
+              <td><span class=nanocomm>Ctrl+\</span></td>
+              <td>Замена</td>
+              <td><span class=nanocomm>Ctrl+U</span></td>
+              <td>Вставить</td>
+              <td><span class=nanocomm>Ctrl+J</span></td>
+              <td>Выровнять</td>
+              <td><span class=nanocomm>Ctrl+/</span></td>
+              <td>К строке</td>
+              <td><span class=nanocomm>Esc+E</span></td>
+              <td>Повтор</td>
+              <td><span class=nanocomm>Esc+6</span></td>
+              <td>Копировать</td>
+              <td><span class=nanocomm>Ctrl+Q</span></td>
+              <td>Обр. поиск</td>
+            </tr>
+          </table>
+        </div>
+      </li>
+      <li>
+        <p class=text>
+          Создание скрипта который запускает i2p сеть и введет локальную адресную книгу.
+        </p>
+        <div class=term>
+          <span class=ps>$:</span> mkdir -p ~/.config/i2p
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> echo -e "&lt;html&gt;\n&lt;head&gt;\n&lt;title&gt;Index I2P&lt;/title&gt;\n&lt;/head&gt;\n&lt;body&gt;\n&lt;ol&gt;\n&lt;/ol&gt;\n&lt;/body&gt;\n&lt;/html&gt;" > ~/.config/i2p/index.html
+        </div>
+        <div class=term>
+          <span class=ps>$:</span> nano ~/.config/i2p/index_i2p.sh
+        </div>
+        <div class=nano>
+          <pre class=pre>
+#!/bin/bash
+# Запускаем I2P Daemon в фоновом режиме.
+i2pd --daemon
+#
+# Цикл, который будет выполняться, пока не будет успешного ответа от указанного URL.
+while ! curl -s --socks5-hostname 127.0.0.1:4447 http://flibusta.i2p/; do
+    # Отправляем уведомление о том, что I2P туннели настраиваются.
+    notify-send --replace-id=9696 -t 5000 -i network-transmit-receive "Настройка I2P туннелей" "Пожалуйста, подождите, идет настройка соединения..."
+    # Ждем 5 секунд перед следующей попыткой.
+    sleep 5
+done
+#
+# Уведомление о загрузке списка хостов.
+notify-send --replace-id=9696 -i document-open "Загрузка списка хостов" "Пожалуйста, подождите, идет загрузка данных..."
+# Объявляем массив для адресной книги.
+declare -a addressbook
+#
+# Загружаем список хостов из двух источников и обрабатываем их.
+mapfile -t addressbook < <(
+    cat <(curl -s -x http://127.0.0.1:4444 http://identiguy.i2p/hosts.txt) \
+        <(curl -s -x http://127.0.0.1:4444 http://isitup.i2p/hosts.txt) |
+    # Удаляем строки с "=" и комментарии.
+    sed -e "s/=\(.*\)//" -e "/^#/d" | sort -u
+)
+#
+# Уведомление об открытии браузера.
+notify-send --replace-id=9696 -t 5000 -i browser "Открытие браузера" "Запускаем браузер xlinks для доступа к I2P..."
+sleep 50; xlinks -g -socks-proxy 127.0.0.1:4447 ~/.config/i2p/index.html &
+#
+# Уведомление о создании адресной книги I2P.
+notify-send --replace-id=9696 -t 5000 -i document-new "Создание адресной книги I2P" "Обновите страницу браузера с помощью CTRL+R после завершения."
+# Удаляем ненужные строки из index.html.
+sed -i "/&lt;\/ol&gt;\|&lt;\/body&gt;\|&lt;\/html&gt;/d" ~/.config/i2p/index.html
+#
+# Перебираем все адреса в адресной книге.
+for i in "${!addressbook[@]}"; do
+    # Проверяем, есть ли адрес уже в index.html.
+    if ! grep --color=never -q -E "${addressbook[i]}" ~/.config/i2p/index.html || grep --color=never -q -E "http://${addressbook[i]}&lt;/a&gt; — &lt;/li&gt;" ~/.config/i2p/index.html; then
+        # Если адреса нет, добавляем его в index.html.
+        if curl --max-time 30 -s -x http://127.0.0.1:4444 -H "Range: bytes=0-1000" "http://${addressbook[i]}" |
+        grep --color=never -E "<title>([^<]*)</title>" && ! curl --max-time 30 -s -x http://127.0.0.1:4444 -I "http://${addressbook[i]}" |
+        grep --color=never -E "Server Error"; then
+            echo -e "&lt;li&gt;&lt;a href=\"http://${addressbook[i]}\"&gt;http://${addressbook[i]}&lt;/a&gt; — \
+"$(curl --max-time 100 -s -x http://127.0.0.1:4444 -H "Range: bytes=0-1000" http://"${addressbook[i]}" |
+            grep --color=never -E "&lt;title&gt;([^<]*)&lt;/title&gt;" |
+            sed -n "s/.*&lt;title&gt;\(.*\)&lt;\/title&gt;.*/\1/p")"&lt;/li&gt;" >> ~/.config/i2p/index.html
+            notify-send --replace-id=9696 -i document-new "${addressbook[i]}" "Добавлено в адресную книгу"
+        else
+            notify-send --replace-id=9696 -i dialog-warning "${addressbook[i]}" "Не удалось получить заголовок"
+        fi
+    else
+        # Если адрес не добавляется, выводим сообщение.
+        notify-send --replace-id=9696 -i dialog-information "${addressbook[i]}" "Уже есть в адресной книге"
+    fi
+done
+# Добавляем закрывающие теги в index.html.
+echo -e "&lt;/ol&gt;\n&lt;/body&gt;\n&lt;/html&gt;" >> ~/.config/i2p/index.html
 
 
 
