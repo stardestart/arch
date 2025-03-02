@@ -2161,6 +2161,11 @@ PreviewHiddenItems=true
 [UserInterface]
 StartMainWindowDocked=true' >> /mnt/home/"$username"/.config/smb4krc
 #
+#Создание конфига copyq.
+echo -e "\033[36mСоздание конфига copyq.\033[0m"
+mkdir -p /mnt/home/"$username"/.config/copyq/copyq.conf
+echo -e 'check_clipboard=true\ncheck_selection=true\ncopy_clipboard=true\ncopy_selection=true' | tee /mnt/home/"$username"/.config/copyq/copyq.conf
+#
 #Создание общего конфига xbindkeys (Настройка мультимедийных клавиш).
 echo -e "\033[36mСоздание общего конфига xbindkeys (Настройка мультимедийных клавиш).\033[0m"
 echo -e '# Увеличить громкость.
