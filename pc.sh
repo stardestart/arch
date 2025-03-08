@@ -791,16 +791,16 @@ for (( j=0, i=1; i<="${#massparts[*]}"; i++, j++ ))
         if [ -z "$(lsblk -no LABEL /dev/"${massparts[$j]}")" ];
             then
                 if [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "vfat" ];
-                    then mount -o nodev,noexec,nosuid -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"${massparts[$j]}"
-                    else mount -o nodev,noexec,nosuid --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"${massparts[$j]}"
+                    then mount -o nodev,nosuid -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"${massparts[$j]}"
+                    else mount -o nodev,nosuid --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"${massparts[$j]}"
                 fi
 masslabel+='
 ${execi 10 sudo smartctl -A /dev/'"${massparts[$j]}"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}${execi 10 sudo smartctl -A /dev/'"${massparts[$j]}"' | grep -i temperature: | awk \047{print $2}\047}°C ${color #f92b2b}~/Documents/Devices/'"${massparts[$j]}"'${hr 1}$color
 (${fs_type /home/'"$username"'/Documents/Devices/'"${massparts[$j]}"'})${fs_bar '"$font"','"$(($font*6))"' /home/'"$username"'/Documents/Devices/'"${massparts[$j]}"'} $alignr${color #f92b2b}${fs_used /home/'"$username"'/Documents/Devices/'"${massparts[$j]}"'} / $color${fs_free /home/'"$username"'/Documents/Devices/'"${massparts[$j]}"'} / ${color #b2b2b2}${fs_size /home/'"$username"'/Documents/Devices/'"${massparts[$j]}"'}'
             else
                 if [ "$(lsblk -fn /dev/"${massparts[$j]}" | awk '{print $2}')" = "vfat" ];
-                    then mount -o nodev,noexec,nosuid -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
-                    else mount -o nodev,noexec,nosuid --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
+                    then mount -o nodev,nosuid -i -t vfat -oumask=0000,iocharset=utf8 "$@" --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
+                    else mount -o nodev,nosuid --mkdir /dev/"${massparts[$j]}" /mnt/home/"$username"/Documents/Devices/"$(lsblk -no LABEL /dev/"${massparts[$j]}")"
                 fi
 masslabel+='
 ${execi 10 sudo smartctl -A /dev/'"${massparts[$j]}"' | grep -i temperature_celsius | awk -F \047-\047 \047{print $NF}\047 | awk \047{print $1}\047}${execi 10 sudo smartctl -A /dev/'"${massparts[$j]}"' | grep -i temperature: | awk \047{print $2}\047}°C ${color #f92b2b}~/Documents/Devices/'"$(lsblk -no LABEL /dev/"${massparts[$j]}")"'${hr 1}$color
@@ -1446,19 +1446,19 @@ exec --no-startup-id dunst;
 #
 # Автозапуск neofetch и обновления.
 #TechnicalSymbolexec --no-startup-id bash -c \047sleep 10; \\
-#TechnicalSymbolexec while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)" ]]; \\
-#TechnicalSymbolexec do \\
-#TechnicalSymbolexec sleep 5; \\
-#TechnicalSymbolexec done; \\
-#TechnicalSymbolexec sleep 5; \\
-#TechnicalSymbolexec pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-2)}\047\\\047\047)"; \\
-#TechnicalSymbolexec neofetch > /dev/pts/$pts; \\
-#TechnicalSymbolexec arch-audit > /dev/pts/$pts; \\
-#TechnicalSymbolexec pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)"; \\
-#TechnicalSymbolexec sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; \\
-#TechnicalSymbolexec sudo pacman -Suy --noconfirm > /dev/pts/$pts; \\
-#TechnicalSymbolexec sudo pacman -Sc --noconfirm > /dev/pts/$pts; \\
-#TechnicalSymbolexec sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts\047
+#TechnicalSymbol while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)" ]]; \\
+#TechnicalSymbol do \\
+#TechnicalSymbol sleep 5; \\
+#TechnicalSymbol done; \\
+#TechnicalSymbol sleep 5; \\
+#TechnicalSymbol pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-2)}\047\\\047\047)"; \\
+#TechnicalSymbol neofetch > /dev/pts/$pts; \\
+#TechnicalSymbol arch-audit > /dev/pts/$pts; \\
+#TechnicalSymbol pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)"; \\
+#TechnicalSymbol sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; \\
+#TechnicalSymbol sudo pacman -Suy --noconfirm > /dev/pts/$pts; \\
+#TechnicalSymbol sudo pacman -Sc --noconfirm > /dev/pts/$pts; \\
+#TechnicalSymbol sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts\047
 #
 # Автозапуск pa-notify.
 exec --no-startup-id pa-notify;
