@@ -2158,11 +2158,7 @@ MountPrefix=file:///home/'"$username"'/Documents/Public/In
 RemountShares=true
 UnmountSharesOnExit=true
 [Network]
-EnableWakeOnLAN=true
-ForceSmb1Protocol=true
-PreviewHiddenItems=true
-[UserInterface]
-StartMainWindowDocked=true' >> /mnt/home/"$username"/.config/smb4krc
+PreviewHiddenItems=true' >> /mnt/home/"$username"/.config/smb4krc
 #
 #Создание конфига copyq.
 echo -e "\033[36mСоздание конфига copyq.\033[0m"

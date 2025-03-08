@@ -1926,7 +1926,7 @@ echo 'polkit.addRule(function(action, subject) {
 
         return polkit.Result.YES;
     }
-});' > /mnt/etc/polkit-1/rules.d/51-blueman.rules
+});' > /mnt/etc/polkit-1/rules.d/50-blueman.rules
 #
 #Настройка polkit (Фреймворк для управления общесистемными привилегиями) для принтеров.
 echo -e "\033[36mНастройка polkit (Фреймворк для управления общесистемными привилегиями) для принтеров.\033[0m"
@@ -1935,7 +1935,7 @@ echo 'polkit.addRule(function(action, subject) {
         subject.isInGroup("wheel")){
         return polkit.Result.YES;
     }
-});' > /mnt/etc/polkit-1/rules.d/49-allow-passwordless-printer-admin.rules
+});' > /mnt/etc/polkit-1/rules.d/51-allow-passwordless-printer-admin.rules
 #
 #Настройка pam_kwallet.
 echo -e "\033[36mНастройка pam_kwallet.\033[0m"
@@ -2155,11 +2155,7 @@ MountPrefix=file:///home/'"$username"'/Documents/Public/In
 RemountShares=true
 UnmountSharesOnExit=true
 [Network]
-EnableWakeOnLAN=true
-ForceSmb1Protocol=true
-PreviewHiddenItems=true
-[UserInterface]
-StartMainWindowDocked=true' >> /mnt/home/"$username"/.config/smb4krc
+PreviewHiddenItems=true' >> /mnt/home/"$username"/.config/smb4krc
 #
 #Создание конфига copyq.
 echo -e "\033[36mСоздание конфига copyq.\033[0m"
