@@ -170,8 +170,6 @@ dosfstools \
 unzip \
 smartmontools \
 dolphin \
-kdf \
-filelight \
 ifuse \
 usbmuxd \
 libplist \
@@ -1203,7 +1201,7 @@ xterm*locale: true
 xterm*saveLines: 10000
 !
 !Шрифт xterm.
-xterm*faceName: Fantasque Sans Mono:style=bold:size='"$font"'
+xterm*faceName: Fantasque Sans Mono:size='"$font"'
 !
 !Цвет фона.
 xterm*background: #2b2b2b
