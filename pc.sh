@@ -1455,7 +1455,9 @@ exec --no-startup-id dunst;
 #TechnicalSymbol pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)"; \\
 #TechnicalSymbol sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; \\
 #TechnicalSymbol sudo pacman -Suy --noconfirm > /dev/pts/$pts; \\
+#TechnicalSymbol yay -Suy --noconfirm > /dev/pts/$pts; \\
 #TechnicalSymbol sudo pacman -Sc --noconfirm > /dev/pts/$pts; \\
+#TechnicalSymbol yay -Sc --noconfirm > /dev/pts/$pts; \\
 #TechnicalSymbol sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts\047
 #
 # Автозапуск pa-notify.
