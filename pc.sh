@@ -227,6 +227,7 @@ aspell-ru \
 ethtool \
 pinta \
 vlc \
+vlc-plugin-ffmpeg \
 libreoffice-still-ru \
 hunspell \
 hunspell-en_us \
