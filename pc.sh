@@ -108,6 +108,7 @@ massfont=(30144_PostIndex.ttf https://ttfonts.net/ru/download/31252.htm $(curl h
                  | grep --color=never '.ttf"' | awk '{print $2}' | sed 's/[,"]//g' | sed 's/static\///'))
 massallprog=( xorg-server \
 xorg-xinit \
+xorg-xinput \
 xterm \
 i3-wm \
 polybar \
@@ -288,7 +289,7 @@ ntp \
 xdg-user-dirs \
 geoclue \
 rng-tools \
-gtk3-nocsd \
+gtk-nocsd \
 hardinfo2 \
 hunspell-ru-aot \
 hyphen-ru \
@@ -1084,7 +1085,7 @@ export XDG_CURRENT_DESKTOP=gtk
 export XCURSOR_THEME=Adwaita
 export XCURSOR_SIZE=24
 export GTK_CSD=0
-export LD_PRELOAD=/usr/lib/libgtk3-nocsd.so.0' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
+export LD_PRELOAD=/usr/lib/libgtk-nocsd.so.0' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
 #
 #Редактирование конфига сервера уведомлений.
 echo -e "\033[36mРедактирование конфига сервера уведомлений.\033[0m"
