@@ -311,6 +311,9 @@ kcolorchooser \
 kontrast \
 telegram-desktop \
 cups-xerox-b2xx \
+supertuxkart \
+supertux \
+ktuberling \
 gcompris-qt)
 massprog=()
 massallaurprog=()
