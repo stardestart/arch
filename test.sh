@@ -312,10 +312,13 @@ usbguard-qt \
 pa-notify \
 birdtray \
 kmscon \
-qgnomeplatform-qt5 \
-adwaita-qt5 \
-qgnomeplatform-qt6 \
-adwaita-qt6 \
+#qgnomeplatform-qt5 \
+#adwaita-qt5 \
+#qgnomeplatform-qt6 \
+#adwaita-qt6 \
+qt5ct \
+qt6ct \
+breeze \
 discord \
 meld \
 kcolorchooser \
@@ -889,6 +892,16 @@ Option "XkbLayout" "us,ru"
 Option "XkbOptions" "grp:alt_shift_toggle,terminate:ctrl_alt_bksp"
 EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
 #
+# Создаем папки конфигурации для утилит настройки Qt
+mkdir -p /mnt/home/"$username"/.config/{qt5ct,qt6ct}
+mkdir -p /mnt/root/.config/{qt5ct,qt6ct}
+# Заставляем программы на Qt5 и Qt6 использовать тему BreezeDark (цвета) и Adwaita (стиль кнопок)
+echo '[Appearance]
+custom_palette=true
+color_scheme_path=/usr/share/color-schemes/BreezeDark.colors
+style=Adwaita-Dark
+icon_theme=Papirus-Dark' | tee /mnt/home/"$username"/.config/qt5ct/qt5ct.conf /mnt/home/"$username"/.config/qt6ct/qt6ct.conf /mnt/root/.config/qt5ct/qt5ct.conf /mnt/root/.config/qt6ct/qt6ct.conf
+#
 #Создание общего конфига сканера.
 echo -e "\033[36mСоздание общего конфига сканера.\033[0m"
 mkdir -p /mnt/etc/sane.d
@@ -1067,7 +1080,7 @@ export COLORTERM=truecolor #Включаем все 16 миллионов цве
 #Создание конфига profile (Настройка Xorg).
 echo -e "\033[36mСоздание конфига profile (Настройка Xorg).\033[0m"
 echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
-export QT_QPA_PLATFORMTHEME=qgnomeplatform #Изменение внешнего вида приложений использующих qt.
+export QT_QPA_PLATFORMTHEME=qt6ct #Изменение внешнего вида приложений использующих qt.
 export XDG_CURRENT_DESKTOP=gtk
 export XCURSOR_THEME=Adwaita
 export XCURSOR_SIZE=24
