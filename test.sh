@@ -170,20 +170,31 @@ ntfs-3g \
 dosfstools \
 unzip \
 smartmontools \
-dolphin \
+#dolphin \
 ifuse \
 usbmuxd \
 libplist \
 libimobiledevice \
 curlftpfs \
 samba \
-kimageformats \
+#kimageformats \
 ffmpegthumbnailer \
-kdegraphics-thumbnailers \
-qt5-imageformats \
-kdesdk-thumbnailers \
-ffmpegthumbs \
-kdenetwork-filesharing \
+#kdegraphics-thumbnailers \
+#qt5-imageformats \
+#kdesdk-thumbnailers \
+#ffmpegthumbs \
+#kdenetwork-filesharing \
+
+#nemo
+nemo \ 
+cinnamon-translations \ 
+file-roller \ 
+nemo-fileroller \ 
+gvfs \ 
+gvfs-mtp \ 
+gvfs-afc \ 
+#
+
 smb4k \
 kclock \
 calindori \
@@ -199,7 +210,7 @@ cutefish-wallpapers \
 cosmic-wallpapers \
 elementary-wallpapers \
 xdg-desktop-portal \
-xdg-desktop-portal-kde \
+#xdg-desktop-portal-kde \
 feh \
 conky \
 freetype2 \
@@ -284,7 +295,7 @@ mesa-vdpau \
 ufw \
 usbguard \
 libpwquality \
-kde-cli-tools \
+#kde-cli-tools \
 ntp \
 xdg-user-dirs \
 geoclue \
@@ -696,7 +707,7 @@ fs.protected_regular=2
 fs.protected_symlinks=1
 fs.suid_dumpable=0
 kernel.core_uses_pid=1
-kernel.ctrl-alt-del=0
+kernel.ctrl_alt_del=0
 kernel.dmesg_restrict=1
 kernel.kexec_load_disabled=1
 kernel.kptr_restrict=2
@@ -716,7 +727,6 @@ net.ipv4.conf.all.accept_source_route=0
 net.ipv4.conf.all.bootp_relay=0
 net.ipv4.conf.all.mc_forwarding=0
 net.ipv4.conf.all.proxy_arp=0
-net.ipv4.conf.all.rp_filter=1
 net.ipv4.conf.all.send_redirects=0
 net.ipv4.conf.default.accept_redirects=0
 net.ipv6.conf.default.accept_redirects=0
@@ -725,8 +735,8 @@ net.ipv6.conf.default.accept_source_route=0
 net.ipv4.conf.default.rp_filter=1
 net.ipv4.conf.default.secure_redirects=0
 net.ipv4.conf.default.send_redirects=0
-net.ipv4.icmp_echo_ignore_all=1
-net.ipv6.icmp.echo_ignore_all=1
+net.ipv4.icmp_echo_ignore_all=0
+net.ipv6.icmp.echo_ignore_all=0
 net.ipv4.icmp_echo_ignore_broadcasts=1
 net.ipv4.icmp_ignore_bogus_error_responses=1
 net.ipv4.tcp_fastopen=3
@@ -739,11 +749,12 @@ net.ipv4.tcp_max_tw_buckets=2000000
 net.ipv4.tcp_rfc1337=1
 net.ipv4.tcp_slow_start_after_idle=0
 net.ipv4.tcp_syncookies=1
-net.ipv4.tcp_timestamps=0
+net.ipv4.tcp_timestamps=1
 net.ipv4.tcp_tw_reuse=1
 vm.dirty_ratio=10
 vm.dirty_background_ratio=5
-vm.vfs_cache_pressure=50" > /mnt/etc/sysctl.d/99-sysctl.conf
+vm.vfs_cache_pressure=50
+" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка видеодрайвера.
 echo -e "\033[36mУстановка видеодрайвера.\033[0m"
@@ -853,16 +864,15 @@ fi
 xhost +si:localuser:root
 #
 #Автозапуск обоев рабочего стола.
-while true; \
-do \
-feh --bg-fill --randomize --no-fehbg /usr/share/backgrounds/* /usr/share/backgrounds/; \
-sleep 300; \
+while true; 
+do 
+feh --bg-fill --randomize --no-fehbg /usr/share/backgrounds/* /usr/share/backgrounds/; 
+sleep 300; 
 done &
 #
 #Автозапуск заставки.
-xautolock -time 50 -locker "systemctl hibernate" \
--notify 1800 -notifier \
-"xlock -mode matrix -delay 10000 -echokeys -echokey '*'" -detectsleep -noclose &
+xautolock -time 10 -locker "xlock -mode matrix -delay 10000 -echokeys -echokey *" -detectsleep &
+xautolock -time 30 -locker "systemctl hibernate" -detectsleep &
 #
 #Воспроизведения звука входа в систему.
 canberra-gtk-play -i service-login &
@@ -883,6 +893,8 @@ EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
 echo -e "\033[36mСоздание общего конфига сканера.\033[0m"
 mkdir -p /mnt/etc/sane.d
 echo -e "localhost\n192.168.0.0/24" >> /mnt/etc/sane.d/net.conf
+echo -e "\033[36mДобавление пользователя в группу scanner...\033[0m"
+arch-chroot /mnt usermod -aG scanner "$username"
 #
 #Формируется конфиг conky (Системный монитор).
 #Температура ядер процессора.
@@ -1015,32 +1027,14 @@ echo -e "[preferred]\ndefault=gtk" > /mnt/usr/share/xdg-desktop-portal/portals.c
 #Создание конфига bashrc (Настройка Xterm).
 echo -e "\033[36mСоздание конфига bashrc (Настройка Xterm).\033[0m"
 echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
-alias grep="grep --color=always" #Раскрашиваем grep.
-alias ip="ip --color=always" #Раскрашиваем ip.
-alias diff="diff --color=always" #Раскрашиваем diff.
-alias ls="ls --color" #Раскрашиваем ls.
-alias df="grc --colour=on df" #Раскрашиваем df.
-alias zgrep="grc --colour=on zgrep" #Раскрашиваем zgrep.
-alias cvs="grc --colour=on cvs" #Раскрашиваем cvs.
-alias esperanto="grc --colour=on esperanto" #Раскрашиваем esperanto.
-alias irclog="grc --colour=on irclog" #Раскрашиваем irclog.
-alias ldap="grc --colour=on ldap" #Раскрашиваем ldap.
-alias log="grc --colour=on log" #Раскрашиваем log.
-alias netstat="grc --colour=on netstat" #Раскрашиваем netstat.
-alias proftpd="grc --colour=on proftpd" #Раскрашиваем proftpd.
-alias traceroute="grc --colour=on traceroute" #Раскрашиваем traceroute.
-alias wdiff="grc --colour=on wdiff" #Раскрашиваем wdiff.
-alias dig="grc --colour=on dig" #Раскрашиваем dig.
-alias cat="grc --colour=on cat" #Раскрашиваем cat.
-alias zcat="grc --colour=on zcat" #Раскрашиваем zcat.
-alias make="grc --colour=on make" #Раскрашиваем make.
-alias g++="grc --colour=on g++" #Раскрашиваем g++.
-alias head="grc --colour=on head" #Раскрашиваем head.
-alias mtr="grc --colour=on mtr" #Раскрашиваем mtr.
-alias ping="grc --colour=on ping" #Раскрашиваем ping.
-alias gcc="grc --colour=on gcc" #Раскрашиваем gcc.
-alias mount="grc --colour=on mount" #Раскрашиваем mount.
-alias ps="grc --colour=on ps" #Раскрашиваем ps.
+alias grep="grep --color=auto" #Раскрашиваем grep.
+alias ip="ip --color=auto" #Раскрашиваем ip.
+alias diff="diff --color=auto" #Раскрашиваем diff.
+alias ls="ls --color=auto" #Раскрашиваем ls.
+alias df="df -h" #Удобный человекочитаемый вид для дисков.
+if [ -f /etc/profile.d/grc.sh ]; then
+    source /etc/profile.d/grc.sh
+fi
 #Изменяем вид приглашения командной строки.
 PS1="\[\e[48;2;249;43;43m\]\[\e[38;2;43;249;43m\] \$\[\e[48;2;249;249;43m\]\
 \[\e[38;2;249;43;43m\]\[\e[48;2;249;249;43m\]\[\e[38;2;43;43;249m\]\A\[\e[48;2;43;43;249m\]\
@@ -1073,12 +1067,10 @@ export COLORTERM=truecolor #Включаем все 16 миллионов цве
 #Создание конфига profile (Настройка Xorg).
 echo -e "\033[36mСоздание конфига profile (Настройка Xorg).\033[0m"
 echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
-export QT_QPA_PLATFORMTHEME=gnome #Изменение внешнего вида приложений использующих qt.
-export QT_STYLE_OVERRIDE=adwaita-dark #Использовать Adwaitа в качестве стиля Qt по умолчанию
+export QT_QPA_PLATFORMTHEME=qgnomeplatform #Изменение внешнего вида приложений использующих qt.
 export XDG_CURRENT_DESKTOP=gtk
 export XCURSOR_THEME=Adwaita
 export XCURSOR_SIZE=24
-export GTK_CSD=0
 export LD_PRELOAD=/usr/lib/libgtk-nocsd.so.0' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
 #
 #Редактирование конфига сервера уведомлений.
@@ -1096,77 +1088,69 @@ sed -i "/\[urgency_critical\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#f92b2
 #Создание аудиоконфига сервера уведомлений.
 echo -e "\033[36mСоздание аудиоконфига сервера уведомлений.\033[0m"
 echo '#!/bin/bash
-if [ -n "$(echo $@ | grep pa-notify)" ]; then
-    canberra-gtk-play -i audio-volume-change;
-    elif [ -n "$(echo $@ | grep nm-no-connection)" ]; then
-        canberra-gtk-play -i network-connectivity-lost;
-    elif [ -n "$(echo $@ | grep nm-device)" ]; then
-        canberra-gtk-play -i network-connectivity-established;
-    elif [ -n "$(echo $@ | grep -i critical)" ]; then
-        canberra-gtk-play -i window-attention;
-    else canberra-gtk-play -i message;
+# Записываем все переданные аргументы в одну строку
+TEXT="$*"
+
+if grep -q "pa-notify" <<< "$TEXT"; then
+    canberra-gtk-play -i audio-volume-change
+elif grep -q "nm-no-connection" <<< "$TEXT"; then
+    canberra-gtk-play -i network-connectivity-lost
+elif grep -q "nm-device" <<< "$TEXT"; then
+    canberra-gtk-play -i network-connectivity-established
+elif grep -q -i "critical" <<< "$TEXT"; then
+    canberra-gtk-play -i window-attention
+else 
+    canberra-gtk-play -i message
 fi' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
 #
 #Создание конфига picom (Автономный композитор для Xorg).
 echo -e "\033[36mСоздание конфига picom (Автономный композитор для Xorg).\033[0m"
-echo -e '# Прозрачность активных окон (0,1–1,0).
-active-opacity = 0.95;
-#
-# Прозрачность неактивных окон (0,1–1,0).
-inactive-opacity = 0.9;
-#
-# Затемнение неактивных окон (0,0–1,0).
-inactive-dim = 0.65;
-#
-# Включить вертикальную синхронизацию (если picom выдает ошибку по vsync, то отключаем заменой true на false).
+echo -e '# Прозрачность окон (1.0 — полностью непрозрачные, используем opacity-rule для исключений)
+active-opacity = 1.0;
+inactive-opacity = 1.0;
+
+# Отключаем сильное затемнение неактивных окон, чтобы текст оставался читаемым
+inactive-dim = 0.0;
+
+# Включить вертикальную синхронизацию против разрывов экрана (tearing)
 vsync = true;
-#
-# Отключить прозрачность и затемнение загаловков окон.
+
+# Настройки фокуса
 mark-ovredir-focused = true;
-#
-#Пусть неактивная непрозрачность, переопределяет значения окон.
 inactive-opacity-override = false;
-#
-wintypes: { # Отключить прозрачность выпадающего меню.
+
+wintypes: { 
             dropdown_menu = { opacity = 1; };
-            # Отключить прозрачность всплывающего меню.
-            popup_menu = { opacity = 1; }; };
-#
+            popup_menu = { opacity = 1; }; 
+          };
+
 # Прозрачность Polybar, dmenu, XTerm и заголовков окон.
 opacity-rule = [ "80:class_g = \047Polybar\047",
                  "90:class_g = \047dmenu\047",
                  "80:class_g = \047XTerm\047",
                  "100:class_g = \047vlc\047",
                  "100:fullscreen" ];
-#
-#Закругленные углы.
+
+# Закругленные углы (задаем фиксированное число 8 пикселей вместо переменной шрифта)
 corner-radius = '"$font"';
 rounded-corners-exclude = [ "window_type = \047dock\047",
                             "window_type = \047popup_menu\047",
                             "window_type = \047dropdown_menu\047",
                             "window_type = \047notification\047" ];
-#
-#Обнаруживает дочерние окна.
+
+# Оптимизация отрисовки и обнаружение окон
 mark-wmwin-focused = true;
-#
-#Обнаруживает окна со скругленными углами и не учитывает их.
 detect-rounded-corners = true;
-#
-#Обнаружение прозрачности в клиентских окнах.
 detect-client-opacity = true;
-#
-#Отменить перенаправление всех окон, если обнаружено полноэкранное непрозрачное окно.
 unredir-if-possible = true;
-#
-#Обнаружение групп окон.
 detect-transient = true;
 detect-client-leader = true;
-#
-#Отключить информацию о повреждениях, каждый раз перерисовывается весь экран, а не его часть.
-use-damage = true;
+
+# Отключаем частичную отрисовку во избежание черных рамок вокруг скругленных углов
+use-damage = false;
 #
 #TechnicalSymbol #Размытие.
-#TechnicalSymbol backend = "glx"
+#TechnicalSymbol backend = "glx";
 #TechnicalSymbol glx-no-stencil = true;
 #TechnicalSymbol glx-no-rebind-pixmap = true;
 #TechnicalSymbol blur:{ method = "dual_kawase";
@@ -1222,9 +1206,9 @@ Xcursor.theme: Adwaita
 !
 !Включаем Ctrl+V,Ctrl+C.
 XTerm*VT100*selectToClipboard: true
-XTerm*VT100*translations: #override \
-    Shift Ctrl <Key>V: insert-selection(CLIPBOARD) \n\
-    Shift Ctrl <Key>C: copy-selection(CLIPBOARD)' | tee /mnt/home/"$username"/.Xresources /mnt/root/.Xresources
+XTerm*VT100*translations: #override \\n\\
+    Ctrl Shift <Key>C: copy-selection(CLIPBOARD) \\n\\
+    Ctrl Shift <Key>V: insert-selection(CLIPBOARD)' | tee /mnt/home/"$username"/.Xresources /mnt/root/.Xresources
 #
 #Создание директории и конфига i3-wm (Тайловый оконный менеджер).
 echo -e "\033[36mСоздание конфига i3-wm (Тайловый оконный менеджер).\033[0m"
@@ -1264,13 +1248,13 @@ bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 #
 # ScrollDown на заголовке закрыть окно.
-bindsym button5 kill
+bindsym --whole-window button5 kill
 # ScrollUP на заголовке развернуть окно во весь экран.
-bindsym button4 fullscreen toggle
+bindsym --whole-window button4 fullscreen toggle
 # Правая кнопка мыши делает окно плавающим.
-bindsym button3 floating toggle
+bindsym --whole-window button3 floating toggle
 # Средняя кнопка мыши сворачивает окно в черновик.
-bindsym button2 move scratchpad
+bindsym --whole-window button2 move scratchpad
 #
 # Определяем имена для рабочих областей по умолчанию.
 set $ws1 "1: 🏠"
@@ -1317,7 +1301,7 @@ bindsym $mod+Shift+r restart
 # Выход из i3 (выходит из сеанса X).
 bindsym $mod+Shift+e exec "i3-nagbar -t warning \\
 -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 \\
--b \047Да, выйти из i3\047 \047canberra-gtk-play -i service-logout; i3-msg exit\047"
+-b \047Да, выйти из i3\047 \047canberra-gtk-play --synchronous -i service-logout; i3-msg exit\047
 #
 # Войти в режим изменения размеров окон.
 bindsym $mod+r mode "resize"
@@ -1331,6 +1315,8 @@ mode "resize" {
         bindsym Right resize grow width 10 px or 5 ppt
         #
         # Выйти из режима изменения размеров окон.
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
         bindsym $mod+r mode "default"
 }
 #
@@ -1382,60 +1368,46 @@ for_window [class="kclock"] floating enable
 #
 ########### Автозапуск программ ###########
 #
-# Приветствие в течении 10 сек (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id notify-send -t 10000 -i user-red-home "☭ Доброго времени суток ☭" \\
-"В меню 🛈 -- Шпаргалка по i3wm.";
-#
-# Сканер уязвимостей (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id bash -c \047sudo rkhunter --propupd; sudo rkhunter --update; \\
-sudo rkhunter -c --sk --rwo; notify-send -u critical "✊ Сканер уязвимостей ✊" \\
-"$(sudo tail -n 17 /var/log/rkhunter.log)"\047
-#
-# Автозапуск conky.
-exec --no-startup-id conky;
-#
-# Автозапуск polybar.
-exec --no-startup-id polybar upbar;
-exec --no-startup-id polybar downbar;
-#
-# Автозапуск picom.
-exec --no-startup-id picom -b;
-#
-# Запуск графического интерфейса системного трея NetworkManager.
-exec --no-startup-id nm-applet;
-#
-# Запуск геолокации.
-exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent;
-#
-# Автозапуск flameshot.
-exec --no-startup-id flameshot;
-#
-# Автозапуск copyq.
-exec --no-startup-id copyq;
-#
-# Автозапуск dolphin.
-exec --no-startup-id dolphin --daemon;
-#
-# Автоматическая разблокировка KWallet.
+# Инициализация системных агентов авторизации (Обязательно для KWallet, Smb4K и сетей)
+exec --no-startup-id /usr/lib/polkit-kde-authentication-agent-1 &
 exec --no-startup-id /usr/lib/pam_kwallet_init;
 #
-# Автозапуск gogglesmm.
-exec --no-startup-id gogglesmm --tray;
+# Автоматический аудит системы при входе в сессию
+exec --no-startup-id xterm -hold -e "sudo rkhunter --propupd && sudo rkhunter --update && sudo rkhunter -c --sk --rwo && notify-send -u critical \047✊ Сканер уязвимостей ✊\047 \"\$(sudo tail -n 17 /var/log/rkhunter.log)\""
 #
-# Автозапуск blueman.
+# Приветствие на 10 секунд
+exec --no-startup-id notify-send -t 10000 -i user-red-home "☭ Доброго времени суток ☭" "В меню 🛈 -- Шпаргалка по i3wm.";
+#
+# Графика и визуальный стиль
+exec --no-startup-id conky;
+exec --no-startup-id polybar upbar;
+exec --no-startup-id polybar downbar;
+exec --no-startup-id picom -b;
+exec --no-startup-id dunst;
+#
+# Сеть, Bluetooth и системный трей
+exec --no-startup-id nm-applet;
 exec --no-startup-id blueman-applet;
+exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent;
+exec --no-startup-id smb4k --minimized;
 #
-# Автозапуск smb4k.
-exec --no-startup-id smb4k;
-#
-# Автозапуск usbguard.
-exec --no-startup-id sudo -E usbguard-qt;
-#
-# Автозапуск xbindkeys.
+# Утилиты и буфер обмена
+exec --no-startup-id flameshot;
+exec --no-startup-id copyq;
 exec --no-startup-id xbindkeys;
 #
-# Автозапуск dunst.
-exec --no-startup-id dunst;
+# Безопасный запуск USBGuard через графический запрос Polkit (вместо зависающего sudo)
+exec --no-startup-id pkexec usbguard-qt &
+#
+# Звуковые уведомления
+exec --no-startup-id pa-notify;
+#
+# Мультимедиа, Календари и Мессенджеры в трей
+exec --no-startup-id gogglesmm --tray;
+exec --no-startup-id birdtray;
+exec --no-startup-id kclockd;
+exec --no-startup-id calindac;
+exec --no-startup-id telegram-desktop -startintray -- %u;
 #
 # Автозапуск neofetch и обновления.
 #TechnicalSymbolexec --no-startup-id bash -c \047sleep 10; \\
@@ -1455,30 +1427,15 @@ exec --no-startup-id dunst;
 #TechnicalSymbol yay -Sc --noconfirm > /dev/pts/$pts; \\
 #TechnicalSymbol sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts\047
 #
-# Автозапуск pa-notify.
-exec --no-startup-id pa-notify;
-#
-# Автозапуск thunderbird.
-exec --no-startup-id birdtray;
-#
-# Автозапуск часов-напоминалки.
-exec --no-startup-id kclockd;
-#
-# Автозапуск календаря.
-exec --no-startup-id calindac;
-#
-# Автозапуск telegram.
-exec --no-startup-id telegram-desktop -startintray -- %u;
-#
 ########### Горячие клавиши запуска программ ###########
 #
 #Восстановление рабочего стола №1.
 bindsym $mod+mod1+1 exec --no-startup-id "i3-msg \047workspace 1: 🏠; \\
 append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; \\
-exec dolphin; exec xed\047"
+exec nemo; exec xed\047"
 exec --no-startup-id "i3-msg \047workspace 1: 🏠; \\
 append_layout ~/.config/i3/workspace_1.json; \\
-exec xterm; exec xterm; exec dolphin; exec xed\047"
+exec xterm; exec xterm; exec nemo; exec xed\047"
 #
 # Используйте mod+enter, чтобы запустить терминал.
 bindsym $mod+Return exec xterm
@@ -1847,63 +1804,59 @@ animation-low-framerate = 200' | tee /mnt/home/"$username"/.config/polybar/confi
 #Создание скрипта который запускает i2p сеть и введет локальную адресную книгу.
 mkdir -p /mnt/home/"$username"/.config/i2p /mnt/root/.config/i2p
 echo '#!/bin/bash
-# Запускаем I2P Daemon в фоновом режиме.
+# Автоматически определяем домашнюю директорию текущего пользователя
+BASE_DIR="$HOME/.config/i2p"
+INDEX_FILE="$BASE_DIR/index.html"
+# Запускаем I2P Daemon в фоновом режиме
 i2pd --daemon
-#
-# Цикл, который будет выполняться, пока не будет успешного ответа от указанного URL.
-while ! curl -s --socks5-hostname 127.0.0.1:4447 http://flibusta.i2p/; do
-    # Отправляем уведомление о том, что I2P туннели настраиваются.
-    notify-send --replace-id=9696 -t 5000 -i network-transmit-receive "Настройка I2P туннелей" "Пожалуйста, подождите, идет настройка соединения..."
-    # Ждем 5 секунд перед следующей попыткой.
+# Цикл ожидания готовности веб-консоли роутера i2pd (вместо вечного ожидания Флибусты)
+while ! curl -sI http://127.0.0 > /dev/null; do
+    notify-send --replace-id=9696 -t 5000 -i network-transmit-receive "Настройка I2P" "Инициализация сети и запуск прокси..."
     sleep 5
 done
-#
-# Уведомление о загрузке списка хостов.
-notify-send --replace-id=9696 -i document-open "Загрузка списка хостов" "Пожалуйста, подождите, идет загрузка данных..."
-# Объявляем массив для адресной книги.
+# Уведомление о загрузке списка хостов
+notify-send --replace-id=9696 -i document-open "Загрузка списка хостов" "Пожалуйста, подождите, идет получение адресов..."
 declare -a addressbook
-#
-# Загружаем список хостов из двух источников и обрабатываем их.
+# Загружаем списки хостов через HTTP-прокси i2pd (порт 4444)
 mapfile -t addressbook < <(
     cat <(curl -s -x http://127.0.0.1:4444 http://identiguy.i2p/hosts.txt) \
-        <(curl -s -x http://127.0.0.1:4444 http://isitup.i2p/hosts.txt) |
-    # Удаляем строки с "=" и комментарии.
-    sed -e "s/=\(.*\)//" -e "/^#/d" | sort -u
+        <(curl -s -x http://127.0.0.1:4444 http://isitup.i2p/hosts.txt) 2>/dev/null |
+    sed -e "s/=\(.*\)//" -e "/^#/d" | sort -u | head -n 40 # Ограничим первыми 40 для высокой скорости работы
 )
-#
-# Уведомление об открытии браузера.
-notify-send --replace-id=9696 -t 5000 -i browser "Открытие браузера" "Запускаем браузер xlinks для доступа к I2P..."
-sleep 50; xlinks -g -socks-proxy 127.0.0.1:4447 ~/.config/i2p/index.html &
-#
-# Уведомление о создании адресной книги I2P.
-notify-send --replace-id=9696 -t 5000 -i document-new "Создание адресной книги I2P" "Обновите страницу браузера с помощью CTRL+R после завершения."
-# Удаляем ненужные строки из index.html.
-sed -i "/<\/ol>\|<\/body>\|<\/html>/d" ~/.config/i2p/index.html
-#
-# Перебираем все адреса в адресной книге.
-for i in "${!addressbook[@]}"; do
-    # Проверяем, есть ли адрес уже в index.html.
-    if ! grep --color=never -q -E "${addressbook[i]}" ~/.config/i2p/index.html || grep --color=never -q -E "http://${addressbook[i]}</a> — </li>" ~/.config/i2p/index.html; then
-        # Если адреса нет, добавляем его в index.html.
-        if curl --max-time 30 -s -x http://127.0.0.1:4444 -H "Range: bytes=0-1000" "http://${addressbook[i]}" |
-        grep --color=never -E "<title>([^<]*)</title>" && ! curl --max-time 30 -s -x http://127.0.0.1:4444 -I "http://${addressbook[i]}" |
-        grep --color=never -E "Server Error"; then
-            echo -e "<li><a href=\"http://${addressbook[i]}\">http://${addressbook[i]}</a> — \
-"$(curl --max-time 100 -s -x http://127.0.0.1:4444 -H "Range: bytes=0-1000" http://"${addressbook[i]}" |
-            grep --color=never -E "<title>([^<]*)</title>" |
-            sed -n "s/.*<title>\(.*\)<\/title>.*/\1/p")"</li>" >> ~/.config/i2p/index.html
-            notify-send --replace-id=9696 -i document-new "${addressbook[i]}" "Добавлено в адресную книгу"
-        else
-            notify-send --replace-id=9696 -i dialog-warning "${addressbook[i]}" "Не удалось получить заголовок"
-        fi
+# Запускаем правильный графический браузер links (-g)
+links -g -socks-proxy 127.0.0.1:4447 "$INDEX_FILE" &
+sleep 2
+notify-send --replace-id=9696 -t 5000 -i document-new "Создание адресной книги I2P" "Начался опрос сайтов. Обновляйте страницу в браузере по CTRL+R."
+# Очищаем закрывающие теги в шаблоне index.html перед наполнением
+sed -i "/<\/ol>\|<\/body>\|<\/html>/d" "$INDEX_FILE"
+# Перебираем адреса
+for host in "${addressbook[@]}"; do
+    # Если хост уже добавлен в файл — пропускаем, чтобы не дублировать
+    if grep -q "$host" "$INDEX_FILE"; then
+        continue
+    fi
+    # Делаем всего ОДИН быстрый запрос (скачиваем только первый килобайт сайта)
+    SITE_DATA=$(curl --max-time 15 -s -x http://127.0.0.1:4444 -H "Range: bytes=0-1000" "http://$host")
+    # Проверяем, что сайт ответил и это не ошибка сервера
+    if [ -n "$SITE_DATA" ] && ! echo "$SITE_DATA" | grep -q "Server Error"; then
+        # Красиво извлекаем текст внутри тегов <title> штатными средствами grep
+        TITLE=$(echo "$SITE_DATA" | grep -oP "(?<=<title>).*?(?=</title>)" | head -n 1)
+        
+        # Если тайтл пустой (такое бывает), подставляем имя хоста в качестве имени
+        if [ -z "$TITLE" ]; then TITLE="I2P Сайт"; fi
+
+        # Записываем строку в html
+        echo "<li><a href=\"http://$host\">http://$host</a> — $TITLE</li>" >> "$INDEX_FILE"
+        notify-send --replace-id=9696 -t 1500 -i document-new "$host" "Добавлено в адресную книгу"
     else
-        # Если адрес не добавляется, выводим сообщение.
-        notify-send --replace-id=9696 -i dialog-information "${addressbook[i]}" "Уже есть в адресной книге"
+        notify-send --replace-id=9696 -t 1000 -i dialog-warning "$host" "Офлайн или ошибка"
     fi
 done
-# Добавляем закрывающие теги в index.html.
-echo -e "</ol>\n</body>\n</html>" >> ~/.config/i2p/index.html' | tee /mnt/home/"$username"/.config/i2p/index_i2p.sh /mnt/root/.config/i2p/index_i2p.sh
-echo -e "<html>\n<head>\n<title>Index I2P</title>\n</head>\n<body>\n<ol>\n</ol>\n</body>\n</html>" | tee /mnt/home/"$username"/.config/i2p/index.html /mnt/root/.config/i2p/index.html
+# Аккуратно закрываем HTML теги в конце работы
+echo -e "</ol>\n</body>\n</html>" >> "$INDEX_FILE"
+notify-send --replace-id=9696 -t 5000 -i dialog-ok "I2P Адресная книга" "Опрос сайтов успешно завершен!"' | tee /mnt/home/"$username"/.config/i2p/index_i2p.sh /mnt/root/.config/i2p/index_i2p.sh
+# Создание начального шаблона index.html
+echo -e "<html>\n<head>\n<title>Index I2P</title>\n</head>\n<body>\n<h1>Локальная адресная книга I2P</h1>\n<ol>\n</ol>\n</body>\n</html>" | tee /mnt/home/"$username"/.config/i2p/index.html /mnt/root/.config/i2p/index.html
 #
 #Создание конфига redshift (Регулирует цветовую температуру вашего экрана).
 echo -e "\033[36mСоздание конфига redshift (Регулирует цветовую температуру вашего экрана).\033[0m"
@@ -1920,32 +1873,11 @@ echo 'polkit.addRule(function(action, subject) {
     }
 });' > /mnt/etc/polkit-1/rules.d/49-nopasswd_global.rules
 #
-#Настройка polkit (Фреймворк для управления общесистемными привилегиями) для блютуз.
-echo -e "\033[36mНастройка polkit (Фреймворк для управления общесистемными привилегиями) для блютуз.\033[0m"
-echo 'polkit.addRule(function(action, subject) {
-    if ((action.id == "org.blueman.network.setup" ||
-         action.id == "org.blueman.dhcp.client" ||
-         action.id == "org.blueman.rfkill.setstate" ||
-         action.id == "org.blueman.pppd.pppconnect") &&
-        subject.isInGroup("wheel")) {
 
-        return polkit.Result.YES;
-    }
-});' > /mnt/etc/polkit-1/rules.d/50-blueman.rules
-#
-#Настройка polkit (Фреймворк для управления общесистемными привилегиями) для принтеров.
-echo -e "\033[36mНастройка polkit (Фреймворк для управления общесистемными привилегиями) для принтеров.\033[0m"
-echo 'polkit.addRule(function(action, subject) {
-    if (action.id == "org.opensuse.cupspkhelper.mechanism.all-edit" &&
-        subject.isInGroup("wheel")){
-        return polkit.Result.YES;
-    }
-});' > /mnt/etc/polkit-1/rules.d/51-allow-passwordless-printer-admin.rules
-#
 #Настройка pam_kwallet.
 echo -e "\033[36mНастройка pam_kwallet.\033[0m"
-echo 'auth optional pam_kwallet5.so
-session optional pam_kwallet5.so auto_start' >> /mnt/etc/pam.d/xdm
+echo 'auth optional pam_kwallet6.so
+session optional pam_kwallet6.so auto_start' >> /mnt/etc/pam.d/xdm
 #
 #Создание конфига рабочего стола №1.
 echo -e "\033[36mСоздание конфига рабочего стола №1.\033[0m"
@@ -1957,7 +1889,7 @@ echo '{
     "swallows": [
        { "class": "^Xed$" }
     ]
-}
+},
 {
     "border": "normal",
     "layout": "splitv",
@@ -1970,7 +1902,7 @@ echo '{
             "floating": "auto_off",
             "percent": 0.6,
             "swallows": [
-               { "class": "^dolphin$" }
+               { "class": "^nemo$" }
             ]
         },
         {
@@ -2019,7 +1951,7 @@ Win+Shift+Q -- Закрыть окно в фокусе.
 Print Screen -- Снимок экрана.
 #
 🌐 -- Запустить firefox.
-🗂 -- Запустить Dolphin.
+🗂 -- Запустить Nemo.
 🗋 -- Запустить office.
 📃 -- Запустить блокнота.
 🖩 -- Запустить калькулятор.
@@ -2033,7 +1965,7 @@ I2P -- Запуск I2Pd (ПКМ открытие браузера).
 #
 ScrollUp на заголовке -- Развернуть окно во весь экран.
 ScrollDown на заголовке -- Закрывает окно.
-ПКМ на заголовке -- Делает окно плавающим.
+ПКМ на заголовке -- Переключение плавающего режима (Вкл/Выкл).
 СКМ на заголовке -- Сворачивает окно в черновик.
 #
 Win+Left -- Фокус на левое окно.
@@ -2049,7 +1981,9 @@ Win+Shift+Right -- Переместить окно вправо.
 Win+H -- Следующее открытое окно разделит экран по горизонтали.
 Win+V -- Следующее открытое окно разделит экран по вертикали.
 Win+F -- Развернуть окно во весь экран.
-Win+S Win+W Win+E -- Делаем из окон вкладки.
+Win+S -- Собрать окна в вертикальный стек.
+Win+W -- Сделать из окон вкладки (как в браузере).
+Win+E -- Переключить направление разделения окон.
 #
 Win+1..0 -- Переключение между рабочими столами.
 Win+Shift+1..0 -- Переместить сфокусированное окно на заданный рабочий стол.
@@ -2066,7 +2000,7 @@ Right -- Сдвинуть границу вправо.
 Win+Shift+Minus -- Сделать текущее окно черновиком/блокнотом.
 Win+Minus -- Показать первое окно черновика/блокнота.
 #
-Win+Alt-left+1 -- Восстановление рабочего стола №1.' > /mnt/help.txt
+Win+Alt+1 -- Восстановление рабочего стола №1.' > /mnt/help.txt
 #
 #Создание директории и конфига gtk (Внешний вид gtk программ).
 echo -e "\033[36mСоздание конфига gtk (Внешний вид gtk программ).\033[0m"
@@ -2074,14 +2008,14 @@ mkdir -p /mnt/etc/{gtk-3.0,gtk-4.0}
 echo '[Settings]
 gtk-application-prefer-dark-theme=true
 gtk-cursor-theme-name=Adwaita
-gtk-font-name=Fantasque Sans Mono Bold Italic '"$font"'
+gtk-font-name=Fantasque Sans Mono '"$font"'
 gtk-icon-theme-name=Papirus-Dark
 gtk-theme-name=Adwaita-dark
 gtk-decoration-layout=menu:
 gtk-overlay-scrolling=false' | tee /mnt/etc/gtk-3.0/settings.ini /mnt/etc/gtk-4.0/settings.ini
-echo 'gtk-application-prefer-dark-theme="true"
+echo 'gtk-application-prefer-dark-theme=true
 gtk-cursor-theme-name="Adwaita"
-gtk-font-name="Fantasque Sans Mono Bold Italic '"$font"'"
+gtk-font-name="Fantasque Sans Mono '"$font"'"
 gtk-icon-theme-name="Papirus-Dark"
 gtk-theme-name="Adwaita-dark"
 gtk-decoration-layout=menu:' > /mnt/usr/share/gtk-2.0/gtkrc

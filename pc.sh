@@ -1433,7 +1433,7 @@ exec --no-startup-id gogglesmm --tray;
 exec --no-startup-id blueman-applet;
 #
 # Автозапуск smb4k.
-exec --no-startup-id smb4k;
+exec --no-startup-id smb4k --minimized;
 #
 # Автозапуск usbguard.
 exec --no-startup-id sudo -E usbguard-qt;
