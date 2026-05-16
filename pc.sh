@@ -1085,7 +1085,7 @@ export XDG_CURRENT_DESKTOP=gtk
 export XCURSOR_THEME=Adwaita
 export XCURSOR_SIZE=24
 export GTK_CSD=0
-export LD_PRELOAD=/path/to/libgtk-nocsd.so' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
+export LD_PRELOAD=/usr/lib/libgtk-nocsd.so' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
 #
 #Редактирование конфига сервера уведомлений.
 echo -e "\033[36mРедактирование конфига сервера уведомлений.\033[0m"

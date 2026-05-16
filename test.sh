@@ -1081,7 +1081,7 @@ export QT_QPA_PLATFORMTHEME=qt6ct #Изменение внешнего вида 
 export XDG_CURRENT_DESKTOP=gtk
 export XCURSOR_THEME=Adwaita
 export XCURSOR_SIZE=24
-export LD_PRELOAD=/path/to/libgtk-nocsd.so' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
+export LD_PRELOAD=/usr/lib/libgtk-nocsd.so' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
 #
 #Редактирование конфига сервера уведомлений.
 echo -e "\033[36mРедактирование конфига сервера уведомлений.\033[0m"
@@ -1216,9 +1216,9 @@ Xcursor.theme: Adwaita
 !
 !Включаем Ctrl+V,Ctrl+C.
 XTerm*VT100*selectToClipboard: true
-XTerm*VT100*translations: #override \\n\\
-    Ctrl Shift <Key>C: copy-selection(CLIPBOARD) \\n\\
-    Ctrl Shift <Key>V: insert-selection(CLIPBOARD)' | tee /mnt/home/"$username"/.Xresources /mnt/root/.Xresources
+XTerm*VT100*translations: #override \
+    Shift Ctrl <Key>V: insert-selection(CLIPBOARD) \n\
+    Shift Ctrl <Key>C: copy-selection(CLIPBOARD)' | tee /mnt/home/"$username"/.Xresources /mnt/root/.Xresources
 #
 #Создание директории и конфига i3-wm (Тайловый оконный менеджер).
 echo -e "\033[36mСоздание конфига i3-wm (Тайловый оконный менеджер).\033[0m"
@@ -1899,7 +1899,7 @@ echo '{
     "swallows": [
        { "class": "^Xed$" }
     ]
-},
+}
 {
     "border": "normal",
     "layout": "splitv",
