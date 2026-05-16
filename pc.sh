@@ -885,10 +885,23 @@ Option "XkbLayout" "us,ru"
 Option "XkbOptions" "grp:alt_shift_toggle,terminate:ctrl_alt_bksp"
 EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
 #
+# Создаем папки конфигурации для утилит настройки Qt
+mkdir -p /mnt/home/"$username"/.config/{qt5ct,qt6ct}
+mkdir -p /mnt/root/.config/{qt5ct,qt6ct}
+# Заставляем программы на Qt5 и Qt6 использовать темную тему
+echo '[Appearance]
+custom_palette=true
+color_scheme_path=/usr/share/qt6ct/colors/darker.conf
+style=Windows
+standard_dialogs=gtk3
+icon_theme=Papirus-Dark' | tee /mnt/home/"$username"/.config/qt5ct/qt5ct.conf /mnt/home/"$username"/.config/qt6ct/qt6ct.conf /mnt/root/.config/qt5ct/qt5ct.conf /mnt/root/.config/qt6ct/qt6ct.conf
+#
 #Создание общего конфига сканера.
 echo -e "\033[36mСоздание общего конфига сканера.\033[0m"
 mkdir -p /mnt/etc/sane.d
 echo -e "localhost\n192.168.0.0/24" >> /mnt/etc/sane.d/net.conf
+echo -e "\033[36mДобавление пользователя в группу scanner...\033[0m"
+arch-chroot /mnt gpasswd scanner -a "$username"
 #
 #Формируется конфиг conky (Системный монитор).
 #Температура ядер процессора.
@@ -1079,12 +1092,10 @@ export COLORTERM=truecolor #Включаем все 16 миллионов цве
 #Создание конфига profile (Настройка Xorg).
 echo -e "\033[36mСоздание конфига profile (Настройка Xorg).\033[0m"
 echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
-export QT_QPA_PLATFORMTHEME=gnome #Изменение внешнего вида приложений использующих qt.
-export QT_STYLE_OVERRIDE=adwaita-dark #Использовать Adwaitа в качестве стиля Qt по умолчанию
+export QT_QPA_PLATFORMTHEME=qt6ct #Изменение внешнего вида приложений использующих qt.
 export XDG_CURRENT_DESKTOP=gtk
 export XCURSOR_THEME=Adwaita
 export XCURSOR_SIZE=24
-export GTK_CSD=0
 export LD_PRELOAD=/usr/lib/libgtk-nocsd.so' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
 #
 #Редактирование конфига сервера уведомлений.
@@ -1102,17 +1113,20 @@ sed -i "/\[urgency_critical\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#f92b2
 #Создание аудиоконфига сервера уведомлений.
 echo -e "\033[36mСоздание аудиоконфига сервера уведомлений.\033[0m"
 echo '#!/bin/bash
-if [ -n "$(echo $@ | grep pa-notify)" ]; then
-    canberra-gtk-play -i audio-volume-change;
-    elif [ -n "$(echo $@ | grep nm-no-connection)" ]; then
-        canberra-gtk-play -i network-connectivity-lost;
-    elif [ -n "$(echo $@ | grep nm-device)" ]; then
-        canberra-gtk-play -i network-connectivity-established;
-    elif [ -n "$(echo $@ | grep -i critical)" ]; then
-        canberra-gtk-play -i window-attention;
-    else canberra-gtk-play -i message;
-fi
-echo "$(date "+%Y-%m-%d %H:%M:%S") - $@" >> ~/noti.txt;' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
+# Записываем все переданные аргументы в одну строку
+TEXT="$*"
+
+if grep -q "pa-notify" <<< "$TEXT"; then
+    canberra-gtk-play -i audio-volume-change
+elif grep -q "nm-no-connection" <<< "$TEXT"; then
+    canberra-gtk-play -i network-connectivity-lost
+elif grep -q "nm-device" <<< "$TEXT"; then
+    canberra-gtk-play -i network-connectivity-established
+elif grep -q -i "critical" <<< "$TEXT"; then
+    canberra-gtk-play -i window-attention
+else 
+    canberra-gtk-play -i message
+fi' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
 #
 #Создание конфига picom (Автономный композитор для Xorg).
 echo -e "\033[36mСоздание конфига picom (Автономный композитор для Xorg).\033[0m"

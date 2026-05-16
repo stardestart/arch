@@ -871,8 +871,9 @@ sleep 300; \
 done &
 #
 #Автозапуск заставки.
-xautolock -time 10 -locker "xlock -mode matrix -delay 10000 -echokeys -echokey *" -detectsleep &
-xautolock -time 30 -locker "systemctl hibernate" -detectsleep &
+xautolock -time 50 -locker "systemctl hibernate" \
+-notify 1800 -notifier \
+"xlock -mode matrix -delay 10000 -echokeys -echokey '*'" -detectsleep -noclose &
 #
 #Воспроизведения звука входа в систему.
 canberra-gtk-play -i service-login &
@@ -895,8 +896,9 @@ mkdir -p /mnt/root/.config/{qt5ct,qt6ct}
 # Заставляем программы на Qt5 и Qt6 использовать темную тему
 echo '[Appearance]
 custom_palette=true
-color_scheme_path=/usr/share/color-schemes/darker.conf
-style=windows
+color_scheme_path=/usr/share/qt6ct/colors/darker.conf
+style=Windows
+standard_dialogs=gtk3
 icon_theme=Papirus-Dark' | tee /mnt/home/"$username"/.config/qt5ct/qt5ct.conf /mnt/home/"$username"/.config/qt6ct/qt6ct.conf /mnt/root/.config/qt5ct/qt5ct.conf /mnt/root/.config/qt6ct/qt6ct.conf
 #
 #Создание общего конфига сканера.
@@ -904,7 +906,7 @@ echo -e "\033[36mСоздание общего конфига сканера.\03
 mkdir -p /mnt/etc/sane.d
 echo -e "localhost\n192.168.0.0/24" >> /mnt/etc/sane.d/net.conf
 echo -e "\033[36mДобавление пользователя в группу scanner...\033[0m"
-arch-chroot /mnt usermod -aG scanner "$username"
+arch-chroot /mnt gpasswd scanner -a "$username"
 #
 #Формируется конфиг conky (Системный монитор).
 #Температура ядер процессора.
