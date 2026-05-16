@@ -1248,13 +1248,13 @@ bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 #
 # ScrollDown на заголовке закрыть окно.
-bindsym --whole-window button5 kill
+bindsym button5 kill
 # ScrollUP на заголовке развернуть окно во весь экран.
-bindsym --whole-window button4 fullscreen toggle
+bindsym button4 fullscreen toggle
 # Правая кнопка мыши делает окно плавающим.
-bindsym --whole-window button3 floating toggle
+bindsym button3 floating toggle
 # Средняя кнопка мыши сворачивает окно в черновик.
-bindsym --whole-window button2 move scratchpad
+bindsym button2 move scratchpad
 #
 # Определяем имена для рабочих областей по умолчанию.
 set $ws1 "1: 🏠"
