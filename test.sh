@@ -184,7 +184,6 @@ ffmpegthumbnailer \
 #kdesdk-thumbnailers \
 #ffmpegthumbs \
 #kdenetwork-filesharing \
-
 #nemo
 nemo \ 
 cinnamon-translations \ 
@@ -194,7 +193,6 @@ gvfs \
 gvfs-mtp \ 
 gvfs-afc \ 
 #
-
 smb4k \
 kclock \
 calindori \
@@ -756,8 +754,7 @@ net.ipv4.tcp_timestamps=1
 net.ipv4.tcp_tw_reuse=1
 vm.dirty_ratio=10
 vm.dirty_background_ratio=5
-vm.vfs_cache_pressure=50
-" > /mnt/etc/sysctl.d/99-sysctl.conf
+vm.vfs_cache_pressure=50" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка видеодрайвера.
 echo -e "\033[36mУстановка видеодрайвера.\033[0m"
@@ -867,10 +864,10 @@ fi
 xhost +si:localuser:root
 #
 #Автозапуск обоев рабочего стола.
-while true; 
-do 
-feh --bg-fill --randomize --no-fehbg /usr/share/backgrounds/* /usr/share/backgrounds/; 
-sleep 300; 
+while true; \
+do \
+feh --bg-fill --randomize --no-fehbg /usr/share/backgrounds/* /usr/share/backgrounds/; \
+sleep 300; \
 done &
 #
 #Автозапуск заставки.
@@ -895,11 +892,11 @@ EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
 # Создаем папки конфигурации для утилит настройки Qt
 mkdir -p /mnt/home/"$username"/.config/{qt5ct,qt6ct}
 mkdir -p /mnt/root/.config/{qt5ct,qt6ct}
-# Заставляем программы на Qt5 и Qt6 использовать тему BreezeDark (цвета) и Adwaita (стиль кнопок)
+# Заставляем программы на Qt5 и Qt6 использовать темную тему
 echo '[Appearance]
 custom_palette=true
-color_scheme_path=/usr/share/color-schemes/BreezeDark.colors
-style=Adwaita-Dark
+color_scheme_path=/usr/share/color-schemes/darker.conf
+style=windows
 icon_theme=Papirus-Dark' | tee /mnt/home/"$username"/.config/qt5ct/qt5ct.conf /mnt/home/"$username"/.config/qt6ct/qt6ct.conf /mnt/root/.config/qt5ct/qt5ct.conf /mnt/root/.config/qt6ct/qt6ct.conf
 #
 #Создание общего конфига сканера.
@@ -1084,7 +1081,7 @@ export QT_QPA_PLATFORMTHEME=qt6ct #Изменение внешнего вида 
 export XDG_CURRENT_DESKTOP=gtk
 export XCURSOR_THEME=Adwaita
 export XCURSOR_SIZE=24
-export LD_PRELOAD=/usr/lib/libgtk-nocsd.so.0' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
+export LD_PRELOAD=/path/to/libgtk-nocsd.so' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
 #
 #Редактирование конфига сервера уведомлений.
 echo -e "\033[36mРедактирование конфига сервера уведомлений.\033[0m"
