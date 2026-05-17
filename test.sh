@@ -1088,7 +1088,7 @@ echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
 export KDE_SESSION_VERSION=6
 export QT_QPA_PLATFORMTHEME=qt6ct #Изменение внешнего вида приложений использующих qt.
 export QT_AUTO_SCREEN_SCALE_FACTOR=1 #Автоматическое масштабирование интерфейса для Qt
-export XDG_CURRENT_DESKTOP=gtk
+export XDG_CURRENT_DESKTOP=i3
 export XCURSOR_THEME=Adwaita
 export XCURSOR_SIZE=24
 export LD_PRELOAD=/usr/lib/libgtk-nocsd.so' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
