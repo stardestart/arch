@@ -1034,32 +1034,12 @@ echo -e "[preferred]\ndefault=gtk" > /mnt/usr/share/xdg-desktop-portal/portals.c
 #Создание конфига bashrc (Настройка Xterm).
 echo -e "\033[36mСоздание конфига bashrc (Настройка Xterm).\033[0m"
 echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
-alias grep="grep --color=always" #Раскрашиваем grep.
-alias ip="ip --color=always" #Раскрашиваем ip.
-alias diff="diff --color=always" #Раскрашиваем diff.
-alias ls="ls --color" #Раскрашиваем ls.
-alias df="grc --colour=on df" #Раскрашиваем df.
-alias zgrep="grc --colour=on zgrep" #Раскрашиваем zgrep.
-alias cvs="grc --colour=on cvs" #Раскрашиваем cvs.
-alias esperanto="grc --colour=on esperanto" #Раскрашиваем esperanto.
-alias irclog="grc --colour=on irclog" #Раскрашиваем irclog.
-alias ldap="grc --colour=on ldap" #Раскрашиваем ldap.
-alias log="grc --colour=on log" #Раскрашиваем log.
-alias netstat="grc --colour=on netstat" #Раскрашиваем netstat.
-alias proftpd="grc --colour=on proftpd" #Раскрашиваем proftpd.
-alias traceroute="grc --colour=on traceroute" #Раскрашиваем traceroute.
-alias wdiff="grc --colour=on wdiff" #Раскрашиваем wdiff.
-alias dig="grc --colour=on dig" #Раскрашиваем dig.
-alias cat="grc --colour=on cat" #Раскрашиваем cat.
-alias zcat="grc --colour=on zcat" #Раскрашиваем zcat.
-alias make="grc --colour=on make" #Раскрашиваем make.
-alias g++="grc --colour=on g++" #Раскрашиваем g++.
-alias head="grc --colour=on head" #Раскрашиваем head.
-alias mtr="grc --colour=on mtr" #Раскрашиваем mtr.
-alias ping="grc --colour=on ping" #Раскрашиваем ping.
-alias gcc="grc --colour=on gcc" #Раскрашиваем gcc.
-alias mount="grc --colour=on mount" #Раскрашиваем mount.
-alias ps="grc --colour=on ps" #Раскрашиваем ps.
+alias grep="grep --color=auto" #Раскрашиваем grep.
+alias diff="diff --color=auto" #Раскрашиваем diff.
+alias ls="ls --color=auto" #Раскрашиваем ls.
+alias df="grc df -h" #Удобный человекочитаемый вид для дисков.
+export GRC_ALIASES=true
+[[ -s "/etc/profile.d/grc.sh" ]] && source /etc/profile.d/grc.sh
 #Изменяем вид приглашения командной строки.
 PS1="\[\e[48;2;249;43;43m\]\[\e[38;2;43;249;43m\] \$\[\e[48;2;249;249;43m\]\
 \[\e[38;2;249;43;43m\]\[\e[48;2;249;249;43m\]\[\e[38;2;43;43;249m\]\A\[\e[48;2;43;43;249m\]\
@@ -1093,6 +1073,7 @@ export COLORTERM=truecolor #Включаем все 16 миллионов цве
 echo -e "\033[36mСоздание конфига profile (Настройка Xorg).\033[0m"
 echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
 export QT_QPA_PLATFORMTHEME=qt6ct #Изменение внешнего вида приложений использующих qt.
+export QT_AUTO_SCREEN_SCALE_FACTOR=1 #Автоматическое масштабирование интерфейса для Qt
 export XDG_CURRENT_DESKTOP=gtk
 export XCURSOR_THEME=Adwaita
 export XCURSOR_SIZE=24
@@ -1166,8 +1147,8 @@ rounded-corners-exclude = [ "window_type = \047dock\047",
                             "window_type = \047popup_menu\047",
                             "window_type = \047dropdown_menu\047",
                             "window_type = \047notification\047" ];
-#
-#Обнаруживает дочерние окна.
+
+#Оптимизация отрисовки и обнаружение окон
 mark-wmwin-focused = true;
 #
 #Обнаруживает окна со скругленными углами и не учитывает их.
@@ -1338,7 +1319,7 @@ bindsym $mod+Shift+r restart
 # Выход из i3 (выходит из сеанса X).
 bindsym $mod+Shift+e exec "i3-nagbar -t warning \\
 -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 \\
--b \047Да, выйти из i3\047 \047canberra-gtk-play -i service-logout; i3-msg exit\047"
+-b \047Да, выйти из i3\047 \047canberra-gtk-play -i service-logout && i3-msg exit\047
 #
 # Войти в режим изменения размеров окон.
 bindsym $mod+r mode "resize"
@@ -1352,6 +1333,8 @@ mode "resize" {
         bindsym Right resize grow width 10 px or 5 ppt
         #
         # Выйти из режима изменения размеров окон.
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
         bindsym $mod+r mode "default"
 }
 #
@@ -1403,7 +1386,13 @@ for_window [class="kclock"] floating enable
 #
 ########### Автозапуск программ ###########
 #
-# Приветствие в течении 10 сек (--no-startup-id убирает курсор загрузки).
+# Графическое окошко с запросом пароля
+exec --no-startup-id /usr/lib/polkit-kde-authentication-agent-1 &
+#
+# Автоматическая разблокировка KWallet.
+exec --no-startup-id /usr/lib/pam_kwallet_init;
+#
+# Приветствие на 10 секунд (--no-startup-id убирает курсор загрузки).
 exec --no-startup-id notify-send -t 10000 -i user-red-home "☭ Доброго времени суток ☭" \\
 "В меню 🛈 -- Шпаргалка по i3wm.";
 #
@@ -1412,51 +1401,67 @@ exec --no-startup-id bash -c \047sudo rkhunter --propupd; sudo rkhunter --update
 sudo rkhunter -c --sk --rwo; notify-send -u critical "✊ Сканер уязвимостей ✊" \\
 "$(sudo tail -n 17 /var/log/rkhunter.log)"\047
 #
+# Графика и визуальный стиль
 # Автозапуск conky.
 exec --no-startup-id conky;
-#
 # Автозапуск polybar.
 exec --no-startup-id polybar upbar;
 exec --no-startup-id polybar downbar;
-#
 # Автозапуск picom.
 exec --no-startup-id picom -b;
+# Автозапуск dunst.
+exec --no-startup-id dunst;
 #
+# Сеть, Bluetooth и системный трей
 # Запуск графического интерфейса системного трея NetworkManager.
 exec --no-startup-id nm-applet;
-#
+# Автозапуск blueman.
+exec --no-startup-id blueman-applet;
 # Запуск геолокации.
 exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent;
+# Автозапуск smb4k.
+exec --no-startup-id smb4k --minimized;
 #
+# Утилиты и буфер обмена
 # Автозапуск flameshot.
 exec --no-startup-id flameshot;
-#
 # Автозапуск copyq.
 exec --no-startup-id copyq;
+# Автозапуск xbindkeys.
+exec --no-startup-id xbindkeys;
+#
+# Автозапуск USBGuard.
+exec --no-startup-id sudo -E usbguard-qt;
 #
 # Автозапуск dolphin.
 exec --no-startup-id dolphin --daemon;
 #
-# Автоматическая разблокировка KWallet.
-exec --no-startup-id /usr/lib/pam_kwallet_init;
+# Звуковые уведомления
+# Автозапуск pa-notify.
+exec --no-startup-id pa-notify;
 #
+# Мультимедиа, Календари и Мессенджеры в трей
 # Автозапуск gogglesmm.
 exec --no-startup-id gogglesmm --tray;
+# Автозапуск thunderbird.
+exec --no-startup-id birdtray;
+# Автозапуск часов-напоминалки.
+exec --no-startup-id kclockd;
+# Автозапуск календаря.
+exec --no-startup-id calindac;
+# Автозапуск telegram.
+exec --no-startup-id telegram-desktop -startintray -- %u;
+# Автозапуск numlockx.
+exec --no-startup-id numlockx;
 #
-# Автозапуск blueman.
-exec --no-startup-id blueman-applet;
+# Автозапуск steam.
+exec --no-startup-id gamemoderun steam -silent %U;
 #
-# Автозапуск smb4k.
-exec --no-startup-id smb4k --minimized;
+# Автозапуск transmission.
+exec --no-startup-id transmission-qt -m;
 #
-# Автозапуск usbguard.
-exec --no-startup-id sudo -E usbguard-qt;
-#
-# Автозапуск xbindkeys.
-exec --no-startup-id xbindkeys;
-#
-# Автозапуск dunst.
-exec --no-startup-id dunst;
+# Автозапуск obs.
+exec --no-startup-id obs;
 #
 # Автозапуск neofetch и обновления.
 #TechnicalSymbolexec --no-startup-id bash -c \047sleep 10; \\
@@ -1475,33 +1480,6 @@ exec --no-startup-id dunst;
 #TechnicalSymbol sudo pacman -Sc --noconfirm > /dev/pts/$pts; \\
 #TechnicalSymbol yay -Sc --noconfirm > /dev/pts/$pts; \\
 #TechnicalSymbol sudo pacman -Rsn $(pacman -Qdtq) --noconfirm > /dev/pts/$pts\047
-#
-# Автозапуск pa-notify.
-exec --no-startup-id pa-notify;
-#
-# Автозапуск thunderbird.
-exec --no-startup-id birdtray;
-#
-# Автозапуск часов-напоминалки.
-exec --no-startup-id kclockd;
-#
-# Автозапуск календаря.
-exec --no-startup-id calindac;
-#
-# Автозапуск numlockx.
-exec --no-startup-id numlockx;
-#
-# Автозапуск steam.
-exec --no-startup-id gamemoderun steam -silent %U;
-#
-# Автозапуск telegram.
-exec --no-startup-id telegram-desktop -startintray -- %u;
-#
-# Автозапуск transmission.
-exec --no-startup-id transmission-qt -m;
-#
-# Автозапуск obs.
-exec --no-startup-id obs;
 #
 ########### Горячие клавиши запуска программ ###########
 #

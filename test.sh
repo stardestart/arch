@@ -1040,13 +1040,11 @@ echo -e "[preferred]\ndefault=gtk" > /mnt/usr/share/xdg-desktop-portal/portals.c
 echo -e "\033[36mСоздание конфига bashrc (Настройка Xterm).\033[0m"
 echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
 alias grep="grep --color=auto" #Раскрашиваем grep.
-alias ip="ip --color=auto" #Раскрашиваем ip.
 alias diff="diff --color=auto" #Раскрашиваем diff.
 alias ls="ls --color=auto" #Раскрашиваем ls.
-alias df="df -h" #Удобный человекочитаемый вид для дисков.
-if [ -f /etc/profile.d/grc.sh ]; then
-    source /etc/profile.d/grc.sh
-fi
+alias df="grc df -h" #Удобный человекочитаемый вид для дисков.
+export GRC_ALIASES=true
+[[ -s "/etc/profile.d/grc.sh" ]] && source /etc/profile.d/grc.sh
 #Изменяем вид приглашения командной строки.
 PS1="\[\e[48;2;249;43;43m\]\[\e[38;2;43;249;43m\] \$\[\e[48;2;249;249;43m\]\
 \[\e[38;2;249;43;43m\]\[\e[48;2;249;249;43m\]\[\e[38;2;43;43;249m\]\A\[\e[48;2;43;43;249m\]\
@@ -1076,10 +1074,20 @@ PS1="\[\e[48;2;249;43;43m\]\[\e[38;2;43;249;43m\] \$\[\e[48;2;249;249;43m\]\
 export HISTCONTROL="ignoreboth" #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
 export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' | tee /mnt/home/"$username"/.bashrc /mnt/root/.bashrc
 #
+echo '[KDE]
+WidgetStyle=Fusion
+[General]
+ColorScheme=BreezeDark
+accentColor=118,118,118
+[Icons]
+Theme=Papirus-Dark' | tee /mnt/home/"$username"/.config/kdeglobals /mnt/root/.config/kdeglobals
+#
 #Создание конфига profile (Настройка Xorg).
 echo -e "\033[36mСоздание конфига profile (Настройка Xorg).\033[0m"
 echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
+export KDE_SESSION_VERSION=6
 export QT_QPA_PLATFORMTHEME=qt6ct #Изменение внешнего вида приложений использующих qt.
+export QT_AUTO_SCREEN_SCALE_FACTOR=1 #Автоматическое масштабирование интерфейса для Qt
 export XDG_CURRENT_DESKTOP=gtk
 export XCURSOR_THEME=Adwaita
 export XCURSOR_SIZE=24
@@ -1142,19 +1150,27 @@ opacity-rule = [ "80:class_g = \047Polybar\047",
                  "80:class_g = \047XTerm\047",
                  "100:class_g = \047vlc\047",
                  "100:fullscreen" ];
-
-# Закругленные углы (задаем фиксированное число 8 пикселей вместо переменной шрифта)
+#
+#Закругленные углы.
 corner-radius = '"$font"';
 rounded-corners-exclude = [ "window_type = \047dock\047",
                             "window_type = \047popup_menu\047",
                             "window_type = \047dropdown_menu\047",
                             "window_type = \047notification\047" ];
 
-# Оптимизация отрисовки и обнаружение окон
+#Оптимизация отрисовки и обнаружение окон
 mark-wmwin-focused = true;
+#
+#Обнаруживает окна со скругленными углами и не учитывает их.
 detect-rounded-corners = true;
+#
+#Обнаружение прозрачности в клиентских окнах.
 detect-client-opacity = true;
+#
+#Отменить перенаправление всех окон, если обнаружено полноэкранное непрозрачное окно.
 unredir-if-possible = true;
+#
+#Обнаружение групп окон.
 detect-transient = true;
 detect-client-leader = true;
 
@@ -1313,7 +1329,7 @@ bindsym $mod+Shift+r restart
 # Выход из i3 (выходит из сеанса X).
 bindsym $mod+Shift+e exec "i3-nagbar -t warning \\
 -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 \\
--b \047Да, выйти из i3\047 \047canberra-gtk-play --synchronous -i service-logout; i3-msg exit\047
+-b \047Да, выйти из i3\047 \047canberra-gtk-play -i service-logout && i3-msg exit\047
 #
 # Войти в режим изменения размеров окон.
 bindsym $mod+r mode "resize"
@@ -1380,45 +1396,67 @@ for_window [class="kclock"] floating enable
 #
 ########### Автозапуск программ ###########
 #
-# Инициализация системных агентов авторизации (Обязательно для KWallet, Smb4K и сетей)
+# Графическое окошко с запросом пароля
 exec --no-startup-id /usr/lib/polkit-kde-authentication-agent-1 &
+#
+# Автоматическая разблокировка KWallet.
 exec --no-startup-id /usr/lib/pam_kwallet_init;
 #
-# Автоматический аудит системы при входе в сессию
-exec --no-startup-id xterm -hold -e "sudo rkhunter --propupd && sudo rkhunter --update && sudo rkhunter -c --sk --rwo && notify-send -u critical \047✊ Сканер уязвимостей ✊\047 \"\$(sudo tail -n 17 /var/log/rkhunter.log)\""
+# Приветствие на 10 секунд (--no-startup-id убирает курсор загрузки).
+exec --no-startup-id notify-send -t 10000 -i user-red-home "☭ Доброго времени суток ☭" \\
+"В меню 🛈 -- Шпаргалка по i3wm.";
 #
-# Приветствие на 10 секунд
-exec --no-startup-id notify-send -t 10000 -i user-red-home "☭ Доброго времени суток ☭" "В меню 🛈 -- Шпаргалка по i3wm.";
+# Сканер уязвимостей (--no-startup-id убирает курсор загрузки).
+exec --no-startup-id bash -c \047sudo rkhunter --propupd; sudo rkhunter --update; \\
+sudo rkhunter -c --sk --rwo; notify-send -u critical "✊ Сканер уязвимостей ✊" \\
+"$(sudo tail -n 17 /var/log/rkhunter.log)"\047
 #
 # Графика и визуальный стиль
+# Автозапуск conky.
 exec --no-startup-id conky;
+# Автозапуск polybar.
 exec --no-startup-id polybar upbar;
 exec --no-startup-id polybar downbar;
+# Автозапуск picom.
 exec --no-startup-id picom -b;
+# Автозапуск dunst.
 exec --no-startup-id dunst;
 #
 # Сеть, Bluetooth и системный трей
+# Запуск графического интерфейса системного трея NetworkManager.
 exec --no-startup-id nm-applet;
+# Автозапуск blueman.
 exec --no-startup-id blueman-applet;
+# Запуск геолокации.
 exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent;
+# Автозапуск smb4k.
 exec --no-startup-id smb4k --minimized;
 #
 # Утилиты и буфер обмена
+# Автозапуск flameshot.
 exec --no-startup-id flameshot;
+# Автозапуск copyq.
 exec --no-startup-id copyq;
+# Автозапуск xbindkeys.
 exec --no-startup-id xbindkeys;
 #
-# Безопасный запуск USBGuard через графический запрос Polkit (вместо зависающего sudo)
-exec --no-startup-id pkexec usbguard-qt &
+# Автозапуск USBGuard.
+exec --no-startup-id sudo -E usbguard-qt;
 #
 # Звуковые уведомления
+# Автозапуск pa-notify.
 exec --no-startup-id pa-notify;
 #
 # Мультимедиа, Календари и Мессенджеры в трей
+# Автозапуск gogglesmm.
 exec --no-startup-id gogglesmm --tray;
+# Автозапуск thunderbird.
 exec --no-startup-id birdtray;
+# Автозапуск часов-напоминалки.
 exec --no-startup-id kclockd;
+# Автозапуск календаря.
 exec --no-startup-id calindac;
+# Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u;
 #
 # Автозапуск neofetch и обновления.
@@ -1914,7 +1952,7 @@ echo '{
             "floating": "auto_off",
             "percent": 0.6,
             "swallows": [
-               { "class": "^nemo$" }
+               { "class": "^Nemo$" }
             ]
         },
         {
