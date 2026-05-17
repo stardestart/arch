@@ -1074,20 +1074,22 @@ PS1="\[\e[48;2;249;43;43m\]\[\e[38;2;43;249;43m\] \$\[\e[48;2;249;249;43m\]\
 export HISTCONTROL="ignoreboth" #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
 export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' | tee /mnt/home/"$username"/.bashrc /mnt/root/.bashrc
 #
-echo '[KDE]
-WidgetStyle=Fusion
-[General]
-ColorScheme=BreezeDark
-accentColor=118,118,118
-[Icons]
-Theme=Papirus-Dark' | tee /mnt/home/"$username"/.config/kdeglobals /mnt/root/.config/kdeglobals
+#echo '[KDE]
+#WidgetStyle=Fusion
+#[General]
+#ColorScheme=BreezeDark
+#accentColor=118,118,118
+#[Icons]
+#Theme=Papirus-Dark' | tee /mnt/home/"$username"/.config/kdeglobals /mnt/root/.config/kdeglobals
 #
 #Создание конфига profile (Настройка Xorg).
 echo -e "\033[36mСоздание конфига profile (Настройка Xorg).\033[0m"
 echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
-export KDE_SESSION_VERSION=6
+#export KDE_SESSION_VERSION=6
 export QT_QPA_PLATFORMTHEME=qt6ct #Изменение внешнего вида приложений использующих qt.
 export QT_AUTO_SCREEN_SCALE_FACTOR=1 #Автоматическое масштабирование интерфейса для Qt
+export QT_NO_KDE_INTEGRATION=1
+export QT_DISABLE_WINDOW_CONTAINER=1
 export XDG_CURRENT_DESKTOP=i3
 export XCURSOR_THEME=Adwaita
 export XCURSOR_SIZE=24
