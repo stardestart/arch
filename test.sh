@@ -897,7 +897,7 @@ mkdir -p /mnt/root/.config/{qt5ct,qt6ct}
 echo '[Appearance]
 custom_palette=true
 color_scheme_path=/usr/share/qt6ct/colors/darker.conf
-style=Windows
+style=Fusion
 standard_dialogs=gtk3
 icon_theme=Papirus-Dark' | tee /mnt/home/"$username"/.config/qt5ct/qt5ct.conf /mnt/home/"$username"/.config/qt6ct/qt6ct.conf /mnt/root/.config/qt5ct/qt5ct.conf /mnt/root/.config/qt6ct/qt6ct.conf
 #
