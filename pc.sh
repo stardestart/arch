@@ -702,7 +702,7 @@ fs.protected_regular=2
 fs.protected_symlinks=1
 fs.suid_dumpable=0
 kernel.core_uses_pid=1
-kernel.ctrl-alt-del=0
+kernel.ctrl_alt_del=0
 kernel.dmesg_restrict=1
 kernel.kexec_load_disabled=1
 kernel.kptr_restrict=2
@@ -722,7 +722,6 @@ net.ipv4.conf.all.accept_source_route=0
 net.ipv4.conf.all.bootp_relay=0
 net.ipv4.conf.all.mc_forwarding=0
 net.ipv4.conf.all.proxy_arp=0
-net.ipv4.conf.all.rp_filter=1
 net.ipv4.conf.all.send_redirects=0
 net.ipv4.conf.default.accept_redirects=0
 net.ipv6.conf.default.accept_redirects=0
@@ -731,8 +730,8 @@ net.ipv6.conf.default.accept_source_route=0
 net.ipv4.conf.default.rp_filter=1
 net.ipv4.conf.default.secure_redirects=0
 net.ipv4.conf.default.send_redirects=0
-net.ipv4.icmp_echo_ignore_all=1
-net.ipv6.icmp.echo_ignore_all=1
+net.ipv4.icmp_echo_ignore_all=0
+net.ipv6.icmp.echo_ignore_all=0
 net.ipv4.icmp_echo_ignore_broadcasts=1
 net.ipv4.icmp_ignore_bogus_error_responses=1
 net.ipv4.tcp_fastopen=3
@@ -745,7 +744,7 @@ net.ipv4.tcp_max_tw_buckets=2000000
 net.ipv4.tcp_rfc1337=1
 net.ipv4.tcp_slow_start_after_idle=0
 net.ipv4.tcp_syncookies=1
-net.ipv4.tcp_timestamps=0
+net.ipv4.tcp_timestamps=1
 net.ipv4.tcp_tw_reuse=1
 vm.dirty_ratio=10
 vm.dirty_background_ratio=5
@@ -890,11 +889,11 @@ mkdir -p /mnt/home/"$username"/.config/{qt5ct,qt6ct}
 mkdir -p /mnt/root/.config/{qt5ct,qt6ct}
 # Заставляем программы на Qt5 и Qt6 использовать темную тему
 echo '[Appearance]
+color_scheme_path=/usr/share/colors-schemes/BreezeDark.colors
 custom_palette=true
-color_scheme_path=/usr/share/qt6ct/colors/darker.conf
-style=Fusion
+icon_theme=Papirus-Dark
 standard_dialogs=gtk3
-icon_theme=Papirus-Dark' | tee /mnt/home/"$username"/.config/qt5ct/qt5ct.conf /mnt/home/"$username"/.config/qt6ct/qt6ct.conf /mnt/root/.config/qt5ct/qt5ct.conf /mnt/root/.config/qt6ct/qt6ct.conf
+style=Fusion' | tee /mnt/home/"$username"/.config/qt5ct/qt5ct.conf /mnt/home/"$username"/.config/qt6ct/qt6ct.conf /mnt/root/.config/qt5ct/qt5ct.conf /mnt/root/.config/qt6ct/qt6ct.conf
 #
 #Создание общего конфига сканера.
 echo -e "\033[36mСоздание общего конфига сканера.\033[0m"
@@ -1072,9 +1071,9 @@ export COLORTERM=truecolor #Включаем все 16 миллионов цве
 #Создание конфига profile (Настройка Xorg).
 echo -e "\033[36mСоздание конфига profile (Настройка Xorg).\033[0m"
 echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
-export QT_QPA_PLATFORMTHEME=qt6ct #Изменение внешнего вида приложений использующих qt.
+export QT_QPA_PLATFORMTHEME=qt5ct:qt6ct #Изменение внешнего вида приложений использующих qt.
 export QT_AUTO_SCREEN_SCALE_FACTOR=1 #Автоматическое масштабирование интерфейса для Qt
-export XDG_CURRENT_DESKTOP=gtk
+export XDG_CURRENT_DESKTOP=i3
 export XCURSOR_THEME=Adwaita
 export XCURSOR_SIZE=24
 export LD_PRELOAD=/usr/lib/libgtk-nocsd.so' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
@@ -2204,13 +2203,12 @@ echo -e '# Увеличить громкость.
 echo -e "\033[36mРедактирование конфига nanorc.\033[0m"
 echo 'include "/usr/share/nano-syntax-highlighting/*.nanorc"' >> /mnt/etc/nanorc
 sed -i 's/# set autoindent/set autoindent/' /mnt/etc/nanorc
-sed -i 's/# set linenumbers/set linenumbers/' /mnt/etc/nanorc
 sed -i 's/# set minibar/set minibar/' /mnt/etc/nanorc
 sed -i 's/# set positionlog/set positionlog/' /mnt/etc/nanorc
 sed -i 's/# set softwrap/set softwrap/' /mnt/etc/nanorc
 sed -i 's/# set tabsize 8/set tabsize 4/' /mnt/etc/nanorc
 sed -i 's/# set tabstospaces/set tabstospaces/' /mnt/etc/nanorc
-sed -i 's/# set titlecolor bold,white,blue/set titlecolor bold,white,blue/' /mnt/etc/nanorc
+sed -i 's/# set titlecolor/set titlecolor/' /mnt/etc/nanorc
 #
 #Установка шрифтов.
 echo -e "\033[36mУстановка шрифтов.\033[0m"
@@ -2347,6 +2345,8 @@ gsettings set org.gnome.desktop.interface monospace-font-name \047Fantasque Sans
 gsettings set org.gnome.desktop.wm.preferences titlebar-font \047Fantasque Sans Mono Bold '"$font"'\047
 gsettings set org.gnome.libgnomekbd.indicator font-size '"$font"'
 gsettings set org.gnome.meld custom-font \047monospace, '"$font"'\047
+gsettings set org.cinnamon.desktop.default-applications.terminal exec \047xterm\047
+gsettings set org.cinnamon.desktop.default-applications.terminal exec-arg \047-e\047
 #
 #Проверка наличия touchpad.
 echo -e "\\033[36mПроверка наличия touchpad.\\033[0m"
