@@ -2113,6 +2113,7 @@ writable = yes' > /mnt/etc/samba/smb.conf
 #
 #Создание конфига gigolo (браузер общих ресурсов Samba (SMB/CIFS)).
 echo -e "\033[36mСоздание конфига gigolo (браузер общих ресурсов Samba (SMB/CIFS)).\033[0m"
+mkdir -p /mnt/home/"$username"/.config/gigolo/
 echo '[general]
 file_manager=gio open
 terminal=xterm
