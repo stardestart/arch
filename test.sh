@@ -1406,7 +1406,7 @@ exec --no-startup-id blueman-applet;
 # Запуск геолокации.
 exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent;
 # Автозапуск gigolo.
-exec --no-startup-id gigolo &
+exec --no-startup-id gigolo;
 #
 # Утилиты и буфер обмена
 # Автозапуск flameshot.
@@ -1899,7 +1899,6 @@ echo 'polkit.addRule(function(action, subject) {
     }
 });' > /mnt/etc/polkit-1/rules.d/49-nopasswd_global.rules
 #
-
 #Настройка gnome_keyring.
 echo -e "\033[36mНастройка gnome_keyring\033[0m"
 echo 'auth optional pam_gnome_keyring.so
