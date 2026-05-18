@@ -127,6 +127,7 @@ firefox-dark-reader \
 firefox-adblock-plus \
 i2pd \
 links \
+xlinks \
 thunderbird \
 thunderbird-i18n-ru \
 xdg-desktop-portal-gtk \
@@ -1111,13 +1112,13 @@ fi' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify
 #Создание конфига picom (Автономный композитор для Xorg).
 echo -e "\033[36mСоздание конфига picom (Автономный композитор для Xorg).\033[0m"
 echo -e '# Прозрачность активных окон (0,1–1,0).
-active-opacity = 0.95;
+active-opacity = 0.99;
 #
 # Прозрачность неактивных окон (0,1–1,0).
 inactive-opacity = 0.9;
 #
 # Затемнение неактивных окон (0,0–1,0).
-inactive-dim = 0.65;
+inactive-dim = 0.4;
 #
 # Включить вертикальную синхронизацию (если picom выдает ошибку по vsync, то отключаем заменой true на false).
 vsync = true;

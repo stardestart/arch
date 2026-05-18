@@ -127,6 +127,7 @@ firefox-dark-reader \
 firefox-adblock-plus \
 i2pd \
 links \
+xlinks \
 thunderbird \
 thunderbird-i18n-ru \
 xdg-desktop-portal-gtk \
@@ -192,7 +193,6 @@ redshift \
 grc \
 flameshot \
 dunst \
-gnome-themes-extra \
 archlinux-wallpaper \
 cutefish-wallpapers \
 cosmic-wallpapers \
@@ -301,6 +301,8 @@ kmscon \
 qt5ct-kde \
 qt6ct-kde \
 breeze \
+breeze-gtk \
+breeze-icons \
 discord \
 meld \
 kcolorchooser \
@@ -1068,7 +1070,7 @@ echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
 export QT_QPA_PLATFORMTHEME=qt5ct:qt6ct #Изменение внешнего вида приложений использующих qt.
 export QT_AUTO_SCREEN_SCALE_FACTOR=1 #Автоматическое масштабирование интерфейса для Qt
 export XDG_CURRENT_DESKTOP=i3
-export XCURSOR_THEME=Adwaita
+export XCURSOR_THEME=breeze_cursors
 export XCURSOR_SIZE=24
 export LD_PRELOAD=/usr/lib/libgtk-nocsd.so' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
 #
@@ -1104,25 +1106,29 @@ fi' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify
 #
 #Создание конфига picom (Автономный композитор для Xorg).
 echo -e "\033[36mСоздание конфига picom (Автономный композитор для Xorg).\033[0m"
-echo -e '# Прозрачность окон (1.0 — полностью непрозрачные, используем opacity-rule для исключений)
-active-opacity = 1.0;
-inactive-opacity = 1.0;
-
-# Отключаем сильное затемнение неактивных окон, чтобы текст оставался читаемым
-inactive-dim = 0.0;
-
-# Включить вертикальную синхронизацию против разрывов экрана (tearing)
+echo -e '# Прозрачность активных окон (0,1–1,0).
+active-opacity = 0.99;
+#
+# Прозрачность неактивных окон (0,1–1,0).
+inactive-opacity = 0.9;
+#
+# Затемнение неактивных окон (0,0–1,0).
+inactive-dim = 0.4;
+#
+# Включить вертикальную синхронизацию (если picom выдает ошибку по vsync, то отключаем заменой true на false).
 vsync = true;
-
-# Настройки фокуса
+#
+# Отключить прозрачность и затемнение загаловков окон.
 mark-ovredir-focused = true;
+#
+#Пусть неактивная непрозрачность, переопределяет значения окон.
 inactive-opacity-override = false;
-
-wintypes: { 
+#
+wintypes: { # Отключить прозрачность выпадающего меню.
             dropdown_menu = { opacity = 1; };
-            popup_menu = { opacity = 1; }; 
-          };
-
+            # Отключить прозрачность всплывающего меню.
+            popup_menu = { opacity = 1; }; };
+#
 # Прозрачность Polybar, dmenu, XTerm и заголовков окон.
 opacity-rule = [ "80:class_g = \047Polybar\047",
                  "90:class_g = \047dmenu\047",
@@ -1152,12 +1158,12 @@ unredir-if-possible = true;
 #Обнаружение групп окон.
 detect-transient = true;
 detect-client-leader = true;
-
-# Отключаем частичную отрисовку во избежание черных рамок вокруг скругленных углов
-use-damage = false;
+#
+#Отключить информацию о повреждениях, каждый раз перерисовывается весь экран, а не его часть.
+use-damage = true;
 #
 #TechnicalSymbol #Размытие.
-#TechnicalSymbol backend = "glx";
+#TechnicalSymbol backend = "glx"
 #TechnicalSymbol glx-no-stencil = true;
 #TechnicalSymbol glx-no-rebind-pixmap = true;
 #TechnicalSymbol blur:{ method = "dual_kawase";
@@ -1209,7 +1215,7 @@ xterm*scrollKey: true
 !
 !Размер курсора.
 Xcursor.size: 24
-Xcursor.theme: Adwaita
+Xcursor.theme: breeze_cursors
 !
 !Включаем Ctrl+V,Ctrl+C.
 XTerm*VT100*selectToClipboard: true
@@ -2032,17 +2038,17 @@ echo -e "\033[36mСоздание конфига gtk (Внешний вид gtk 
 mkdir -p /mnt/etc/{gtk-3.0,gtk-4.0}
 echo '[Settings]
 gtk-application-prefer-dark-theme=true
-gtk-cursor-theme-name=Adwaita
+gtk-cursor-theme-name=breeze_cursors
 gtk-font-name=Fantasque Sans Mono '"$font"'
 gtk-icon-theme-name=Papirus-Dark
-gtk-theme-name=Adwaita-dark
+gtk-theme-name=Breeze-Dark
 gtk-decoration-layout=menu:
 gtk-overlay-scrolling=false' | tee /mnt/etc/gtk-3.0/settings.ini /mnt/etc/gtk-4.0/settings.ini
 echo 'gtk-application-prefer-dark-theme=true
-gtk-cursor-theme-name="Adwaita"
+gtk-cursor-theme-name="Breeze"
 gtk-font-name="Fantasque Sans Mono '"$font"'"
 gtk-icon-theme-name="Papirus-Dark"
-gtk-theme-name="Adwaita-dark"
+gtk-theme-name="Breeze-Dark"
 gtk-decoration-layout=menu:' > /mnt/usr/share/gtk-2.0/gtkrc
 #
 #Создание директории и конфига jgmenu.
