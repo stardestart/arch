@@ -131,6 +131,7 @@ xlinks \
 thunderbird \
 thunderbird-i18n-ru \
 xdg-desktop-portal-gtk \
+xdg-desktop-portal-kde \
 network-manager-applet \
 networkmanager-strongswan \
 wireless_tools \
@@ -303,6 +304,8 @@ qt6ct-kde \
 breeze \
 breeze-gtk \
 breeze-icons \
+plasma-integration \
+gsettings-desktop-schemas \
 discord \
 meld \
 kcolorchooser \
@@ -881,15 +884,11 @@ Option "XkbOptions" "grp:alt_shift_toggle,terminate:ctrl_alt_bksp"
 EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
 #
 # Создаем папки конфигурации для утилит настройки Qt
-mkdir -p /mnt/home/"$username"/.config/{qt5ct,qt6ct}
-mkdir -p /mnt/root/.config/{qt5ct,qt6ct}
 # Заставляем программы на Qt5 и Qt6 использовать темную тему
-echo '[Appearance]
-color_scheme_path=/usr/share/colors-schemes/BreezeDark.colors
-custom_palette=true
-icon_theme=Papirus-Dark
-standard_dialogs=gtk3
-style=Fusion' | tee /mnt/home/"$username"/.config/qt5ct/qt5ct.conf /mnt/home/"$username"/.config/qt6ct/qt6ct.conf /mnt/root/.config/qt5ct/qt5ct.conf /mnt/root/.config/qt6ct/qt6ct.conf
+echo '[General]
+ColorScheme=BreezeDark
+Name=BreezeDark
+style=Breeze' | tee /mnt/home/"$username"/.config/kdeglobals /mnt/root/.config/qt6ct/kdeglobals
 #
 #Создание общего конфига сканера.
 echo -e "\033[36mСоздание общего конфига сканера.\033[0m"
@@ -1067,9 +1066,9 @@ export COLORTERM=truecolor #Включаем все 16 миллионов цве
 #Создание конфига profile (Настройка Xorg).
 echo -e "\033[36mСоздание конфига profile (Настройка Xorg).\033[0m"
 echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
-export QT_QPA_PLATFORMTHEME=qt5ct:qt6ct #Изменение внешнего вида приложений использующих qt.
+export QT_QPA_PLATFORMTHEME=kde #Изменение внешнего вида приложений использующих qt.
 export QT_AUTO_SCREEN_SCALE_FACTOR=1 #Автоматическое масштабирование интерфейса для Qt
-export XDG_CURRENT_DESKTOP=i3
+export XDG_CURRENT_DESKTOP=KDE
 export XCURSOR_THEME=breeze_cursors
 export XCURSOR_SIZE=24
 export LD_PRELOAD=/usr/lib/libgtk-nocsd.so' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
@@ -1110,10 +1109,10 @@ echo -e '# Прозрачность активных окон (0,1–1,0).
 active-opacity = 0.99;
 #
 # Прозрачность неактивных окон (0,1–1,0).
-inactive-opacity = 0.9;
+inactive-opacity = 0.95;
 #
 # Затемнение неактивных окон (0,0–1,0).
-inactive-dim = 0.4;
+inactive-dim = 0.35;
 #
 # Включить вертикальную синхронизацию (если picom выдает ошибку по vsync, то отключаем заменой true на false).
 vsync = true;
@@ -2291,6 +2290,8 @@ alsactl store
 #
 #Настройка внешнего вида программ.
 echo -e "\\033[36mНастройка внешнего вида программ.\\033[0m"
+gsettings set org.gnome.desktop.interface gtk-theme "Breeze-Dark"
+gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
 gsettings set org.gnome.desktop.interface icon-theme Papirus-Dark
 gsettings set org.gnome.desktop.interface font-name \047Fantasque Sans Mono, '"$font"'\047
 gsettings set org.gnome.desktop.interface document-font-name \047Fantasque Sans Mono Bold Italic '"$font"'\047
