@@ -883,13 +883,6 @@ Option "XkbLayout" "us,ru"
 Option "XkbOptions" "grp:alt_shift_toggle,terminate:ctrl_alt_bksp"
 EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
 #
-# Создаем папки конфигурации для утилит настройки Qt
-# Заставляем программы на Qt5 и Qt6 использовать темную тему
-echo '[General]
-ColorScheme=BreezeDark
-Name=BreezeDark
-style=Breeze' | tee /mnt/home/"$username"/.config/kdeglobals /mnt/root/.config/qt6ct/kdeglobals
-#
 #Создание общего конфига сканера.
 echo -e "\033[36mСоздание общего конфига сканера.\033[0m"
 mkdir -p /mnt/etc/sane.d
@@ -1016,6 +1009,11 @@ ${color #f92b2b}/home${hr 1}$color
 (${fs_type /home})${fs_bar '"$font"','"$(($font*6))"' /home} \\
 $alignr${color #f92b2b}${fs_used /home} / $color${fs_free /home} / ${color #b2b2b2}${fs_size /home}'"${masslabel[@]}"'
 ]]' | tee /mnt/home/"$username"/.config/conky/conky.conf /mnt/root/.config/conky/conky.conf
+#
+# Заставляем программы на Qt5 и Qt6 использовать темную тему
+cp /mnt/usr/share/color-schemes/BreezeDark.colors /mnt/home/"$username"/.config/kdeglobals
+cp /mnt/usr/share/color-schemes/BreezeDark.colors /mnt/root/.config/kdeglobals
+echo -e "\n[Icons]\nTheme=Papirus-Dark" | tee -a /mnt/home/"$username"/.config/kdeglobals /mnt/root/.config/kdeglobals
 #
 #Создание конфига bash_profile (Настройка Xorg).
 echo -e "\033[36mСоздание конфига bash_profile (Настройка Xorg).\033[0m"
