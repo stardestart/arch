@@ -118,13 +118,11 @@ perl-json-xs \
 dmenu \
 xdm-archlinux \
 arch-audit \
-rkhunter \
 firefox \
 firefox-i18n-ru \
 firefox-spell-ru \
 firefox-ublock-origin \
 firefox-dark-reader \
-firefox-adblock-plus \
 i2pd \
 links \
 xlinks \
@@ -154,7 +152,6 @@ reflector \
 go \
 libnotify \
 openssh \
-haveged \
 dbus-broker \
 x11vnc \
 polkit \
@@ -166,7 +163,7 @@ gpart \
 exfatprogs \
 archlinux-xdg-menu \
 ark \
-p7zip \
+7zip \
 ntfs-3g \
 dosfstools \
 unzip \
@@ -204,7 +201,7 @@ conky \
 freetype2 \
 ttf-fantasque-sans-mono \
 gnome-font-viewer \
-neofetch \
+fastfetch \
 alsa-utils \
 alsa-plugins \
 lib32-alsa-plugins \
@@ -243,7 +240,7 @@ copyq \
 kamera \
 geeqie \
 xreader \
-gogglesmm \
+audacious \
 sane \
 skanlite \
 nss-mdns \
@@ -283,7 +280,6 @@ mesa-vdpau \
 ufw \
 usbguard \
 libpwquality \
-ntp \
 xdg-user-dirs \
 geoclue \
 rng-tools \
@@ -1365,8 +1361,8 @@ for_window [class="XTerm"] sticky enable
 # Задаем размеры окна XTerm.
 for_window [class="XTerm"] resize set '"$xterm"'
 #
-# Включить плавающий режим для всех окон gogglesmm.
-for_window [class="gogglesmm"] floating enable
+# Включить плавающий режим для всех окон audacious.
+for_window [class="audacious"] floating enable
 #
 # Включить плавающий режим для всех окон calindori.
 for_window [class="calindori"] floating enable
@@ -1384,9 +1380,7 @@ exec --no-startup-id notify-send -t 10000 -i user-red-home "☭ Доброго �
 "В меню 🛈 -- Шпаргалка по i3wm.";
 #
 # Сканер уязвимостей (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id bash -c \047sudo rkhunter --propupd; sudo rkhunter --update; \\
-sudo rkhunter -c --sk --rwo; notify-send -u critical "✊ Сканер уязвимостей ✊" \\
-"$(sudo tail -n 17 /var/log/rkhunter.log)"\047
+exec --no-startup-id bash -c \047notify-send -w "✊ Сканер уязвимостей ✊" "$(arch-audit)"\047
 #
 # Графика и визуальный стиль
 # Автозапуск conky.
@@ -1425,8 +1419,8 @@ exec --no-startup-id sudo -E usbguard-qt;
 exec --no-startup-id pa-notify;
 #
 # Мультимедиа, Календари и Мессенджеры в трей
-# Автозапуск gogglesmm.
-exec --no-startup-id gogglesmm --tray;
+# Автозапуск audacious.
+exec --no-startup-id audacious -H;
 # Автозапуск thunderbird.
 exec --no-startup-id birdtray;
 # Автозапуск часов-напоминалки.
@@ -1436,7 +1430,7 @@ exec --no-startup-id calindac;
 # Автозапуск telegram.
 exec --no-startup-id telegram-desktop -startintray -- %u;
 #
-# Автозапуск neofetch и обновления.
+# Автозапуск fastfetch и обновления.
 #TechnicalSymbolexec --no-startup-id bash -c \047sleep 10; \\
 #TechnicalSymbol while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)" ]]; \\
 #TechnicalSymbol do \\
@@ -1444,8 +1438,7 @@ exec --no-startup-id telegram-desktop -startintray -- %u;
 #TechnicalSymbol done; \\
 #TechnicalSymbol sleep 5; \\
 #TechnicalSymbol pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-2)}\047\\\047\047)"; \\
-#TechnicalSymbol neofetch > /dev/pts/$pts; \\
-#TechnicalSymbol arch-audit > /dev/pts/$pts; \\
+#TechnicalSymbol fastfetch > /dev/pts/$pts; \\
 #TechnicalSymbol pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)"; \\
 #TechnicalSymbol sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; \\
 #TechnicalSymbol sudo pacman -Suy --noconfirm > /dev/pts/$pts; \\
@@ -2046,6 +2039,12 @@ gtk-icon-theme-name="Papirus-Dark"
 gtk-theme-name="Breeze-Dark"
 gtk-decoration-layout=menu:' > /mnt/usr/share/gtk-2.0/gtkrc
 #
+echo -e "\033[36mСоздание конфига audacious.\033[0m"
+mkdir -p /mnt/home/"$username"/.config/audacious /mnt/root/.config/audacious
+echo '[statusicon]
+close_to_tray=TRUE
+reverse_scroll=TRUE' | tee -a /mnt/home/"$username"/.config/audacious/config /mnt/root/.config/audacious/config
+#
 #Создание директории и конфига jgmenu.
 echo -e "\033[36mСоздание конфига jgmenu.\033[0m"
 mkdir -p /mnt/home/"$username"/.config/jgmenu /mnt/root/.config/jgmenu
@@ -2229,8 +2228,9 @@ arch-chroot /mnt sudo -u "$username" yay -S "${massaurprog[@]}" --noconfirm --as
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus getty@tty1.service
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
-xdm-archlinux dhcpcd avahi-daemon ananicy haveged dbus-broker rngd auto-cpufreq smartd smb \
-saned.socket cups.socket x11vnc ufw auditd usbguard ntpd kmsconvt@tty1.service
+xdm-archlinux dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
+saned.socket cups.socket x11vnc ufw auditd usbguard kmsconvt@tty1.service
+arch-chroot /mnt timedatectl set-ntp true
 #
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
@@ -2331,6 +2331,9 @@ echo -e "\\033[36mУстановка переменных окружения.\\0
 sudo bash -c \047echo "GTK_USE_PORTAL=1
 XDG_MENU_PREFIX=arch-" >> /etc/environment\047
 #
+#Запуск демона синхронизации времени.
+sudo timedatectl set-ntp true
+#
 #Включение службы redshift (Регулирует цветовую температуру вашего экрана).
 echo -e "\\033[36mВключение службы redshift (Регулирует цветовую температуру вашего экрана).\\033[0m"
 systemctl --user enable redshift-gtk
@@ -2363,10 +2366,10 @@ xdg-mime default org.geeqie.Geeqie.desktop image/png
 xdg-mime default org.geeqie.Geeqie.desktop image/gif
 xdg-mime default org.geeqie.Geeqie.desktop image/bmp
 xdg-mime default org.geeqie.Geeqie.desktop image/svg+xml
-xdg-mime default gogglesmm.desktop audio/mpeg
-xdg-mime default gogglesmm.desktop audio/wav
-xdg-mime default gogglesmm.desktop audio/ogg
-xdg-mime default gogglesmm.desktop audio/x-flac
+xdg-mime default audacious.desktop audio/mpeg
+xdg-mime default audacious.desktop audio/wav
+xdg-mime default audacious.desktop audio/ogg
+xdg-mime default audacious.desktop audio/x-flac
 xdg-mime default audacity.desktop audio/x-ms-wma
 xdg-mime default audacity.desktop audio/wav
 xdg-mime default org.gnome.font-viewer.desktop font/ttf
@@ -2460,10 +2463,6 @@ echo '-w /etc/group -p wa
 -w /etc/passwd -p wa
 -w /etc/shadow -p wa
 -w /etc/sudoers -p wa' > /mnt/etc/audit/rules.d/rules.rules
-#
-#Настройка сканера уязвимостей rkhunter.
-echo -e "\033[36mНастройка сканера уязвимостей rkhunter.\033[0m"
-echo -e "SCRIPTWHITELIST=/usr/bin/egrep\nSCRIPTWHITELIST=/usr/bin/fgrep\nSCRIPTWHITELIST=/usr/bin/ldd\nSCRIPTWHITELIST=/usr/bin/vendor_perl/GET" >> /mnt/etc/rkhunter.conf
 #
 #Создание конфига xdg-user-dirs (Пользовательские директории).
 echo -e "\033[36mСоздание конфига xdg-user-dirs (Пользовательские директории).\033[0m"
