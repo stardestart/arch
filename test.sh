@@ -299,8 +299,6 @@ usbguard-qt \
 pa-notify \
 birdtray \
 kmscon \
-qt5ct-kde \
-qt6ct-kde \
 breeze \
 breeze-gtk \
 breeze-icons \
