@@ -207,9 +207,12 @@ alsa-plugins \
 lib32-alsa-plugins \
 alsa-firmware \
 alsa-card-profiles \
-pulseaudio \
-pulseaudio-alsa \
-pulseaudio-bluetooth \
+pipewire \
+pipewire-alsa \
+pipewire-pulse \
+pipewire-jack \
+wireplumber \
+sof-firmware \
 pavucontrol-qt \
 libcanberra \
 lib32-libcanberra \
@@ -1682,7 +1685,7 @@ format-1-foreground = #2bf92b
 initial = 1
 
 [module/pulseaudio]
-type = internal/pulseaudio
+type = internal/volume
 reverse-scroll = false
 format-volume = %{F#f92b2b} ☭ %{F-}<ramp-volume><label-volume>%{F#f92b2b} ☭ %{F-}
 label-muted = %{F#f92b2b} ☭ %{F-}🔇00%%{F#f92b2b} ☭ %{F-}
@@ -2234,7 +2237,12 @@ arch-chroot /mnt timedatectl set-ntp true
 #
 #Настройка звука.
 echo -e "\033[36mНастройка звука.\033[0m"
-sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /mnt/etc/pulse/daemon.conf
+mkdir -p /mnt/etc/pipewire/pipewire.conf.d/
+# Прописываем наивысшее качество ресемплинга (10) и алгоритм
+echo -e 'context.properties = {\n    spa.bluez5.codecs = [ ldac aptx_hd aptx sbc_xq sbc ]\n}' > /mnt/etc/pipewire/pipewire.conf.d/99-custom-audio.conf
+# Для изменения именно качества ресемпла создается файл client.conf:
+mkdir -p /mnt/etc/pipewire/client.conf.d/
+echo -e 'filter.properties = {\n    resample.quality = 10\n}' > /mnt/etc/pipewire/client.conf.d/99-resample.conf
 #
 #Создание скрипта, который после перезагрузки продолжит установку.
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
@@ -2273,16 +2281,17 @@ fi
 #
 #Настройка звука.
 echo -e "\\033[36mНастройка звука.\\033[0m"
-soundmass=($(pacmd list-sinks | grep -i name: | awk \047{print $2}\047))
-for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
-            do
-amixer -c "$j" sset Master unmute
-amixer -c "$j" sset Speaker unmute
-amixer -c "$j" sset Headphone unmute
-amixer -c "$j" sset "Auto-Mute Mode" Disabled
-amixer -c "$j" sset "HP/Speaker Auto Detect" unmute
-            done
+soundmass=($(aplay -l | grep -i \047^card\047 | awk \047{print $2}\047 | tr -d \047:\047 | sort -u))
+for j in "${soundmass[@]}"
+do
+    amixer -c "$j" sset Master unmute
+    amixer -c "$j" sset Speaker unmute
+    amixer -c "$j" sset Headphone unmute
+    amixer -c "$j" sset "Auto-Mute Mode" Disabled
+    amixer -c "$j" sset "HP/Speaker Auto Detect" unmute
+done
 alsactl store
+
 #
 #Настройка внешнего вида программ.
 echo -e "\\033[36mНастройка внешнего вида программ.\\033[0m"
@@ -2336,8 +2345,7 @@ sudo timedatectl set-ntp true
 #
 #Включение службы redshift (Регулирует цветовую температуру вашего экрана).
 echo -e "\\033[36mВключение службы redshift (Регулирует цветовую температуру вашего экрана).\\033[0m"
-systemctl --user enable redshift-gtk
-systemctl --user start redshift-gtk
+systemctl --user enable --now redshift-gtk pipewire pipewire-pulse wireplumber
 #
 #Cкопирует список пакетов из репозитория Debian.
 echo -e "\\033[36mCкопирует список пакетов из репозитория Debian.\\033[0m"
