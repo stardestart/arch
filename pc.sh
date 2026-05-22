@@ -2301,8 +2301,8 @@ fi
 #
 #Настройка звука.
 echo -e "\\033[36mНастройка звука.\\033[0m"
-soundmass=($(pacmd list-sinks | grep -i name: | awk \047{print $2}\047))
-for (( j=0, i=1; i<="${#soundmass[*]}"; i++, j++ ))
+soundmass=($(aplay -l | grep -i \047^card\047 | awk \047{print $2}\047 | tr -d \047:\047 | sort -u))
+for j in "${soundmass[@]}"
             do
 amixer -c "$j" sset Master unmute
 amixer -c "$j" sset Speaker unmute

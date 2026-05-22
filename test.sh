@@ -1685,7 +1685,7 @@ format-1-foreground = #2bf92b
 initial = 1
 
 [module/pulseaudio]
-type = internal/volume
+type = internal/pulseaudio
 reverse-scroll = false
 format-volume = %{F#f92b2b} ☭ %{F-}<ramp-volume><label-volume>%{F#f92b2b} ☭ %{F-}
 label-muted = %{F#f92b2b} ☭ %{F-}🔇00%%{F#f92b2b} ☭ %{F-}
@@ -2048,6 +2048,45 @@ echo '[statusicon]
 close_to_tray=TRUE
 reverse_scroll=TRUE' | tee -a /mnt/home/"$username"/.config/audacious/config /mnt/root/.config/audacious/config
 #
+echo -e "\033[36mСоздание конфига wireplumber.\033[0m"
+mkdir -p /mnt/home/"$username"/.config/wireplumber/wireplumber.conf.d/
+echo 'wireplumber.settings = {
+  # Включаем глобальное автоматическое переключение на любое новое подключенное устройство
+  node.features.audio.auto-switch = true
+}
+monitor.alsa.rules = [
+  {
+    matches = [
+      {
+        node.name = "~alsa_output.*"
+      }
+    ]
+    actions = {
+      update-props = {
+        api.alsa.headphone-jack-detection = true
+        api.alsa.mic-jack-detection = true
+      }
+    }
+  }
+]
+monitor.bluez.rules = [
+  {
+    matches = [
+      {
+        # Применяется ко всем Bluetooth аудио-устройствам
+        device.name = "~bluez_card.*"
+      }
+    ]
+    actions = {
+      update-props = {
+        # Выставляем беспроводным наушникам наивысший приоритет при подключении
+        node.shared-placement = true
+        bluez5.auto-connect = [ a2dp_sink hfp_hf hsp_hs ]
+      }
+    }
+  }
+]' | tee -a /mnt/home/"$username"/.config/wireplumber/wireplumber.conf.d/95-hotplug-switch.conf /mnt/root/.config/wireplumber/wireplumber.conf.d/95-hotplug-switch.conf
+#
 #Создание директории и конфига jgmenu.
 echo -e "\033[36mСоздание конфига jgmenu.\033[0m"
 mkdir -p /mnt/home/"$username"/.config/jgmenu /mnt/root/.config/jgmenu
@@ -2283,15 +2322,14 @@ fi
 echo -e "\\033[36mНастройка звука.\\033[0m"
 soundmass=($(aplay -l | grep -i \047^card\047 | awk \047{print $2}\047 | tr -d \047:\047 | sort -u))
 for j in "${soundmass[@]}"
-do
-    amixer -c "$j" sset Master unmute
-    amixer -c "$j" sset Speaker unmute
-    amixer -c "$j" sset Headphone unmute
-    amixer -c "$j" sset "Auto-Mute Mode" Disabled
-    amixer -c "$j" sset "HP/Speaker Auto Detect" unmute
-done
+            do
+amixer -c "$j" sset Master unmute
+amixer -c "$j" sset Speaker unmute
+amixer -c "$j" sset Headphone unmute
+amixer -c "$j" sset "Auto-Mute Mode" Disabled
+amixer -c "$j" sset "HP/Speaker Auto Detect" unmute
+            done
 alsactl store
-
 #
 #Настройка внешнего вида программ.
 echo -e "\\033[36mНастройка внешнего вида программ.\\033[0m"
