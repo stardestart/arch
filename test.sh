@@ -132,7 +132,6 @@ xdg-desktop-portal-gtk \
 xdg-desktop-portal-kde \
 network-manager-applet \
 networkmanager-strongswan \
-wireless_tools \
 krdc \
 blueman \
 bluez \
@@ -155,16 +154,15 @@ openssh \
 dbus-broker \
 x11vnc \
 polkit \
-gnome-keyring
+gnome-keyring \
+polkit-gnome \
 xlockmore \
 xautolock \
 gparted \
 gpart \
 exfatprogs \
 archlinux-xdg-menu \
-ark \
 7zip \
-ntfs-3g \
 dosfstools \
 unzip \
 smartmontools \
@@ -174,6 +172,8 @@ libplist \
 libimobiledevice \
 curlftpfs \
 samba \
+smbclient \
+wsdd \
 ffmpegthumbnailer \
 nemo \
 cinnamon-translations \
@@ -182,6 +182,8 @@ nemo-fileroller \
 gvfs \
 gvfs-mtp \
 gvfs-afc \
+gvfs-smb \
+gvfs-dnssd \
 gigolo \
 kclock \
 calindori \
@@ -192,7 +194,6 @@ grc \
 flameshot \
 dunst \
 archlinux-wallpaper \
-cutefish-wallpapers \
 cosmic-wallpapers \
 elementary-wallpapers \
 xdg-desktop-portal \
@@ -258,6 +259,8 @@ wine-mono \
 wine-gecko \
 gamemode \
 lib32-gamemode \
+lib32-gconf \
+lib32-libappindicator-gtk3 \
 mpg123 \
 lib32-mpg123 \
 openal \
@@ -278,6 +281,7 @@ vulkan-extra-tools \
 vulkan-extra-layers \
 mesa \
 lib32-mesa \
+lib32-libva-mesa-driver \
 libva-mesa-driver \
 mesa-vdpau \
 ufw \
@@ -805,7 +809,7 @@ genfstab -L /mnt >> /mnt/etc/fstab
 #
 #Правка fstab для ntfs.
 echo -e "\033[36mПравка fstab для ntfs.\033[0m"
-sed -i "s/ntfs $PARTITION_COLUMN.*/ntfs-3g       nls=utf8,umask=000,dmask=027,fmask=137,uid=1000,gid=1000       0 0/" /mnt/etc/fstab
+sed -i "s/ntfs $PARTITION_COLUMN.*/ntfs3       iocharset=utf8,showexec,umask=000,dmask=0027,fmask=0137,uid=1000,gid=1000       0 0/" /mnt/etc/fstab
 #
 #Настройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).
 echo -e "\033[36mНастройка usbguard (Помогает защитить ваш компьютер от мошеннических USB-устройств).\033[0m"
@@ -1083,10 +1087,11 @@ sed -i "/\[urgency_critical\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#f92b2
 #Создание аудиоконфига сервера уведомлений.
 echo -e "\033[36mСоздание аудиоконфига сервера уведомлений.\033[0m"
 echo '#!/bin/bash
-# Записываем все переданные аргументы в одну строку
 TEXT="$*"
-
 if grep -q "pa-notify" <<< "$TEXT"; then
+    if pgrep -x "canberra-gtk-pl" >/dev/null; then
+        exit 0
+    fi
     canberra-gtk-play -i audio-volume-change
 elif grep -q "nm-no-connection" <<< "$TEXT"; then
     canberra-gtk-play -i network-connectivity-lost
@@ -1376,7 +1381,7 @@ for_window [class="kclock"] floating enable
 ########### Автозапуск программ ###########
 #
 # Графическое окошко с запросом пароля
-exec --no-startup-id /usr/lib/polkit-kde-authentication-agent-1 &
+exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 #
 # Приветствие на 10 секунд (--no-startup-id убирает курсор загрузки).
 exec --no-startup-id notify-send -t 10000 -i user-red-home "☭ Доброго времени суток ☭" \\
@@ -2095,9 +2100,6 @@ echo -e 'context.properties = {\n    spa.bluez5.codecs = [ ldac aptx_hd aptx sbc
 mkdir -p /mnt/etc/pipewire/client.conf.d/
 echo -e 'filter.properties = {\n    resample.quality = 10\n}' > /mnt/etc/pipewire/client.conf.d/99-resample.conf
 #
-cat /mnt/etc/pipewire/pipewire.conf.d/99-custom-audio.conf
-cat /mnt/etc/pipewire/client.conf.d/99-resample.conf
-read -n 1 -s -p "Нажмите любую клавишу для продолжения..."
 #Создание директории и конфига jgmenu.
 echo -e "\033[36mСоздание конфига jgmenu.\033[0m"
 mkdir -p /mnt/home/"$username"/.config/jgmenu /mnt/root/.config/jgmenu
@@ -2282,7 +2284,7 @@ echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus getty@tty1.service
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
 xdm-archlinux dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
-saned.socket cups.socket x11vnc ufw auditd usbguard kmsconvt@tty1.service
+wsdd saned.socket cups.socket x11vnc ufw auditd usbguard kmsconvt@tty1.service
 arch-chroot /mnt timedatectl set-ntp true
 #
 #Создание скрипта, который после перезагрузки продолжит установку.
@@ -2426,10 +2428,10 @@ xdg-mime default org.x.editor.desktop text/plain
 xdg-settings set default-web-browser firefox.desktop
 xdg-mime default firefox.desktop text/html
 xdg-mime default xreader.desktop application/pdf
-xdg-mime default org.kde.ark.desktop application/zip
-xdg-mime default org.kde.ark.desktop application/x-tar
-xdg-mime default org.kde.ark.desktop application/x-gzip
-xdg-mime default org.kde.ark.desktop application/x-bzip2
+xdg-mime default org.gnome.FileRoller.desktop application/zip
+xdg-mime default org.gnome.FileRoller.desktop application/x-tar
+xdg-mime default org.gnome.FileRoller.desktop application/x-gzip
+xdg-mime default org.gnome.FileRoller.desktop application/x-bzip2
 #
 xset +fp /usr/share/fonts/TTF
 xset +fp /usr/share/fonts/google

@@ -156,6 +156,7 @@ x11vnc \
 polkit \
 kwalletmanager \
 kwallet-pam \
+polkit-kde-agent \
 xlockmore \
 xautolock \
 gparted \
