@@ -2087,6 +2087,17 @@ monitor.bluez.rules = [
   }
 ]' | tee -a /mnt/home/"$username"/.config/wireplumber/wireplumber.conf.d/95-hotplug-switch.conf /mnt/root/.config/wireplumber/wireplumber.conf.d/95-hotplug-switch.conf
 #
+echo -e "\033[36mНастройка звука.\033[0m"
+mkdir -p /mnt/etc/pipewire/pipewire.conf.d/
+# Прописываем наивысшее качество ресемплинга (10) и алгоритм
+echo -e 'context.properties = {\n    spa.bluez5.codecs = [ ldac aptx_hd aptx sbc_xq sbc ]\n}' > /mnt/etc/pipewire/pipewire.conf.d/99-custom-audio.conf
+# Для изменения именно качества ресемпла создается файл client.conf:
+mkdir -p /mnt/etc/pipewire/client.conf.d/
+echo -e 'filter.properties = {\n    resample.quality = 10\n}' > /mnt/etc/pipewire/client.conf.d/99-resample.conf
+#
+cat /mnt/etc/pipewire/pipewire.conf.d/99-custom-audio.conf
+cat /mnt/etc/pipewire/client.conf.d/99-resample.conf
+read -n 1 -s -p "Нажмите любую клавишу для продолжения..."
 #Создание директории и конфига jgmenu.
 echo -e "\033[36mСоздание конфига jgmenu.\033[0m"
 mkdir -p /mnt/home/"$username"/.config/jgmenu /mnt/root/.config/jgmenu
@@ -2273,15 +2284,6 @@ arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager refl
 xdm-archlinux dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
 saned.socket cups.socket x11vnc ufw auditd usbguard kmsconvt@tty1.service
 arch-chroot /mnt timedatectl set-ntp true
-#
-#Настройка звука.
-echo -e "\033[36mНастройка звука.\033[0m"
-mkdir -p /mnt/etc/pipewire/pipewire.conf.d/
-# Прописываем наивысшее качество ресемплинга (10) и алгоритм
-echo -e 'context.properties = {\n    spa.bluez5.codecs = [ ldac aptx_hd aptx sbc_xq sbc ]\n}' > /mnt/etc/pipewire/pipewire.conf.d/99-custom-audio.conf
-# Для изменения именно качества ресемпла создается файл client.conf:
-mkdir -p /mnt/etc/pipewire/client.conf.d/
-echo -e 'filter.properties = {\n    resample.quality = 10\n}' > /mnt/etc/pipewire/client.conf.d/99-resample.conf
 #
 #Создание скрипта, который после перезагрузки продолжит установку.
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
