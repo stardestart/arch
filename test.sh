@@ -1088,19 +1088,31 @@ sed -i "/\[urgency_critical\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#f92b2
 echo -e "\033[36mСоздание аудиоконфига сервера уведомлений.\033[0m"
 echo '#!/bin/bash
 TEXT="$*"
+play_sound() {
+    local sound_name="$1"
+    local sound_path="/usr/share/sounds/freedesktop/stereo/${sound_name}.oga"
+    if [ ! -f "$sound_path" ]; then
+        sound_path="/usr/share/sounds/freedesktop/stereo/${sound_name}.wav"
+    fi
+    if [ -f "$sound_path" ]; then
+        pw-play "$sound_path"
+    fi
+}
 if grep -q "pa-notify" <<< "$TEXT"; then
-    if pgrep -x "canberra-gtk-pl" >/dev/null; then
+    if [ -f "$LOCKFILE" ]; then
         exit 0
     fi
-    canberra-gtk-play -i audio-volume-change
+    touch "$LOCKFILE"
+    play_sound "audio-volume-change"
+    rm -f "$LOCKFILE"
 elif grep -q "nm-no-connection" <<< "$TEXT"; then
-    canberra-gtk-play -i network-connectivity-lost
+    play_sound "network-connectivity-lost"
 elif grep -q "nm-device" <<< "$TEXT"; then
-    canberra-gtk-play -i network-connectivity-established
+    play_sound "network-connectivity-established"
 elif grep -q -i "critical" <<< "$TEXT"; then
-    canberra-gtk-play -i window-attention
+    play_sound "window-attention"
 else 
-    canberra-gtk-play -i message
+    play_sound "message"
 fi' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
 #
 #Создание конфига picom (Автономный композитор для Xorg).

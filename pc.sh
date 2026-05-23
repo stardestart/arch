@@ -1088,9 +1088,7 @@ sed -i "/\[urgency_critical\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#f92b2
 #Создание аудиоконфига сервера уведомлений.
 echo -e "\033[36mСоздание аудиоконфига сервера уведомлений.\033[0m"
 echo '#!/bin/bash
-# Записываем все переданные аргументы в одну строку
 TEXT="$*"
-
 if grep -q "pa-notify" <<< "$TEXT"; then
     canberra-gtk-play -i audio-volume-change
 elif grep -q "nm-no-connection" <<< "$TEXT"; then
