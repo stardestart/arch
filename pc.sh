@@ -172,6 +172,8 @@ libplist \
 libimobiledevice \
 curlftpfs \
 samba \
+smbclient \
+wsdd \
 ffmpegthumbnailer \
 nemo \
 cinnamon-translations \
@@ -2437,7 +2439,7 @@ echo "vboxguest
 vboxsf
 vboxvideo" > /mnt/etc/modules-load.d/virtualboxguest.config
 arch-chroot /mnt systemctl enable vboxservice
-sed -i 's/exec i3 #Автозапуск i3./\/usr\/sbin\/VBoxClient-all \&\nexec i3 #Автозапуск i3./' /mnt/home/"$username"/.xinitrc
+sed -i 's/#Автозапуск i3./\/usr\/bin\/VBoxClient-all \&\n#Автозапуск i3./' /mnt/home/"$username"/.xinitrc
 arch-chroot /mnt gpasswd -a "$username" vboxsf
 else
 arch-chroot /mnt pacman -Sy virtualbox-host-dkms virtualbox --noconfirm
