@@ -1085,34 +1085,134 @@ sed -i "/\[urgency_critical\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#f92b2
 #Создание аудиоконфига сервера уведомлений.
 echo -e "\033[36mСоздание аудиоконфига сервера уведомлений.\033[0m"
 echo '#!/bin/bash
-TEXT="$*"
-play_sound() {
-    local sound_name="$1"
-    local sound_path="/usr/share/sounds/freedesktop/stereo/${sound_name}.oga"
-    if [ ! -f "$sound_path" ]; then
-        sound_path="/usr/share/sounds/freedesktop/stereo/${sound_name}.wav"
-    fi
-    if [ -f "$sound_path" ]; then
-        pw-play --node-name="NotificationSound" "$sound_path"
-    fi
-}
-if grep -q "pa-notify" <<< "$TEXT"; then
-    LOCKFILE="/tmp/volume_sound.lock"
-    if [ -f "$LOCKFILE" ]; then
-        exit 0
-    fi
-    touch "$LOCKFILE"
-    play_sound "audio-volume-change"
-    rm -f "$LOCKFILE"
-elif grep -q "nm-no-connection" <<< "$TEXT"; then
-    play_sound "network-connectivity-lost"
-elif grep -q "nm-device" <<< "$TEXT"; then
-    play_sound "network-connectivity-established"
-elif grep -q -i "critical" <<< "$TEXT"; then
-    play_sound "window-attention"
-else 
-    play_sound "message"
-fi' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
+if [ "$5" = "CRITICAL" ]; then
+    # Сверхважные алерты (Аварийное состояние, батарея, блокировка UFW)
+    pw-play /usr/share/sounds/freedesktop/stereo/dialog-error.oga &
+    exit 0
+fi
+killall -q pw-play 2>/dev/null
+case "$1" in
+    "pa-notify" | "volume-change" | "volnoti" | "twmn")
+        # Изменение громкости, яркости экрана или переключатели звука
+        pw-play /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga &
+        ;;
+    "nm-applet" | "nm-no-connection" | "NetworkManager" | "wicd")
+        # Соединение разорвано / кабель отключен
+        pw-play /usr/share/sounds/freedesktop/stereo/network-connectivity-lost.oga &
+        ;;
+    "nm-device" | "network" | "connman" | "i2pd")
+        # Соединение успешно установлено
+        pw-play /usr/share/sounds/freedesktop/stereo/network-connectivity-established.oga &
+        ;;
+    "device-notifier" | "usb" | "kamera" | "sane" | "skanlite" | "udiskie" | "mx-usb-unmounter")
+        # Подключена флешка, внешний диск, фотоаппарат или сканер
+        pw-play /usr/share/sounds/freedesktop/stereo/device-added.oga &
+        ;;
+    "device-removed" | "udisks2")
+        # Безопасное извлечение флешки / отключение устройства
+        pw-play /usr/share/sounds/freedesktop/stereo/device-removed.oga &
+        ;;
+    "power-plug" | "acpid" | "auto-cpufreq" | "xfce4-power-manager" | "mate-power-manager")
+        # Подключили зарядное устройство к ноутбуку
+        pw-play /usr/share/sounds/freedesktop/stereo/power-plug.oga &
+        ;;
+    "power-unplug" | "cbatticon")
+        # Отключили зарядку (переход на работу от батареи)
+        pw-play /usr/share/sounds/freedesktop/stereo/power-unplug.oga &
+        ;;
+    "flameshot" | "Screenshot" | "spectacle" | "gnome-screenshot" | "xfce4-screenshooter" | "ksnip")
+        # Сделан и сохранен снимок экрана
+        pw-play /usr/share/sounds/freedesktop/stereo/screen-capture.oga &
+        ;;
+    "cheese" | "kamoso" | "guvcview")
+        # Срабатывание затвора камеры / старт веб-камеры
+        pw-play /usr/share/sounds/freedesktop/stereo/camera-shutter.oga &
+        ;;
+    "telegram-desktop" | "Telegram" | "discord" | "Discord" | "element" | "slack" | "WhatsApp" | "Viber" | "Signal" | "revolt" | "rocketchat")
+        # Новое мгновенное сообщение в чате или мессенджере
+        pw-play /usr/share/sounds/freedesktop/stereo/message-new-instant.oga &
+        ;;
+    "birdtray" | "thunderbird" | "Thunderbird" | "geary" | "evolution" | "kmail" | "mailspring" | "claws-mail")
+        # Прилетело новое электронное письмо в почтовый клиент
+        pw-play /usr/share/sounds/freedesktop/stereo/message.oga &
+        ;;
+    "phone-incoming" | "skype" | "whatsapp" | "zoom" | "teams" | "mumble" | "linphone" | "jitsi")
+        # Входящий аудио- или видеозвонок, приглашение в конференцию
+        pw-play /usr/share/sounds/freedesktop/stereo/phone-incoming-call.oga &
+        ;;
+    "phone-outgoing" | "teams-calling")
+        # Исходящий вызов (гудки в трубке)
+        pw-play /usr/share/sounds/freedesktop/stereo/phone-outgoing-calling.oga &
+        ;;
+    "phone-busy" | "call-dropped")
+        # Абонент занят или звонок неожиданно сброшен
+        pw-play /usr/share/sounds/freedesktop/stereo/phone-outgoing-busy.oga &
+        ;;
+    "firefox" | "Firefox" | "chromium" | "google-chrome" | "opera" | "brave-browser" | "vivaldi" | "yandex-browser" | "tor-browser")
+        # Стандартные Push-уведомления от сайтов в любом популярном браузере
+        pw-play /usr/share/sounds/freedesktop/stereo/dialog-information.oga &
+        ;;
+    "audacious" | "vlc" | "mpv" | "mpg123" | "spotify" | "rhythmbox" | "clementine" | "strawberry" | "deadbeef" | "amberol")
+        # Переключение трека / начало воспроизведения видео
+        pw-play /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga &
+        ;;
+    "transmission" | "transmission-qt" | "qbittorrent" | "deluge" | "kget" | "uget" | "aria2")
+        # Скачивание торрента или большого файла завершено на 100%
+        pw-play /usr/share/sounds/freedesktop/stereo/complete.oga &
+        ;;
+    "timeshift" | "backintime" | "deja-dup" | "cron" | "anacron" | "borg" | "rclone")
+        # Создана резервная копия системы или выполнена плановая фоновая задача
+        pw-play /usr/share/sounds/freedesktop/stereo/complete.oga &
+        ;;
+    "kclock" | "calindori" | "alarm" | "timer" | "gnome-clocks" | "kteatime" | "pomodoro")
+        # Будильник зазвонил или помодоро-таймер отсчитал время работы/отдыха
+        pw-play /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga &
+        ;;
+    "gimp" | "blender" | "kdenlive" | "obs" | "obs-studio" | "git" | "debtap" | "inkscape" | "critas" | "darktable" | "handbrake" | "audacity")
+        # Завершился экспорт картинки, кодирование звука, тяжелый видеорендеринг или сборка пакета
+        pw-play /usr/share/sounds/freedesktop/stereo/complete.oga &
+        ;;
+    "code" | "vscode" | "jetbrains-idea" | "pycharm" | "clion" | "android-studio" | "sublime-text" | "neovide")
+        # IDE завершила фоновую сборку проекта, индексацию или прогнала тесты
+        pw-play /usr/share/sounds/freedesktop/stereo/complete.oga &
+        ;;
+    "libreoffice" | "soffice" | "xed" | "geeqie" | "xreader" | "gimagereader" | "kate" | "mousepad" | "geany" | "wps" | "onlyoffice" | "obsidian")
+        # Уведомления от редакторов (успешное автосохранение документа, синхронизация заметок)
+        pw-play /usr/share/sounds/freedesktop/stereo/dialog-information.oga &
+        ;;
+    "polkit-gnome" | "pkexec" | "gparted" | "polkit-kde-authentication-agent-1" | "sudo")
+        # Запрос пароля суперпользователя (root/sudo) во всплывающем окне
+        pw-play /usr/share/sounds/freedesktop/stereo/window-question.oga &
+        ;;
+    "ufw" | "usbguard-qt" | "system-config-printer" | "cups" | "gufw" | "firewalld" | "fail2ban")
+        # Предупреждения брандмауэра, блокировки USB, сетевые атаки или проблемы с принтером
+        pw-play /usr/share/sounds/freedesktop/stereo/dialog-warning.oga &
+        ;;
+    "window-attention" | "i3" | "bspwm" | "sway" | "awesomewm")
+        # Приложение затребовало фокус экрана (мигает на панели задач оконного менеджера)
+        pw-play /usr/share/sounds/freedesktop/stereo/window-attention.oga &
+        ;;
+    "copyq" | "diodon" | "clipman" | "gpaste")
+        # Операции менеджеров буфера обмена (сохранение новой истории/текста)
+        pw-play /usr/share/sounds/freedesktop/stereo/bell.oga &
+        ;;
+    "xdm" | "xdm-archlinux" | "login" | "lightdm" | "gdm" | "sddm" | "ly")
+        # Приветственный звук при загрузке и входе в сессию
+        pw-play /usr/share/sounds/freedesktop/stereo/service-login.oga &
+        ;;
+    "logout" | "i3-nagbar")
+        # Звук при выходе из сессии или открытии меню завершения работы
+        pw-play /usr/share/sounds/freedesktop/stereo/service-logout.oga &
+        ;;
+    "suspend" | "systemd-sleep" | "logind")
+        # Сбой при попытке уйти в спящий режим / гибернацию
+        pw-play /usr/share/sounds/freedesktop/stereo/suspend-error.oga &
+        ;;
+    *)
+        # Базовый системный "пик" для любых других программ, которых нет в списке
+        pw-play /usr/share/sounds/freedesktop/stereo/message.oga &
+        ;;
+esac' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
 #
 #Создание конфига picom (Автономный композитор для Xorg).
 echo -e "\033[36mСоздание конфига picom (Автономный композитор для Xorg).\033[0m"
@@ -2418,7 +2518,8 @@ WINEARCH=win32 winetricks d3dx9
 winetricks dxvk
 #
 #Устанавливаем приложения по умолчанию.
-xdg-mime default org.kde.dolphin.desktop inode/directory application/x-directory
+xdg-mime default nemo.desktop inode/directory
+xdg-mime default nemo.desktop application/x-directory
 xdg-mime default org.mozilla.Thunderbird.desktop x-scheme-handler/mailto
 xdg-mime default vlc.desktop video/mp4
 xdg-mime default vlc.desktop video/x-matroska

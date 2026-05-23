@@ -208,12 +208,13 @@ alsa-plugins \
 lib32-alsa-plugins \
 alsa-firmware \
 alsa-card-profiles \
-pulseaudio \
-pulseaudio-alsa \
-pulseaudio-bluetooth \
+pipewire \
+pipewire-alsa \
+pipewire-pulse \
+pipewire-jack \
+wireplumber \
+sof-firmware \
 pavucontrol-qt \
-libcanberra \
-lib32-libcanberra \
 sound-theme-freedesktop \
 xbindkeys \
 aspell \
@@ -873,7 +874,7 @@ eval $(gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
 export SSH_AUTH_SOCK
 #
 #Воспроизведения звука входа в систему.
-canberra-gtk-play -i service-login &
+pw-play /usr/share/sounds/freedesktop/stereo/service-login.oga &
 #
 #Автозапуск i3.
 exec i3' | tee /mnt/home/"$username"/.xinitrc /mnt/root/.xinitrc
@@ -1313,7 +1314,7 @@ bindsym $mod+Shift+r restart
 # Выход из i3 (выходит из сеанса X).
 bindsym $mod+Shift+e exec "i3-nagbar -t warning \\
 -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 \\
--b \047Да, выйти из i3\047 \047canberra-gtk-play -i service-logout && i3-msg exit\047
+-b \047Да, выйти из i3\047 \047pw-play /usr/share/sounds/freedesktop/stereo/service-logout.oga && i3-msg exit\047
 #
 # Войти в режим изменения размеров окон.
 bindsym $mod+r mode "resize"
@@ -2068,6 +2069,53 @@ echo '[statusicon]
 close_to_tray=TRUE
 reverse_scroll=TRUE' | tee -a /mnt/home/"$username"/.config/audacious/config /mnt/root/.config/audacious/config
 #
+echo -e "\033[36mСоздание конфига wireplumber.\033[0m"
+mkdir -p /mnt/home/"$username"/.config/wireplumber/wireplumber.conf.d/
+echo 'wireplumber.settings = {
+  # Включаем глобальное автоматическое переключение на любое новое подключенное устройство
+  node.features.audio.auto-switch = true
+}
+monitor.alsa.rules = [
+  {
+    matches = [
+      {
+        node.name = "~alsa_output.*"
+      }
+    ]
+    actions = {
+      update-props = {
+        api.alsa.headphone-jack-detection = true
+        api.alsa.mic-jack-detection = true
+      }
+    }
+  }
+]
+monitor.bluez.rules = [
+  {
+    matches = [
+      {
+        # Применяется ко всем Bluetooth аудио-устройствам
+        device.name = "~bluez_card.*"
+      }
+    ]
+    actions = {
+      update-props = {
+        # Выставляем беспроводным наушникам наивысший приоритет при подключении
+        node.shared-placement = true
+        bluez5.auto-connect = [ a2dp_sink hfp_hf hsp_hs ]
+      }
+    }
+  }
+]' | tee -a /mnt/home/"$username"/.config/wireplumber/wireplumber.conf.d/95-hotplug-switch.conf /mnt/root/.config/wireplumber/wireplumber.conf.d/95-hotplug-switch.conf
+#
+echo -e "\033[36mНастройка звука.\033[0m"
+mkdir -p /mnt/etc/pipewire/pipewire.conf.d/
+# Прописываем наивысшее качество ресемплинга (10) и алгоритм
+echo -e 'context.properties = {\n    spa.bluez5.codecs = [ ldac aptx_hd aptx sbc_xq sbc ]\n}' > /mnt/etc/pipewire/pipewire.conf.d/99-custom-audio.conf
+# Для изменения именно качества ресемпла создается файл client.conf:
+mkdir -p /mnt/etc/pipewire/client.conf.d/
+echo -e 'filter.properties = {\n    resample.quality = 10\n}' > /mnt/etc/pipewire/client.conf.d/99-resample.conf
+#
 #Создание директории и конфига jgmenu.
 echo -e "\033[36mСоздание конфига jgmenu.\033[0m"
 mkdir -p /mnt/home/"$username"/.config/jgmenu /mnt/root/.config/jgmenu
@@ -2106,7 +2154,7 @@ sed -i 's/menu_halign = left/menu_halign = right/' /mnt/root/.config/jgmenu/righ
 echo -e 'Графические эффекты,bash -c \047if [ -n "$(pidof picom)" ]; then killall picom; else picom -b; fi\047,/usr/share/icons/Papirus-Dark/16x16/apps/blackmagicraw-speedtest.svg
 Системный монитор,bash -c "sed -i \047s/own_window_type/--own_window_type/\047 ~/.config/conky/conky.conf; sed -i \047s/----//\047 ~/.config/conky/conky.conf",/usr/share/icons/Papirus-Dark/16x16/apps/conky.svg
 Подсказка,xed /help.txt,/usr/share/icons/Papirus/16x16/apps/help-browser.svg' | tee /mnt/home/"$username"/.config/jgmenu/help.csv /mnt/root/.config/jgmenu/help.csv
-echo -e 'Выход из i3wm,i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -b \047Да! выйти из i3\047 \047canberra-gtk-play -i service-logout; i3-msg exit\047,/usr/share/icons/Papirus-Dark/16x16/actions/application-exit.svg
+echo -e 'Выход из i3wm,i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -b \047Да! выйти из i3\047 \047pw-play /usr/share/sounds/freedesktop/stereo/service-logout.oga; i3-msg exit\047,/usr/share/icons/Papirus-Dark/16x16/actions/application-exit.svg
 Перезагрузка,systemctl reboot,/usr/share/icons/Papirus/16x16/apps/system-reboot.svg
 Завершение работы,systemctl poweroff,/usr/share/icons/Papirus-Dark/16x16/apps/system-shutdown.svg' | tee /mnt/home/"$username"/.config/jgmenu/poweroff.csv /mnt/root/.config/jgmenu/poweroff.csv
 #
@@ -2252,19 +2300,8 @@ echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus getty@tty1.service
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
 xdm-archlinux dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
-saned.socket cups.socket x11vnc ufw auditd usbguard kmsconvt@tty1.service
+wsdd saned.socket cups.socket x11vnc ufw auditd usbguard kmsconvt@tty1.service
 arch-chroot /mnt timedatectl set-ntp true
-#
-#Настройка звука.
-echo -e "\033[36mНастройка звука.\033[0m"
-sed -i 's/; resample-method = speex-float-1/resample-method = src-sinc-best-quality/' /mnt/etc/pulse/daemon.conf
-#
-#Создание общего конфига obs-studio.
-echo -e "\033[36mСоздание общего конфига obs-studio.\033[0m"
-mkdir -p /mnt/home/"$username"/.config/obs-studio/
-echo -e "[BasicWindow]
-SysTrayWhenStarted=true
-SysTrayMinimizeToTray=true" > /mnt/home/"$username"/.config/obs-studio/global.ini
 #
 #Создание скрипта, который после перезагрузки продолжит установку.
 echo -e "\033[36mСоздание скрипта, который после перезагрузки продолжит установку.\033[0m"
@@ -2366,7 +2403,7 @@ sudo timedatectl set-ntp true
 #
 #Включение службы redshift (Регулирует цветовую температуру вашего экрана).
 echo -e "\\033[36mВключение службы redshift (Регулирует цветовую температуру вашего экрана).\\033[0m"
-systemctl --user enable --now redshift-gtk
+systemctl --user enable --now redshift-gtk pipewire pipewire-pulse wireplumber
 #
 #Cкопирует список пакетов из репозитория Debian.
 echo -e "\\033[36mCкопирует список пакетов из репозитория Debian.\\033[0m"
@@ -2382,7 +2419,8 @@ WINEARCH=win32 winetricks d3dx9 vkd3d vcrun6 mfc140
 winetricks dxvk dotnet48 allcodecs
 #
 #Устанавливаем приложения по умолчанию.
-xdg-mime default org.kde.dolphin.desktop inode/directory application/x-directory
+xdg-mime default nemo.desktop inode/directory
+xdg-mime default nemo.desktop application/x-directory
 xdg-mime default org.mozilla.Thunderbird.desktop x-scheme-handler/mailto
 xdg-mime default vlc.desktop video/mp4
 xdg-mime default vlc.desktop video/x-matroska
