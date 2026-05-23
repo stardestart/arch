@@ -1091,18 +1091,46 @@ sed -i "/\[urgency_critical\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#f92b2
 #Создание аудиоконфига сервера уведомлений.
 echo -e "\033[36mСоздание аудиоконфига сервера уведомлений.\033[0m"
 echo '#!/bin/bash
-TEXT="$*"
-if grep -q "pa-notify" <<< "$TEXT"; then
-    canberra-gtk-play -i audio-volume-change
-elif grep -q "nm-no-connection" <<< "$TEXT"; then
-    canberra-gtk-play -i network-connectivity-lost
-elif grep -q "nm-device" <<< "$TEXT"; then
-    canberra-gtk-play -i network-connectivity-established
-elif grep -q -i "critical" <<< "$TEXT"; then
-    canberra-gtk-play -i window-attention
-else 
-    canberra-gtk-play -i message
-fi' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
+if [ "$5" = "CRITICAL" ]; then
+    # Сверхважные алерты (Аварийное состояние, батарея, блокировка UFW)
+    pw-play /usr/share/sounds/freedesktop/stereo/dialog-error.oga &
+    exit 0
+fi
+killall -q pw-play 2>/dev/null
+case "$1" in
+    # --- ЗВУК И ГРОМКОСТЬ ---
+    "pa-notify" | "volume-change")
+        pw-play /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga &
+        ;;
+    # --- ИНТЕРНЕТ И СЕТЬ (NetworkManager) ---
+    "nm-no-connection")
+        # Сеть отключена / пропала
+        pw-play /usr/share/sounds/freedesktop/stereo/network-connectivity-lost.oga &
+        ;;
+    "nm-device" | "network")
+        # Сеть успешно подключена
+        pw-play /usr/share/sounds/freedesktop/stereo/network-connectivity-established.oga &
+        ;;
+    # --- СИСТЕМНЫЕ ОПЕРАЦИИ (Диски, Скриншоты) ---
+    "udiskie" | "device-notifier")
+        # Вставили флешку или внешний диск
+        pw-play /usr/share/sounds/freedesktop/stereo/device-added.oga &
+        ;;
+    "flameshot" | "spectacle" | "screenshot")
+        # Сделан скриншот экрана
+        pw-play /usr/share/sounds/freedesktop/stereo/screen-capture.oga &
+        ;;
+    # --- СООБЩЕНИЯ И МЕССЕНДЖЕРЫ ---
+    "TelegramDesktop" | "telegram" | "discord" | "element")
+        # Личные сообщения из чатов (если хотите для них особый звук)
+        pw-play /usr/share/sounds/freedesktop/stereo/message-new-instant.oga &
+        ;;
+    # --- ВСЕ ОСТАЛЬНЫЕ УВЕДОМЛЕНИЯ ПО УМОЛЧАНИЮ ---
+    *)
+        # Обычный системный пик для любых неучтенных программ
+        pw-play /usr/share/sounds/freedesktop/stereo/message.oga &
+        ;;
+esac' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
 #
 #Создание конфига picom (Автономный композитор для Xorg).
 echo -e "\033[36mСоздание конфига picom (Автономный композитор для Xorg).\033[0m"
