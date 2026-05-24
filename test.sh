@@ -120,6 +120,7 @@ perl-anyevent-i3 \
 perl-json-xs \
 dmenu \
 ly \
+terminus-font \
 arch-audit \
 firefox \
 firefox-i18n-ru \
@@ -658,7 +659,7 @@ if [ -z "$(efibootmgr | grep Boot)" ];
         sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=2/' /mnt/etc/default/grub
         sed -i 's/#GRUB_DISABLE_RECOVERY=true/GRUB_DISABLE_RECOVERY=true/' /mnt/etc/default/grub
         sed -i 's/GRUB_DISABLE_LINUX_UUID=true/#GRUB_DISABLE_LINUX_UUID=true/' /mnt/etc/default/grub
-        sed -i 's/GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX="resume=\/dev\/'"$sysdisk"''"$p3"' console=quiet /' /mnt/etc/default/grub
+        sed -i 's/GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX="resume=\/dev\/'"$sysdisk"''"$p3"' /' /mnt/etc/default/grub
         grubsha=$(grub-mkpasswd-pbkdf2 << EOF
 $passuser
 $passuser
@@ -675,7 +676,7 @@ EOF' >> /mnt/etc/grub.d/00_header
         arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
         arch-chroot /mnt bootctl install
         echo -e "default arch\ntimeout 2\neditor yes\nconsole-mode max" > /mnt/boot/loader/loader.conf
-        echo -e "title Arch Linux\nlinux /vmlinuz-linux-zen"$microcode"\ninitrd /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw resume=/dev/"$sysdisk""$p2" console=quiet" > /mnt/boot/loader/entries/arch.conf
+        echo -e "title Arch Linux\nlinux /vmlinuz-linux-zen"$microcode"\ninitrd /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw resume=/dev/"$sysdisk""$p2"" > /mnt/boot/loader/entries/arch.conf
 fi
 #
 #Установка микроинструкции для процессора.
@@ -2295,7 +2296,7 @@ arch-chroot /mnt x11vnc -storepasswd $passuser /etc/x11vnc.pass
 chmod 600 /mnt/etc/x11vnc.pass
 echo '[Unit]
 Description=Start x11vnc at startup
-After=ly.service
+After=ly@tty2.service
 [Service]
 Type=simple
 User='"$username"'
@@ -2337,9 +2338,9 @@ arch-chroot /mnt sudo -u "$username" yay -S "${massaurprog[@]}" --noconfirm --as
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
-arch-chroot /mnt systemctl disable dbus getty@tty1.service
+arch-chroot /mnt systemctl disable dbus getty@tty1.service getty@tty2.service
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
-ly-kmsconvt@"$username" dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
+ly@tty2 dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
 wsdd saned.socket cups.socket x11vnc ufw auditd usbguard kmsconvt@tty1.service
 arch-chroot /mnt timedatectl set-ntp true
 #
