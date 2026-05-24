@@ -2478,8 +2478,10 @@ xdg-mime default org.gnome.FileRoller.desktop application/x-tar
 xdg-mime default org.gnome.FileRoller.desktop application/x-gzip
 xdg-mime default org.gnome.FileRoller.desktop application/x-bzip2
 #
+#Добавление путей к шрифтам.
 xset +fp /usr/share/fonts/TTF
 xset +fp /usr/share/fonts/google
+#
 #Удаление временных файлов.
 echo -e "\\033[36mУдаление временных файлов.\\033[0m"
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config

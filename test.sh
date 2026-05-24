@@ -116,7 +116,8 @@ jgmenu \
 perl-anyevent-i3 \
 perl-json-xs \
 dmenu \
-xdm-archlinux \
+greetd \
+greetd-tuigreet \
 arch-audit \
 firefox \
 firefox-i18n-ru \
@@ -1928,10 +1929,16 @@ echo 'polkit.addRule(function(action, subject) {
     }
 });' > /mnt/etc/polkit-1/rules.d/49-nopasswd_global.rules
 #
-#Настройка gnome_keyring.
-echo -e "\033[36mНастройка gnome_keyring\033[0m"
-echo 'auth optional pam_gnome_keyring.so
-session optional pam_gnome_keyring.so auto_start' >> /mnt/etc/pam.d/xdm
+#Настройка gnome_keyring для greetd.
+echo -e "\033[36mНастройка gnome_keyring для greetd\033[0m"
+echo '#%PAM-1.0
+auth required pam_securetty.so
+auth requisite pam_nologin.so
+auth include system-local-login
+auth optional pam_gnome_keyring.so
+account include system-local-login
+session include system-local-login
+session optional pam_gnome_keyring.so auto_start' > /mnt/etc/pam.d/greetd
 #
 #Создание конфига рабочего стола №1.
 echo -e "\033[36mСоздание конфига рабочего стола №1.\033[0m"
@@ -2272,21 +2279,30 @@ for (( j=0, i=1; i<="${#massd[*]}"; i++, j++ ))
 #Настройка удаленного рабочего стола.
 echo -e "\033[36mНастройка удаленного рабочего стола.\033[0m"
 arch-chroot /mnt x11vnc -storepasswd $passuser /etc/x11vnc.pass
-chmod ugo+r /mnt/etc/x11vnc.pass
+chmod 600 /mnt/etc/x11vnc.pass
 echo '[Unit]
-Description="x11vnc"
-Requires=display-manager.service
-After=display-manager.service
+Description=x11vnc Remote Desktop for Greeting Screen
+After=greetd.service
+Requires=greetd.service
 [Service]
-ProtectSystem=full
-ProtectHome=true
-PrivateDevices=true
-NoNewPrivileges=true
-PrivateTmp=true
-ExecStart=
-ExecStart=x11vnc -many -rfbauth /etc/x11vnc.pass -env FD_XDM=1 -auth guess
+Type=simple
+User=root
+ExecStart=/bin/sh -c "exec x11vnc -display :0 -auth \$(find /var/run/ /run/ -name *server* -o -name .Xauthority 2>/dev/null | head -n 1) -many -rfbauth /etc/x11vnc.pass"
+Restart=on-failure
+RestartSec=3
 [Install]
 WantedBy=graphical.target' > /mnt/etc/systemd/system/x11vnc.service
+#
+#Настройка greetd.
+echo -e "\033[36mНастройка greetd.\033[0m"
+echo -e '[terminal]
+vt = 7
+switch = true
+[default_session]
+command = "tuigreet --time --remember --asterisks --greeting \047Привет, '"$username"'!\047 --window-padding 5 --container-padding 2 --theme \047text=green;prompt=green;border=green;title=green;action=green\047 --power-shutdown \047systemctl poweroff\047 --power-reboot \047systemctl reboot\047 --xsessions /usr/share/xsessions --cmd \047bash --login -c startx\047"
+user = "greeter"' > /mnt/etc/greetd/config.toml
+arch-chroot /mnt gpasswd -a greeter video
+arch-chroot /mnt gpasswd -a greeter input
 #
 #Установка помощника yay для работы с AUR (Репозиторий пользователей).
 echo -e "\033[36mУстановка помощника yay для работы с AUR (Репозиторий пользователей).\033[0m"
@@ -2310,7 +2326,7 @@ arch-chroot /mnt sudo -u "$username" yay -S "${massaurprog[@]}" --noconfirm --as
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus getty@tty1.service
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
-xdm-archlinux dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
+greetd dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
 wsdd saned.socket cups.socket x11vnc ufw auditd usbguard kmsconvt@tty1.service
 arch-chroot /mnt timedatectl set-ntp true
 #
@@ -2461,8 +2477,10 @@ xdg-mime default org.gnome.FileRoller.desktop application/x-tar
 xdg-mime default org.gnome.FileRoller.desktop application/x-gzip
 xdg-mime default org.gnome.FileRoller.desktop application/x-bzip2
 #
+#Добавление путей к шрифтам.
 xset +fp /usr/share/fonts/TTF
 xset +fp /usr/share/fonts/google
+#
 #Удаление временных файлов.
 echo -e "\\033[36mУдаление временных файлов.\\033[0m"
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
