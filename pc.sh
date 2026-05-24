@@ -109,14 +109,18 @@ massfont=(30144_PostIndex.ttf https://ttfonts.net/ru/download/31252.htm $(curl h
 massallprog=( xorg-server \
 xorg-xinit \
 xorg-xinput \
+xorg-xwininfo \
 xterm \
+xprintidle \
+cmatrix \
 i3-wm \
 polybar \
 jgmenu \
 perl-anyevent-i3 \
 perl-json-xs \
 dmenu \
-xdm-archlinux \
+greetd \
+greetd-tuigreet \ 
 arch-audit \
 firefox \
 firefox-i18n-ru \
@@ -661,7 +665,7 @@ if [ -z "$(efibootmgr | grep Boot)" ];
         sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=2/' /mnt/etc/default/grub
         sed -i 's/#GRUB_DISABLE_RECOVERY=true/GRUB_DISABLE_RECOVERY=true/' /mnt/etc/default/grub
         sed -i 's/GRUB_DISABLE_LINUX_UUID=true/#GRUB_DISABLE_LINUX_UUID=true/' /mnt/etc/default/grub
-        sed -i 's/GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX="resume=\/dev\/'"$sysdisk"''"$p3"' /' /mnt/etc/default/grub
+        sed -i 's/GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX="resume=\/dev\/'"$sysdisk"''"$p3"' console=quiet /' /mnt/etc/default/grub
         grubsha=$(grub-mkpasswd-pbkdf2 << EOF
 $passuser
 $passuser
@@ -678,7 +682,7 @@ EOF' >> /mnt/etc/grub.d/00_header
         arch-chroot /mnt pacman -Sy efibootmgr --noconfirm
         arch-chroot /mnt bootctl install
         echo -e "default arch\ntimeout 2\neditor yes\nconsole-mode max" > /mnt/boot/loader/loader.conf
-        echo -e "title Arch Linux\nlinux /vmlinuz-linux-zen"$microcode"\ninitrd /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw resume=/dev/"$sysdisk""$p2"" > /mnt/boot/loader/entries/arch.conf
+        echo -e "title Arch Linux\nlinux /vmlinuz-linux-zen"$microcode"\ninitrd /initramfs-linux-zen.img\noptions root=/dev/"$sysdisk""$p3" rw resume=/dev/"$sysdisk""$p2" console=quiet" > /mnt/boot/loader/entries/arch.conf
 fi
 #
 #Установка микроинструкции для процессора.
@@ -1031,6 +1035,28 @@ echo -e "[preferred]\ndefault=gtk" > /mnt/usr/share/xdg-desktop-portal/portals.c
 #Создание конфига bashrc (Настройка Xterm).
 echo -e "\033[36mСоздание конфига bashrc (Настройка Xterm).\033[0m"
 echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
+# Заставка cmatrix для xterm
+if [[ "$TERM" == xterm* ]] || [[ "$TERMINAL_EMULATOR" == xterm* ]]; then
+    cmatrix_running=false
+    (
+        while true; do
+            idle_time=$(xprintidle)
+
+            if [ "$idle_time" -ge 300000 ]; then
+                if ! $cmatrix_running; then
+                    cmatrix -sba &
+                    cmatrix_running=true
+                fi
+            else
+                if $cmatrix_running; then
+                    killall cmatrix
+                    cmatrix_running=false
+                fi
+            fi
+            sleep 1
+        done
+    ) &
+fi
 alias grep="grep --color=auto" #Раскрашиваем grep.
 alias diff="diff --color=auto" #Раскрашиваем diff.
 alias ls="ls --color=auto" #Раскрашиваем ls.
@@ -1945,10 +1971,16 @@ echo 'polkit.addRule(function(action, subject) {
     }
 });' > /mnt/etc/polkit-1/rules.d/49-nopasswd_global.rules
 #
-#Настройка gnome_keyring.
-echo -e "\033[36mНастройка gnome_keyring\033[0m"
-echo 'auth optional pam_gnome_keyring.so
-session optional pam_gnome_keyring.so auto_start' >> /mnt/etc/pam.d/xdm
+#Настройка gnome_keyring для greetd.
+echo -e "\033[36mНастройка gnome_keyring для greetd\033[0m"
+echo '#%PAM-1.0
+auth required pam_securetty.so
+auth requisite pam_nologin.so
+auth include system-local-login
+auth optional pam_gnome_keyring.so
+account include system-local-login
+session include system-local-login
+session optional pam_gnome_keyring.so auto_start' > /mnt/etc/pam.d/greetd
 #
 #Создание конфига рабочего стола №1.
 echo -e "\033[36mСоздание конфига рабочего стола №1.\033[0m"
@@ -2289,21 +2321,31 @@ for (( j=0, i=1; i<="${#massd[*]}"; i++, j++ ))
 #Настройка удаленного рабочего стола.
 echo -e "\033[36mНастройка удаленного рабочего стола.\033[0m"
 arch-chroot /mnt x11vnc -storepasswd $passuser /etc/x11vnc.pass
-chmod ugo+r /mnt/etc/x11vnc.pass
+chmod 600 /mnt/etc/x11vnc.pass
 echo '[Unit]
-Description="x11vnc"
-Requires=display-manager.service
-After=display-manager.service
+Description=Start x11vnc at startup
+After=greetd.target
 [Service]
-ProtectSystem=full
-ProtectHome=true
-PrivateDevices=true
-NoNewPrivileges=true
-PrivateTmp=true
-ExecStart=
-ExecStart=x11vnc -many -rfbauth /etc/x11vnc.pass -env FD_XDM=1 -auth guess
+Type=simple
+User='"$username"'
+Environment=HOME=/home/'"$username"'
+ExecStartPre=/bin/sleep 10 
+ExecStart=/usr/bin/x11vnc -display :0 -auth guess -usepw -forever -bg -rfbport 5900
+#ExecStart=/usr/bin/x11vnc -display :0 -auth /var/run/greetd-683.sock -usepw -forever -bg -rfbport 5900
+Restart=on-failure
 [Install]
-WantedBy=graphical.target' > /mnt/etc/systemd/system/x11vnc.service
+WantedBy=multi-user.target' > /mnt/etc/systemd/system/x11vnc.service
+#
+#Настройка greetd.
+echo -e "\033[36mНастройка greetd.\033[0m"
+echo -e '[terminal]
+vt = 7
+switch = true
+[default_session]
+command = "tuigreet --time --remember --asterisks --greeting \047Привет, '"$username"'!\047 --window-padding 5 --container-padding 2 --theme \047text=green;prompt=green;border=green;title=green;action=green\047 --power-shutdown \047systemctl poweroff\047 --power-reboot \047systemctl reboot\047 --xsessions /usr/share/xsessions --cmd \047bash --login -c startx\047 && /usr/bin/x11vnc -display :0 -auth guess -usepw -forever -bg -rfbport 5900"
+user = "greeter"' > /mnt/etc/greetd/config.toml
+arch-chroot /mnt gpasswd -a greeter video
+arch-chroot /mnt gpasswd -a greeter input
 #
 #Установка помощника yay для работы с AUR (Репозиторий пользователей).
 echo -e "\033[36mУстановка помощника yay для работы с AUR (Репозиторий пользователей).\033[0m"
@@ -2327,7 +2369,7 @@ arch-chroot /mnt sudo -u "$username" yay -S "${massaurprog[@]}" --noconfirm --as
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus getty@tty1.service
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
-xdm-archlinux dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
+greetd dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
 wsdd saned.socket cups.socket x11vnc ufw auditd usbguard kmsconvt@tty1.service
 arch-chroot /mnt timedatectl set-ntp true
 #
