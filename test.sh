@@ -2339,7 +2339,7 @@ arch-chroot /mnt sudo -u "$username" yay -S "${massaurprog[@]}" --noconfirm --as
 echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt systemctl disable dbus getty@tty1.service
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
-ly dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
+ly-kmsconvt@"$username" dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
 wsdd saned.socket cups.socket x11vnc ufw auditd usbguard kmsconvt@tty1.service
 arch-chroot /mnt timedatectl set-ntp true
 #
