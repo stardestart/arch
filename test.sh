@@ -156,7 +156,7 @@ go \
 libnotify \
 openssh \
 dbus-broker \
-x11vnc \
+reframe \
 polkit \
 gnome-keyring \
 polkit-gnome \
@@ -2292,21 +2292,28 @@ for (( j=0, i=1; i<="${#massd[*]}"; i++, j++ ))
 #
 #Настройка удаленного рабочего стола.
 echo -e "\033[36mНастройка удаленного рабочего стола.\033[0m"
-arch-chroot /mnt x11vnc -storepasswd $passuser /etc/x11vnc.pass
-chmod 600 /mnt/etc/x11vnc.pass
+mkdir -p /mnt/etc/reframe
+echo '[vnc]
+address = "0.0.0.0"
+port = 5900
+password = '"$passuser"'
+[backend]
+type = "drm"
+uinput = true
+draw-cursor = true' > /mnt/etc/reframe/vnc.toml
+chmod 644 /mnt/etc/reframe/vnc.toml
 echo '[Unit]
-Description=Start x11vnc at startup
-After=ly@tty2.service
+Description=ReFrame DRM/KMS VNC Server
+After=network.target
+DefaultDependencies=no
 [Service]
 Type=simple
-User='"$username"'
-Environment=HOME=/home/'"$username"'
-ExecStartPre=/bin/sleep 10 
-ExecStart=/usr/bin/x11vnc -display :0 -auth guess -usepw -forever -bg -rfbport 5900
-#ExecStart=/usr/bin/x11vnc -display :0 -auth /var/run/greetd-683.sock -usepw -forever -bg -rfbport 5900
-Restart=on-failure
+User=root
+ExecStart=/usr/bin/reframe-server -c /etc/reframe/vnc.toml
+Restart=always
+RestartSec=3
 [Install]
-WantedBy=multi-user.target' > /mnt/etc/systemd/system/x11vnc.service
+WantedBy=multi-user.target' > /mnt/etc/systemd/system/reframe.service
 #
 #Настройка ly-dm.
 echo -e "\033[36mНастройка ly-dm.\033[0m"
@@ -2338,10 +2345,11 @@ arch-chroot /mnt sudo -u "$username" yay -S "${massaurprog[@]}" --noconfirm --as
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
-arch-chroot /mnt systemctl disable dbus getty@tty1.service getty@tty2.service
+ln -sf /mnt/usr/lib/systemd/system/kmsconvt@.service /mnt/etc/systemd/system/autovt@.service
+arch-chroot /mnt systemctl disable dbus
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
 ly@tty2 dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
-wsdd saned.socket cups.socket x11vnc ufw auditd usbguard kmsconvt@tty1.service
+wsdd saned.socket cups.socket reframe ufw auditd usbguard
 arch-chroot /mnt timedatectl set-ntp true
 #
 #Создание скрипта, который после перезагрузки продолжит установку.
