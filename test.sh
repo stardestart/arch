@@ -2355,7 +2355,7 @@ arch-chroot /mnt sudo -u "$username" yay -S "${massaurprog[@]}" --noconfirm --as
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
-ln -sf /mnt/usr/lib/systemd/system/kmsconvt@.service /mnt/etc/systemd/system/autovt@.service
+arch-chroot /mnt ln -sf /usr/lib/systemd/system/kmsconvt@.service /etc/systemd/system/autovt@.service
 arch-chroot /mnt systemctl disable dbus
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
 ly@tty2 dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
