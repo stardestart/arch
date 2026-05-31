@@ -2311,14 +2311,13 @@ PrivateTmp=false
 PrivateDevices=false
 NoNewPrivileges=true
 ExecStart=
-ExecStart=/usr/bin/x11vnc -many -rfbauth /etc/x11vnc.pass -auth /run/user/1000/lyxauth -noshm -rfbport 5901
+ExecStart=/usr/bin/x11vnc -many -rfbauth /etc/x11vnc.pass -auth /run/user/1000/lyxauth -noshm -rfbport 5900
 [Install]
-WantedBy=graphical.target
-' > /mnt/etc/systemd/system/x11vnc.service
+WantedBy=graphical.target' > /mnt/etc/systemd/system/x11vnc.service
 mkdir -p /mnt/etc/reframe
 echo '[vnc]
 address = "0.0.0.0"
-port = 5901
+port = 5900
 password = '"$passuser"'
 [backend]
 type = "drm"

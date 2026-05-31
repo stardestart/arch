@@ -2339,10 +2339,9 @@ PrivateTmp=false
 PrivateDevices=false
 NoNewPrivileges=true
 ExecStart=
-ExecStart=/usr/bin/x11vnc -many -rfbauth /etc/x11vnc.pass -auth /run/user/1000/lyxauth -noshm -rfbport 5901
+ExecStart=/usr/bin/x11vnc -many -rfbauth /etc/x11vnc.pass -auth /run/user/1000/lyxauth -noshm -rfbport 5900
 [Install]
-WantedBy=graphical.target
-' > /mnt/etc/systemd/system/x11vnc.service
+WantedBy=graphical.target' > /mnt/etc/systemd/system/x11vnc.service
 #
 #Настройка greetd.
 echo -e "\033[36mНастройка greetd.\033[0m"
@@ -2375,7 +2374,7 @@ arch-chroot /mnt sudo -u "$username" yay -S "${massaurprog[@]}" --noconfirm --as
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
-ln -sf /mnt/usr/lib/systemd/system/kmsconvt@.service /mnt/etc/systemd/system/autovt@.service
+arch-chroot /mnt ln -sf /usr/lib/systemd/system/kmsconvt@.service /etc/systemd/system/autovt@.service
 arch-chroot /mnt systemctl disable dbus
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
 greetd dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
