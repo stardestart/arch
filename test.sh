@@ -157,7 +157,7 @@ libnotify \
 openssh \
 dbus-broker \
 x11vnc \
-reframe \
+kmsvnc \
 polkit \
 gnome-keyring \
 polkit-gnome \
@@ -2293,11 +2293,10 @@ for (( j=0, i=1; i<="${#massd[*]}"; i++, j++ ))
 #
 #Настройка удаленного рабочего стола.
 echo -e "\033[36mНастройка удаленного рабочего стола.\033[0m"
-arch-chroot /mnt x11vnc -storepasswd $passuser /etc/x11vnc.pass
-chmod 600 /mnt/etc/x11vnc.pass
 echo '[Unit]
-Description="x11vnc"
-After=graphical.target
+Description=x11vnc Desktop Server
+After=graphical.target kmsvnc.service
+Conflicts=kmsvnc.service
 [Service]
 Environment=DISPLAY=:0
 Environment=XAUTHORITY=/run/user/1000/lyxauth
@@ -2311,18 +2310,21 @@ PrivateTmp=false
 PrivateDevices=false
 NoNewPrivileges=true
 ExecStart=
-ExecStart=/usr/bin/x11vnc -many -rfbauth /etc/x11vnc.pass -auth /run/user/1000/lyxauth -noshm -rfbport 5900
+ExecStart=/usr/bin/x11vnc -many -auth /run/user/1000/lyxauth -noshm -rfbport 5900
 [Install]
 WantedBy=graphical.target' > /mnt/etc/systemd/system/x11vnc.service
-mkdir -p /mnt/etc/reframe
-echo '[vnc]
-address = "0.0.0.0"
-port = 5900
-password = '"$passuser"'
-[backend]
-type = "drm"
-uinput = true
-draw-cursor = true' > /mnt/etc/reframe/reframe.conf
+echo '[Unit]
+Description=KMSVNC Remote Desktop Server
+After=network.target
+Conflicts=graphical.target
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/kmsvnc -p 5900 -b 0.0.0.0
+Restart=always
+RestartSec=3
+[Install]
+WantedBy=multi-user.target' > /mnt/etc/systemd/system/kmsvnc.service
 #
 #Настройка ly-dm.
 echo -e "\033[36mНастройка ly-dm.\033[0m"
@@ -2358,7 +2360,7 @@ arch-chroot /mnt ln -sf /usr/lib/systemd/system/kmsconvt@.service /etc/systemd/s
 arch-chroot /mnt systemctl disable dbus
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
 ly@tty2 dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
-wsdd saned.socket cups.socket x11vnc reframe-server@reframe ufw auditd usbguard
+wsdd saned.socket cups.socket x11vnc kmsvnc ufw auditd usbguard
 arch-chroot /mnt timedatectl set-ntp true
 #
 #Создание скрипта, который после перезагрузки продолжит установку.
