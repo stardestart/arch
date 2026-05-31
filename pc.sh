@@ -2324,18 +2324,25 @@ echo -e "\033[36mНастройка удаленного рабочего сто
 arch-chroot /mnt x11vnc -storepasswd $passuser /etc/x11vnc.pass
 chmod 600 /mnt/etc/x11vnc.pass
 echo '[Unit]
-Description=Start x11vnc at startup
-After=greetd.target
+Description="x11vnc"
+After=graphical.target
 [Service]
-Type=simple
-User='"$username"'
-Environment=HOME=/home/'"$username"'
-ExecStartPre=/bin/sleep 10 
-ExecStart=/usr/bin/x11vnc -display :0 -auth guess -usepw -forever -bg -rfbport 5900
-#ExecStart=/usr/bin/x11vnc -display :0 -auth /var/run/greetd-683.sock -usepw -forever -bg -rfbport 5900
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/run/user/1000/lyxauth
+Environment=QT_X11_NO_MITSHM=1
+Environment=X11VNC_REMOTE_ONLY=1
 Restart=on-failure
+RestartSec=3
+ProtectSystem=full
+ProtectHome=false
+PrivateTmp=false
+PrivateDevices=false
+NoNewPrivileges=true
+ExecStart=
+ExecStart=/usr/bin/x11vnc -many -rfbauth /etc/x11vnc.pass -auth /run/user/1000/lyxauth -noshm -rfbport 5901
 [Install]
-WantedBy=multi-user.target' > /mnt/etc/systemd/system/x11vnc.service
+WantedBy=graphical.target
+' > /mnt/etc/systemd/system/x11vnc.service
 #
 #Настройка greetd.
 echo -e "\033[36mНастройка greetd.\033[0m"
@@ -2368,7 +2375,8 @@ arch-chroot /mnt sudo -u "$username" yay -S "${massaurprog[@]}" --noconfirm --as
 #
 #Автозапуск служб.
 echo -e "\033[36mАвтозапуск служб.\033[0m"
-arch-chroot /mnt systemctl disable dbus getty@tty1.service
+ln -sf /mnt/usr/lib/systemd/system/kmsconvt@.service /mnt/etc/systemd/system/autovt@.service
+arch-chroot /mnt systemctl disable dbus
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
 greetd dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
 wsdd saned.socket cups.socket x11vnc ufw auditd usbguard kmsconvt@tty1.service
