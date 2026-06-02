@@ -1882,62 +1882,51 @@ animation-low-framerate = 200' | tee /mnt/home/"$username"/.config/polybar/confi
 #Создание скрипта который запускает i2p сеть и введет локальную адресную книгу.
 mkdir -p /mnt/home/"$username"/.config/i2p /mnt/root/.config/i2p
 echo '#!/bin/bash
-# Запускаем I2P Daemon в фоновом режиме.
-i2pd --daemon
-#
-# Цикл, который будет выполняться, пока не будет успешного ответа от указанного URL.
-while ! curl -s --socks5-hostname 127.0.0.1:4447 http://flibusta.i2p/; do
-    # Отправляем уведомление о том, что I2P туннели настраиваются.
-    notify-send --replace-id=9696 -t 5000 -i network-transmit-receive "Настройка I2P туннелей" "Пожалуйста, подождите, идет настройка соединения..."
-    # Ждем 5 секунд перед следующей попыткой.
-    sleep 5
-done
-#
-# Уведомление о загрузке списка хостов.
-notify-send --replace-id=9696 -i document-open "Загрузка списка хостов" "Пожалуйста, подождите, идет загрузка данных..."
-# Объявляем массив для адресной книги.
-declare -a addressbook
-#
-# Загружаем список хостов из двух источников и обрабатываем их.
-mapfile -t addressbook < <(
-    cat <(curl -s -x http://127.0.0.1:4444 http://identiguy.i2p/hosts.txt) \
-        <(curl -s -x http://127.0.0.1:4444 http://isitup.i2p/hosts.txt) |
-    # Удаляем строки с "=" и комментарии.
-    sed -e "s/=\(.*\)//" -e "/^#/d" | sort -u
-)
-#
-# Уведомление об открытии браузера.
-notify-send --replace-id=9696 -t 5000 -i browser "Открытие браузера" "Запускаем браузер xlinks для доступа к I2P..."
-sleep 50; xlinks -g -socks-proxy 127.0.0.1:4447 ~/.config/i2p/index.html &
-#
-# Уведомление о создании адресной книги I2P.
-notify-send --replace-id=9696 -t 5000 -i document-new "Создание адресной книги I2P" "Обновите страницу браузера с помощью CTRL+R после завершения."
-# Удаляем ненужные строки из index.html.
-sed -i "/<\/ol>\|<\/body>\|<\/html>/d" ~/.config/i2p/index.html
-#
-# Перебираем все адреса в адресной книге.
-for i in "${!addressbook[@]}"; do
-    # Проверяем, есть ли адрес уже в index.html.
-    if ! grep --color=never -q -E "${addressbook[i]}" ~/.config/i2p/index.html || grep --color=never -q -E "http://${addressbook[i]}</a> — </li>" ~/.config/i2p/index.html; then
-        # Если адреса нет, добавляем его в index.html.
-        if curl --max-time 30 -s -x http://127.0.0.1:4444 -H "Range: bytes=0-1000" "http://${addressbook[i]}" |
-        grep --color=never -E "<title>([^<]*)</title>" && ! curl --max-time 30 -s -x http://127.0.0.1:4444 -I "http://${addressbook[i]}" |
-        grep --color=never -E "Server Error"; then
-            echo -e "<li><a href=\"http://${addressbook[i]}\">http://${addressbook[i]}</a> — \
-"$(curl --max-time 100 -s -x http://127.0.0.1:4444 -H "Range: bytes=0-1000" http://"${addressbook[i]}" |
-            grep --color=never -E "<title>([^<]*)</title>" |
-            sed -n "s/.*<title>\(.*\)<\/title>.*/\1/p")"</li>" >> ~/.config/i2p/index.html
-            notify-send --replace-id=9696 -i document-new "${addressbook[i]}" "Добавлено в адресную книгу"
-        else
-            notify-send --replace-id=9696 -i dialog-warning "${addressbook[i]}" "Не удалось получить заголовок"
-        fi
-    else
-        # Если адрес не добавляется, выводим сообщение.
-        notify-send --replace-id=9696 -i dialog-information "${addressbook[i]}" "Уже есть в адресной книге"
+# Путь к файлу индекса
+INDEX_FILE="$HOME/.config/i2p/index.html"
+
+# Функция для обработки ОДНОГО сайта (экспортируем для xargs)
+process_site() {
+    local site="$1"
+    local index_file="$2"
+    local proxy="http://127.0.0.1:4444"
+
+    # Проверяем, нет ли уже сайта в индексе
+    if grep -q -F "$site" "$index_file"; then
+        notify-send --replace-id=9696 -t 500 -i dialog-information "$site" "Уже есть в базе"
+        return
     fi
-done
-# Добавляем закрывающие теги в index.html.
-echo -e "</ol>\n</body>\n</html>" >> ~/.config/i2p/index.html' | tee /mnt/home/"$username"/.config/i2p/index_i2p.sh /mnt/root/.config/i2p/index_i2p.sh
+
+    # Делаем ВСЕГО ОДИН запрос вместо трех. Скачиваем первые 2 Кб (с запасом для <title>)
+    # Таймаут жестко ограничен 15 секундами, чтобы не ждать "трупы"
+    local html
+    html=$(curl --max-time 15 -s -x "$proxy" -H "Range: bytes=0-2048" "http://$site")
+
+    # Проверяем, получили ли мы HTML-код и нет ли там ошибки сервера
+    if echo "$html" | grep -q -E "<title>([^<]*)</title>" && ! echo "$html" | grep -q "Server Error"; then
+        # Вырезаем заголовок
+        local title
+        title=$(echo "$html" | grep -E "<title>([^<]*)</title>" | sed -n "s/.*<title>\(.*\)<\/title>.*/\1/p" | xargs)
+        
+        # Безопасно дописываем в файл (используем flock для предотвращения конфликтов записи)
+        flock -x "$index_file" echo -e "<li><a href=\"http://$site\">http://$site</a> — $title</li>" >> "$index_file"
+        notify-send --replace-id=9696 -t 1000 -i document-new "$site" "Добавлен: $title"
+    else
+        notify-send --replace-id=9696 -t 500 -i dialog-warning "$site" "Недоступен или нет заголовка"
+    fi
+}
+
+# Экспортируем функцию и переменную, чтобы их видел xargs
+export -f process_site
+export INDEX_FILE
+
+# Запуск параллельной индексации в 10 потоков
+notify-send --replace-id=9696 -i document-open "Индексация" "Запуск параллельного опроса всей адресной книги..."
+printf "%s\n" "${addressbook[@]}" | xargs -I {} -P 10 bash -c 'process_site "$1" "$INDEX_FILE"' _ {}
+
+# Добавляем закрывающие теги в index.html после завершения всех потоков
+echo -e "</ol>\n</body>\n</html>" >> "$INDEX_FILE"
+notify-send --replace-id=9696 -t 10000 -i tools-check-spelling "Готово!" "Индексация завершена. Обновите браузер."' | tee /mnt/home/"$username"/.config/i2p/index_i2p.sh /mnt/root/.config/i2p/index_i2p.sh
 echo -e "<html>\n<head>\n<title>Index I2P</title>\n</head>\n<body>\n<ol>\n</ol>\n</body>\n</html>" | tee /mnt/home/"$username"/.config/i2p/index.html /mnt/root/.config/i2p/index.html
 #
 #Создание конфига redshift (Регулирует цветовую температуру вашего экрана).
@@ -2296,7 +2285,6 @@ echo -e "\033[36mНастройка удаленного рабочего сто
 echo '[Unit]
 Description=x11vnc Desktop Server
 After=graphical.target kmsvnc.service
-Conflicts=kmsvnc.service
 [Service]
 Environment=DISPLAY=:0
 Environment=XAUTHORITY=/run/user/1000/lyxauth
@@ -2309,6 +2297,9 @@ ProtectHome=false
 PrivateTmp=false
 PrivateDevices=false
 NoNewPrivileges=true
+#ExecStartPre=-/usr/bin/pkill -f kmsvnc
+ExecStartPre=-/usr/bin/systemctl stop kmsvnc.service
+ExecStartPre=/usr/bin/sleep 1
 ExecStart=
 ExecStart=/usr/bin/x11vnc -many -auth /run/user/1000/lyxauth -noshm -rfbport 5900
 [Install]
@@ -2316,9 +2307,8 @@ WantedBy=graphical.target' > /mnt/etc/systemd/system/x11vnc.service
 echo '[Unit]
 Description=KMSVNC Remote Desktop Server
 After=network.target
-Conflicts=graphical.target
 [Service]
-Type=simple
+Type=forking
 User=root
 ExecStart=/usr/bin/kmsvnc -p 5900 -b 0.0.0.0
 Restart=always
