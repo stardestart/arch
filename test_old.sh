@@ -127,7 +127,6 @@ firefox-i18n-ru \
 firefox-spell-ru \
 firefox-ublock-origin \
 firefox-dark-reader \
-i2pd \
 links \
 xlinks \
 thunderbird \
@@ -1556,7 +1555,7 @@ font-2 = Noto Sans Symbols2:size='"$font"'
 font-3 = Noto Emoji SemiBold:size='"$font"'
 font-4 = Stalinist One:size='"$font"'
 locale = ru_RU.UTF-8
-modules-left = jgmenu inetbrowser1 inetbrowser2 filebrowser1 filebrowser2 libreoffice1 libreoffice2 xed1 xed2 calculator1 calculator2 pinta1 pinta2 cheese1 cheese2 skanlite1 skanlite2 i2p1 i2p2
+modules-left = jgmenu inetbrowser1 inetbrowser2 filebrowser1 filebrowser2 libreoffice1 libreoffice2 xed1 xed2 calculator1 calculator2 pinta1 pinta2 cheese1 cheese2 skanlite1 skanlite2
 modules-center = title
 modules-right = date1 date2 date3 date4 pulseaudio printscreen help poweroff
 dpi = 0
@@ -1682,21 +1681,6 @@ hook-1 = echo " 🖨️"
 format-1 = <label>
 format-1-background = #283544
 format-1-foreground = #2bf92b
-
-[module/i2p1]
-type = custom/script
-exec = echo " I2P"; if [ -n "$(pidof i2pd)" ]; then polybar-msg action i2p1 module_hide; polybar-msg action i2p2 hook 1; else polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show; fi
-click-left = ~/.config/i2p/index_i2p.sh
-
-[module/i2p2]
-type = custom/ipc
-hook-0 =
-hook-1 = echo " I2P"
-format-1 = <label>
-format-1-background = #283544
-format-1-foreground = #2bf92b
-click-left = xlinks -g -socks-proxy 127.0.0.1:4447 ~/.config/i2p/index.html
-click-right = kill "$(pidof i2pd)"; polybar-msg action i2p2 hook 0; polybar-msg action i2p1 module_show
 
 [module/title]
 type = internal/xwindow
@@ -1879,56 +1863,6 @@ animation-low-0 = !
 animation-low-1 =
 animation-low-framerate = 200' | tee /mnt/home/"$username"/.config/polybar/config.ini /mnt/root/.config/polybar/config.ini
 #
-#Создание скрипта который запускает i2p сеть и введет локальную адресную книгу.
-mkdir -p /mnt/home/"$username"/.config/i2p /mnt/root/.config/i2p
-echo '#!/bin/bash
-# Путь к файлу индекса
-INDEX_FILE="$HOME/.config/i2p/index.html"
-
-# Функция для обработки ОДНОГО сайта (экспортируем для xargs)
-process_site() {
-    local site="$1"
-    local index_file="$2"
-    local proxy="http://127.0.0.1:4444"
-
-    # Проверяем, нет ли уже сайта в индексе
-    if grep -q -F "$site" "$index_file"; then
-        notify-send --replace-id=9696 -t 500 -i dialog-information "$site" "Уже есть в базе"
-        return
-    fi
-
-    # Делаем ВСЕГО ОДИН запрос вместо трех. Скачиваем первые 2 Кб (с запасом для <title>)
-    # Таймаут жестко ограничен 15 секундами, чтобы не ждать "трупы"
-    local html
-    html=$(curl --max-time 15 -s -x "$proxy" -H "Range: bytes=0-2048" "http://$site")
-
-    # Проверяем, получили ли мы HTML-код и нет ли там ошибки сервера
-    if echo "$html" | grep -q -E "<title>([^<]*)</title>" && ! echo "$html" | grep -q "Server Error"; then
-        # Вырезаем заголовок
-        local title
-        title=$(echo "$html" | grep -E "<title>([^<]*)</title>" | sed -n "s/.*<title>\(.*\)<\/title>.*/\1/p" | xargs)
-        
-        # Безопасно дописываем в файл (используем flock для предотвращения конфликтов записи)
-        flock -x "$index_file" echo -e "<li><a href=\"http://$site\">http://$site</a> — $title</li>" >> "$index_file"
-        notify-send --replace-id=9696 -t 1000 -i document-new "$site" "Добавлен: $title"
-    else
-        notify-send --replace-id=9696 -t 500 -i dialog-warning "$site" "Недоступен или нет заголовка"
-    fi
-}
-
-# Экспортируем функцию и переменную, чтобы их видел xargs
-export -f process_site
-export INDEX_FILE
-
-# Запуск параллельной индексации в 10 потоков
-notify-send --replace-id=9696 -i document-open "Индексация" "Запуск параллельного опроса всей адресной книги..."
-printf "%s\n" "${addressbook[@]}" | xargs -I {} -P 10 bash -c 'process_site "$1" "$INDEX_FILE"' _ {}
-
-# Добавляем закрывающие теги в index.html после завершения всех потоков
-echo -e "</ol>\n</body>\n</html>" >> "$INDEX_FILE"
-notify-send --replace-id=9696 -t 10000 -i tools-check-spelling "Готово!" "Индексация завершена. Обновите браузер."' | tee /mnt/home/"$username"/.config/i2p/index_i2p.sh /mnt/root/.config/i2p/index_i2p.sh
-echo -e "<html>\n<head>\n<title>Index I2P</title>\n</head>\n<body>\n<ol>\n</ol>\n</body>\n</html>" | tee /mnt/home/"$username"/.config/i2p/index.html /mnt/root/.config/i2p/index.html
-#
 #Создание конфига redshift (Регулирует цветовую температуру вашего экрана).
 echo -e "\033[36mСоздание конфига redshift (Регулирует цветовую температуру вашего экрана).\033[0m"
 echo '[redshift]
@@ -2023,7 +1957,6 @@ Print Screen -- Снимок экрана.
 🎨 -- Запустить pinta.
 📸 -- Запустить cheese.
 🖨️ -- Запустить skanlite.
-I2P -- Запуск I2Pd (ПКМ открытие браузера).
 ⎙ -- Снимок экрана/Ножницы.
 🛈 -- Эффекты и мониторинг.
 ⏻ -- Управление сессией.
@@ -2511,12 +2444,12 @@ xdg-mime default org.gnome.FileRoller.desktop application/x-bzip2
 xset +fp /usr/share/fonts/TTF
 xset +fp /usr/share/fonts/google
 #
-sudo nft list ruleset
 #Удаление временных файлов.
 echo -e "\\033[36mУдаление временных файлов.\\033[0m"
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 sed -i \047s/#TechnicalSymbol//\047 ~/.config/i3/config
-#rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
+sudo nft list ruleset
+rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #Передача прав созданному пользователю.
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
@@ -2578,7 +2511,7 @@ esac' > /mnt/etc/NetworkManager/dispatcher.d/09-timezone
 #
 #Делаем xinitrc, 09-timezone и archinstall.sh исполняемыми.
 echo -e "\033[36mДелаем xinitrc, 09-timezone и archinstall.sh исполняемыми.\033[0m"
-chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh /mnt/root/.xinitrc /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh /mnt/home/"$username"/.config/i2p/index_i2p.sh /mnt/root/.config/i2p/index_i2p.sh
+chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh /mnt/root/.xinitrc /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
 #
 #Удаленное включение компьютера с помощью Wake-on-LAN (WOL).
 echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"
@@ -2613,5 +2546,5 @@ while [[ 0 -ne $tic ]]; do
     sleep 1
     tic=$(($tic-1))
 done
-#fdisk -l
+fdisk -l
 lsblk -l
