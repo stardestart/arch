@@ -2403,6 +2403,16 @@ sudo debtap -u
 echo -e "\\033[36mСоздание двоичного кэша данных, хранящихся в файлах.desktop и MIME, которые фреймворк KService использует для поиска плагинов, приложений и других сервисов.\\033[0m"
 kbuildsycoca6
 #
+# Устанавливаем Семейный Яндекс.DNS
+NET_CONN=$(ip -br link show | grep -i "UP" | grep -v "lo" | awk \047{print $1}\047 | xargs)
+if [ -n "$NET_CONN" ]; then
+  echo "$NET_CONN" | while read -r CONN; do
+    [ -z "$CONN" ] && continue
+    sudo nmcli connection modify "$CONN" ipv4.dns "77.88.8.7 77.88.8.3"
+    sudo nmcli connection modify "$CONN" ipv4.ignore-auto-dns yes
+    sudo nmcli connection down "$CONN" && sudo nmcli connection up "$CONN"
+  done
+fi
 #Настройка wine (Позволяет запускать приложения Windows).
 echo -e "\\033[36mНастройка wine (Позволяет запускать приложения Windows).\\033[0m"
 WINEARCH=win32 winetricks d3dx9
