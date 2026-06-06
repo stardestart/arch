@@ -1190,7 +1190,7 @@ rounded-corners-exclude = [ "window_type = \047dock\047",
                             "window_type = \047popup_menu\047",
                             "window_type = \047dropdown_menu\047",
                             "window_type = \047notification\047" ];
-
+#
 #Оптимизация отрисовки и обнаружение окон
 mark-wmwin-focused = true;
 #
@@ -2220,14 +2220,6 @@ nft add rule inet filter input ip saddr 192.168.1.0/24 tcp dport 5900 accept
 nft add rule inet filter input tcp dport 5900 drop
 nft list ruleset > /mnt/etc/nftables.conf
 #
-#
-sudo arch-chroot /mnt systemctl start systemd-resolved.service
-for IFACE in $netdev; do
-  sudo arch-chroot /mnt resolvectl dns "$IFACE" 77.88.8.7 77.88.8.3
-  sudo arch-chroot /mnt resolvectl domain "$IFACE" "~."
-done
-ln -sf /mnt/run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
-#
 #Настройка удаленного рабочего стола.
 echo -e "\033[36mНастройка удаленного рабочего стола.\033[0m"
 echo '[Unit]
@@ -2298,7 +2290,7 @@ arch-chroot /mnt ln -sf /usr/lib/systemd/system/kmsconvt@.service /etc/systemd/s
 arch-chroot /mnt systemctl disable dbus
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
 ly@tty2 dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
-wsdd saned.socket cups.socket x11vnc kmsvnc ufw auditd usbguard nftables systemd-resolved
+wsdd saned.socket cups.socket x11vnc kmsvnc ufw auditd usbguard nftables
 arch-chroot /mnt timedatectl set-ntp true
 #
 #Создание скрипта, который после перезагрузки продолжит установку.
@@ -2411,7 +2403,8 @@ sudo debtap -u
 echo -e "\\033[36mСоздание двоичного кэша данных, хранящихся в файлах.desktop и MIME, которые фреймворк KService использует для поиска плагинов, приложений и других сервисов.\\033[0m"
 kbuildsycoca6
 #
-# Устанавливаем Семейный Яндекс.DNS
+# Устанавливаем Семейный Яндекс.DNS.
+echo -e "\\033[36mУстанавливаем Семейный Яндекс.DNS.\\033[0m"
 NET_CONN=$(nmcli -t -f NAME,DEVICE,STATE connection show | grep :activated | grep -v "lo:" | cut -d: -f1)
 if [ -n "$NET_CONN" ]; then
   echo "$NET_CONN" | while read -r CONN; do
@@ -2419,6 +2412,7 @@ if [ -n "$NET_CONN" ]; then
     sudo nmcli connection modify "$CONN" ipv4.dns "77.88.8.7 77.88.8.3"
     sudo nmcli connection modify "$CONN" ipv4.ignore-auto-dns yes
     sudo nmcli connection down "$CONN" && sudo nmcli connection up "$CONN"
+    nmcli connection show "$CONN" | grep -E "ipv4.dns|ignore-auto-dns"
   done
 fi
 #Настройка wine (Позволяет запускать приложения Windows).
@@ -2462,11 +2456,11 @@ xdg-mime default org.gnome.FileRoller.desktop application/x-bzip2
 xset +fp /usr/share/fonts/TTF
 xset +fp /usr/share/fonts/google
 #
+sudo nft list ruleset
 #Удаление временных файлов.
 echo -e "\\033[36mУдаление временных файлов.\\033[0m"
 sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
 sed -i \047s/#TechnicalSymbol//\047 ~/.config/i3/config
-sudo nft list ruleset
 rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
 #
 #Передача прав созданному пользователю.
