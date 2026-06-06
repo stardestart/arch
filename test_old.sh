@@ -2220,6 +2220,14 @@ nft add rule inet filter input ip saddr 192.168.1.0/24 tcp dport 5900 accept
 nft add rule inet filter input tcp dport 5900 drop
 nft list ruleset > /mnt/etc/nftables.conf
 #
+#
+sudo arch-chroot /mnt systemctl start systemd-resolved.service
+for IFACE in $netdev; do
+  sudo arch-chroot /mnt resolvectl dns "$IFACE" 77.88.8.7 77.88.8.3
+  sudo arch-chroot /mnt resolvectl domain "$IFACE" "~."
+done
+ln -sf /mnt/run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
+#
 #Настройка удаленного рабочего стола.
 echo -e "\033[36mНастройка удаленного рабочего стола.\033[0m"
 echo '[Unit]
@@ -2290,7 +2298,7 @@ arch-chroot /mnt ln -sf /usr/lib/systemd/system/kmsconvt@.service /etc/systemd/s
 arch-chroot /mnt systemctl disable dbus
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
 ly@tty2 dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
-wsdd saned.socket cups.socket x11vnc kmsvnc ufw auditd usbguard nftables
+wsdd saned.socket cups.socket x11vnc kmsvnc ufw auditd usbguard nftables systemd-resolved
 arch-chroot /mnt timedatectl set-ntp true
 #
 #Создание скрипта, который после перезагрузки продолжит установку.
@@ -2404,7 +2412,7 @@ echo -e "\\033[36mСоздание двоичного кэша данных, х�
 kbuildsycoca6
 #
 # Устанавливаем Семейный Яндекс.DNS
-NET_CONN=$(ip -br link show | grep -i "UP" | grep -v "lo" | awk \047{print $1}\047 | xargs)
+NET_CONN=$(nmcli -t -f NAME,DEVICE,STATE connection show | grep :activated | grep -v "lo:" | cut -d: -f1)
 if [ -n "$NET_CONN" ]; then
   echo "$NET_CONN" | while read -r CONN; do
     [ -z "$CONN" ] && continue
