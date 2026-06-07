@@ -313,7 +313,6 @@ lib32-giflib \
 gimp \
 avidemux-qt \
 kdenlive \
-numlockx \
 dmg2img \
 obs-studio \
 blender \

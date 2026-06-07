@@ -129,8 +129,6 @@ firefox-ublock-origin \
 firefox-dark-reader \
 links \
 xlinks \
-thunderbird \
-thunderbird-i18n-ru \
 xdg-desktop-portal-gtk \
 xdg-desktop-portal-kde \
 network-manager-applet \
@@ -254,7 +252,6 @@ cups-pk-helper \
 cups \
 cups-pdf \
 system-config-printer \
-steam \
 wine \
 winetricks \
 wine-mono \
@@ -298,24 +295,18 @@ hunspell-ru-aot \
 hyphen-ru \
 mythes-ru \
 minq-ananicy-git \
-auto-cpufreq \
 kde-cdemu-manager \
 usbguard-qt \
 pa-notify \
-birdtray \
 kmscon \
 breeze \
 breeze-gtk \
 breeze-icons \
 plasma-integration \
 gsettings-desktop-schemas \
-discord \
-meld \
 kcolorchooser \
 kontrast \
-telegram-desktop \
 cups-xerox-b2xx \
-supertuxkart \
 supertux \
 ktuberling \
 gcompris-qt)
@@ -1478,14 +1469,10 @@ exec --no-startup-id pa-notify;
 # Мультимедиа, Календари и Мессенджеры в трей
 # Автозапуск audacious.
 exec --no-startup-id audacious -H;
-# Автозапуск thunderbird.
-exec --no-startup-id birdtray;
 # Автозапуск часов-напоминалки.
 exec --no-startup-id kclockd;
 # Автозапуск календаря.
 exec --no-startup-id calindac;
-# Автозапуск telegram.
-exec --no-startup-id telegram-desktop -startintray -- %u;
 #
 # Автозапуск fastfetch и обновления.
 #TechnicalSymbolexec --no-startup-id bash -c \047sleep 10; \\
@@ -1496,7 +1483,6 @@ exec --no-startup-id telegram-desktop -startintray -- %u;
 #TechnicalSymbol sleep 5; \\
 #TechnicalSymbol pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-2)}\047\\\047\047)"; \\
 #TechnicalSymbol fastfetch > /dev/pts/$pts; \\
-#TechnicalSymbol pts="$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)"; \\
 #TechnicalSymbol sudo rm /var/lib/pacman/db.lck > /dev/pts/$pts; \\
 #TechnicalSymbol sudo pacman -Suy --noconfirm > /dev/pts/$pts; \\
 #TechnicalSymbol yay -Suy --noconfirm > /dev/pts/$pts; \\
@@ -1508,11 +1494,9 @@ exec --no-startup-id telegram-desktop -startintray -- %u;
 #
 #Восстановление рабочего стола №1.
 bindsym $mod+mod1+1 exec --no-startup-id "i3-msg \047workspace 1: 🏠; \\
-append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; \\
-exec nemo; exec xed\047"
+append_layout ~/.config/i3/workspace_1.json; exec xterm; exec nemo\047"
 exec --no-startup-id "i3-msg \047workspace 1: 🏠; \\
-append_layout ~/.config/i3/workspace_1.json; \\
-exec xterm; exec xterm; exec nemo; exec xed\047"
+append_layout ~/.config/i3/workspace_1.json; exec xterm; exec nemo\047"
 #
 # Используйте mod+enter, чтобы запустить терминал.
 bindsym $mod+Return exec xterm
@@ -1537,9 +1521,6 @@ bindsym Print exec flameshot full
 #
 # Firefox будет запускаться на 2 рабочем столе.
 assign [class="firefox"] "2: 🌍"
-#
-# Steam будет запускаться на 3 рабочем столе.
-assign [title="Steam"] "3: 🎮"
 exec --no-startup-id firefox; #TechnicalString
 exec --no-startup-id bash -c \047sleep 10; ~/archinstall.sh > /dev/pts/1\047 #TechnicalString' | tee /mnt/home/"$username"/.config/i3/config /mnt/root/.config/i3/config
 #
@@ -1886,57 +1867,19 @@ echo '{
     "floating": "auto_off",
     "percent": 0.5,
     "swallows": [
-       { "class": "^Xed$" }
+       { "class": "^Nemo$" }
     ]
 }
 {
     "border": "normal",
-    "layout": "splitv",
+    "current_border_width": 1,
+    "floating": "user_off",
     "percent": 0.5,
-    "type": "con",
-    "nodes": [
-        {
-            "border": "normal",
-            "current_border_width": 1,
-            "floating": "auto_off",
-            "percent": 0.6,
-            "swallows": [
-               { "class": "^Nemo$" }
-            ]
-        },
-        {
-            "border": "normal",
-            "floating": "auto_off",
-            "layout": "splith",
-            "percent": 0.4,
-            "type": "con",
-            "nodes": [
-                {
-                    "border": "normal",
-                    "current_border_width": 1,
-                    "floating": "user_off",
-                    "percent": 0.5,
-                    "swallows": [
-                       {
-                        "class": "^XTerm$",
-                        "title": "'"$username"'\\@'"$hostname"'\\:\\~$"
-                       }
-                    ]
-                },
-                {
-                    "border": "normal",
-                    "current_border_width": 1,
-                    "floating": "user_off",
-                    "percent": 0.5,
-                    "swallows": [
-                       {
-                        "class": "^XTerm$",
-                        "title": "'"$username"'\\@'"$hostname"'\\:\\~$"
-                       }
-                    ]
-                }
-            ]
-        }
+    "swallows": [
+       {
+          "class": "^XTerm$",
+          "title": "'"$username"'\\@'"$hostname"'\\:\\~$"
+       }
     ]
 }' | tee /mnt/home/"$username"/.config/i3/workspace_1.json /mnt/root/.config/i3/workspace_1.json
 #
@@ -2174,10 +2117,7 @@ echo -e '# Увеличить громкость.
         XF86AudioMicMute
 # Открыть калькулятор.
     "kalgebra"
-        Mod2 + XF86Calculator
-# Открыть почту.
-    "thunderbird"
-        Mod2 + XF86Mail' | tee /mnt/home/"$username"/.xbindkeysrc /mnt/root/.xbindkeysrc
+        Mod2 + XF86Calculator' | tee /mnt/home/"$username"/.xbindkeysrc /mnt/root/.xbindkeysrc
 #
 #Редактирование конфига nanorc.
 echo -e "\033[36mРедактирование конфига nanorc.\033[0m"
@@ -2262,7 +2202,6 @@ sed -i 's/animation = none/animation = matrix/' /mnt/etc/ly/config.ini
 sed -i 's/bigclock = none/bigclock = en/' /mnt/etc/ly/config.ini
 sed -i 's/bigclock_seconds = false/bigclock_seconds = true/' /mnt/etc/ly/config.ini
 sed -i 's/lang = en/lang = ru/' /mnt/etc/ly/config.ini
-sed -i 's/numlock = false/numlock = true/' /mnt/etc/ly/config.ini
 sed -i 's/fg = 0x00FFFFFF/fg = 0x0000FF00/' /mnt/etc/ly/config.ini
 sed -i 's/border_fg = 0x00FFFFFF/border_fg = 0x0000FF00/' /mnt/etc/ly/config.ini
 #
@@ -2289,7 +2228,7 @@ echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt ln -sf /usr/lib/systemd/system/kmsconvt@.service /etc/systemd/system/autovt@.service
 arch-chroot /mnt systemctl disable dbus
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
-ly@tty2 dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
+ly@tty2 dhcpcd avahi-daemon ananicy dbus-broker rngd smartd smb \
 wsdd saned.socket cups.socket x11vnc kmsvnc ufw auditd usbguard nftables
 arch-chroot /mnt timedatectl set-ntp true
 #
@@ -2423,7 +2362,6 @@ winetricks dxvk
 #Устанавливаем приложения по умолчанию.
 xdg-mime default nemo.desktop inode/directory
 xdg-mime default nemo.desktop application/x-directory
-xdg-mime default org.mozilla.Thunderbird.desktop x-scheme-handler/mailto
 xdg-mime default vlc.desktop video/mp4
 xdg-mime default vlc.desktop video/x-matroska
 xdg-mime default vlc.desktop video/x-msvideo
@@ -2491,13 +2429,6 @@ echo "vboxdrv
 vboxnetflt
 vboxnetadp" > /mnt/etc/modules-load.d/virtualboxhosts.config
 arch-chroot /mnt gpasswd -a "$username" vboxusers
-fi
-#
-#Undervolting CPU (Снижение напряжения ЦП на 10%).
-echo -e "\033[36mUndervolting CPU (Снижение напряжения ЦП на 10%).\033[0m"
-if [ -n "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq)" ]; then
-echo '[charger]
-scaling_max_freq = '$(("$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq)"/100*90))'' > /mnt/etc/auto-cpufreq.conf
 fi
 #
 #Ограничение на размер дампа.

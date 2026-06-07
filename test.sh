@@ -106,19 +106,17 @@ massfont=(30144_PostIndex.ttf https://ttfonts.net/ru/download/31252.htm $(curl h
                  https://fonts.google.com/download/list?family=Noto%20Serif%20Bengali \
                  https://fonts.google.com/download/list?family=Noto%20Serif%20SC \
                  | grep --color=never '.ttf"' | awk '{print $2}' | sed 's/[,"]//g' | sed 's/static\///'))
-massallprog=( xorg-server \
-xorg-xinit \
-xorg-xinput \
-xorg-xwininfo \
-xterm \
-xprintidle \
+massallprog=( wayland \
+xorg-server-xwayland \
+libinput \
+foot \
+swayidle \
 cmatrix \
-i3-wm \
-polybar \
-jgmenu \
-perl-anyevent-i3 \
-perl-json-xs \
-dmenu \
+swayfx \
+waybar \
+wofi \
+jq \
+bemenu \
 ly \
 terminus-font \
 arch-audit \
@@ -128,11 +126,18 @@ firefox-spell-ru \
 firefox-ublock-origin \
 firefox-dark-reader \
 links \
-xlinks \
 thunderbird \
 thunderbird-i18n-ru \
 xdg-desktop-portal-gtk \
 xdg-desktop-portal-kde \
+xdg-desktop-portal-wlr \
+xdg-desktop-portal \
+grim \
+slurp \
+swappy \
+wl-clipboard \
+qt5-wayland \
+qt6-wayland \
 network-manager-applet \
 networkmanager-strongswan \
 krdc \
@@ -155,13 +160,10 @@ go \
 libnotify \
 openssh \
 dbus-broker \
-x11vnc \
 kmsvnc \
 polkit \
 gnome-keyring \
-polkit-gnome \
-xlockmore \
-xautolock \
+lxqt-policykit \
 gparted \
 gpart \
 exfatprogs \
@@ -192,16 +194,13 @@ gigolo \
 kclock \
 calindori \
 papirus-icon-theme \
-picom \
-redshift \
+wlsunset \
 grc \
-flameshot \
-dunst \
+swaync \
 archlinux-wallpaper \
 cosmic-wallpapers \
 elementary-wallpapers \
-xdg-desktop-portal \
-feh \
+swww \
 conky \
 freetype2 \
 ttf-fantasque-sans-mono \
@@ -220,7 +219,6 @@ wireplumber \
 sof-firmware \
 pavucontrol-qt \
 sound-theme-freedesktop \
-xbindkeys \
 aspell \
 nuspell \
 xed \
@@ -286,13 +284,11 @@ lib32-mesa \
 lib32-libva-mesa-driver \
 libva-mesa-driver \
 mesa-vdpau \
-ufw \
 usbguard \
 libpwquality \
 xdg-user-dirs \
 geoclue \
 rng-tools \
-gtk-nocsd \
 hardinfo2 \
 hunspell-ru-aot \
 hyphen-ru \
@@ -301,7 +297,6 @@ minq-ananicy-git \
 auto-cpufreq \
 kde-cdemu-manager \
 usbguard-qt \
-pa-notify \
 birdtray \
 kmscon \
 breeze \
@@ -314,11 +309,7 @@ meld \
 kcolorchooser \
 kontrast \
 telegram-desktop \
-cups-xerox-b2xx \
-supertuxkart \
-supertux \
-ktuberling \
-gcompris-qt)
+cups-xerox-b2xx)
 massprog=()
 massallaurprog=()
 massaurprog=()
@@ -592,7 +583,6 @@ pacman -Sy glibc --noconfirm
 pacman -Sy lib32-glibc --noconfirm
 pacman -Sy sad --noconfirm
 pacman -Sy coreutils --noconfirm
-pacman -Sy xorg-mkfontscale --noconfirm
 pacman -Sy usbguard --noconfirm
 echo -e "Старый список зеркал."
 cat /etc/pacman.d/mirrorlist
@@ -746,25 +736,28 @@ net.ipv4.tcp_timestamps=1
 net.ipv4.tcp_tw_reuse=1
 vm.dirty_ratio=10
 vm.dirty_background_ratio=5
-vm.vfs_cache_pressure=50" > /mnt/etc/sysctl.d/99-sysctl.conf
+vm.vfs_cache_pressure=50
+net.ipv4.ip_forward=1
+net.ipv6.conf.default.forwarding=1
+net.ipv6.conf.all.forwarding=1" > /mnt/etc/sysctl.d/99-sysctl.conf
 #
 #Установка видеодрайвера.
-echo -e "\033[36mУстановка видеодрайвера.\033[0m"
-if [ -n "$(lspci | grep -i vga | grep -i nvidia)" ]; then
-    if [ -n "$(lspci | grep -i vga | grep -i nvidia | grep -E 'TU1|GA1|GV1|GP10|GM20|GM10')" ]; then
-        arch-chroot /mnt pacman -Sy nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
+GPU_INFO=$(lspci | grep -iE 'vga|3d')
+if echo "$GPU_INFO" | grep -iq "nvidia"; then
+    if echo "$GPU_INFO" | grep -iE -q 'TU1|GA1|GV1|GP10|GM20|GM10|AD1|GB1'; then
+        arch-chroot /mnt pacman -Sy nvidia-open-dkms nvidia-utils lib32-nvidia-utils opencl-nvidia lib32-opencl-nvidia opencv-cuda nvtop cuda --noconfirm
         sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /mnt/etc/mkinitcpio.conf
+        echo "options nvidia_drm modeset=1 fbdev=1" > /mnt/etc/modprobe.d/nvidia.conf
     else
-        arch-chroot /mnt pacman -Sy xf86-video-nouveau --noconfirm
         sed -i 's/MODULES=()/MODULES=(nouveau)/' /mnt/etc/mkinitcpio.conf
     fi
-elif [ -n "$(lspci | grep -i vga | grep -iE 'vmware svga|virtualbox')" ]; then
+elif echo "$GPU_INFO" | grep -iE -q 'vmware svga|virtualbox'; then
     arch-chroot /mnt pacman -Sy virtualbox-guest-utils --noconfirm
     sed -i 's/MODULES=()/MODULES=(vmwgfx vboxvideo vboxguest)/' /mnt/etc/mkinitcpio.conf
-elif [ -n "$(lspci | grep -i vga | grep AMD)" ]; then
-    arch-chroot /mnt pacman -Sy xf86-video-ati xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon --noconfirm
-    sed -i 's/MODULES=()/MODULES=(amdgpu radeon)/' /mnt/etc/mkinitcpio.conf
-elif [ -n "$(lspci | grep -i vga | grep -i intel)" ]; then
+elif echo "$GPU_INFO" | grep -iq "AMD"; then
+    arch-chroot /mnt pacman -Sy vulkan-radeon lib32-vulkan-radeon --noconfirm
+    sed -i 's/MODULES=()/MODULES=(amdgpu)/' /mnt/etc/mkinitcpio.conf
+elif echo "$GPU_INFO" | grep -iq "intel"; then
     arch-chroot /mnt pacman -Sy vulkan-intel intel-media-driver libva-intel-driver --noconfirm
     sed -i 's/MODULES=()/MODULES=(i915)/' /mnt/etc/mkinitcpio.conf
 fi
@@ -821,77 +814,20 @@ ln -sf /mnt/usr/lib32/libstdc++.so /usr/lib32/libstdc++.so
 ln -sf /mnt/usr/lib/libstdc++.so /usr/lib/libstdc++.so
 usbguard generate-policy > /mnt/etc/usbguard/rules.conf
 #
-#Создание общего конфига загрузки оконного менеджера.
-echo -e "\033[36mСоздание общего конфига загрузки оконного менеджера.\033[0m"
-mkdir /mnt/root/.config/
-echo -e '#Указание на конфигурационные файлы.
-userresources=$HOME/.Xresources
-usermodmap=$HOME/.Xmodmap
-sysresources=/etc/X11/xinit/.Xresources
-sysmodmap=/etc/X11/xinit/.Xmodmap
-#
-#Объединить значения по умолчанию и раскладки клавиш.
-if [ -f $sysresources ]; then
-    xrdb -merge $sysresources
-fi
-if [ -f $sysmodmap ]; then
-    xmodmap $sysmodmap
-fi
-if [ -f "$userresources" ]; then
-    xrdb -merge "$userresources"
-fi
-if [ -f "$usermodmap" ]; then
-    xmodmap "$usermodmap"
-fi
-#
-#Запуск программ.
-if [ -d /etc/X11/xinit/xinitrc.d ] ; then
- for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
-  [ -x "$f" ] && . "$f"
- done
- unset f
-fi
-#
-#Позволяет пользователю root получить доступ к работающему X-серверу.
-xhost +si:localuser:root
-#
-#Автозапуск обоев рабочего стола.
-while true; \
-do \
-feh --bg-fill --randomize --no-fehbg /usr/share/backgrounds/* /usr/share/backgrounds/; \
-sleep 300; \
-done &
-#
-#Автозапуск заставки.
-xautolock -time 50 -locker "systemctl hibernate" \
--notify 1800 -notifier \
-"xlock -mode matrix -delay 10000 -echokeys -echokey '*'" -detectsleep -noclose &
-#
-# Инициализация хранилища паролей GNOME Keyring
-eval $(gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
-export SSH_AUTH_SOCK
-#
-#Воспроизведения звука входа в систему.
-pw-play /usr/share/sounds/freedesktop/stereo/service-login.oga &
-#
-#Автозапуск i3.
-exec i3' | tee /mnt/home/"$username"/.xinitrc /mnt/root/.xinitrc
-#
-#Создание общего конфига клавиатуры.
-echo -e "\033[36mСоздание общего конфига клавиатуры.\033[0m"
-echo 'Section "InputClass"
-Identifier "system-keyboard"
-MatchIsKeyboard "on"
-Option "XkbLayout" "us,ru"
-Option "XkbOptions" "grp:alt_shift_toggle,terminate:ctrl_alt_bksp"
-EndSection' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
+#Установка переменных окружения.
+echo -e "\\033[36mУстановка переменных окружения.\\033[0m"
+echo -e 'GTK_USE_PORTAL=1
+QT_QPA_PLATFORM=wayland
+QT_QPA_PLATFORMTHEME=gtk3
+GDK_BACKEND=wayland,x11
+MOZ_ENABLE_WAYLAND=
+XDG_MENU_PREFIX=arch-
+SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/keyring/ssh"' >> /mnt/etc/environment
 #
 #Создание общего конфига сканера.
 echo -e "\033[36mСоздание общего конфига сканера.\033[0m"
 mkdir -p /mnt/etc/sane.d
 echo -e "localhost\n192.168.0.0/24" >> /mnt/etc/sane.d/net.conf
-echo -e "\033[36mДобавление пользователя в группу scanner...\033[0m"
-arch-chroot /mnt gpasswd scanner -a "$username"
 #
 #Формируется конфиг conky (Системный монитор).
 #Температура ядер процессора.
@@ -1014,6 +950,7 @@ $alignr${color #f92b2b}${fs_used /home} / $color${fs_free /home} / ${color #b2b2
 ]]' | tee /mnt/home/"$username"/.config/conky/conky.conf /mnt/root/.config/conky/conky.conf
 #
 # Заставляем программы на Qt5 и Qt6 использовать темную тему
+mkdir -p /mnt/{home/"$username",root}/.config/{swaync,foot,sway,waybar,wofi,copyq}
 cp /mnt/usr/share/color-schemes/BreezeDark.colors /mnt/home/"$username"/.config/kdeglobals
 cp /mnt/usr/share/color-schemes/BreezeDark.colors /mnt/root/.config/kdeglobals
 echo -e "\n[Icons]\nTheme=Papirus-Dark" | tee -a /mnt/home/"$username"/.config/kdeglobals /mnt/root/.config/kdeglobals
@@ -1024,257 +961,97 @@ echo '[[ -f ~/.profile ]] && . ~/.profile' | tee /mnt/home/"$username"/.bash_pro
 #
 #Создание конфига xdg-desktop-portal (Настройка Xdg).
 echo -e "\033[36mСоздание конфига xdg-desktop-portal (Настройка Xdg).\033[0m"
-echo -e "[preferred]\ndefault=gtk" > /mnt/usr/share/xdg-desktop-portal/portals.conf
+echo -e "[preferred]
+default=wlr;gtk;
+org.freedesktop.impl.portal.Screenshot=wlr
+org.freedesktop.impl.portal.ScreenCast=wlr" > /mnt/etc/xdg/xdg-desktop-portal/portals.conf
 #
-#Создание конфига bashrc (Настройка Xterm).
+#Создание конфига bashrc.
 echo -e "\033[36mСоздание конфига bashrc (Настройка Xterm).\033[0m"
 echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
-# Заставка cmatrix для xterm
-if [[ "$TERM" == xterm* ]] || [[ "$TERMINAL_EMULATOR" == xterm* ]]; then
-    cmatrix_running=false
-    (
-        while true; do
-            idle_time=$(xprintidle)
-
-            if [ "$idle_time" -ge 300000 ]; then
-                if ! $cmatrix_running; then
-                    cmatrix -sba &
-                    cmatrix_running=true
-                fi
-            else
-                if $cmatrix_running; then
-                    killall cmatrix
-                    cmatrix_running=false
-                fi
-            fi
-            sleep 1
-        done
-    ) &
-fi
-alias grep="grep --color=auto" #Раскрашиваем grep.
-alias diff="diff --color=auto" #Раскрашиваем diff.
-alias ls="ls --color=auto" #Раскрашиваем ls.
-alias df="grc df -h" #Удобный человекочитаемый вид для дисков.
+# Алиасы для раскрашивания вывода
+alias grep="grep --color=auto"
+alias diff="diff --color=auto"
+alias ls="ls --color=auto"
+alias df="grc df -h"
 export GRC_ALIASES=true
+# Подключение утилиты Generic Colouriser (grc)
 [[ -s "/etc/profile.d/grc.sh" ]] && source /etc/profile.d/grc.sh
-#Изменяем вид приглашения командной строки.
-PS1="\[\e[48;2;249;43;43m\]\[\e[38;2;43;249;43m\] \$\[\e[48;2;249;249;43m\]\
-\[\e[38;2;249;43;43m\]\[\e[48;2;249;249;43m\]\[\e[38;2;43;43;249m\]\A\[\e[48;2;43;43;249m\]\
-\[\e[38;2;249;249;43m\] \u@\h\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;249m\]\
-\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;43m\]\W\[\e[48;2;43;43;43m\]\[\e[0m\]\
-\[\e[38;2;43;249;43m\] \[\e[0m\]"
-#\[\e[48;2;249;43;43m\] - Красный цвет фона.
-#\[\e[38;2;43;249;43m\] - Зеленый цвет шрифта.
-#\$ - Символ приглашения (# для root, $ для обычных пользователей).
-#\[\e[48;2;249;249;43m\] - Жёлтый цвет фона.
-#\[\e[38;2;249;43;43m\] - Красный цвет шрифта.
-#\[\e[48;2;249;249;43m\] - Жёлтый цвет фона.
-#\[\e[38;2;43;43;249m\] - Синий цвет шрифта.
-#\A - Текущее время в 24-часовом формате.
-#\[\e[48;2;43;43;249m\] - Синий цвет фона.
-#\[\e[38;2;249;249;43m\] - Жёлтый цвет шрифта.
-#\u@\h - ИмяПользователя@ИмяХоста.
-#\[\e[48;2;43;249;43m\] - Зеленый цвет фона.
-#\[\e[38;2;43;43;249m\] - Синий цвет шрифта.
-#\[\e[48;2;43;249;43m\] - Зеленый цвет фона.
-#\[\e[38;2;43;43;43m\] - Серый цвет шрифта.
-#\W - ТекущийОтносительныйПуть.
-#\[\e[48;2;43;43;43m\] - Серый цвет фона.
-#\[\e[0m\] - Конец изменениям.
-#\[\e[38;2;43;249;43m\] - Зеленый цвет шрифта.
-#\[\e[0m\] - Конец изменениям.
-export HISTCONTROL="ignoreboth" #Удаляем повторяющиеся записи и записи начинающиеся с пробела (например команды в mc) в .bash_history.
-export COLORTERM=truecolor #Включаем все 16 миллионов цветов в эмуляторе терминала.' | tee /mnt/home/"$username"/.bashrc /mnt/root/.bashrc
+#Изменяем вид приглашения командной строки (Powerline стиль)
+PS1="\[\e[48;2;249;43;43m\]\[\e[38;2;43;249;43m\] \$\[\e[48;2;249;249;43m\]\[\e[38;2;249;43;43m\]\[\e[48;2;249;249;43m\]\[\e[38;2;43;43;249m\]\A\[\e[48;2;43;43;249m\]\[\e[38;2;249;249;43m\] \u@\h\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;249m\]\[\e[48;2;43;249;43m\]\[\e[38;2;43;43;43m\]\W\[\e[48;2;43;43;43m\]\[\e[0m\]\[\e[38;2;43;249;43m\] \[\e[0m\]"
+# Настройки истории команд и цветопередачи
+export HISTCONTROL="ignoreboth"
+export COLORTERM=truecolor' | tee /mnt/home/"$username"/.bashrc /mnt/root/.bashrc
 #
-#Создание конфига profile (Настройка Xorg).
-echo -e "\033[36mСоздание конфига profile (Настройка Xorg).\033[0m"
+#Создание конфига profile.
+echo -e "\033[36mСоздание конфига profile.\033[0m"
 echo '[[ -f ~/.bashrc ]] && . ~/.bashrc #Указание на bashrc.
-export QT_QPA_PLATFORMTHEME=kde #Изменение внешнего вида приложений использующих qt.
-export QT_AUTO_SCREEN_SCALE_FACTOR=1 #Автоматическое масштабирование интерфейса для Qt
-export XDG_CURRENT_DESKTOP=KDE
+export QT_QPA_PLATFORM="wayland;xcb"
+export GDK_BACKEND="wayland,x11"
+export MOZ_ENABLE_WAYLAND=1
+export XDG_CURRENT_DESKTOP=sway
+export XDG_SESSION_DESKTOP=sway
+export XDG_SESSION_TYPE=wayland
+export QT_QPA_PLATFORMTHEME=gtk3
 export XCURSOR_THEME=breeze_cursors
-export XCURSOR_SIZE=24
-export LD_PRELOAD=/usr/lib/libgtk-nocsd.so' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
+export XCURSOR_SIZE=24' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
 #
 #Редактирование конфига сервера уведомлений.
 echo -e "\033[36mРедактирование конфига сервера уведомлений.\033[0m"
-sed -i "/\[global\]/,/^\[.*\]/ s/gap_size = .*/gap_size = ${font}/" /mnt/etc/dunst/dunstrc
-sed -i "/\[global\]/,/^\[.*\]/ s/icon_theme = .*/icon_theme = Papirus-Dark/" /mnt/etc/dunst/dunstrc
-sed -i "/\[global\]/ a script = ~/.config/notify_sound.sh" /mnt/etc/dunst/dunstrc
-sed -i "/\[urgency_low\]/,/^\[.*\]/ s/background = .*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
-sed -i "/\[urgency_low\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#b2b2b2\"/" /mnt/etc/dunst/dunstrc
-sed -i "/\[urgency_normal\]/,/^\[.*\]/ s/background = .*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
-sed -i "/\[urgency_normal\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#2bf92b\"/" /mnt/etc/dunst/dunstrc
-sed -i "/\[urgency_critical\]/,/^\[.*\]/ s/background = .*/background = \"#2b2b2b\"/" /mnt/etc/dunst/dunstrc
-sed -i "/\[urgency_critical\]/,/^\[.*\]/ s/foreground = .*/foreground = \"#f92b2b\"/" /mnt/etc/dunst/dunstrc
+echo '{
+  "$schema": "/etc/xdg/swaync/configSchema.json",
+  "positionX": "right",
+  "positionY": "top",
+  "layer": "overlay",
+  "control-center-margin-top": 10,
+  "control-center-margin-right": 10,
+  "notification-icon-size": 64,
+  "notification-body-image-height": 100,
+  "notification-body-image-width": 200,
+  "timeout": 5,
+  "timeout-low": 2,
+  "timeout-critical": 0,
+  "fit-to-screen": true,
+  "sound": true,
+  "sound-theme": "freedesktop"
+}' | tee /mnt/home/"$username"/.config/swaync/config.json /mnt/root/.config/swaync/config.json
 #
-#Создание аудиоконфига сервера уведомлений.
-echo -e "\033[36mСоздание аудиоконфига сервера уведомлений.\033[0m"
-echo '#!/bin/bash
-if [ "$5" = "CRITICAL" ]; then
-    # Сверхважные алерты (Аварийное состояние, батарея, блокировка UFW)
-    pw-play /usr/share/sounds/freedesktop/stereo/dialog-error.oga &
-    exit 0
-fi
-killall -q pw-play 2>/dev/null
-case "$1" in
-    # --- ЗВУК И ГРОМКОСТЬ ---
-    "pa-notify" | "volume-change")
-        pw-play /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga &
-        ;;
-    # --- ИНТЕРНЕТ И СЕТЬ (NetworkManager) ---
-    "nm-no-connection")
-        # Сеть отключена / пропала
-        pw-play /usr/share/sounds/freedesktop/stereo/network-connectivity-lost.oga &
-        ;;
-    "nm-device" | "network")
-        # Сеть успешно подключена
-        pw-play /usr/share/sounds/freedesktop/stereo/network-connectivity-established.oga &
-        ;;
-    # --- СИСТЕМНЫЕ ОПЕРАЦИИ (Диски, Скриншоты) ---
-    "udiskie" | "device-notifier")
-        # Вставили флешку или внешний диск
-        pw-play /usr/share/sounds/freedesktop/stereo/device-added.oga &
-        ;;
-    "flameshot" | "spectacle" | "screenshot")
-        # Сделан скриншот экрана
-        pw-play /usr/share/sounds/freedesktop/stereo/screen-capture.oga &
-        ;;
-    # --- СООБЩЕНИЯ И МЕССЕНДЖЕРЫ ---
-    "TelegramDesktop" | "telegram" | "discord" | "element")
-        # Личные сообщения из чатов (если хотите для них особый звук)
-        pw-play /usr/share/sounds/freedesktop/stereo/message-new-instant.oga &
-        ;;
-    # --- ВСЕ ОСТАЛЬНЫЕ УВЕДОМЛЕНИЯ ПО УМОЛЧАНИЮ ---
-    *)
-        # Обычный системный пик для любых неучтенных программ
-        pw-play /usr/share/sounds/freedesktop/stereo/message.oga &
-        ;;
-esac' | tee /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
+#Настройки терминала Foot.
+echo -e "\033[36mНастройки терминала Foot.\033[0m"
+echo '# Настройки терминала Foot
+term=foot-256color
+# Определение шрифта и его размера из переменной вашего скрипта
+font=Fantasque Sans Mono:size='$font'
+# Количество строк прокрутки в истории (saveLines = 10000)
+scrollback=10000
+[environment]
+# Переменная для корректной работы интерактивного шелла
+TERMINAL_EMULATOR=foot
+[cursor]
+# Настройки курсора (Красный цвет #f92b2b и включение мерцания)
+color=2b2b2b f92b2b
+blink=yes
+style=block
+[scrollback]
+# Отключаем полосу прокрутки, оставляя навигацию клавишами
+indicator-style=none
+[colors]
+# Цветовая палитра (Зеленый текст на темно-сером фоне)
+background=2b2b2b
+foreground=2bf92b' | tee /mnt/home/"$username"/.config/foot/foot.ini /mnt/root/.config/foot/foot.ini
 #
-#Создание конфига picom (Автономный композитор для Xorg).
-echo -e "\033[36mСоздание конфига picom (Автономный композитор для Xorg).\033[0m"
-echo -e '# Прозрачность активных окон (0,1–1,0).
-active-opacity = 0.99;
-#
-# Прозрачность неактивных окон (0,1–1,0).
-inactive-opacity = 0.95;
-#
-# Затемнение неактивных окон (0,0–1,0).
-inactive-dim = 0.35;
-#
-# Включить вертикальную синхронизацию (если picom выдает ошибку по vsync, то отключаем заменой true на false).
-vsync = true;
-#
-# Отключить прозрачность и затемнение загаловков окон.
-mark-ovredir-focused = true;
-#
-#Пусть неактивная непрозрачность, переопределяет значения окон.
-inactive-opacity-override = false;
-#
-wintypes: { # Отключить прозрачность выпадающего меню.
-            dropdown_menu = { opacity = 1; };
-            # Отключить прозрачность всплывающего меню.
-            popup_menu = { opacity = 1; }; };
-#
-# Прозрачность Polybar, dmenu, XTerm и заголовков окон.
-opacity-rule = [ "80:class_g = \047Polybar\047",
-                 "90:class_g = \047dmenu\047",
-                 "80:class_g = \047XTerm\047",
-                 "100:class_g = \047vlc\047",
-                 "100:fullscreen" ];
-#
-#Закругленные углы.
-corner-radius = '"$font"';
-rounded-corners-exclude = [ "window_type = \047dock\047",
-                            "window_type = \047popup_menu\047",
-                            "window_type = \047dropdown_menu\047",
-                            "window_type = \047notification\047" ];
-#
-#Оптимизация отрисовки и обнаружение окон
-mark-wmwin-focused = true;
-#
-#Обнаруживает окна со скругленными углами и не учитывает их.
-detect-rounded-corners = true;
-#
-#Обнаружение прозрачности в клиентских окнах.
-detect-client-opacity = true;
-#
-#Отменить перенаправление всех окон, если обнаружено полноэкранное непрозрачное окно.
-unredir-if-possible = true;
-#
-#Обнаружение групп окон.
-detect-transient = true;
-detect-client-leader = true;
-#
-#Отключить информацию о повреждениях, каждый раз перерисовывается весь экран, а не его часть.
-use-damage = true;
-#
-#TechnicalSymbol #Размытие.
-#TechnicalSymbol backend = "glx"
-#TechnicalSymbol glx-no-stencil = true;
-#TechnicalSymbol glx-no-rebind-pixmap = true;
-#TechnicalSymbol blur:{ method = "dual_kawase";
-#TechnicalSymbol       strength = 5;
-#TechnicalSymbol       background = false;
-#TechnicalSymbol       background-frame = false;
-#TechnicalSymbol       background-fixed = false; }
-#TechnicalSymbol       blur-background-exclude = [ "window_type = \047dock\047",
-#TechnicalSymbol                            "window_type = \047tooltip\047",
-#TechnicalSymbol                            "class_g = \047Conky\047",
-#TechnicalSymbol                            "class_g = \047i3bar\047",
-#TechnicalSymbol                            "class_g = \047vlc\047",
-#TechnicalSymbol                            "_NET_WM_STATE@:a != \047_NET_WM_STATE_FOCUSED\047" ];
-' > /mnt/home/"$username"/.config/picom.conf
-#
-#Создание конфига xresources (Настройка Xorg).
-echo -e "\033[36mСоздание конфига xresources (Настройка Xorg).\033[0m"
-echo '!Настройка внешнего вида xterm.
-!
-!Задает имя типа терминала, которое будет установлено в переменной среды TERM.
-xterm*termName: xterm-256color
-!
-!Xterm будет использовать кодировку, указанную в локали пользователя.
-xterm*locale: true
-!
-!Определяет количество строк, сохраняемых за пределами верхней части экрана, когда включена полоса прокрутки.
-xterm*saveLines: 10000
-!
-!Шрифт xterm.
-xterm*faceName: Fantasque Sans Mono:size='"$font"'
-!
-!Цвет фона.
-xterm*background: #2b2b2b
-!
-!Цвет шрифта.
-xterm*foreground: #2bf92b
-!
-!Цвет курсора.
-xterm*cursorColor: #f92b2b
-!
-!Мерцание курсора.
-xterm*cursorBlink: true
-!
-!Указывает, должна ли отображаться полоса прокрутки.
-xterm*scrollBar: false
-!
-!Указывает, должно ли нажатие клавиши автоматически перемещать полосу прокрутки в нижнюю часть области прокрутки.
-xterm*scrollKey: true
-!
-!Размер курсора.
-Xcursor.size: 24
-Xcursor.theme: breeze_cursors
-!
-!Включаем Ctrl+V,Ctrl+C.
-XTerm*VT100*selectToClipboard: true
-XTerm*VT100*translations: #override \
-    Shift Ctrl <Key>V: insert-selection(CLIPBOARD) \n\
-    Shift Ctrl <Key>C: copy-selection(CLIPBOARD)' | tee /mnt/home/"$username"/.Xresources /mnt/root/.Xresources
-#
-#Создание директории и конфига i3-wm (Тайловый оконный менеджер).
-echo -e "\033[36mСоздание конфига i3-wm (Тайловый оконный менеджер).\033[0m"
-mkdir -p /mnt/home/"$username"/.config/i3 /mnt/root/.config/i3
+#Создание директории и конфига sway (Тайловый оконный менеджер).
+echo -e "\033[36mСоздание конфига sway (Тайловый оконный менеджер).\033[0m"
 echo -e '########### Основные настройки ###########
+#
+# Включаем NumLock по умолчанию
+input * xkb_numlock enabled
+#
+# Настройка клавиатуры внутри сессии Sway (ENG/RUS, Alt+Shift, Ctrl+Alt+Backspace)
+input "type:keyboard" {
+    xkb_layout us,ru
+    xkb_options grp:alt_shift_toggle,terminate:ctrl_alt_bksp
+}
 #
 # Назначаем клавишу MOD, Mod4 - это клавиша WIN.
 set $mod Mod4
@@ -1308,14 +1085,12 @@ bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 #
-# ScrollDown на заголовке закрыть окно.
-bindsym button5 kill
-# ScrollUP на заголовке развернуть окно во весь экран.
-bindsym button4 fullscreen toggle
-# Правая кнопка мыши делает окно плавающим.
-bindsym button3 floating toggle
-# Средняя кнопка мыши сворачивает окно в черновик.
-bindsym button2 move scratchpad
+# Настройка кнопок мыши в комбинации с клавишей Win (Mod4)
+# Чтобы случайно не ломать интерфейс программ, действия привязаны к удерживанию $mod
+bindsym $mod+button5 kill                      # Win + Прокрутка вниз: закрыть окно
+bindsym $mod+button4 fullscreen toggle         # Win + Прокрутка вверх: во весь экран
+bindsym $mod+button3 floating toggle           # Win + Правый клик: сделать плавающим
+bindsym $mod+button2 move scratchpad           # Win + Средний клик: отправить в черновик
 #
 # Определяем имена для рабочих областей по умолчанию.
 set $ws1 "1: 🏠"
@@ -1353,142 +1128,178 @@ bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 #
-# Перечитать файл конфигурации.
+# Перечитать файл конфигурации (Обновление интерфейса на лету).
 bindsym $mod+Shift+c reload
 #
-# Перезапустить i3 (сохраняет макет/сессию, может использоваться для обновления i3).
-bindsym $mod+Shift+r restart
-#
-# Выход из i3 (выходит из сеанса X).
-bindsym $mod+Shift+e exec "i3-nagbar -t warning \\
--m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 \\
--b \047Да, выйти из i3\047 \047pw-play /usr/share/sounds/freedesktop/stereo/service-logout.oga && i3-msg exit\047
+# Выход из Sway.
+bindsym $mod+Shift+e exec swaynag -t warning \\
+  -m \047Вы действительно хотите выйти из Sway? Это завершит вашу графическую сессию.\047 \\
+  -B \047Да, выйти из Sway' 'pw-play /usr/share/sounds/freedesktop/stereo/service-logout.oga && swaymsg exit\047
 #
 # Войти в режим изменения размеров окон.
 bindsym $mod+r mode "resize"
-# Изменить размер окна (можно использовать мышь).
-mode "resize" {
 #
-        # Настройки смены размеров окон.
+# Изменить размер окна.
+mode "resize" {
         bindsym Left resize shrink width 10 px or 5 ppt
         bindsym Down resize grow height 10 px or 5 ppt
         bindsym Up resize shrink height 10 px or 5 ppt
         bindsym Right resize grow width 10 px or 5 ppt
-        #
+        
         # Выйти из режима изменения размеров окон.
         bindsym Return mode "default"
         bindsym Escape mode "default"
         bindsym $mod+r mode "default"
 }
 #
-# Некоторые видеодрайверы X11 обеспечивают поддержку только Xinerama вместо RandR.
-# В такой ситуации нужно сказать i3, чтобы он явно использовал подчиненный Xinerama API.
-#force_xinerama yes
-#
 ########### Внешний вид ###########
+# 1. Скругление углов (SwayFX)
+corner_radius '$font'
 #
-# Шрифт для заголовков окон.
-font pango:Fantasque Sans Mono Bold '"$font"'
+# Исключения для скругления
+smart_corner_radius on
+for_window [app_id="waybar"] corner_radius 0
 #
-# Просветы между окнами.
-gaps inner '"$font"'
+# 2. Затемнение неактивных окон (SwayFX)
+dim_inactive 0.35
+dim_inactive_color #000000
 #
-# Толщина границы окна.
+# 3. Эффекты теней (SwayFX)
+shadows on
+shadows_on_csd off
+shadow_blur 15
+shadow_color #000000A0
+#
+# 4. Прозрачность окон
+for_window [app_id="foot"] opacity 0.80
+for_window [app_id="wofi"] opacity 0.90
+for_window [app_id="bemenu"] opacity 0.90
+#
+# Принудительная 100% непрозрачность для медиа и полноэкранного режима
+for_window [app_id="vlc"] opacity 1.0
+for_window [fullscreen] opacity 1.0
+#
+#TechnicalSymbolV # 5. Размытие заднего плана (SwayFX)
+#TechnicalSymbolV blur on
+#TechnicalSymbolV blur_xray off
+#TechnicalSymbolV blur_passes 5
+#TechnicalSymbolV blur_radius 5
+#TechnicalSymbolV for_window [app_id="vlc"] blur off
+#
+# Шрифт для заголовков окон
+font pango:Fantasque Sans Mono Bold '$font'
+#
+# Просветы между окнами
+gaps inner '$font'
+#
+# Толщина границы окна
 default_border normal 1
 #
-# Устанавливаем цвет рамки активного окна #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.
-client.focused #2b2b2b #2b2b2b #2bf92b #2b2b2b #2b2b2b
-# Устанавливаем цвет рамки окна не в фокусе #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.
-client.unfocused #000000 #000000 #b2b2b2 #000000 #000000
-# Устанавливаем цвет рамки неактивного окна в фокусе #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.
+# Устанавливаем цвета рамок окон (Граница, ФонТекста, Текст, Индикатор, ДочерняяГраница)
+client.focused          #2b2b2b #2b2b2b #2bf92b #2b2b2b #2b2b2b
+client.unfocused        #000000 #000000 #b2b2b2 #000000 #000000
 client.focused_inactive #000000 #000000 #b2b2b2 #000000 #000000
-# Устанавливаем цвет рамки важного окна #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.
-client.urgent #000000 #000000 #b2b2b2 #000000 #000000
-# Устанавливаем цвет рамки окна-заполнитель #Граница #ФонТекста #Текст #Индикатор #ДочерняяГраница.
-client.placeholder #000000 #000000 #b2b2b2 #000000 #000000
+client.urgent           #000000 #000000 #b2b2b2 #000000 #000000
+client.placeholder      #000000 #000000 #b2b2b2 #000000 #000000
 #
-# Включить значки окон для всех окон с дополнительным горизонтальным отступом.
-for_window [all] title_window_icon padding '"$font"'px
+# ПРАВИЛА ПОВЕДЕНИЯ ОКНОН
 #
-# Внешний вид XTerm
-# Включить плавающий режим для всех окон XTerm.
-for_window [class="XTerm"] floating enable
-# Липкие плавающие окна, окно XTerm прилипло к стеклу.
-for_window [class="XTerm"] sticky enable
-# Задаем размеры окна XTerm.
-for_window [class="XTerm"] resize set '"$xterm"'
+# Внешний вид терминала Foot
+# Если вы запускаете foot в режиме плавающего окна:
+for_window [app_id="foot" title="floating_terminal"] floating enable
+for_window [app_id="foot" title="floating_terminal"] sticky enable
+for_window [app_id="foot" title="floating_terminal"] resize set '$xterm'
 #
-# Включить плавающий режим для всех окон audacious.
-for_window [class="audacious"] floating enable
+# Включить плавающий режим для музыкального плеера Audacious
+for_window [app_id="audacious"] floating enable
 #
-# Включить плавающий режим для всех окон calindori.
-for_window [class="calindori"] floating enable
+# Включить плавающий режим для календаря и часов KDE
+for_window [app_id="org.kde.calindori"] floating enable
+for_window [app_id="org.kde.kclock"] floating enable
 #
-# Включить плавающий режим для всех окон kclock.
-for_window [class="kclock"] floating enable
+########### НАТИВНАЯ НАСТРОЙКА ТАЧПАДА ###########
+input "type:touchpad" {
+    tap enabled                  # Включение клика по касанию (Option "Tapping" "on")
+    natural_scroll enabled       # Включение естественной прокрутки (инверсия скролла двумя пальцами)
+    dwt enabled                  # Disable While Typing (отключение тачпада во время печати текста для защиты от ладоней)
+    scroll_factor 0.5            # Скорость прокрутки (можно настроить под себя)
+}
+#
+########### МУЛЬТИМЕДИЙНЫЕ И СИСТЕМНЫЕ КЛАВИШИ ###########
+# Регулировка громкости (wpctl — нативный инструмент Wireplumber/PipeWire)
+# Canberra выдает чистый системный звук изменения уровня громкости
+bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && canberra-gtk-play -i audio-volume-change
+bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && canberra-gtk-play -i audio-volume-change
+bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && canberra-gtk-play -i audio-volume-change
+# Отключить / Включить микрофон
+bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+# Быстрый запуск калькулятора KAlgebra по специальной клавише
+bindsym XF86Calculator exec kalgebra
+# Быстрый запуск почтового клиента Thunderbird
+bindsym XF86Mail exec thunderbird
+#
+# Скриншот (Создание снимка через grim/slurp + звук затвора камеры)
+bindsym Print exec grim -g "$(slurp)" - | swappy -f - && canberra-gtk-play -i screen-capture
 #
 ########### Автозапуск программ ###########
 #
-# Графическое окошко с запросом пароля
-exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+# Инициализация GNOME Keyring
+exec gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
 #
-# Приветствие на 10 секунд (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id notify-send -t 10000 -i user-red-home "☭ Доброго времени суток ☭" \\
-"В меню 🛈 -- Шпаргалка по i3wm.";
+# Графический окошко с запросом паролей Polkit
+exec /usr/bin/lxqt-policykit-agent
 #
-# Сканер уязвимостей (--no-startup-id убирает курсор загрузки).
-exec --no-startup-id bash -c \047notify-send -w "✊ Сканер уязвимостей ✊" "$(arch-audit)"\047
+# Инициализация демона обоев и запуск циклической смены картинок раз в 5 минут
+exec swww-daemon --format xrgb
+exec bash -c \047while true; do swww img $(find /usr/share/backgrounds/ -type f | shuf -n 1) --transition-type random; sleep 300; done\047 &
 #
-# Графика и визуальный стиль
-# Автозапуск conky.
-exec --no-startup-id conky;
-# Автозапуск polybar.
-exec --no-startup-id polybar upbar;
-exec --no-startup-id polybar downbar;
-# Автозапуск picom.
-exec --no-startup-id picom -b;
-# Автозапуск dunst.
-exec --no-startup-id dunst;
+# Автозапуск сервера уведомлений SwayNC
+exec swaync
 #
-# Сеть, Bluetooth и системный трей
-# Запуск графического интерфейса системного трея NetworkManager.
-exec --no-startup-id nm-applet;
-# Автозапуск blueman.
-exec --no-startup-id blueman-applet;
-# Запуск геолокации.
-exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent;
-# Автозапуск gigolo.
-exec --no-startup-id gigolo;
+# Автозапуск статус-бара Waybar
+exec waybar
 #
-# Утилиты и буфер обмена
-# Автозапуск flameshot.
-exec --no-startup-id flameshot;
-# Автозапуск copyq.
-exec --no-startup-id copyq;
-# Автозапуск xbindkeys.
-exec --no-startup-id xbindkeys;
+# Блокировка экрана, заставка cmatrix и гибернация
+exec swayidle -w \\
+     timeout 300 \047foot --fullscreen cmatrix -sba\047 \\
+     resume \047killall cmatrix\047 \\
+     timeout 1800 \047swaylock -f -c 000000\047 \\
+     timeout 3000 \047systemctl hibernate\047 \\
+     before-sleep \047swaylock -f -c 000000\047
 #
-# Автозапуск USBGuard.
-exec --no-startup-id sudo -E usbguard-qt;
+# Воспроизведение звука входа
+exec pw-play /usr/share/sounds/freedesktop/stereo/service-login.oga
 #
-# Звуковые уведомления
-# Автозапуск pa-notify.
-exec --no-startup-id pa-notify;
+# Приветственное уведомление при входе в систему (Текст адаптирован под Sway)
+exec notify-send -t 10000 -i user-red-home "☭ Доброго времени суток ☭" "В меню 🛈 -- Шпаргалка по SwayWM."
+#
+# Автоматический сканер уязвимостей Arch Linux при старте
+exec bash -c \047notify-send -w "✊ Сканер уязвимостей ✊" "$(arch-audit)"\047
+#
+# Автозапуск системного монитора Conky (В режиме Wayland)
+exec conky
+#
+# Сеть, Bluetooth и Системный трей
+exec nm-applet --indicator
+exec blueman-applet
+exec /usr/lib/geoclue-2.0/demos/agent
+#
+# Менеджер буфера обмена CopyQ (Нативная работа в Wayland)
+exec copyq
+#
+# Демон безопасности USBGuard (Запуск БЕЗ sudo, права предоставит Polkit)
+exec usbguard-qt
 #
 # Мультимедиа, Календари и Мессенджеры в трей
-# Автозапуск audacious.
-exec --no-startup-id audacious -H;
-# Автозапуск thunderbird.
-exec --no-startup-id birdtray;
-# Автозапуск часов-напоминалки.
-exec --no-startup-id kclockd;
-# Автозапуск календаря.
-exec --no-startup-id calindac;
-# Автозапуск telegram.
-exec --no-startup-id telegram-desktop -startintray -- %u;
+exec audacious -H
+exec birdtray
+exec kclockd
+exec calindac
+exec wlsunset -T 4500 -t 3500 -g 1
+exec telegram-desktop -startintray
 #
 # Автозапуск fastfetch и обновления.
-#TechnicalSymbolexec --no-startup-id bash -c \047sleep 10; \\
+#TechnicalSymbolexec bash -c \047sleep 10; \\
 #TechnicalSymbol while [[ 1 -gt "$(ls -m /dev/pts | awk -F ", " \047\\\047\047{print $(NF-1)}\047\\\047\047)" ]]; \\
 #TechnicalSymbol do \\
 #TechnicalSymbol sleep 5; \\
@@ -1506,23 +1317,20 @@ exec --no-startup-id telegram-desktop -startintray -- %u;
 #
 ########### Горячие клавиши запуска программ ###########
 #
-#Восстановление рабочего стола №1.
-bindsym $mod+mod1+1 exec --no-startup-id "i3-msg \047workspace 1: 🏠; \\
-append_layout ~/.config/i3/workspace_1.json; exec xterm; exec xterm; \\
-exec nemo; exec xed\047"
-exec --no-startup-id "i3-msg \047workspace 1: 🏠; \\
-append_layout ~/.config/i3/workspace_1.json; \\
-exec xterm; exec xterm; exec nemo; exec xed\047"
+# Восстановление рабочего стола №1.
+bindsym $mod+mod1+1 workspace number $ws1; exec foot; exec nemo
 #
-# Используйте mod+enter, чтобы запустить терминал.
-bindsym $mod+Return exec xterm
+# Автоматический запуск при старте системы на 1-м рабочем столе.
+exec swaymsg "workspace number $ws1; exec foot; exec nemo"
 #
-# Запуск dmenu (программа запуска) с параметрами шрифта, приглашения, цвета фона.
-bindsym $mod+d exec --no-startup-id dmenu_run -fn "Fantasque Sans Mono:style=bold:size='"$(($font/2+$font))"'" \\
--p "Поиск программы:" -nb "#2b2b2b" -sf "#2b2bf9" -nf "#2bf92b" -sb "#f92b2b"
+# Используйте mod+enter, чтобы запустить нативный терминал Foot.
+bindsym $mod+Return exec foot
 #
-# Используйте mod+f1, чтобы запустить firefox.
-bindsym $mod+F1 exec --no-startup-id firefox
+# Запуск меню программ Bemenu.
+bindsym $mod+d exec bemenu-run --backend wayland -f "Fantasque Sans Mono Bold '"$(($font/2+$font))"'" -p "Поиск программы:" --nb "#2b2b2b" --sf "#2b2bf9" --nf "#2bf92b" --sb "#f92b2b"
+#
+# Используйте mod+f1, чтобы запустить браузер Firefox.
+bindsym $mod+F1 exec firefox
 #
 # Сделать текущее окно черновиком/блокнотом.
 bindsym $mod+Shift+minus move scratchpad
@@ -1531,341 +1339,238 @@ bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 #
 # Снимок экрана.
-bindsym Print exec flameshot full
+bindsym $mod+Print exec grim - | swappy -f - && canberra-gtk-play -i screen-capture
 #
 ########### Распределение окон по рабочим столам ###########
 #
-# Firefox будет запускаться на 2 рабочем столе.
-assign [class="firefox"] "2: 🌍"
+# Firefox будет автоматически запускаться на 2 рабочем столе (Замена class на app_id)
+assign [app_id="firefox"] workspace number $ws2
 #
-# Steam будет запускаться на 3 рабочем столе.
-assign [title="Steam"] "3: 🎮"
-exec --no-startup-id firefox; #TechnicalString
-exec --no-startup-id bash -c \047sleep 10; ~/archinstall.sh > /dev/pts/1\047 #TechnicalString' | tee /mnt/home/"$username"/.config/i3/config /mnt/root/.config/i3/config
+# Steam будет запускаться на 3 рабочем столе (Фильтр адаптирован под XWayland-окна Steam)
+assign [class="Steam"] workspace number $ws3
+assign [app_id="vlc"] workspace number $ws4
+#
+exec firefox; #TechnicalString
+exec bash -c \047sleep 10; ~/archinstall.sh > /dev/pts/1\047 #TechnicalString' | tee /mnt/home/"$username"/.config/sway/config /mnt/root/.config/sway/config
 #
 #Создание конфига Polybar (Панель рабочего стола).
-mkdir -p /mnt/home/"$username"/.config/polybar /mnt/root/.config/polybar
 echo -e "\033[36mСоздание конфига Polybar (Панель рабочего стола).\033[0m"
-echo -e '[bar/upbar]
-background = #2b2b2b
-foreground = #b2b2b2
-font-0 = Fantasque Sans Mono:size='"$font"'
-font-1 = Noto Sans Symbols:size='"$font"'
-font-2 = Noto Sans Symbols2:size='"$font"'
-font-3 = Noto Emoji SemiBold:size='"$font"'
-font-4 = Stalinist One:size='"$font"'
-locale = ru_RU.UTF-8
-modules-left = jgmenu inetbrowser1 inetbrowser2 filebrowser1 filebrowser2 libreoffice1 libreoffice2 xed1 xed2 calculator1 calculator2 pinta1 pinta2 cheese1 cheese2 skanlite1 skanlite2
-modules-center = title
-modules-right = date1 date2 date3 date4 pulseaudio printscreen help poweroff
-dpi = 0
-height = '"$(($font*3))"'
-enable-ipc = true
+echo -e '[
+    // ==========================================
+    //   ВЕРХНЯЯ ПАНЕЛЬ (UPBAR)
+    // ==========================================
+    {
+        "layer": "top",
+        "position": "top",
+        "height": '$((font*3))',
+        "spacing": 4,
+        "modules-left": [
+            "custom/jgmenu", "custom/inetbrowser", "custom/filebrowser", "custom/libreoffice",
+            "custom/xed", "custom/calculator", "custom/pinta", "custom/cheese", "custom/skanlite"
+        ],
+        "modules-center": [ "window" ],
+        "modules-right": [ "clock#time", "clock#date", "pulseaudio", "custom/printscreen", "custom/help", "custom/poweroff" ],
+        "custom/jgmenu": {
+        "format": " Arch Linux ☭ ",
+        "on-click": "wofi --config ~/.config/wofi/config", // Открытие основного меню программ слева
+        "tooltip": false
+        },
+        "custom/inetbrowser": { "format": " 🌐 ", "on-click": "xdg-open \047about:blank\047", "tooltip": false },
+        "custom/filebrowser": { "format": " 🗂 ", "on-click": "nemo", "tooltip": false },
+        "custom/libreoffice": { "format": " 🗋 ", "on-click": "libreoffice", "tooltip": false },
+        "custom/xed": { "format": " 📃 ", "on-click": "xed", "tooltip": false },
+        "custom/calculator": { "format": " 🖩 ", "on-click": "kalgebra", "tooltip": false },
+        "custom/pinta": { "format": " 🎨 ", "on-click": "pinta", "tooltip": false },
+        "custom/cheese": { "format": " 📸 ", "on-click": "cheese", "tooltip": false },
+        "custom/skanlite": { "format": " 🖨️ ", "on-click": "skanlite", "tooltip": false },
+        "window": { "format": "☭ {app_id} ➤ {title} ☭", "max-length": $((font*4)) },
+        "clock#time": { "interval": 1, "format": "{:%H:%M:%S}", "on-click": "kclock", "tooltip": false },
+        "clock#date": { "interval": 1, "format": "{:%A, %d %B %Y}", "locale": "ru_RU.UTF-8", "on-click": "calindori", "tooltip": false },
+        "pulseaudio": { "scroll-step": 5, "format": " ☭ {icon}{volume}% ☭ ", "format-muted": " ☭ 🔇00% ☭ ", "format-icons": { "default": ["🔈 ", "🔉 ", "🔊 "] }, "on-click-right": "pavucontrol-qt" },
+        "custom/printscreen": { "format": "⎙ ", "on-click": "grim -g \"\$(slurp)\" - | swappy -f - && canberra-gtk-play -i screen-capture", "tooltip": false },
+        "custom/help": {
+        "format": " 🛈 ",
+        "on-click": "bash ~/.config/wofi/menu_help.sh", // Вызов меню справки
+        "tooltip-format": "Помощь"
+        },
+        "custom/poweroff": {
+        "format": " ⏻ ",
+        "on-click": "bash ~/.config/wofi/menu_power.sh", // Вызов меню питания справа
+        "tooltip-format": "Выключение"
+        }
+    },
 
-[module/jgmenu]
-type = custom/ipc
-hook-0 = echo %{T5} Arch Linux ☭ %{T-}
-hook-1 = echo %{T5} Arch Linux ☭ %{T-}
-format-0 = <label>
-format-0-foreground = #f92b2b
-format-1 = <label>
-format-1-background = #283544
-format-1-foreground = #2bf92b
-initial = 1
-click-left = polybar-msg action jgmenu hook 1; sleep 0.1; polybar-msg action jgmenu hook 0; jgmenu --config-file=~/.config/jgmenu/left
-
-[module/inetbrowser1]
-type = custom/script
-exec = echo " 🌐"
-click-left = polybar-msg action inetbrowser1 module_hide; polybar-msg action inetbrowser2 hook 1; sleep 0.1; polybar-msg action inetbrowser2 hook 0; polybar-msg action inetbrowser1 module_show; xdg-open "about:blank"
-
-[module/inetbrowser2]
-type = custom/ipc
-hook-0 =
-hook-1 = echo " 🌐"
-format-1 = <label>
-format-1-background = #283544
-format-1-foreground = #2bf92b
-initial = 1
-
-[module/filebrowser1]
-type = custom/script
-exec = echo " 🗂"
-click-left = polybar-msg action filebrowser1 module_hide; polybar-msg action filebrowser2 hook 1; sleep 0.1; polybar-msg action filebrowser2 hook 0; polybar-msg action filebrowser1 module_show; xdg-open .
-
-[module/filebrowser2]
-type = custom/ipc
-hook-0 =
-hook-1 = echo " 🗂"
-format-1 = <label>
-format-1-background = #283544
-format-1-foreground = #2bf92b
-initial = 1
-
-[module/libreoffice1]
-type = custom/script
-exec = echo " 🗋"
-click-left = polybar-msg action libreoffice1 module_hide; polybar-msg action libreoffice2 hook 1; sleep 0.1; polybar-msg action libreoffice2 hook 0; polybar-msg action libreoffice1 module_show; libreoffice
-
-[module/libreoffice2]
-type = custom/ipc
-hook-0 =
-hook-1 = echo " 🗋"
-format-1 = <label>
-format-1-background = #283544
-format-1-foreground = #2bf92b
-initial = 1
-
-[module/xed1]
-type = custom/script
-exec = echo " 📃"
-click-left = polybar-msg action xed1 module_hide; polybar-msg action xed2 hook 1; sleep 0.1; polybar-msg action xed2 hook 0; polybar-msg action xed1 module_show; xed
-
-[module/xed2]
-type = custom/ipc
-hook-0 =
-hook-1 = echo " 📃"
-format-1 = <label>
-format-1-background = #283544
-format-1-foreground = #2bf92b
-initial = 1
-
-[module/calculator1]
-type = custom/script
-exec = echo " 🖩"
-click-left = polybar-msg action calculator1 module_hide; polybar-msg action calculator2 hook 1; sleep 0.1; polybar-msg action calculator2 hook 0; polybar-msg action calculator1 module_show; kalgebra
-
-[module/calculator2]
-type = custom/ipc
-hook-0 =
-hook-1 = echo " 🖩"
-format-1 = <label>
-format-1-background = #283544
-format-1-foreground = #2bf92b
-
-[module/pinta1]
-type = custom/script
-exec = echo " 🎨"
-click-left = polybar-msg action pinta1 module_hide; polybar-msg action pinta2 hook 1; sleep 0.1; polybar-msg action pinta2 hook 0; polybar-msg action pinta1 module_show; pinta
-
-[module/pinta2]
-type = custom/ipc
-hook-0 =
-hook-1 = echo " 🎨"
-format-1 = <label>
-format-1-background = #283544
-format-1-foreground = #2bf92b
-
-[module/cheese1]
-type = custom/script
-exec = echo " 📸"
-click-left = polybar-msg action cheese1 module_hide; polybar-msg action cheese2 hook 1; sleep 0.1; polybar-msg action cheese2 hook 0; polybar-msg action cheese1 module_show; cheese
-
-[module/cheese2]
-type = custom/ipc
-hook-0 =
-hook-1 = echo " 📸"
-format-1 = <label>
-format-1-background = #283544
-format-1-foreground = #2bf92b
-
-[module/skanlite1]
-type = custom/script
-exec = echo " 🖨️"
-click-left = polybar-msg action skanlite1 module_hide; polybar-msg action skanlite2 hook 1; sleep 0.1; polybar-msg action skanlite2 hook 0; polybar-msg action skanlite1 module_show; skanlite
-
-[module/skanlite2]
-type = custom/ipc
-hook-0 =
-hook-1 = echo " 🖨️"
-format-1 = <label>
-format-1-background = #283544
-format-1-foreground = #2bf92b
-
-[module/title]
-type = internal/xwindow
-format = ☭ <label> %{F#f92b2b}☭
-label = %{F#ffa500}%class%%{F#f92b2b} ➤%{F#ffa500} %title%
-format-foreground = #f92b2b
-format-margin = 1
-label-maxlen = '"$(($font*10))"'
-
-[module/date1]
-type = custom/script
-format-margin = 1
-exec = date "+%H:%M:%S"
-interval = 0.3
-click-left = polybar-msg action date1 module_hide; polybar-msg action date2 hook 1; sleep 0.1; polybar-msg action date2 hook 0; polybar-msg action date1 module_show; kclock
-
-[module/date2]
-type = custom/ipc
-hook-0 =
-hook-1 = date "+%H:%M:%S"
-format-0-margin = 1
-format-1 = <label>
-format-1-background = #283544
-format-1-foreground = #2bf92b
-format-1-margin = 1
-initial = 1
-
-[module/date3]
-type = custom/script
-exec = date "+%A, %d %B %Y"
-interval = 0.3
-click-left = polybar-msg action date3 module_hide; polybar-msg action date4 hook 1; sleep 0.1; polybar-msg action date4 hook 0; polybar-msg action date3 module_show; calindori
-
-[module/date4]
-type = custom/ipc
-hook-0 =
-hook-1 = date "+%A, %d %B %Y"
-format-1 = <label>
-format-1-background = #283544
-format-1-foreground = #2bf92b
-initial = 1
-
-[module/pulseaudio]
-type = internal/pulseaudio
-reverse-scroll = false
-format-volume = %{F#f92b2b} ☭ %{F-}<ramp-volume><label-volume>%{F#f92b2b} ☭ %{F-}
-label-muted = %{F#f92b2b} ☭ %{F-}🔇00%%{F#f92b2b} ☭ %{F-}
-label-muted-foreground = #666
-ramp-volume-0 = 🔈
-ramp-volume-1 = 🔉
-ramp-volume-2 = 🔊
-click-right = pavucontrol-qt
-
-[module/printscreen]
-type = custom/ipc
-hook-0 = echo ⎙
-hook-1 = echo ⎙
-format-1 = <label>
-format-1-background = #283544
-format-1-foreground = #2bf92b
-initial = 1
-click-left = polybar-msg action printscreen hook 1; sleep 0.1; import ~/screenshot_$(date +%Y-%m-%d_%H-%M-%S).png; polybar-msg action printscreen hook 0
-
-[module/help]
-type = custom/ipc
-hook-0 = echo " 🛈"
-hook-1 = echo " 🛈"
-format-1 = <label>
-format-1-background = #283544
-format-1-foreground = #2bf92b
-initial = 1
-click-left = polybar-msg action help hook 1; sleep 0.1; polybar-msg action help hook 0; jgmenu --csv-file=~/.config/jgmenu/help.csv --config-file=~/.config/jgmenu/right
-
-[module/poweroff]
-type = custom/ipc
-hook-0 = echo " ⏻ "
-hook-1 = echo " ⏻ "
-format-1 = <label>
-format-1-background = #283544
-format-1-foreground = #2bf92b
-initial = 1
-click-left = polybar-msg action poweroff hook 1; sleep 0.1; polybar-msg action poweroff hook 0; jgmenu --csv-file=~/.config/jgmenu/poweroff.csv --config-file=~/.config/jgmenu/right
-
-[bar/downbar]
-background = #2b2b2b
-foreground = #b2b2b2
-font-0 = Fantasque Sans Mono:size='"$font"'
-font-1 = Noto Sans Symbols:size='"$font"'
-font-2 = Noto Sans Symbols2:size='"$font"'
-font-3 = Noto Emoji SemiBold:size='"$font"'
-separator = "%{F#f92b2b} ☭ %{F-}"
-locale = ru_RU.UTF-8
-modules-left = i3
-modules-right = cpu memory netline xkeyboard tray battery
-dpi = 0
-height = '"$(($font*3))"'
-enable-ipc = true
-bottom = true
-scroll-up = "#i3.prev"
-scroll-down = "#i3.next"
-
-[module/i3]
-type = internal/i3
-show-urgent = true
-label-focused-foreground = #2bf92b
-label-focused-background = #283544
-label-focused-underline = #f92b2b
-label-urgent-foreground = #2b2b2b
-label-urgent-background = #f92b2b
-label-separator = |
-label-separator-foreground = #f92b2b
-
-[module/cpu]
-type = internal/cpu
-interval = 0.5
-warn-percentage = 95
-label = %percentage%% CPU
-label-warn = %{F#000000}%{B#f92b2b}%percentage%%CPU%{F-}%{B-}
-
-[module/memory]
-type = internal/memory
-interval = 3
-warn-percentage = 95
-label = 💾: %gb_used%/%gb_free%
-label-warn = %{F#000000}%{B#f92b2b}💾: %gb_used%/%gb_free%%{F-}%{B-}
-
-[module/netline]
-type = custom/script
-exec = netline="| "; netmas="$(nmcli -f GENERAL.DEVICE device show | awk \047!/lo/ && !/^$/ {print $2}\047)"; for word in $netmas; do netline+="$word: "$(nmcli -f IP4.ADDRESS device show "$word" | awk \047{print $2}\047)" | "; done; echo $netline
-interval = 1
-
-[module/xkeyboard]
-type = internal/xkeyboard
-format = <label-layout><label-indicator>
-format-spacing = 0
-label-layout = %icon%
-label-layout-padding = 1
-label-layout-background = #283544
-label-layout-foreground = #ffffff
-layout-icon-0 = ru;RU
-layout-icon-1 = us;EN
-label-indicator-on-capslock = %{F#ffffff}%{B#283544}C%{F-}%{B-}
-label-indicator-off-capslock = %{B#283544}c%{B-}
-label-indicator-on-numlock = %{F#ffffff}%{B#283544}N%{F-}%{B-}
-label-indicator-off-numlock = %{B#283544}n%{B-}
-label-indicator-on-scrolllock = %{F#ffffff}%{B#283544}S%{F-}%{B-}
-label-indicator-off-scrolllock = %{B#283544}s%{B-}
-
-[module/tray]
-type = internal/tray
-
-[module/battery]
-type = internal/battery
-full-at = 99
-low-at = 5
-; $ ls -1 /sys/class/power_supply/
-battery = BAT0
-adapter = ADP1
-format-charging = <animation-charging> <label-charging>
-format-discharging = <ramp-capacity> <label-discharging>
-ramp-capacity-0 = 
-ramp-capacity-1 = 
-ramp-capacity-2 = 
-ramp-capacity-3 = 
-ramp-capacity-4 = 
-bar-capacity-width = 10
-animation-charging-0 = 
-animation-charging-1 = 
-animation-charging-2 = 
-animation-charging-3 = 
-animation-charging-4 = 
-animation-charging-framerate = 750
-animation-discharging-0 = 
-animation-discharging-1 = 
-animation-discharging-2 = 
-animation-discharging-3 = 
-animation-discharging-4 = 
-animation-discharging-framerate = 500
-animation-low-0 = !
-animation-low-1 =
-animation-low-framerate = 200' | tee /mnt/home/"$username"/.config/polybar/config.ini /mnt/root/.config/polybar/config.ini
+    // ==========================================
+    //   НИЖНЯЯ ПАНЕЛЬ (DOWNBAR)
+    // ==========================================
+    {
+        "layer": "top",
+        "position": "bottom",
+        "height": $((font*3)),
+        "spacing": 4,
+        // Модули нижней панели
+        "modules-left": [
+            "sway/workspaces"
+        ],
+        "modules-right": [
+            "cpu",
+            "memory",
+            "custom/netline",
+            "sway/language",
+            "keyboard-state",
+            "tray",
+            "battery"
+        ],
+        // Настройка рабочих столов Sway
+        "sway/workspaces": {
+            "disable-scroll": false,
+            "all-outputs": true,
+            "format": "{name}",
+            "persistent-workspaces": {
+                "1": [], "2": [], "3": []
+            }
+        },
+        // Мониторинг процессора
+        "cpu": {
+            "interval": 0.5,
+            "format": "{usage}% CPU",
+            "states": {
+                "warning": 95
+            }
+        },
+        // Мониторинг памяти
+        "memory": {
+            "interval": 3,
+            "format": "💾: {used:0.1f}Gb/{avail:0.1f}Gb",
+            "states": {
+                "warning": 95
+            }
+        },
+        // Сетевой скрипт netline
+        "custom/netline": {
+            "exec": "netline=\"| \"; netmas=\"\$(nmcli -f GENERAL.DEVICE device show | awk \047!/lo/ && !/^$/ {print \$2}\047)\"; for word in \$netmas; do netline+=\"\$word: \$(nmcli -f IP4.ADDRESS device show \"\$word\" | awk \047{print \$2}\047)\" | \"; done; echo \"\$netline\"",
+            "interval": 1,
+            "tooltip": false
+        },
+        // Отображение текущего языка
+        "sway/language": {
+            "format": " {short} ",
+            "tooltip": false
+        },
+        // Индикаторы блокировок
+        "keyboard-state": {
+            "numlock": true,
+            "capslock": true,
+            "scrolllock": true,
+            "format": {
+                "numlock": "{name}",
+                "capslock": "{name}",
+                "scrolllock": "{name}"
+            },
+            "format-icons": {
+                "locked": "X", // Будет подсвечено большой буквой через CSS
+                "unlocked": "x"
+            }
+        },
+        // Системный трей Wayland (Status Notifier Item)
+        "tray": {
+            "icon-size": '$((font*2))',
+            "spacing": 10
+        },
+        // Монитор батареи (С вашими иконками)
+        "battery": {
+            "states": {
+                "good": 99,
+                "warning": 15,
+                "critical": 5
+            },
+            "format": "{icon} {capacity}%",
+            "format-charging": "  {capacity}%",
+            "format-plugged": "  {capacity}%",
+            "format-icons": ["", "", "", "", ""]
+        }
+    }
+]' | tee /mnt/home/"$username"/.config/waybar/config.jsonc /mnt/root/.config/waybar/config.jsonc
 #
-#Создание конфига redshift (Регулирует цветовую температуру вашего экрана).
-echo -e "\033[36mСоздание конфига redshift (Регулирует цветовую температуру вашего экрана).\033[0m"
-echo '[redshift]
+#ГЕНЕРАЦИЯ СТИЛЕЙ ОФОРМЛЕНИЯ И ПОДВЕТОК (CSS)
+echo -e '/* Базовые стили для обеих панелей */
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "Fantasque Sans Mono", "Noto Sans Symbols", "Noto Emoji";
+    font-size: '${font}'px;
+    min-height: 0;
+}
+window#waybar {
+    background-color: #2b2b2b;
+    color: #b2b2b2;
+}
+#window { color: #ffa500; font-weight: bold; }
+#custom-jgmenu { color: #f92b2b; font-weight: bold; }
+#custom-jgmenu, #custom-inetbrowser, #custom-filebrowser, #custom-libreoffice, 
+#custom-xed, #custom-calculator, #custom-pinta, #custom-cheese, #custom-skanlite,
+#custom-printscreen, #custom-help, #custom-poweroff, #clock, #pulseaudio {
+    padding: 0 5px;
+}
+#custom-jgmenu:hover, #custom-inetbrowser:hover, #custom-filebrowser:hover, #custom-libreoffice:hover,
+#custom-xed:hover, #custom-calculator:hover, #custom-pinta:hover, #custom-cheese:hover, #custom-skanlite:hover,
+#custom-printscreen:hover, #custom-help:hover, #custom-poweroff:hover, #clock:hover {
+    background-color: #283544;
+    color: #2bf92b;
+}
+/* --- МОДУЛИ НИЖНЕГО БАРА --- */
+#cpu, #memory, #custom-netline, #language, #keyboard-state, #battery {
+    padding: 0 5px;
+    border-left: 2px solid #f92b2b;
+}
+/* Стилизация рабочих столов */
+#workspaces button {
+    padding: 0 10px;
+    background-color: transparent;
+    color: #b2b2b2;
+    border-bottom: 3px solid transparent;
+}
+#workspaces button.focused {
+    background-color: #283544;
+    color: #2bf92b;
+    border-bottom: 3px solid #f92b2b;
+}
+#workspaces button.urgent {
+    background-color: #f92b2b;
+    color: #2b2b2b;
+}
+/* Подсветка критической нагрузки CPU и памяти */
+#cpu.warning, #memory.warning {
+    background-color: #f92b2b;
+    color: #000000;
+}
+/* Стилизация переключателя языков */
+#language {
+    background-color: #283544;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+/* Стилизация блока Caps/Num/ScrollLock */
+#keyboard-state {
+    background-color: #283544;
+    color: #ffffff;
+}
+#keyboard-state label.locked {
+    color: #ffffff; /* Заглавная буква если включен */
+}
+#keyboard-state label.unlocked {
+    color: #666666; /* Маленькая серая буква если выключен */
+}
+/* Системный трей */
+#tray {
+    background-color: #2b2b2b;
+}' | tee /mnt/home/"$username"/.config/waybar/style.css /mnt/root/.config/waybar/style.css
+#
+#Создание конфигурации для wlsunset.
+echo -e "\033[36mНастройка GeoClue для нативного ночного режима wlsunset.\033[0m"
+# Разрешаем демону wlsunset получать координаты от системы для автоматического расчета заката и рассвета
+echo '[wlsunset]
 allowed=true
 system=false
 users=' >> /mnt/etc/geoclue/geoclue.conf
@@ -1878,93 +1583,32 @@ echo 'polkit.addRule(function(action, subject) {
     }
 });' > /mnt/etc/polkit-1/rules.d/49-nopasswd_global.rules
 #
-#Создание конфига рабочего стола №1.
-echo -e "\033[36mСоздание конфига рабочего стола №1.\033[0m"
-echo '{
-    "border": "normal",
-    "current_border_width": 1,
-    "floating": "auto_off",
-    "percent": 0.5,
-    "swallows": [
-       { "class": "^Xed$" }
-    ]
-}
-{
-    "border": "normal",
-    "layout": "splitv",
-    "percent": 0.5,
-    "type": "con",
-    "nodes": [
-        {
-            "border": "normal",
-            "current_border_width": 1,
-            "floating": "auto_off",
-            "percent": 0.6,
-            "swallows": [
-               { "class": "^Nemo$" }
-            ]
-        },
-        {
-            "border": "normal",
-            "floating": "auto_off",
-            "layout": "splith",
-            "percent": 0.4,
-            "type": "con",
-            "nodes": [
-                {
-                    "border": "normal",
-                    "current_border_width": 1,
-                    "floating": "user_off",
-                    "percent": 0.5,
-                    "swallows": [
-                       {
-                        "class": "^XTerm$",
-                        "title": "'"$username"'\\@'"$hostname"'\\:\\~$"
-                       }
-                    ]
-                },
-                {
-                    "border": "normal",
-                    "current_border_width": 1,
-                    "floating": "user_off",
-                    "percent": 0.5,
-                    "swallows": [
-                       {
-                        "class": "^XTerm$",
-                        "title": "'"$username"'\\@'"$hostname"'\\:\\~$"
-                       }
-                    ]
-                }
-            ]
-        }
-    ]
-}' | tee /mnt/home/"$username"/.config/i3/workspace_1.json /mnt/root/.config/i3/workspace_1.json
-#
 #Создание подсказки.
 echo -e "\033[36mСоздание подсказки.\033[0m"
 echo '#
-Win+Enter -- Запустить терминал.
-Win+D -- Запуск dmenu (программа запуска).
-Win+F1 -- Запустить firefox.
+Win+Enter -- Запустить терминал (Foot).
+Win+D -- Запуск Bemenu (программа запуска).
+Win+F1 -- Запустить Firefox.
 Win+Shift+Q -- Закрыть окно в фокусе.
-Print Screen -- Снимок экрана.
+Print Screen -- Снимок выделенной области экрана (Ножницы).
+Win+Print Screen -- Снимок всего экрана.
 #
-🌐 -- Запустить firefox.
+🌐 -- Запустить Firefox.
 🗂 -- Запустить Nemo.
-🗋 -- Запустить office.
-📃 -- Запустить блокнота.
-🖩 -- Запустить калькулятор.
-🎨 -- Запустить pinta.
-📸 -- Запустить cheese.
-🖨️ -- Запустить skanlite.
+🗋 -- Запустить LibreOffice.
+📃 -- Запустить текстовый редактор Xed.
+🖩 -- Запустить калькулятор KAlgebra.
+🎨 -- Запустить Pinta.
+📸 -- Запустить Cheese.
+🖨️ -- Запустить Skanlite.
 ⎙ -- Снимок экрана/Ножницы.
-🛈 -- Эффекты и мониторинг.
-⏻ -- Управление сессией.
+🛈 -- Справка и шпаргалка.
+⏻ -- Управление питанием ПК.
 #
-ScrollUp на заголовке -- Развернуть окно во весь экран.
-ScrollDown на заголовке -- Закрывает окно.
-ПКМ на заголовке -- Переключение плавающего режима (Вкл/Выкл).
-СКМ на заголовке -- Сворачивает окно в черновик.
+Win + ScrollUp на окне -- Развернуть окно во весь экран.
+Win + ScrollDown на окне -- Закрывает окно.
+Win + ПКМ на окне -- Переключение плавающего режима (Вкл/Выкл).
+Win + СКМ на окне -- Сворачивает окно в черновик (Скретчпад).
 #
 Win+Left -- Фокус на левое окно.
 Win+Down -- Фокус на нижнее окно.
@@ -1986,8 +1630,8 @@ Win+E -- Переключить направление разделения ок
 Win+1..0 -- Переключение между рабочими столами.
 Win+Shift+1..0 -- Переместить сфокусированное окно на заданный рабочий стол.
 #
-Win+Shift+R -- Перезапустить i3.
-Win+Shift+E -- Выход из i3 (выходит из сеанса X).
+Win+Shift+C -- Перечитать конфигурационный файл Sway (Перезагрузка интерфейса).
+Win+Shift+E -- Выход из графической сессии Sway (Безопасное завершение).
 #
 Win+R -- Войти/Выйти в режим изменения размеров окон.
 Left -- Сдвинуть границу влево.
@@ -1998,7 +1642,7 @@ Right -- Сдвинуть границу вправо.
 Win+Shift+Minus -- Сделать текущее окно черновиком/блокнотом.
 Win+Minus -- Показать первое окно черновика/блокнота.
 #
-Win+Alt+1 -- Восстановление рабочего стола №1.' > /mnt/help.txt
+Win+Alt+1 -- Быстрый запуск терминала Foot и Nemo на рабочем столе №1.' > /mnt/help.txt
 #
 #Создание директории и конфига gtk (Внешний вид gtk программ).
 echo -e "\033[36mСоздание конфига gtk (Внешний вид gtk программ).\033[0m"
@@ -2071,47 +1715,49 @@ echo -e 'context.properties = {\n    spa.bluez5.codecs = [ ldac aptx_hd aptx sbc
 mkdir -p /mnt/etc/pipewire/client.conf.d/
 echo -e 'filter.properties = {\n    resample.quality = 10\n}' > /mnt/etc/pipewire/client.conf.d/99-resample.conf
 #
-#Создание директории и конфига jgmenu.
-echo -e "\033[36mСоздание конфига jgmenu.\033[0m"
-mkdir -p /mnt/home/"$username"/.config/jgmenu /mnt/root/.config/jgmenu
-echo '# Оставлять меню открытым при потере фокуса (0 - false, 1 - true)
-stay_alive = 0
-# Команда для запуска терминала
-terminal_exec = xterm
-# Аргументы для запуска терминала
-terminal_args = -e
-# Количество столбцов в меню
-columns = 1
-# Горизонтальное выравнивание меню (left, center, right)
-menu_halign = left
-# Вертикальное выравнивание меню (top, center, bottom)
-menu_valign = top
-# Вертикальный отступ меню
-menu_margin_y = '"$(($font*4))"'
-# Тема иконок
-icon_theme = Papirus-Dark
-#Размер иконок в пикселях
-icon_size = '"$(($font*2))"'
-# Открывать подменю по клику (true/false)
-click_to_open = false
-# Шрифт для текста в меню
-font = Fantasque Sans Mono '"$font"'
-# Цвет фона меню
-color_menu_bg = #2b2b2b
-# Цвет текста в меню
-color_norm_fg = #b2b2b2
-# Цвет фона для выделенного элемента
-color_sel_bg = #283544
-# Цвет текста для выделенного элемента
-color_sel_fg = "#ffffff"' | tee /mnt/home/"$username"/.config/jgmenu/left /mnt/root/.config/jgmenu/left /mnt/home/"$username"/.config/jgmenu/right /mnt/root/.config/jgmenu/right
-sed -i 's/menu_halign = left/menu_halign = right/' /mnt/home/"$username"/.config/jgmenu/right
-sed -i 's/menu_halign = left/menu_halign = right/' /mnt/root/.config/jgmenu/right
-echo -e 'Графические эффекты,bash -c \047if [ -n "$(pidof picom)" ]; then killall picom; else picom -b; fi\047,/usr/share/icons/Papirus-Dark/16x16/apps/blackmagicraw-speedtest.svg
-Системный монитор,bash -c "sed -i \047s/own_window_type/--own_window_type/\047 ~/.config/conky/conky.conf; sed -i \047s/----//\047 ~/.config/conky/conky.conf",/usr/share/icons/Papirus-Dark/16x16/apps/conky.svg
-Подсказка,xed /help.txt,/usr/share/icons/Papirus/16x16/apps/help-browser.svg' | tee /mnt/home/"$username"/.config/jgmenu/help.csv /mnt/root/.config/jgmenu/help.csv
-echo -e 'Выход из i3wm,i3-nagbar -t warning -m \047Вы действительно хотите выйти из i3? Это завершит вашу сессию X.\047 -b \047Да! выйти из i3\047 \047pw-play /usr/share/sounds/freedesktop/stereo/service-logout.oga; i3-msg exit\047,/usr/share/icons/Papirus-Dark/16x16/actions/application-exit.svg
-Перезагрузка,systemctl reboot,/usr/share/icons/Papirus/16x16/apps/system-reboot.svg
-Завершение работы,systemctl poweroff,/usr/share/icons/Papirus-Dark/16x16/apps/system-shutdown.svg' | tee /mnt/home/"$username"/.config/jgmenu/poweroff.csv /mnt/root/.config/jgmenu/poweroff.csv
+#Создание директории и конфига Wofi.
+echo -e "\033[36mСоздание конфига Wofi.\033[0m"
+echo '# Настройки поведения и внешнего вида Wofi
+show=drun
+width=400
+height=500
+location=top_left
+xoffset=10
+yoffset=40
+layer=overlay
+allow_images=true
+image_size=32
+term=foot
+insensitive=true
+prompt=Поиск программы:' | tee /mnt/home/"$username"/.config/wofi/config /mnt/root/.config/wofi/config
+echo '#!/bin/bash
+CHOSEN=$(echo -e "🛈  Подсказка по горячим клавишам\n📊  Переключить системный монитор Conky" | wofi --dmenu -p "Справка и Мониторинг:" --width=350 --height=150 --location=top_right --xoffset=-100 --yoffset=40)
+case "$CHOSEN" in
+    *"Подсказка"*)
+        foot -t "floating_terminal" xed /help.txt &
+        ;;
+    *"Conky"*)
+        # Переключение Conky (если запущен - убиваем, если нет - запускаем)
+        if pidof conky >/dev/null; then
+            killall conky
+        else
+            conky &
+        fi
+        ;;
+esac' | tee /mnt/home/"$username"/.config/wofi/menu_help.sh /mnt/root/.config/wofi/menu_help.sh
+echo '#!/bin/bash
+CHOSEN=$(echo -e "🚪  Выйти из графической сессии Sway\n🔄  Перезагрузка компьютера\n⏻  Завершение работы (Выключение)" | wofi --dmenu -p "Управление питанием:" --width=350 --height=180 --location=top_right --xoffset=-10 --yoffset=40)
+case "$CHOSEN" in
+    *"Выйти"*)
+        swaynag -t warning -m \047Вы действительно хотите выйти из Sway?\047 -B \047Да, выйти\047 \047pw-play /usr/share/sounds/freedesktop/stereo/service-logout.oga && swaymsg exit\047
+        ;;
+    *"Перезагрузка"*)
+        systemctl reboot
+        ;;
+    *"Завершение"*)
+        systemctl poweroff
+        ;;
+esac' | tee /mnt/home/"$username"/.config/wofi/menu_power.sh /mnt/root/.config/wofi/menu_power.sh
 #
 #Создание пользовательских директорий.
 echo -e "\033[36mСоздание пользовательских директорий.\033[0m"
@@ -2154,30 +1800,14 @@ show_autoconnect_errors=true' >> /mnt/home/"$username"/.config/gigolo/config
 #
 #Создание конфига copyq.
 echo -e "\033[36mСоздание конфига copyq.\033[0m"
-mkdir -p /mnt/home/"$username"/.config/copyq/
-echo -e '[Options]\ncheck_clipboard=true\ncheck_selection=true\ncopy_clipboard=true\ncopy_selection=true' |
-tee /mnt/home/"$username"/.config/copyq/copyq.conf
-#
-#Создание общего конфига xbindkeys (Настройка мультимедийных клавиш).
-echo -e "\033[36mСоздание общего конфига xbindkeys (Настройка мультимедийных клавиш).\033[0m"
-echo -e '# Увеличить громкость.
-    "pactl set-sink-volume @DEFAULT_SINK@ +1000"
-        XF86AudioRaiseVolume
-# Уменьшить громкость.
-    "pactl set-sink-volume @DEFAULT_SINK@ -1000"
-        XF86AudioLowerVolume
-# Отключить звук.
-    "pactl set-sink-mute @DEFAULT_SINK@ toggle"
-        XF86AudioMute
-# Отключить микрофон.
-    "pactl set-source-mute @DEFAULT_SOURCE@ toggle"
-        XF86AudioMicMute
-# Открыть калькулятор.
-    "kalgebra"
-        Mod2 + XF86Calculator
-# Открыть почту.
-    "thunderbird"
-        Mod2 + XF86Mail' | tee /mnt/home/"$username"/.xbindkeysrc /mnt/root/.xbindkeysrc
+echo -e '[General]
+plugin_priority=itemimage, itemtext, itemencrypted, itemtags, wayland
+[Options]
+check_clipboard=true
+check_selection=false
+copy_clipboard=true
+copy_selection=false
+hide_main_window=true' | tee /mnt/home/"$username"/.config/copyq/copyq.conf
 #
 #Редактирование конфига nanorc.
 echo -e "\033[36mРедактирование конфига nanorc.\033[0m"
@@ -2213,45 +1843,58 @@ for (( j=0, i=1; i<="${#massd[*]}"; i++, j++ ))
         fi
     done
 #
-#Настройка межсетевого экрана
-nft add table inet filter
-nft add chain inet filter input \{ type filter hook input priority filter \; policy accept \; \}
-nft add rule inet filter input ip saddr 192.168.1.0/24 tcp dport 5900 accept
-nft add rule inet filter input tcp dport 5900 drop
-nft list ruleset > /mnt/etc/nftables.conf
+#Создание конфигурации межсетевого экрана Nftables.
+echo -e "\033[36mСоздание конфигурации nftables и настройка сети...\033[0m"
+echo '#!/usr/bin/nft -f
+table inet filter {
+    set ssh_limit {
+        type ipv4_addr
+        flags dynamic, timeout
+        timeout 1m
+    }
+    chain input {
+        type filter hook input priority filter; policy drop;
+        # Разрешаем уже установленные и связанные соединения (Критично для работы интернета)
+        ct state established,related accept
+        # Разрешаем локальный петлевой интерфейс (localhost)
+        iif "lo" accept
+        # Разрешаем весь трафик из вашей локальной сети
+        ip saddr 192.168.0.0/24 accept
+        # Ограничение и защита SSH (порт 22)
+        tcp dport 22 ct state new update @ssh_limit { ip saddr limit rate over 4/minute } drop
+        tcp dport 22 ct state new accept
+        # Открываем порты для мультимедиа, сети и VNC
+        tcp dport 5900 accept
+        udp dport 5353 accept
+        # Открываем порты для торрент-клиента Deluge
+        tcp dport 58846 accept                        # Порт управления демоном Deluge
+        tcp dport 6881 accept                         # Торрент-трафик TCP
+        udp dport 6881 accept                         # Торрент-трафик UDP
+    }
+    chain forward {
+        type filter hook forward priority filter; policy drop;
+        # Разрешаем пересылку трафика, если входящий или выходящий интерфейс — wg0
+        iifname "wg0" accept
+        oifname "wg0" accept
+        # Разрешаем пересылку уже существующих соединений
+        ct state established,related accept
+    }
+
+    chain output {
+        type filter hook output priority filter; policy accept; # Исходящий трафик разрешен всегда
+    }
+}' > /mnt/etc/nftables.conf
 #
 #Настройка удаленного рабочего стола.
 echo -e "\033[36mНастройка удаленного рабочего стола.\033[0m"
 echo '[Unit]
-Description=x11vnc Desktop Server
-After=graphical.target kmsvnc.service
+Description=KMS/DRM Framebuffer VNC Server
+After=systemd-udev-settle.service
+Wants=systemd-udev-settle.service
 [Service]
-Environment=DISPLAY=:0
-Environment=XAUTHORITY=/run/user/1000/lyxauth
-Environment=QT_X11_NO_MITSHM=1
-Environment=X11VNC_REMOTE_ONLY=1
+Type=simple
+ExecStart=/usr/bin/kmsvnc --port 5900
 Restart=on-failure
-RestartSec=3
-ProtectSystem=full
-ProtectHome=false
-PrivateTmp=false
-PrivateDevices=false
-NoNewPrivileges=true
-#ExecStartPre=-/usr/bin/pkill -f kmsvnc
-ExecStartPre=-/usr/bin/systemctl stop kmsvnc.service
-ExecStartPre=/usr/bin/sleep 1
-ExecStart=
-ExecStart=/usr/bin/x11vnc -many -auth /run/user/1000/lyxauth -noshm -rfbport 5900
-[Install]
-WantedBy=graphical.target' > /mnt/etc/systemd/system/x11vnc.service
-echo '[Unit]
-Description=KMSVNC Remote Desktop Server
-After=network.target
-[Service]
-Type=forking
-User=root
-ExecStart=/usr/bin/kmsvnc -p 5900 -b 0.0.0.0
-Restart=always
 RestartSec=3
 [Install]
 WantedBy=multi-user.target' > /mnt/etc/systemd/system/kmsvnc.service
@@ -2262,7 +1905,6 @@ sed -i 's/animation = none/animation = matrix/' /mnt/etc/ly/config.ini
 sed -i 's/bigclock = none/bigclock = en/' /mnt/etc/ly/config.ini
 sed -i 's/bigclock_seconds = false/bigclock_seconds = true/' /mnt/etc/ly/config.ini
 sed -i 's/lang = en/lang = ru/' /mnt/etc/ly/config.ini
-sed -i 's/numlock = false/numlock = true/' /mnt/etc/ly/config.ini
 sed -i 's/fg = 0x00FFFFFF/fg = 0x0000FF00/' /mnt/etc/ly/config.ini
 sed -i 's/border_fg = 0x00FFFFFF/border_fg = 0x0000FF00/' /mnt/etc/ly/config.ini
 #
@@ -2289,8 +1931,8 @@ echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt ln -sf /usr/lib/systemd/system/kmsconvt@.service /etc/systemd/system/autovt@.service
 arch-chroot /mnt systemctl disable dbus
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
-ly@tty2 dhcpcd avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
-wsdd saned.socket cups.socket x11vnc kmsvnc ufw auditd usbguard nftables
+ly@tty2 avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
+wsdd saned.socket cups.socket x11vnc kmsvnc auditd usbguard nftables pipewire pipewire-pulse wireplumber
 arch-chroot /mnt timedatectl set-ntp true
 #
 #Создание скрипта, который после перезагрузки продолжит установку.
@@ -2321,11 +1963,11 @@ user_pref("widget.gtk.overlay-scrollbars.enabled", false);
 user_pref("browser.startup.page", 3);
 user_pref("browser.download.useDownloadDir", false);\047 > $_/user.js
 #
-#Настройка picom (Автономный композитор для Xorg).
-echo -e "\\033[36mНастройка picom (Автономный композитор для Xorg).\\033[0m"
+#Настройка sway.
+echo -e "\\033[36mНастройка sway.\\033[0m"
 if [ -n "$(clinfo -l)" ];
-    then sed -i \047s/#TechnicalSymbol //\047 ~/.config/picom.conf
-    else sed -i \047/#TechnicalSymbol /d\047 ~/.config/picom.conf
+    then sed -i \047s/#TechnicalSymbolV //\047 ~/.config/sway/config
+    else sed -i \047/#TechnicalSymbolV /d\047 ~/.config/sway/config
 fi
 #
 #Настройка звука.
@@ -2355,45 +1997,8 @@ gsettings set org.gnome.meld custom-font \047monospace, '"$font"'\047
 gsettings set org.cinnamon.desktop.default-applications.terminal exec \047xterm\047
 gsettings set org.cinnamon.desktop.default-applications.terminal exec-arg \047-e\047
 #
-#Проверка наличия touchpad.
-echo -e "\\033[36mПроверка наличия touchpad.\\033[0m"
-if [ -n "$(xinput list | grep -i touchpad)" ]; then
-sudo pacman -S xf86-input-libinput --noconfirm
-sudo tee -a /etc/X11/xorg.conf.d/00-keyboard.conf <<< \047
-Section "InputClass"
-Identifier "libinput touchpad catchall"
-MatchIstouchpad "on"
-MatchDevicePath "/dev/input/event*"
-Driver "libinput"
-Option "Tapping" "on"
-EndSection\047
-fi
-#
-#Настройка брандмауэра.
-echo -e "\\033[36mНастройка брандмауэра.\\033[0m"
-sudo ufw default deny
-sudo ufw allow from 192.168.0.0/24
-sudo ufw allow Deluge
-sudo ufw limit ssh
-sudo ufw allow 5900
-sudo ufw allow 5353
-sudo ufw enable
-sudo sed -i \047:a;s/# End required lines/# End required lines\n-A ufw-before-forward -i wg0 -j ACCEPT\n-A ufw-before-forward -o wg0 -j ACCEPT/\047 /etc/ufw/before.rules
-sudo sed -i \047s/#net\/ipv4\/ip_forward=1/net\/ipv4\/ip_forward=1/\047 /etc/ufw/sysctl.conf
-sudo sed -i \047s/#net\/ipv6\/conf\/default\/forwarding=1/net\/ipv6\/conf\/default\/forwarding=1/\047 /etc/ufw/sysctl.conf
-sudo sed -i \047s/#net\/ipv6\/conf\/all\/forwarding=1/net\/ipv6\/conf\/all\/forwarding=1/\047 /etc/ufw/sysctl.conf
-#
-#Установка переменных окружения.
-echo -e "\\033[36mУстановка переменных окружения.\\033[0m"
-sudo bash -c \047echo "GTK_USE_PORTAL=1
-XDG_MENU_PREFIX=arch-" >> /etc/environment\047
-#
 #Запуск демона синхронизации времени.
 sudo timedatectl set-ntp true
-#
-#Включение службы redshift (Регулирует цветовую температуру вашего экрана).
-echo -e "\\033[36mВключение службы redshift (Регулирует цветовую температуру вашего экрана).\\033[0m"
-systemctl --user enable --now redshift-gtk pipewire pipewire-pulse wireplumber
 #
 #Cкопирует список пакетов из репозитория Debian.
 echo -e "\\033[36mCкопирует список пакетов из репозитория Debian.\\033[0m"
@@ -2440,16 +2045,16 @@ xdg-mime default org.gnome.FileRoller.desktop application/x-tar
 xdg-mime default org.gnome.FileRoller.desktop application/x-gzip
 xdg-mime default org.gnome.FileRoller.desktop application/x-bzip2
 #
-#Добавление путей к шрифтам.
-xset +fp /usr/share/fonts/TTF
-xset +fp /usr/share/fonts/google
-#
 sudo nft list ruleset
 #Удаление временных файлов.
 echo -e "\\033[36mУдаление временных файлов.\\033[0m"
-sed -i \047/#TechnicalString/d\047 ~/.config/i3/config
-sed -i \047s/#TechnicalSymbol//\047 ~/.config/i3/config
+sed -i \047/#TechnicalString/d\047 ~/.config/sway/config
+sed -i \047s/#TechnicalSymbol//\047 ~/.config/sway/config
 #rm ~/archinstall.sh' > /mnt/home/"$username"/archinstall.sh
+#
+# Обновление системного кэша шрифтов Fontconfig
+echo -e "\033[36mОбновление системного кэша шрифтов...\033[0m"
+arch-chroot /mnt fc-cache -fv
 #
 #Передача прав созданному пользователю.
 echo -e "\033[36mПередача прав созданному пользователю.\033[0m"
@@ -2463,22 +2068,23 @@ arch-chroot /mnt chown root:sambashare /var/lib/samba/usershares
 arch-chroot /mnt chmod 1770 /var/lib/samba/usershares
 arch-chroot /mnt gpasswd sambashare -a "$username"
 #
-#Настройка virtualbox учитывая хост/гость.
+#Настройка virtualbox учитывая хост/гость в Wayland.
 echo -e "\033[36mНастройка virtualbox учитывая хост/гость.\033[0m"
-if [ -n "$(lspci | grep -i vga | grep -iE 'vmware svga|virtualbox')" ]; then
-echo "vboxguest
-vboxsf
-vboxvideo" > /mnt/etc/modules-load.d/virtualboxguest.config
-arch-chroot /mnt systemctl enable vboxservice
-sed -i 's/#Автозапуск i3./\/usr\/bin\/VBoxClient-all \&\n#Автозапуск i3./' /mnt/home/"$username"/.xinitrc
-arch-chroot /mnt gpasswd -a "$username" vboxsf
+GPU_INFO=$(lspci | grep -iE 'vga|3d')
+if echo "$GPU_INFO" | grep -iE -q 'vmware svga|virtualbox'; then
+    echo -e "\033[36mНастройка системы в режиме ГОСТЯ VirtualBox...\033[0m"
+    arch-chroot /mnt systemctl enable vboxservice.service
+    # Добавляем пользователя в группу для доступа к общим папкам (Shared Folders)
+    arch-chroot /mnt gpasswd -a "$username" vboxsf
 else
-arch-chroot /mnt pacman -Sy virtualbox-host-dkms virtualbox --noconfirm
-arch-chroot /mnt sudo -u "$username" yay -S virtualbox-ext-oracle --noconfirm
-echo "vboxdrv
+    echo -e "\033[36mНастройка системы в режиме ХОСТА (Эмуляция виртуальных машин)...\033[0m"
+    arch-chroot /mnt pacman -Sy linux-headers virtualbox-host-dkms virtualbox --noconfirm
+    arch-chroot /mnt sudo -u "$username" yay -S virtualbox-ext-oracle --noconfirm
+    echo "vboxdrv
 vboxnetflt
-vboxnetadp" > /mnt/etc/modules-load.d/virtualboxhosts.config
-arch-chroot /mnt gpasswd -a "$username" vboxusers
+vboxnetadp" > /mnt/etc/modules-load.d/virtualboxhosts.conf
+    # Добавляем пользователя в группу управления виртуальными машинами
+    arch-chroot /mnt gpasswd -a "$username" vboxusers
 fi
 #
 #Undervolting CPU (Снижение напряжения ЦП на 10%).
@@ -2496,9 +2102,9 @@ echo "* hard core 0" >> /mnt/etc/security/limits.conf
 echo -e "\033[36mНастройка прав: Только пользователь создатель имеет разрешения на чтение, запись и выполнение.\033[0m"
 sed -i 's/umask 022/umask 077/' /mnt/etc/profile
 #
-#Настройка разрешения локального имени хоста.
-echo -e "\033[36mНастройка разрешения локального имени хоста.\033[0m"
-sed -i 's/mymachines/mymachines mdns_minimal [NOTFOUND=return]/' /mnt/etc/nsswitch.conf
+#Настройка разрешения локального имени хоста (mDNS для Avahi/SANE/CUPS).
+echo -e "\033[36mНастройка разрешения локального имени хоста (nsswitch)...\033[0m"
+sed -i 's/^hosts:.*/hosts: mymachines mdns_minimal [NOTFOUND=return] resolve [!UNAVAIL=return] files myhostname dns/' /mnt/etc/nsswitch.conf
 #
 #Обновление часового пояса после подключения к сети через NetworkManager.
 echo -e "\033[36mОбновление часового пояса после подключения к сети через NetworkManager.\033[0m"
@@ -2509,9 +2115,9 @@ case "$2" in
     ;;
 esac' > /mnt/etc/NetworkManager/dispatcher.d/09-timezone
 #
-#Делаем xinitrc, 09-timezone и archinstall.sh исполняемыми.
-echo -e "\033[36mДелаем xinitrc, 09-timezone и archinstall.sh исполняемыми.\033[0m"
-chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone /mnt/home/"$username"/.xinitrc /mnt/home/"$username"/archinstall.sh /mnt/root/.xinitrc /mnt/home/"$username"/.config/notify_sound.sh /mnt/root/.config/notify_sound.sh
+# Делаем системные скрипты и меню Wofi исполняемыми.
+echo -e "\033[36mВыдача прав на исполнение для системных скриптов и меню...\033[0m"
+chmod +x /mnt/etc/NetworkManager/dispatcher.d/09-timezone /mnt/home/"$username"/archinstall.sh /mnt/home/"$username"/.config/wofi/menu_help.sh /mnt/home/"$username"/.config/wofi/menu_power.sh /mnt/root/.config/wofi/menu_help.sh /mnt/root/.config/wofi/menu_power.sh
 #
 #Удаленное включение компьютера с помощью Wake-on-LAN (WOL).
 echo -e "\033[36mУдаленное включение компьютера с помощью Wake-on-LAN (WOL).\033[0m"
