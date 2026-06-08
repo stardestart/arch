@@ -200,7 +200,7 @@ swaync \
 archlinux-wallpaper \
 cosmic-wallpapers \
 elementary-wallpapers \
-swww \
+awww \
 conky \
 freetype2 \
 ttf-fantasque-sans-mono \
@@ -222,11 +222,11 @@ sound-theme-freedesktop \
 aspell \
 nuspell \
 xed \
-cheese \
+kamoso \
 aspell-en \
 aspell-ru \
 ethtool \
-pinta \
+kolourpaint \
 vlc \
 vlc-plugin-ffmpeg \
 libreoffice-still-ru \
@@ -259,8 +259,7 @@ wine-mono \
 wine-gecko \
 gamemode \
 lib32-gamemode \
-lib32-gconf \
-lib32-libappindicator-gtk3 \
+lib32-libappindicator \
 mpg123 \
 lib32-mpg123 \
 openal \
@@ -273,7 +272,6 @@ vkd3d \
 lib32-vkd3d \
 vulkan-icd-loader \
 lib32-vulkan-icd-loader \
-python-glfw \
 lib32-vulkan-validation-layers \
 vulkan-utility-libraries \
 vulkan-tools \
@@ -281,9 +279,6 @@ vulkan-extra-tools \
 vulkan-extra-layers \
 mesa \
 lib32-mesa \
-lib32-libva-mesa-driver \
-libva-mesa-driver \
-mesa-vdpau \
 usbguard \
 libpwquality \
 xdg-user-dirs \
@@ -292,12 +287,10 @@ rng-tools \
 hardinfo2 \
 hunspell-ru-aot \
 hyphen-ru \
-mythes-ru \
-minq-ananicy-git \
+ananicy-cpp \
 auto-cpufreq \
 kde-cdemu-manager \
 usbguard-qt \
-birdtray \
 kmscon \
 breeze \
 breeze-gtk \
@@ -1250,8 +1243,8 @@ exec gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
 exec /usr/bin/lxqt-policykit-agent
 #
 # Инициализация демона обоев и запуск циклической смены картинок раз в 5 минут
-exec swww-daemon --format xrgb
-exec bash -c \047while true; do swww img $(find /usr/share/backgrounds/ -type f | shuf -n 1) --transition-type random; sleep 300; done\047 &
+exec awww-daemon --format xrgb
+exec bash -c \047while true; do awww img $(find /usr/share/backgrounds/ -type f | shuf -n 1) --transition-type random; sleep 300; done\047 &
 #
 # Автозапуск сервера уведомлений SwayNC
 exec swaync
@@ -1292,7 +1285,6 @@ exec usbguard-qt
 #
 # Мультимедиа, Календари и Мессенджеры в трей
 exec audacious -H
-exec birdtray
 exec kclockd
 exec calindac
 exec wlsunset -T 4500 -t 3500 -g 1
@@ -1366,7 +1358,7 @@ echo -e '[
         "spacing": 4,
         "modules-left": [
             "custom/jgmenu", "custom/inetbrowser", "custom/filebrowser", "custom/libreoffice",
-            "custom/xed", "custom/calculator", "custom/pinta", "custom/cheese", "custom/skanlite"
+            "custom/xed", "custom/calculator", "custom/kolourpaint", "custom/kamoso", "custom/skanlite"
         ],
         "modules-center": [ "window" ],
         "modules-right": [ "clock#time", "clock#date", "pulseaudio", "custom/printscreen", "custom/help", "custom/poweroff" ],
@@ -1380,8 +1372,8 @@ echo -e '[
         "custom/libreoffice": { "format": " 🗋 ", "on-click": "libreoffice", "tooltip": false },
         "custom/xed": { "format": " 📃 ", "on-click": "xed", "tooltip": false },
         "custom/calculator": { "format": " 🖩 ", "on-click": "kalgebra", "tooltip": false },
-        "custom/pinta": { "format": " 🎨 ", "on-click": "pinta", "tooltip": false },
-        "custom/cheese": { "format": " 📸 ", "on-click": "cheese", "tooltip": false },
+        "custom/kolourpaint": { "format": " 🎨 ", "on-click": "kolourpaint", "tooltip": false },
+        "custom/kamoso": { "format": " 📸 ", "on-click": "kamoso", "tooltip": false },
         "custom/skanlite": { "format": " 🖨️ ", "on-click": "skanlite", "tooltip": false },
         "window": { "format": "☭ {app_id} ➤ {title} ☭", "max-length": $((font*4)) },
         "clock#time": { "interval": 1, "format": "{:%H:%M:%S}", "on-click": "kclock", "tooltip": false },
@@ -1508,12 +1500,12 @@ window#waybar {
 #window { color: #ffa500; font-weight: bold; }
 #custom-jgmenu { color: #f92b2b; font-weight: bold; }
 #custom-jgmenu, #custom-inetbrowser, #custom-filebrowser, #custom-libreoffice, 
-#custom-xed, #custom-calculator, #custom-pinta, #custom-cheese, #custom-skanlite,
+#custom-xed, #custom-calculator, #custom-kolourpaint, #custom-kamoso, #custom-skanlite,
 #custom-printscreen, #custom-help, #custom-poweroff, #clock, #pulseaudio {
     padding: 0 5px;
 }
 #custom-jgmenu:hover, #custom-inetbrowser:hover, #custom-filebrowser:hover, #custom-libreoffice:hover,
-#custom-xed:hover, #custom-calculator:hover, #custom-pinta:hover, #custom-cheese:hover, #custom-skanlite:hover,
+#custom-xed:hover, #custom-calculator:hover, #custom-kolourpaint:hover, #custom-kamoso:hover, #custom-skanlite:hover,
 #custom-printscreen:hover, #custom-help:hover, #custom-poweroff:hover, #clock:hover {
     background-color: #283544;
     color: #2bf92b;
@@ -1598,8 +1590,8 @@ Win+Print Screen -- Снимок всего экрана.
 🗋 -- Запустить LibreOffice.
 📃 -- Запустить текстовый редактор Xed.
 🖩 -- Запустить калькулятор KAlgebra.
-🎨 -- Запустить Pinta.
-📸 -- Запустить Cheese.
+🎨 -- Запустить kolourpaint.
+📸 -- Запустить kamoso.
 🖨️ -- Запустить Skanlite.
 ⎙ -- Снимок экрана/Ножницы.
 🛈 -- Справка и шпаргалка.
