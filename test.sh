@@ -284,7 +284,7 @@ libpwquality \
 xdg-user-dirs \
 geoclue \
 rng-tools \
-hardinfo2 \
+cpu-x \
 hunspell-ru-aot \
 hyphen-ru \
 ananicy-cpp \
