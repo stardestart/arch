@@ -110,6 +110,7 @@ massallprog=( wayland \
 xorg-server-xwayland \
 libinput \
 foot \
+foot-terminfo \
 swayidle \
 cmatrix \
 swayfx \
@@ -288,7 +289,6 @@ cpu-x \
 hunspell-ru-aot \
 hyphen-ru \
 ananicy-cpp \
-auto-cpufreq \
 kde-cdemu-manager \
 usbguard-qt \
 kmscon \
@@ -1011,25 +1011,19 @@ echo '{
 #
 #Настройки терминала Foot.
 echo -e "\033[36mНастройки терминала Foot.\033[0m"
-echo '# Настройки терминала Foot
+echo 'font=Fantasque Sans Mono:size='$font'
 term=foot-256color
-# Определение шрифта и его размера из переменной вашего скрипта
-font=Fantasque Sans Mono:size='$font'
-# Количество строк прокрутки в истории (saveLines = 10000)
-scrollback=10000
 [environment]
-# Переменная для корректной работы интерактивного шелла
 TERMINAL_EMULATOR=foot
+[scrollback]
+lines=10000
+indicator-format=none
 [cursor]
-# Настройки курсора (Красный цвет #f92b2b и включение мерцания)
-color=2b2b2b f92b2b
+color-main=f92b2b
+color-inverse=2b2b2b
 blink=yes
 style=block
-[scrollback]
-# Отключаем полосу прокрутки, оставляя навигацию клавишами
-indicator-style=none
-[colors]
-# Цветовая палитра (Зеленый текст на темно-сером фоне)
+[colors-dark]
 background=2b2b2b
 foreground=2bf92b' | tee /mnt/home/"$username"/.config/foot/foot.ini /mnt/root/.config/foot/foot.ini
 #
@@ -1147,30 +1141,32 @@ mode "resize" {
 #
 ########### Внешний вид ###########
 # 1. Скругление углов (SwayFX)
-corner_radius '$font'
+#TechnicalSymbolV corner_radius '$font'
+#TechnicalSymbolV smart_corner_radius on
+#TechnicalSymbolV for_window [app_id="waybar"] corner_radius 0
 #
 # Исключения для скругления
-smart_corner_radius on
-for_window [app_id="waybar"] corner_radius 0
+#TechnicalSymbolV smart_corner_radius on
+#TechnicalSymbolV for_window [app_id="waybar"] corner_radius 0
 #
 # 2. Затемнение неактивных окон (SwayFX)
-dim_inactive 0.35
-dim_inactive_color #000000
+#TechnicalSymbolV for_window [all] dim 0.35
 #
 # 3. Эффекты теней (SwayFX)
-shadows on
-shadows_on_csd off
-shadow_blur 15
-shadow_color #000000A0
+#TechnicalSymbolV shadows on
+#TechnicalSymbolV shadows_on_csd off
+#TechnicalSymbolV shadow_blur_radius 15
+#TechnicalSymbolV shadow_color #000000A0
 #
 # 4. Прозрачность окон
-for_window [app_id="foot"] opacity 0.80
-for_window [app_id="wofi"] opacity 0.90
-for_window [app_id="bemenu"] opacity 0.90
+#TechnicalSymbolV for_window [app_id="foot"] opacity 0.80
+#TechnicalSymbolV for_window [app_id="wofi"] opacity 0.90
+#TechnicalSymbolV for_window [app_id="bemenu"] opacity 0.90
+#TechnicalSymbolV for_window [app_id="vlc"] opacity 1.0
 #
 # Принудительная 100% непрозрачность для медиа и полноэкранного режима
-for_window [app_id="vlc"] opacity 1.0
-for_window [fullscreen] opacity 1.0
+#TechnicalSymbolV for_window [app_id="vlc"] opacity 1.0
+#TechnicalSymbolV for_window [fullscreen] opacity 1.0
 #
 #TechnicalSymbolV # 5. Размытие заднего плана (SwayFX)
 #TechnicalSymbolV blur on
@@ -1375,11 +1371,11 @@ echo -e '[
         "custom/kolourpaint": { "format": " 🎨 ", "on-click": "kolourpaint", "tooltip": false },
         "custom/kamoso": { "format": " 📸 ", "on-click": "kamoso", "tooltip": false },
         "custom/skanlite": { "format": " 🖨️ ", "on-click": "skanlite", "tooltip": false },
-        "window": { "format": "☭ {app_id} ➤ {title} ☭", "max-length": $((font*4)) },
+        "window": { "format": "☭ {app_id} ➤ {title} ☭", "max-length": '$((font*4))' },
         "clock#time": { "interval": 1, "format": "{:%H:%M:%S}", "on-click": "kclock", "tooltip": false },
         "clock#date": { "interval": 1, "format": "{:%A, %d %B %Y}", "locale": "ru_RU.UTF-8", "on-click": "calindori", "tooltip": false },
         "pulseaudio": { "scroll-step": 5, "format": " ☭ {icon}{volume}% ☭ ", "format-muted": " ☭ 🔇00% ☭ ", "format-icons": { "default": ["🔈 ", "🔉 ", "🔊 "] }, "on-click-right": "pavucontrol-qt" },
-        "custom/printscreen": { "format": "⎙ ", "on-click": "grim -g \"\$(slurp)\" - | swappy -f - && canberra-gtk-play -i screen-capture", "tooltip": false },
+        "custom/printscreen": { "format": "⎙ ", "on-click": "grim -g "$(slurp)" - | swappy -f - && canberra-gtk-play -i screen-capture", "tooltip": false },
         "custom/help": {
         "format": " 🛈 ",
         "on-click": "bash ~/.config/wofi/menu_help.sh", // Вызов меню справки
@@ -1398,7 +1394,7 @@ echo -e '[
     {
         "layer": "top",
         "position": "bottom",
-        "height": $((font*3)),
+        "height": '$((font*3))',
         "spacing": 4,
         // Модули нижней панели
         "modules-left": [
@@ -1440,7 +1436,7 @@ echo -e '[
         },
         // Сетевой скрипт netline
         "custom/netline": {
-            "exec": "netline=\"| \"; netmas=\"\$(nmcli -f GENERAL.DEVICE device show | awk \047!/lo/ && !/^$/ {print \$2}\047)\"; for word in \$netmas; do netline+=\"\$word: \$(nmcli -f IP4.ADDRESS device show \"\$word\" | awk \047{print \$2}\047)\" | \"; done; echo \"\$netline\"",
+            "exec": "netline="| "; netmas="$(nmcli -f GENERAL.DEVICE device show | awk \047!/lo/ && !/^$/ {print $2}\047)"; for word in $netmas; do netline+="$word: $(nmcli -f IP4.ADDRESS device show "$word" | awk \047{print $2}\047)\" | "; done; echo "$netline"",
             "interval": 1,
             "tooltip": false
         },
@@ -1923,8 +1919,8 @@ echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt ln -sf /usr/lib/systemd/system/kmsconvt@.service /etc/systemd/system/autovt@.service
 arch-chroot /mnt systemctl disable dbus
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
-ly@tty2 avahi-daemon ananicy dbus-broker rngd auto-cpufreq smartd smb \
-wsdd saned.socket cups.socket x11vnc kmsvnc auditd usbguard nftables pipewire pipewire-pulse wireplumber
+ly@tty2 avahi-daemon ananicy-cpp dbus-broker rngd smartd smb \
+wsdd saned.socket cups.socket kmsvnc auditd usbguard nftables
 arch-chroot /mnt timedatectl set-ntp true
 #
 #Создание скрипта, который после перезагрузки продолжит установку.
@@ -2068,6 +2064,7 @@ if echo "$GPU_INFO" | grep -iE -q 'vmware svga|virtualbox'; then
     arch-chroot /mnt systemctl enable vboxservice.service
     # Добавляем пользователя в группу для доступа к общим папкам (Shared Folders)
     arch-chroot /mnt gpasswd -a "$username" vboxsf
+    echo "WLR_NO_HARDWARE_CURSORS=1" >> /mnt/etc/environment
 else
     echo -e "\033[36mНастройка системы в режиме ХОСТА (Эмуляция виртуальных машин)...\033[0m"
     arch-chroot /mnt pacman -Sy linux-headers virtualbox-host-dkms virtualbox --noconfirm
@@ -2077,13 +2074,6 @@ vboxnetflt
 vboxnetadp" > /mnt/etc/modules-load.d/virtualboxhosts.conf
     # Добавляем пользователя в группу управления виртуальными машинами
     arch-chroot /mnt gpasswd -a "$username" vboxusers
-fi
-#
-#Undervolting CPU (Снижение напряжения ЦП на 10%).
-echo -e "\033[36mUndervolting CPU (Снижение напряжения ЦП на 10%).\033[0m"
-if [ -n "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq)" ]; then
-echo '[charger]
-scaling_max_freq = '$(("$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq)"/100*90))'' > /mnt/etc/auto-cpufreq.conf
 fi
 #
 #Ограничение на размер дампа.
