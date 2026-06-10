@@ -2064,7 +2064,6 @@ if echo "$GPU_INFO" | grep -iE -q 'vmware svga|virtualbox'; then
     arch-chroot /mnt systemctl enable vboxservice.service
     # Добавляем пользователя в группу для доступа к общим папкам (Shared Folders)
     arch-chroot /mnt gpasswd -a "$username" vboxsf
-    echo "WLR_NO_HARDWARE_CURSORS=1" >> /mnt/etc/environment
 else
     echo -e "\033[36mНастройка системы в режиме ХОСТА (Эмуляция виртуальных машин)...\033[0m"
     arch-chroot /mnt pacman -Sy linux-headers virtualbox-host-dkms virtualbox --noconfirm
@@ -2074,6 +2073,7 @@ vboxnetflt
 vboxnetadp" > /mnt/etc/modules-load.d/virtualboxhosts.conf
     # Добавляем пользователя в группу управления виртуальными машинами
     arch-chroot /mnt gpasswd -a "$username" vboxusers
+    echo "WLR_NO_HARDWARE_CURSORS=1" >> /mnt/etc/environment
 fi
 #
 #Ограничение на размер дампа.
