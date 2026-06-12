@@ -1019,13 +1019,12 @@ TERMINAL_EMULATOR=foot
 lines=10000
 indicator-format=none
 [cursor]
-color-main=f92b2b
-color-inverse=2b2b2b
 blink=yes
 style=block
 [colors-dark]
 background=2b2b2b
-foreground=2bf92b' | tee /mnt/home/"$username"/.config/foot/foot.ini /mnt/root/.config/foot/foot.ini
+foreground=2bf92b
+cursor=2b2b2b f92b2b' | tee /mnt/home/"$username"/.config/foot/foot.ini /mnt/root/.config/foot/foot.ini
 #
 #Создание директории и конфига sway (Тайловый оконный менеджер).
 echo -e "\033[36mСоздание конфига sway (Тайловый оконный менеджер).\033[0m"
@@ -1375,7 +1374,7 @@ echo -e '[
         "clock#time": { "interval": 1, "format": "{:%H:%M:%S}", "on-click": "kclock", "tooltip": false },
         "clock#date": { "interval": 1, "format": "{:%A, %d %B %Y}", "locale": "ru_RU.UTF-8", "on-click": "calindori", "tooltip": false },
         "pulseaudio": { "scroll-step": 5, "format": " ☭ {icon}{volume}% ☭ ", "format-muted": " ☭ 🔇00% ☭ ", "format-icons": { "default": ["🔈 ", "🔉 ", "🔊 "] }, "on-click-right": "pavucontrol-qt" },
-        "custom/printscreen": { "format": "⎙ ", "on-click": "grim -g "$(slurp)" - | swappy -f - && canberra-gtk-play -i screen-capture", "tooltip": false },
+        "custom/printscreen": { "format": "⎙ ", "on-click": "grim -g \"$(slurp)\" - | swappy -f - && canberra-gtk-play -i screen-capture", "tooltip": false },
         "custom/help": {
         "format": " 🛈 ",
         "on-click": "bash ~/.config/wofi/menu_help.sh", // Вызов меню справки
@@ -1436,7 +1435,7 @@ echo -e '[
         },
         // Сетевой скрипт netline
         "custom/netline": {
-            "exec": "netline="| "; netmas="$(nmcli -f GENERAL.DEVICE device show | awk \047!/lo/ && !/^$/ {print $2}\047)"; for word in $netmas; do netline+="$word: $(nmcli -f IP4.ADDRESS device show "$word" | awk \047{print $2}\047)\" | "; done; echo "$netline"",
+            "exec": "netline=\"| \"; netmas=\"$(nmcli -f GENERAL.DEVICE device show | awk \047!/lo/ && !/^$/ {print $2}\047)\"; for word in $netmas; do netline+=\"$word: $(nmcli -f IP4.ADDRESS device show \"$word\" | awk \047{print $2}\047)\\" | \"; done; echo \"$netline\"",
             "interval": 1,
             "tooltip": false
         },
@@ -2064,7 +2063,8 @@ if echo "$GPU_INFO" | grep -iE -q 'vmware svga|virtualbox'; then
     arch-chroot /mnt systemctl enable vboxservice.service
     # Добавляем пользователя в группу для доступа к общим папкам (Shared Folders)
     arch-chroot /mnt gpasswd -a "$username" vboxsf
-    echo "WLR_NO_HARDWARE_CURSORS=1" >> /mnt/etc/environment
+    echo "WLR_NO_HARDWARE_CURSORS=1
+WLR_RENDERER=pixman" >> /mnt/etc/environment
 else
     echo -e "\033[36mНастройка системы в режиме ХОСТА (Эмуляция виртуальных машин)...\033[0m"
     arch-chroot /mnt pacman -Sy linux-headers virtualbox-host-dkms virtualbox --noconfirm
