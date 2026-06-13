@@ -2065,9 +2065,10 @@ if echo "$GPU_INFO" | grep -iE -q 'vmware svga|virtualbox'; then
     arch-chroot /mnt gpasswd -a "$username" vboxsf
     echo "WLR_NO_HARDWARE_CURSORS=1
 WLR_RENDERER=pixman" >> /mnt/etc/environment
+    echo "exec VBoxClient-all" | tee -a /mnt/home/"$username"/.config/sway/config /mnt/root/.config/sway/config
 else
     echo -e "\033[36mНастройка системы в режиме ХОСТА (Эмуляция виртуальных машин)...\033[0m"
-    arch-chroot /mnt pacman -Sy linux-headers virtualbox-host-dkms virtualbox --noconfirm
+    arch-chroot /mnt pacman -Sy virtualbox-host-dkms virtualbox --noconfirm
     arch-chroot /mnt sudo -u "$username" yay -S virtualbox-ext-oracle --noconfirm
     echo "vboxdrv
 vboxnetflt
