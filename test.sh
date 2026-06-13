@@ -113,7 +113,7 @@ foot \
 foot-terminfo \
 swayidle \
 cmatrix \
-swayfx \
+sway \
 waybar \
 wofi \
 jq \
@@ -1012,7 +1012,7 @@ echo '{
 #Настройки терминала Foot.
 echo -e "\033[36mНастройки терминала Foot.\033[0m"
 echo 'font=Fantasque Sans Mono:size='$font'
-term=foot-256color
+term=foot
 [environment]
 TERMINAL_EMULATOR=foot
 [scrollback]
@@ -2064,7 +2064,8 @@ if echo "$GPU_INFO" | grep -iE -q 'vmware svga|virtualbox'; then
     # Добавляем пользователя в группу для доступа к общим папкам (Shared Folders)
     arch-chroot /mnt gpasswd -a "$username" vboxsf
     echo "WLR_NO_HARDWARE_CURSORS=1
-WLR_RENDERER=pixman" >> /mnt/etc/environment
+WLR_RENDERER=pixman
+WLR_DRM_NO_MODIFIERS=1" >> /mnt/etc/environment
     echo "exec VBoxClient-all" | tee -a /mnt/home/"$username"/.config/sway/config /mnt/root/.config/sway/config
 else
     echo -e "\033[36mНастройка системы в режиме ХОСТА (Эмуляция виртуальных машин)...\033[0m"
