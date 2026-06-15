@@ -960,7 +960,7 @@ org.freedesktop.impl.portal.Screenshot=wlr
 org.freedesktop.impl.portal.ScreenCast=wlr" > /mnt/etc/xdg/xdg-desktop-portal/portals.conf
 #
 #Создание конфига bashrc.
-echo -e "\033[36mСоздание конфига bashrc (Настройка Xterm).\033[0m"
+echo -e "\033[36mСоздание конфига bashrc.\033[0m"
 echo '[[ $- != *i* ]] && return #Определяем интерактивность шелла.
 # Алиасы для раскрашивания вывода
 alias grep="grep --color=auto"
@@ -1775,7 +1775,7 @@ echo -e "\033[36mСоздание конфига gigolo (браузер общи
 mkdir -p /mnt/home/"$username"/.config/gigolo/
 echo '[general]
 file_manager=gio open
-terminal=xterm
+terminal=foot
 autoconnect_interval=60
 [ui]
 save_geometry=true
@@ -1981,7 +1981,7 @@ gsettings set org.gnome.desktop.interface monospace-font-name \047Fantasque Sans
 gsettings set org.gnome.desktop.wm.preferences titlebar-font \047Fantasque Sans Mono Bold '"$font"'\047
 gsettings set org.gnome.libgnomekbd.indicator font-size '"$font"'
 gsettings set org.gnome.meld custom-font \047monospace, '"$font"'\047
-gsettings set org.cinnamon.desktop.default-applications.terminal exec \047xterm\047
+gsettings set org.cinnamon.desktop.default-applications.terminal exec \047foot\047
 gsettings set org.cinnamon.desktop.default-applications.terminal exec-arg \047-e\047
 #
 #Запуск демона синхронизации времени.
