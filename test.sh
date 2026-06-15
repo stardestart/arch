@@ -109,6 +109,7 @@ massfont=(30144_PostIndex.ttf https://ttfonts.net/ru/download/31252.htm $(curl h
 massallprog=( wayland \
 xorg-server-xwayland \
 libinput \
+libinput-tools \
 foot \
 foot-terminfo \
 swayidle \
@@ -165,10 +166,12 @@ kmsvnc \
 polkit \
 gnome-keyring \
 lxqt-policykit \
+gcr \
 gparted \
 gpart \
 exfatprogs \
 archlinux-xdg-menu \
+iio-sensor-proxy \
 7zip \
 dosfstools \
 unzip \
@@ -815,7 +818,7 @@ QT_QPA_PLATFORMTHEME=gtk3
 GDK_BACKEND=wayland,x11
 MOZ_ENABLE_WAYLAND=
 XDG_MENU_PREFIX=arch-
-SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/keyring/ssh"' >> /mnt/etc/environment
+SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/gcr/ssh"' >> /mnt/etc/environment
 #
 #Создание общего конфига сканера.
 echo -e "\033[36mСоздание общего конфига сканера.\033[0m"
@@ -1131,7 +1134,7 @@ mode "resize" {
         bindsym Down resize grow height 10 px or 5 ppt
         bindsym Up resize shrink height 10 px or 5 ppt
         bindsym Right resize grow width 10 px or 5 ppt
-        
+
         # Выйти из режима изменения размеров окон.
         bindsym Return mode "default"
         bindsym Escape mode "default"
@@ -1231,11 +1234,12 @@ bindsym Print exec grim -g "$(slurp)" - | swappy -f - && canberra-gtk-play -i sc
 #
 ########### Автозапуск программ ###########
 #
-# Инициализация GNOME Keyring
-exec gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
-#
-# Графический окошко с запросом паролей Polkit
+# Запуск secrets и pkcs11 (без ssh!)
+exec gnome-keyring-daemon --start --components=pkcs11,secrets
+# Запуск графического агента паролей (он у вас верный)
 exec /usr/bin/lxqt-policykit-agent
+# Экспорт переменной сокета для всех GUI-приложений в сессии
+exec systemctl --user import-environment SSH_AUTH_SOCK
 #
 # Инициализация демона обоев и запуск циклической смены картинок раз в 5 минут
 exec awww-daemon --format xrgb
@@ -1494,7 +1498,7 @@ window#waybar {
 }
 #window { color: #ffa500; font-weight: bold; }
 #custom-jgmenu { color: #f92b2b; font-weight: bold; }
-#custom-jgmenu, #custom-inetbrowser, #custom-filebrowser, #custom-libreoffice, 
+#custom-jgmenu, #custom-inetbrowser, #custom-filebrowser, #custom-libreoffice,
 #custom-xed, #custom-calculator, #custom-kolourpaint, #custom-kamoso, #custom-skanlite,
 #custom-printscreen, #custom-help, #custom-poweroff, #clock, #pulseaudio {
     padding: 0 5px;
