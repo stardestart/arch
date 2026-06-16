@@ -817,8 +817,7 @@ QT_QPA_PLATFORM=wayland
 QT_QPA_PLATFORMTHEME=gtk3
 GDK_BACKEND=wayland,x11
 MOZ_ENABLE_WAYLAND=
-XDG_MENU_PREFIX=arch-
-SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/gcr/ssh"' >> /mnt/etc/environment
+XDG_MENU_PREFIX=arch-' >> /mnt/etc/environment
 #
 #Создание общего конфига сканера.
 echo -e "\033[36mСоздание общего конфига сканера.\033[0m"
@@ -952,7 +951,7 @@ cp /mnt/usr/share/color-schemes/BreezeDark.colors /mnt/root/.config/kdeglobals
 echo -e "\n[Icons]\nTheme=Papirus-Dark" | tee -a /mnt/home/"$username"/.config/kdeglobals /mnt/root/.config/kdeglobals
 #
 #Создание конфига bash_profile (Настройка Xorg).
-echo -e "\033[36mСоздание конфига bash_profile (Настройка Xorg).\033[0m"
+echo -e "\033[36mСоздание конфига bash_profile.\033[0m"
 echo '[[ -f ~/.profile ]] && . ~/.profile' | tee /mnt/home/"$username"/.bash_profile /mnt/root/.bash_profile
 #
 #Создание конфига xdg-desktop-portal (Настройка Xdg).
@@ -990,7 +989,8 @@ export XDG_SESSION_DESKTOP=sway
 export XDG_SESSION_TYPE=wayland
 export QT_QPA_PLATFORMTHEME=gtk3
 export XCURSOR_THEME=breeze_cursors
-export XCURSOR_SIZE=24' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
+export XCURSOR_SIZE=24
+export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh' | tee /mnt/home/"$username"/.profile /mnt/root/.profile
 #
 #Редактирование конфига сервера уведомлений.
 echo -e "\033[36mРедактирование конфига сервера уведомлений.\033[0m"
@@ -1134,7 +1134,6 @@ mode "resize" {
         bindsym Down resize grow height 10 px or 5 ppt
         bindsym Up resize shrink height 10 px or 5 ppt
         bindsym Right resize grow width 10 px or 5 ppt
-
         # Выйти из режима изменения размеров окон.
         bindsym Return mode "default"
         bindsym Escape mode "default"
@@ -1234,12 +1233,12 @@ bindsym Print exec grim -g "$(slurp)" - | swappy -f - && canberra-gtk-play -i sc
 #
 ########### Автозапуск программ ###########
 #
-# Запуск secrets и pkcs11 (без ssh!)
+# Запуск secrets и pkcs11
 exec gnome-keyring-daemon --start --components=pkcs11,secrets
-# Запуск графического агента паролей (он у вас верный)
+# Запуск графического агента паролей
 exec /usr/bin/lxqt-policykit-agent
-# Экспорт переменной сокета для всех GUI-приложений в сессии
-exec systemctl --user import-environment SSH_AUTH_SOCK
+# Импортируем переменные экрана и SSH в systemd
+exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP SSH_AUTH_SOCK
 #
 # Инициализация демона обоев и запуск циклической смены картинок раз в 5 минут
 exec awww-daemon --format xrgb
@@ -1922,8 +1921,10 @@ echo -e "\033[36mАвтозапуск служб.\033[0m"
 arch-chroot /mnt ln -sf /usr/lib/systemd/system/kmsconvt@.service /etc/systemd/system/autovt@.service
 arch-chroot /mnt systemctl disable dbus
 arch-chroot /mnt systemctl enable acpid bluetooth fancontrol NetworkManager reflector.timer \
-ly@tty2 avahi-daemon ananicy-cpp dbus-broker rngd smartd smb \
+ly@tty2 avahi-daemon ananicy-cpp dbus-broker rngd smartd smb iio-sensor-proxy \
 wsdd saned.socket cups.socket kmsvnc auditd usbguard nftables
+arch-chroot /mnt sudo -u "$username" systemctl --user enable gcr-ssh-agent.socket
+read -p "Нажмите [Enter], чтобы продолжить..."
 arch-chroot /mnt timedatectl set-ntp true
 #
 #Создание скрипта, который после перезагрузки продолжит установку.
